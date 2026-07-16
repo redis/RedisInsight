@@ -46,11 +46,13 @@ concurrency:
 
 jobs:
   changes:
-    # Skip PRs whose head is a release branch: release-stage.yml (release/**)
-    # and release-prod.yml (latest) already run this suite via workflow_call,
-    # so running here too would start a second, non-cancelling run.
+    # Skip same-repo PRs whose head is a release branch: release-stage.yml
+    # (release/**) and release-prod.yml (latest) already run this suite via
+    # workflow_call, so running here too would start a second, non-cancelling
+    # run. Those only trigger on base-repo pushes, so fork heads are exempt.
     if: >-
       github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.fork ||
       (!startsWith(github.head_ref, 'release/') && github.head_ref != 'latest')
     permissions:
       contents: read
@@ -164,6 +166,7 @@ jobs:
     # See `changes`: skip release-branch PRs (covered via workflow_call).
     if: >-
       github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.fork ||
       (!startsWith(github.head_ref, 'release/') && github.head_ref != 'latest')
     uses: ./.github/workflows/lint.yml
     secrets: inherit
