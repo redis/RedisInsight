@@ -11,6 +11,7 @@ export enum IndexInfoTableColumn {
   Attribute = 'attribute',
   Type = 'type',
   Weight = 'weight',
+  WithSuffixTrie = 'withSuffixTrie',
 }
 
 /**
@@ -40,6 +41,12 @@ export const getTableColumns = (): ColumnDef<IndexInfoTableData>[] => [
     id: IndexInfoTableColumn.Weight,
     accessorKey: IndexInfoTableColumn.Weight,
     header: i18n.t('vectorSearch.indexInfo.column.weight'),
+    enableSorting: false,
+  },
+  {
+    id: IndexInfoTableColumn.WithSuffixTrie,
+    accessorKey: IndexInfoTableColumn.WithSuffixTrie,
+    header: i18n.t('vectorSearch.indexInfo.column.withSuffixTrie'),
     enableSorting: false,
   },
 ]

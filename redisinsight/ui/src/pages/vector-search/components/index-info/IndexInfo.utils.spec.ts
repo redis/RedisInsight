@@ -44,6 +44,18 @@ describe('IndexInfo.utils', () => {
 
       expect(result[0].weight).toBeUndefined()
     })
+
+    it('should pass through withSuffixTrie attribute', () => {
+      const indexInfo = indexInfoFactory.build({
+        attributes: [
+          indexAttributeFactory.build({ type: 'text', withSuffixTrie: true }),
+        ],
+      })
+
+      const result = parseIndexAttributes(indexInfo)
+
+      expect(result[0].withSuffixTrie).toBe(true)
+    })
   })
 
   describe('formatOptions', () => {

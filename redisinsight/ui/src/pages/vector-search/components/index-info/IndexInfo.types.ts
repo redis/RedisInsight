@@ -11,4 +11,5 @@ export interface IndexInfoTableData {
   attribute: string
   type: FieldTypes
   weight?: string
+  withSuffixTrie?: boolean
 }

@@ -94,6 +94,21 @@ describe('useIndexInfo.utils', () => {
       expect(result.attributes[0].weight).toBeUndefined()
     })
 
+    it('should map WITHSUFFIXTRIE attribute flag', () => {
+      const apiResponse = indexInfoFactory.build({
+        attributes: [
+          indexInfoAttributeFactory.build({
+            type: 'TEXT',
+            WITHSUFFIXTRIE: true,
+          }),
+        ],
+      })
+
+      const result = transformIndexInfo(apiResponse)
+
+      expect(result.attributes[0].withSuffixTrie).toBe(true)
+    })
+
     it('should normalize all field types to lowercase', () => {
       const apiResponse = indexInfoFactory.build({
         attributes: [

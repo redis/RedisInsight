@@ -33,6 +33,10 @@ export const convertIndexInfoAttributeReply = (input: string[]): object => {
     attribute['CASESENSITIVE'] = input.includes('CASESENSITIVE') || undefined;
     attribute['UNF'] = input.includes('UNF') || undefined;
     attribute['NOSTEM'] = input.includes('NOSTEM') || undefined;
+    attribute['WITHSUFFIXTRIE'] =
+      input.includes('WITHSUFFIXTRIE') || undefined;
+    attribute['INDEXEMPTY'] = input.includes('INDEXEMPTY') || undefined;
+    attribute['INDEXMISSING'] = input.includes('INDEXMISSING') || undefined;
   }
 
   return attribute;

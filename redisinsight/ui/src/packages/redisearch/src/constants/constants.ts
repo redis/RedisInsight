@@ -1,4 +1,13 @@
-export const InfoAttributesBoolean: string[] = ['NOSTEM', 'NOINDEX', 'SORTABLE']
+export const InfoAttributesBoolean: string[] = [
+  'NOSTEM',
+  'NOINDEX',
+  'SORTABLE',
+  'WITHSUFFIXTRIE',
+  'CASESENSITIVE',
+  'UNF',
+  'INDEXEMPTY',
+  'INDEXMISSING',
+]
 
 export enum Command {
   Search = 'FT.SEARCH',
@@ -40,6 +49,11 @@ export const ResultInfoAttributes: string[] = [
   'NOSTEM',
   'NOINDEX',
   'SORTABLE',
+  'WITHSUFFIXTRIE',
+  'CASESENSITIVE',
+  'UNF',
+  'INDEXEMPTY',
+  'INDEXMISSING',
   'SEPARATOR',
   'PHONETIC',
 ]
