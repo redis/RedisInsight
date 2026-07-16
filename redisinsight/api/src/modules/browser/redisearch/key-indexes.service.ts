@@ -5,6 +5,7 @@ import { ClientMetadata } from 'src/common/models';
 import { plainToInstance } from 'class-transformer';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { RedisClient } from 'src/modules/redis/client';
+import { RedisDataType } from 'src/modules/browser/keys/dto';
 import {
   IndexInfoDto,
   IndexSummaryDto,
@@ -19,6 +20,12 @@ interface IndexEntry {
   info: IndexInfoDto;
 }
 
+// Redis TYPE reply -> FT.INFO key_type
+const REDIS_TYPE_TO_INDEX_KEY_TYPE: Record<string, string> = {
+  [RedisDataType.Hash]: 'HASH',
+  [RedisDataType.JSON]: 'JSON',
+};
+
 @Injectable()
 export class KeyIndexesService {
   private logger = new Logger('KeyIndexesService');
@@ -26,7 +33,7 @@ export class KeyIndexesService {
   constructor(private databaseClientFactory: DatabaseClientFactory) {}
 
   /**
-   * Find all indexes whose prefixes cover the given key.
+   * Find all indexes whose key_type and prefixes cover the given key.
    * An index with no prefixes matches all keys of its key_type.
    */
   public async getKeyIndexes(
@@ -42,9 +49,22 @@ export class KeyIndexesService {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
+      const keyType = (await client.sendCommand(['TYPE', key], {
+        replyEncoding: 'utf8',
+      })) as string;
+      const targetKeyType = REDIS_TYPE_TO_INDEX_KEY_TYPE[keyType];
+
+      if (!targetKeyType) {
+        return plainToInstance(KeyIndexesResponse, { indexes: [] });
+      }
+
       const indexNames = await this.listIndexNames(client);
       const entries = await this.fetchIndexesInfo(client, indexNames);
-      const matchingIndexes = this.findMatchingIndexes(keyStr, entries);
+      const matchingIndexes = this.findMatchingIndexes(
+        keyStr,
+        targetKeyType,
+        entries,
+      );
 
       return plainToInstance(KeyIndexesResponse, { indexes: matchingIndexes });
     } catch (e) {
@@ -93,6 +113,7 @@ export class KeyIndexesService {
 
   private findMatchingIndexes(
     keyStr: string,
+    targetKeyType: string,
     entries: IndexEntry[],
   ): IndexSummaryDto[] {
     const matching: IndexSummaryDto[] = [];
@@ -107,7 +128,8 @@ export class KeyIndexesService {
       const { prefixes = [], key_type: keyType = '' } = definition;
 
       const isMatch =
-        prefixes.length === 0 || prefixes.some((p) => keyStr.startsWith(p));
+        keyType.toUpperCase() === targetKeyType &&
+        (prefixes.length === 0 || prefixes.some((p) => keyStr.startsWith(p)));
 
       if (isMatch) {
         matching.push(
