@@ -25,7 +25,7 @@ if (process.env.SKIP_API_CLIENT_GEN === '1') {
 const apiDir = path.resolve(__dirname, '..');
 console.log('[postinstall] Generating OpenAPI client...');
 
-const result = spawnSync('yarn', ['generate:api-client'], {
+const result = spawnSync('npm', ['run', 'generate:api-client'], {
   cwd: apiDir,
   stdio: 'inherit',
   shell: process.platform === 'win32',

@@ -7,6 +7,24 @@ migrations). See [npm-migration-plan.md](npm-migration-plan.md) for the governin
 
 ---
 
+## `resolved` URLs point at `registry.yarnpkg.com`
+
+Because the lockfiles were **seeded from `yarn.lock`** (to reproduce yarn's exact tree), most
+`resolved` URLs in `package-lock.json` / `redisinsight/api/package-lock.json` point at
+`registry.yarnpkg.com` rather than `registry.npmjs.org`. This is a harmless seeding artifact,
+not a functional issue:
+
+- `registry.yarnpkg.com` is a proxy of `registry.npmjs.org` (same tarball paths, same content),
+  so `npm ci` fetches and integrity-verifies them normally.
+- A plain `npm install` does **not** rewrite existing `resolved` URLs, so this doesn't
+  self-correct — and it shouldn't be forced: the only npm-native way to get uniform
+  `registry.npmjs.org` URLs is a full lockfile regenerate, which fresh-resolves every range and
+  would reintroduce the version drift the seed-from-`yarn.lock` approach exists to prevent.
+- Do **not** hand-edit the lockfiles to swap the host. They migrate to `registry.npmjs.org`
+  naturally over time as packages are added/updated (npm writes that host for fresh fetches).
+
+---
+
 ## Root `package.json`
 
 ### 1. `semver` pinned to exact `7.7.2` (override + direct dependency)

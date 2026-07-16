@@ -96,18 +96,3 @@ runs:
         if [ ! -f redisinsight/api-client/index.ts ]; then
           npm run generate:api-client --prefix redisinsight/api
         fi
-
-    # When install ran (cache miss), its postinstall executed
-    # `yarn-deduplicate yarn.lock`. If the committed lockfile was not
-    # dedup-clean, postinstall rewrote it in place and this diff fails.
-    # On cache hit install was skipped — the lockfile is byte-identical
-    # to a previously verified state, so the diff is a no-op.
-    - name: Verify root yarn.lock is unchanged after install
-      shell: bash
-      run: |
-        if ! git diff --exit-code --quiet -- yarn.lock; then
-          echo "::error file=yarn.lock::yarn.lock was modified by 'yarn install' (postinstall ran yarn-deduplicate). The committed lockfile is not dedup-clean. Run 'yarn install' at the repo root locally and commit the updated yarn.lock."
-          git --no-pager diff --stat -- yarn.lock
-          exit 1
-        fi
-        echo "yarn.lock is unchanged after install — dedup-clean ✅"
