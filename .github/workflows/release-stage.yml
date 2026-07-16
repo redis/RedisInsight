@@ -6,18 +6,11 @@ on:
       - "release/**"
 
 jobs:
-  tests:
-    name: Release stage tests
-    uses: ./.github/workflows/tests.yml
-    secrets: inherit
-    with:
-      short_rte_list: false
-      pre_release: true
-
+  # Tests run on the release PR (tests.yml), not here — the build is gated by
+  # that PR's run.
   builds:
     name: Release stage builds
     uses: ./.github/workflows/build.yml
-    needs: tests
     secrets: inherit
     with:
       environment: "staging"

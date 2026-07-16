@@ -1,13 +1,8 @@
 name: ✅ Tests
 
 on:
-  push:
-    branches-ignore:
-      - main
-      - latest
-      - 'release/**'
   pull_request:
-    types: [labeled]
+    types: [opened, synchronize, reopened, labeled]
 
   workflow_dispatch:
     inputs:
@@ -44,21 +39,16 @@ on:
         default: false
         type: boolean
 
-# Cancel a previous run workflow.
-# Key by head identity (not github.ref) so the push-triggered run and the
-# pull_request-triggered run for the same branch share one concurrency group
-# and cancel each other, instead of running the full suite twice in parallel.
-# - push:         head_ref is empty -> falls back to ref_name (branch name)
-# - pull_request: head_ref is the source branch name
-# Qualify by the head repo so fork PRs that happen to share a branch name
-# (e.g. "main") don't collide and cancel each other's runs; for same-repo
-# events this resolves to github.repository, preserving the push<->PR merge.
+# One in-flight run per PR; a new commit cancels the previous run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   changes:
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
@@ -113,9 +103,15 @@ jobs:
       desktop: ${{ steps.eval.outputs.desktop }}
       integration: ${{ steps.eval.outputs.integration }}
       docker: ${{ steps.eval.outputs.docker }}
+      short_rte: ${{ steps.eval.outputs.short_rte }}
     steps:
       - id: eval
         env:
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork == true }}
+          # Release-branch PRs (head or target release/** or latest) get the
+          # full suite + full RTE list.
+          IS_RELEASE: ${{ startsWith(github.head_ref, 'release/') || github.head_ref == 'latest' || startsWith(github.base_ref, 'release/') || github.base_ref == 'latest' }}
+          INPUT_SHORT_RTE: ${{ inputs.short_rte_list }}
           PRE_RELEASE: ${{ inputs.pre_release == true }}
           DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
           LABEL_ALL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
@@ -128,12 +124,19 @@ jobs:
           CHG_DOCKER: ${{ needs.changes.outputs.docker }}
           CHG_INFRA: ${{ needs.changes.outputs.infra }}
         run: |
-          # "Run everything" — pre-release builds, manual dispatch, the
-          # run-all-tests label, or shared toolchain/CI changes.
-          if [[ "$PRE_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
+          # "Run everything" — pre-release builds, release-branch PRs, manual
+          # dispatch, the run-all-tests label, or shared toolchain/CI changes.
+          if [[ "$PRE_RELEASE" == "true" || "$IS_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
             ALL=true
           else
             ALL=false
+          fi
+
+          # Full RTE list for release testing; short list otherwise, unless a
+          # caller overrides it.
+          short_rte=true
+          if [[ "$PRE_RELEASE" == "true" || "$IS_RELEASE" == "true" || "$INPUT_SHORT_RTE" == "false" ]]; then
+            short_rte=false
           fi
 
           ui=$ALL
@@ -148,12 +151,20 @@ jobs:
           [[ "$CHG_BACKEND"  == "true" || "$LABEL_IT" == "true" ]] && integration=true
           [[ "$CHG_FRONTEND" == "true" || "$CHG_BACKEND" == "true" || "$CHG_DOCKER" == "true" ]] && docker=true
 
+          # Forks run in isolation with no secrets, so the secret/infra suites
+          # can't run there. Keep lint/type-check/unit on; force the rest off.
+          if [[ "$IS_FORK" == "true" ]]; then
+            integration=false
+            docker=false
+          fi
+
           {
             echo "ui=$ui"
             echo "api=$api"
             echo "desktop=$desktop"
             echo "integration=$integration"
             echo "docker=$docker"
+            echo "short_rte=$short_rte"
           } >> "$GITHUB_OUTPUT"
 
   lint:
@@ -182,7 +193,7 @@ jobs:
 
   frontend-tests-coverage:
     needs: frontend-tests
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -197,7 +208,7 @@ jobs:
 
   backend-tests-coverage:
     needs: backend-tests
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -214,7 +225,7 @@ jobs:
       contents: read
       checks: write
     with:
-      short_rte_list: ${{ inputs.short_rte_list || true }}
+      short_rte_list: ${{ needs.should-run.outputs.short_rte == 'true' }}
       redis_client: ${{ inputs.redis_client || '' }}
       debug: ${{ inputs.debug || false }}
 
@@ -229,28 +240,18 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: ${{ always() && github.actor != 'dependabot[bot]' }}
+    if: ${{ always() && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     permissions:
       actions: write
       contents: read
       deployments: write
-    needs:
-      [
-        frontend-tests,
-        backend-tests,
-        integration-tests,
-      ]
+    needs: [frontend-tests, backend-tests, integration-tests]
 
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
     if: ${{ github.actor != 'dependabot[bot]' }}
-    needs:
-      [
-        frontend-tests,
-        backend-tests,
-        integration-tests,
-      ]
+    needs: [frontend-tests, backend-tests, integration-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.0
