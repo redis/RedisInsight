@@ -3,7 +3,7 @@
 These decisions reproduce yarn's exact dependency tree under npm **without changing behaviour**.
 Each entry documents where npm's resolution (or override rules) diverged from what `yarn.lock`
 had, and how it was reconciled. They are candidates for follow-up work (version upgrades or code
-migrations). See [npm-migration-plan.md](npm-migration-plan.md) for the governing rules.
+migrations).
 
 ---
 
