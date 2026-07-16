@@ -91,7 +91,19 @@ const CommonErrorResponse = (id: string, command = '', result?: any) => {
       CommandExecutionStatus.Fail,
     )
   }
-  const unsupportedModule = checkUnsupportedModuleCommand(modules, commandLine)
+
+  const isSuccessfulResult = Array.isArray(result)
+    ? result.length > 0 &&
+      result.every(
+        (item) => item?.status === CommandExecutionStatus.Success,
+      )
+    : result?.status === CommandExecutionStatus.Success
+  const modulesUnknown = !modules?.length
+
+  const unsupportedModule =
+    !isSuccessfulResult && !modulesUnknown
+      ? checkUnsupportedModuleCommand(modules, commandLine)
+      : undefined
 
   if (unsupportedModule) {
     return <ModuleNotLoaded moduleName={unsupportedModule} id={id} />

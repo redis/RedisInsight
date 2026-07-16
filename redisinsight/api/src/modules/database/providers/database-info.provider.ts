@@ -81,7 +81,11 @@ export class DatabaseInfoProvider {
           : undefined,
       }));
     } catch (e) {
-      return this.determineDatabaseModulesUsingInfo(client);
+      const fromCommands = await this.determineDatabaseModulesUsingInfo(client);
+      if (fromCommands.length) {
+        return fromCommands;
+      }
+      return this.determineDatabaseModulesUsingHelloOrInfo(client);
     }
   }
 
@@ -129,6 +133,57 @@ export class DatabaseInfoProvider {
       client.clientMetadata.sessionMetadata,
       modules,
     );
+  }
+
+  /**
+   * Determine database modules from HELLO or INFO response when MODULE LIST
+   * and COMMAND INFO are unavailable (e.g. restricted ACL users)
+   * @param client
+   * @private
+   */
+  public async determineDatabaseModulesUsingHelloOrInfo(
+    client: RedisClient,
+  ): Promise<AdditionalRedisModule[]> {
+    try {
+      const info = await client.getInfo();
+      const rawModules = this.normalizeModulesFromInfo(info?.modules);
+      if (!rawModules.length) {
+        return [];
+      }
+
+      const modules = await this.filterRawModules(
+        client.clientMetadata.sessionMetadata,
+        rawModules,
+      );
+
+      return modules.map(({ name, ver }) => ({
+        name: SUPPORTED_REDIS_MODULES[name] ?? name,
+        version: ver,
+        semanticVersion: SUPPORTED_REDIS_MODULES[name]
+          ? convertIntToSemanticVersion(ver)
+          : undefined,
+      }));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  private normalizeModulesFromInfo(modules: unknown): { name: string; ver?: number }[] {
+    if (!modules) {
+      return [];
+    }
+    if (Array.isArray(modules)) {
+      return modules;
+    }
+    if (typeof modules === 'object') {
+      return Object.entries(modules as Record<string, unknown>).map(
+        ([name, ver]) => ({
+          name,
+          ver: parseInt(String(ver), 10) || undefined,
+        }),
+      );
+    }
+    return [];
   }
 
   public async getRedisDBSize(client: RedisClient): Promise<number> {
