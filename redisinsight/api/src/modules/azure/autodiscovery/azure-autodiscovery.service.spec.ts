@@ -507,6 +507,43 @@ describe('AzureAutodiscoveryService', () => {
       );
     });
 
+    it('should persist the token realm GUID as tenantId even when a domain is entered', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockResolvedValue({ id: 'new-db-id' });
+
+      await service.addDatabases(
+        sessionMetadata,
+        accountId,
+        [{ id: database.id }],
+        'contoso.onmicrosoft.com',
+      );
+
+      expect(mockDatabaseService.create).toHaveBeenCalledWith(
+        sessionMetadata,
+        expect.objectContaining({
+          providerDetails: expect.objectContaining({
+            tenantId: mockAccount.tenantId,
+          }),
+        }),
+      );
+    });
+
     it('should successfully add an enterprise Redis database', async () => {
       const subscriptionId = faker.string.uuid();
       const mockCluster = createMockEnterpriseCluster(subscriptionId);
@@ -665,6 +702,34 @@ describe('AzureAutodiscoveryService', () => {
       expect(result[0].status).toBe(ActionStatus.Success);
       expect(result[1].status).toBe(ActionStatus.Fail);
       expect(result[1].message).toBe(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND);
+    });
+  });
+
+  describe('getAccessKey', () => {
+    it('should acquire the ARM token against the resource tenant', async () => {
+      const accountId = 'test-account-id';
+      const tenantId = 'resource-realm-guid';
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+      } as any);
+      mockAxiosInstance.post.mockResolvedValue({
+        data: { primaryKey: 'primary-key' },
+      });
+
+      const result = await service.getAccessKey(
+        accountId,
+        'sub',
+        'rg',
+        'cache',
+        AzureRedisType.Standard,
+        undefined,
+        tenantId,
+      );
+
+      expect(result).toBe('primary-key');
+      expect(
+        mockAuthService.getManagementTokenByAccountId,
+      ).toHaveBeenCalledWith(accountId, tenantId);
     });
   });
 });

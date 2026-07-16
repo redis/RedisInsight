@@ -10,6 +10,7 @@ jobs:
   upload:
     name: Upload assets to GitHub draft release
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v7.0.0
 
@@ -27,21 +28,24 @@ jobs:
           APP_VERSION=$(jq -r '.version' redisinsight/package.json)
           echo "version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
 
-          RELEASE_TAG=$(gh release list --json tagName,isDraft \
-            --jq ".[] | select(.isDraft and .tagName == \"${APP_VERSION}\") | .tagName" \
-            | head -n 1)
+          RELEASE_TAG=$(gh release list --json tagName,name,isDraft \
+            --jq "[.[] | select(.isDraft and (.name | contains(\"${APP_VERSION}\")))][0].tagName")
 
-          if [ -z "$RELEASE_TAG" ]; then
-            echo "::warning::No draft release found for tag '${APP_VERSION}'. Skipping upload."
-            echo "found=false" >> "$GITHUB_OUTPUT"
+          if [ -z "$RELEASE_TAG" ] || [ "$RELEASE_TAG" = "null" ]; then
+            echo "No draft release found for '${APP_VERSION}'. Creating one."
+            gh release create "${APP_VERSION}" \
+              --draft \
+              --target "${GITHUB_SHA}" \
+              --title "${APP_VERSION}" \
+              --notes "Release ${APP_VERSION}"
+            RELEASE_TAG="${APP_VERSION}"
           else
-            echo "Draft release found: ${RELEASE_TAG}"
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+            echo "Draft release found (tag: ${RELEASE_TAG})"
           fi
 
+          echo "tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+
       - name: Upload desktop installers to draft release
-        if: steps.find-release.outputs.found == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

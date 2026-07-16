@@ -66,9 +66,12 @@ export class AzureAutodiscoveryService {
 
   private async getAuthenticatedClient(
     accountId: string,
+    tenantId?: string,
   ): Promise<AxiosInstance | null> {
-    const tokenResult =
-      await this.authService.getManagementTokenByAccountId(accountId);
+    const tokenResult = await this.authService.getManagementTokenByAccountId(
+      accountId,
+      tenantId,
+    );
 
     if (!tokenResult) {
       this.logger.warn('No valid management token available');
@@ -106,8 +109,11 @@ export class AzureAutodiscoveryService {
     return allItems;
   }
 
-  async listSubscriptions(accountId: string): Promise<AzureSubscription[]> {
-    const client = await this.getAuthenticatedClient(accountId);
+  async listSubscriptions(
+    accountId: string,
+    tenantId?: string,
+  ): Promise<AzureSubscription[]> {
+    const client = await this.getAuthenticatedClient(accountId, tenantId);
 
     if (!client) {
       throw new BadRequestException('Failed to get authenticated client');
@@ -128,6 +134,7 @@ export class AzureAutodiscoveryService {
   async listDatabasesInSubscription(
     accountId: string,
     subscriptionId: string,
+    tenantId?: string,
   ): Promise<AzureRedisDatabase[]> {
     if (!this.isValidSubscriptionId(subscriptionId)) {
       throw new BadRequestException(
@@ -135,7 +142,7 @@ export class AzureAutodiscoveryService {
       );
     }
 
-    const client = await this.getAuthenticatedClient(accountId);
+    const client = await this.getAuthenticatedClient(accountId, tenantId);
 
     if (!client) {
       throw new BadRequestException('Failed to get authenticated client');
@@ -171,8 +178,13 @@ export class AzureAutodiscoveryService {
   async getConnectionDetails(
     accountId: string,
     databaseId: string,
+    tenantId?: string,
   ): Promise<AzureConnectionDetails | null> {
-    const database = await this.findDatabaseById(accountId, databaseId);
+    const database = await this.findDatabaseById(
+      accountId,
+      databaseId,
+      tenantId,
+    );
 
     if (!database) {
       this.logger.warn(`Database not found: ${databaseId}`);
@@ -181,12 +193,13 @@ export class AzureAutodiscoveryService {
 
     // Use Entra ID authentication (Microsoft's recommended approach)
     // Access Keys support will be added in a future update with proper UX
-    return this.getEntraIdConnectionDetails(accountId, database);
+    return this.getEntraIdConnectionDetails(accountId, database, tenantId);
   }
 
   private async findDatabaseById(
     accountId: string,
     resourceId: string,
+    tenantId?: string,
   ): Promise<AzureRedisDatabase | null> {
     if (!resourceId) {
       return null;
@@ -205,6 +218,7 @@ export class AzureAutodiscoveryService {
     const databases = await this.listDatabasesInSubscription(
       accountId,
       subscriptionId,
+      tenantId,
     );
 
     // Azure resource IDs are case-insensitive
@@ -345,6 +359,7 @@ export class AzureAutodiscoveryService {
    * @param resourceName - Redis cache name
    * @param resourceType - Standard or Enterprise Redis
    * @param clusterName - Required for Enterprise Redis databases
+   * @param tenantId - Realm the resource lives in, for cross-tenant ARM access
    * @returns The primary access key
    */
   async getAccessKey(
@@ -354,11 +369,13 @@ export class AzureAutodiscoveryService {
     resourceName: string,
     resourceType: AzureRedisType,
     clusterName?: string,
+    tenantId?: string,
   ): Promise<string> {
-    const client = await this.getAuthenticatedClient(accountId);
+    const client = await this.getAuthenticatedClient(accountId, tenantId);
 
     if (!client) {
       throw new AzureEntraIdTokenExpiredException(
+        tenantId,
         'Azure session expired. Please re-authenticate with Azure to access this database.',
       );
     }
@@ -410,9 +427,12 @@ export class AzureAutodiscoveryService {
   private async getEntraIdConnectionDetails(
     accountId: string,
     database: AzureRedisDatabase,
+    tenantId?: string,
   ): Promise<AzureConnectionDetails | null> {
-    const tokenResult =
-      await this.authService.getRedisTokenByAccountId(accountId);
+    const tokenResult = await this.authService.getRedisTokenByAccountId(
+      accountId,
+      tenantId,
+    );
 
     if (!tokenResult) {
       this.logger.debug(
@@ -435,6 +455,9 @@ export class AzureAutodiscoveryService {
       tls: true,
       authType: AzureAuthType.EntraId,
       azureAccountId: accountId,
+      // Store the realm GUID the token was issued for, not a user-entered
+      // domain, so silent-refresh account selection can match it.
+      tenantId: tokenResult.account.tenantId,
       subscriptionId: database.subscriptionId,
       resourceGroup: database.resourceGroup,
       resourceId: database.id,
@@ -462,6 +485,7 @@ export class AzureAutodiscoveryService {
   private getAccessKeyConnectionDetails(
     accountId: string,
     database: AzureRedisDatabase,
+    tenantId?: string,
   ): AzureConnectionDetails {
     const port = this.getTlsPort(database);
     const { resourceName, clusterName } = this.extractResourceNames(database);
@@ -476,6 +500,7 @@ export class AzureAutodiscoveryService {
       tls: true,
       authType: AzureAuthType.AccessKey,
       azureAccountId: accountId,
+      tenantId,
       subscriptionId: database.subscriptionId,
       resourceGroup: database.resourceGroup,
       resourceId: database.id,
@@ -494,11 +519,12 @@ export class AzureAutodiscoveryService {
     accountId: string,
     database: AzureRedisDatabase,
     authType: AzureAuthType,
+    tenantId?: string,
   ): Promise<AzureConnectionDetails | null> {
     if (authType === AzureAuthType.AccessKey) {
-      return this.getAccessKeyConnectionDetails(accountId, database);
+      return this.getAccessKeyConnectionDetails(accountId, database, tenantId);
     }
-    return this.getEntraIdConnectionDetails(accountId, database);
+    return this.getEntraIdConnectionDetails(accountId, database, tenantId);
   }
 
   /**
@@ -509,6 +535,7 @@ export class AzureAutodiscoveryService {
     sessionMetadata: SessionMetadata,
     accountId: string,
     databases: ImportAzureDatabaseDto[],
+    tenantId?: string,
   ): Promise<ImportAzureDatabaseResponse[]> {
     this.logger.debug(
       `Adding ${databases.length} Azure database(s) for account ${accountId}`,
@@ -524,7 +551,7 @@ export class AzureAutodiscoveryService {
         try {
           this.logger.debug(`[${dto.id}] Fetching database details...`);
 
-          database = await this.findDatabaseById(accountId, dto.id);
+          database = await this.findDatabaseById(accountId, dto.id, tenantId);
 
           if (!database) {
             this.logger.debug(`[${dto.id}] Database not found`);
@@ -545,6 +572,7 @@ export class AzureAutodiscoveryService {
             accountId,
             database,
             selectedAuthType,
+            tenantId,
           );
 
           if (!connectionDetails) {
@@ -574,6 +602,7 @@ export class AzureAutodiscoveryService {
             provider: CloudProvider.Azure,
             authType: selectedAuthType,
             azureAccountId: connectionDetails.azureAccountId,
+            tenantId: connectionDetails.tenantId,
             subscriptionId: connectionDetails.subscriptionId,
             resourceGroup: connectionDetails.resourceGroup,
             resourceName: connectionDetails.resourceName,

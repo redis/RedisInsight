@@ -92,7 +92,7 @@ const WhatsNewModal = () => {
 
   return (
     <Modal.Compose open={isOpen}>
-      <S.StyledContent persistent onCancel={onClose}>
+      <S.StyledContent onCancel={onClose}>
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title>

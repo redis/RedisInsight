@@ -9,15 +9,21 @@ import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 
 export interface Props {
   text: string | JSX.Element | JSX.Element[]
+  tenantId?: string
   onClose?: () => void
 }
 
-const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
+const AzureTokenExpiredErrorContent = ({
+  text,
+  tenantId,
+  onClose = () => {},
+}: Props) => {
   const { initiateLogin, loading } = useAzureAuth()
   const { t } = useTranslation()
 
   const handleSignIn = () => {
-    initiateLogin(AzureLoginSource.TokenRefresh)
+    // Recover against the connection's own realm, not the home tenant.
+    initiateLogin(AzureLoginSource.TokenRefresh, tenantId)
     onClose?.()
   }
 

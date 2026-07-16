@@ -10,7 +10,16 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { deleteSelectedKey } from 'uiSrc/slices/browser/keys'
+import {
+  useIsKeyIndexed,
+  UseIsKeyIndexedStatus,
+} from 'uiSrc/pages/vector-search/hooks/useIsKeyIndexed'
 import { KeyDetailsHeaderProps, KeyDetailsHeader } from './KeyDetailsHeader'
+
+jest.mock('uiSrc/pages/vector-search/hooks/useIsKeyIndexed', () => ({
+  ...jest.requireActual('uiSrc/pages/vector-search/hooks/useIsKeyIndexed'),
+  useIsKeyIndexed: jest.fn(),
+}))
 
 const mockedProps = mock<KeyDetailsHeaderProps>()
 
@@ -25,6 +34,13 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+
+  jest.mocked(useIsKeyIndexed).mockReturnValue({
+    isIndexed: false,
+    indexes: [],
+    status: UseIsKeyIndexedStatus.Idle,
+    refresh: jest.fn(),
+  })
 })
 
 jest.mock('uiSrc/slices/browser/string', () => ({
@@ -104,6 +120,22 @@ describe('KeyDetailsHeader', () => {
         expect(component).toBeTruthy()
       },
     )
+  })
+
+  it('should refresh the key indexes on key refresh', () => {
+    const refresh = jest.fn()
+    jest.mocked(useIsKeyIndexed).mockReturnValue({
+      isIndexed: false,
+      indexes: [],
+      status: UseIsKeyIndexedStatus.Idle,
+      refresh,
+    })
+
+    render(<KeyDetailsHeader {...mockedProps} />)
+
+    fireEvent.click(screen.getByTestId('key-refresh-btn'))
+
+    expect(refresh).toHaveBeenCalled()
   })
 
   describe('should call onDelete', () => {

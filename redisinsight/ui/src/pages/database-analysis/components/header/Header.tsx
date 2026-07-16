@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'uiSrc/i18n'
 import { CaretRightIcon } from 'uiSrc/components/base/icons'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
@@ -11,10 +12,6 @@ import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { comboBoxToArray, getDbIndex, Nullable } from 'uiSrc/utils'
 import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
-  ANALYZE_TOOLTIP_MESSAGE,
-} from 'uiSrc/constants/recommendations'
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { DEFAULT_DELIMITER } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -43,6 +40,7 @@ const Header = (props: Props) => {
     analysisLoading,
   } = props
 
+  const { t } = useTranslation()
   const { connectionType, provider } = useAppSelector(connectedInstanceSelector)
   const { instanceId } = useParams<{ instanceId: string }>()
   const dispatch = useAppDispatch()
@@ -87,7 +85,11 @@ const Header = (props: Props) => {
                 <Row align="center" wrap>
                   <HideFor sizes={['xs', 's']}>
                     <FlexItem>
-                      <Text size="s">Report generated on:</Text>
+                      <Text size="s">
+                        {t(
+                          'analytics.databaseAnalysis.header.reportGeneratedOn',
+                        )}
+                      </Text>
                     </FlexItem>
                   </HideFor>
                   <FlexItem grow>
@@ -121,14 +123,17 @@ const Header = (props: Props) => {
                           size="s"
                           data-testid="analysis-progress"
                         >
-                          {`Scanned ${getApproximatePercentage(
-                            progress.total,
-                            progress.processed,
-                          )}`}
-                        </Text>
-                        {` (${numberWithSpaces(progress.processed)}`}/
-                        {numberWithSpaces(progress.total)}
-                        {' keys) '}
+                          {t('analytics.databaseAnalysis.header.scanned', {
+                            percentage: getApproximatePercentage(
+                              progress.total,
+                              progress.processed,
+                            ),
+                          })}
+                        </Text>{' '}
+                        {t('analytics.databaseAnalysis.header.scannedKeys', {
+                          processed: numberWithSpaces(progress.processed),
+                          total: numberWithSpaces(progress.total),
+                        })}
                       </Text>
                     </FlexItem>
                   )}
@@ -138,7 +143,9 @@ const Header = (props: Props) => {
             <FlexItem>
               <Row justify="end" align="center" gap="s">
                 <PrimaryButton
-                  aria-label="New reports"
+                  aria-label={t(
+                    'analytics.databaseAnalysis.header.newReportAria',
+                  )}
                   data-testid="start-database-analysis-btn"
                   icon={CaretRightIcon}
                   iconSide="left"
@@ -146,17 +153,19 @@ const Header = (props: Props) => {
                   disabled={analysisLoading}
                   onClick={handleClick}
                 >
-                  New Report
+                  {t('analytics.databaseAnalysis.header.newReport')}
                 </PrimaryButton>
                 <RiTooltip
                   position="bottom"
                   anchorClassName={styles.tooltipAnchor}
-                  title="Database Analysis"
+                  title={t('analytics.databaseAnalysis.header.tooltipTitle')}
                   data-testid="db-new-reports-tooltip"
                   content={
                     connectionType === ConnectionType.Cluster
-                      ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
-                      : ANALYZE_TOOLTIP_MESSAGE
+                      ? t(
+                          'analytics.databaseAnalysis.header.tooltipContentCluster',
+                        )
+                      : t('analytics.databaseAnalysis.header.tooltipContent')
                   }
                 >
                   <InfoIcon data-testid="db-new-reports-icon" />

@@ -8,6 +8,7 @@ import {
 import { SshTunnelProvider } from 'src/modules/ssh/ssh-tunnel.provider';
 import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.redis.connection.strategy';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
+import { RedisConnectionFamily } from 'src/modules/database/entities/database.entity';
 
 jest.mock('redis', () => ({
   ...jest.requireActual('redis'),
@@ -39,12 +40,16 @@ describe('NodeRedisConnectionStrategy', () => {
   });
 
   describe('createStandaloneClient', () => {
-    it('should include family: 0 in socket options for dual-stack IPv4/IPv6 support', async () => {
+    const mockCreateClient = () => {
       const mockClient = {
         on: jest.fn().mockReturnThis(),
         connect: jest.fn().mockResolvedValue(undefined),
       };
       createClientSpy.mockReturnValue(mockClient);
+    };
+
+    it('should default to family: 0 (dual-stack IPv4/IPv6) when not set', async () => {
+      mockCreateClient();
 
       const result = await service.createStandaloneClient(
         mockClientMetadata,
@@ -58,6 +63,38 @@ describe('NodeRedisConnectionStrategy', () => {
           socket: expect.objectContaining({
             family: 0,
           }),
+        }),
+      );
+    });
+
+    it('should map connection family IPv4 to socket family: 4', async () => {
+      mockCreateClient();
+
+      await service.createStandaloneClient(
+        mockClientMetadata,
+        { ...mockDatabase, connectionFamily: RedisConnectionFamily.IPv4 },
+        {},
+      );
+
+      expect(createClientSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          socket: expect.objectContaining({ family: 4 }),
+        }),
+      );
+    });
+
+    it('should map connection family IPv6 to socket family: 6', async () => {
+      mockCreateClient();
+
+      await service.createStandaloneClient(
+        mockClientMetadata,
+        { ...mockDatabase, connectionFamily: RedisConnectionFamily.IPv6 },
+        {},
+      );
+
+      expect(createClientSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          socket: expect.objectContaining({ family: 6 }),
         }),
       );
     });

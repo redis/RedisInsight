@@ -31,18 +31,6 @@ export const NodeContainer = styled.div<
 
 export const FOLDER_ANCHOR_CLASS = 'node-folder-anchor'
 
-export const IndexButton = styled.button<
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->`
-  all: unset;
-  display: none;
-  cursor: pointer;
-  padding: 0 ${({ theme }) => theme.core.space.space100};
-  color: ${({ theme }) => theme.semantic.color.text.informative400};
-  font-size: inherit;
-  white-space: nowrap;
-`
-
 export const NodeContent = styled(Row).attrs({
   align: 'center',
   justify: 'between',
@@ -85,10 +73,6 @@ export const NodeContent = styled(Row).attrs({
 
     .showOnHoverKey {
       display: flex;
-    }
-
-    ${IndexButton} {
-      display: inline;
     }
   }
 `

@@ -1,18 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 
-import { bufferToString, Nullable, stringToBuffer } from 'uiSrc/utils'
+import { bufferToString, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
 import { RedisString } from 'uiSrc/slices/interfaces'
-import {
-  fetchKeysMetadataTree,
-  fetchNamespaceSearchable,
-} from 'uiSrc/slices/browser/keys'
-import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
+import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
 import {
   Loader,
   ProgressBarLoader,
@@ -61,7 +57,6 @@ const VirtualTree = (props: VirtualTreeProps) => {
   const [rerenderState, rerender] = useState({})
   const controller = useRef<Nullable<AbortController>>(null)
   const elements = useRef<any>({})
-  const searchableElements = useRef<Record<string, string>>({})
   const nodes = useRef<TreeNode[]>([])
 
   const { result, run: runWebworker } = useDisposableWebworker(webworkerFn)
@@ -72,7 +67,6 @@ const VirtualTree = (props: VirtualTreeProps) => {
     () => () => {
       nodes.current = []
       elements.current = {}
-      searchableElements.current = {}
     },
     [],
   )
@@ -178,50 +172,6 @@ const VirtualTree = (props: VirtualTreeProps) => {
     [commonFilterType],
   )
 
-  const onSuccessFetchedSearchable = (results: NamespaceSearchableResult[]) => {
-    results.forEach((item) => {
-      if (!item.path) return
-      const update: Record<string, any> = { searchableChecked: true }
-      if (item.key) {
-        update.firstSearchableKey = {
-          nameBuffer: stringToBuffer(item.key.name),
-          nameString: item.key.name,
-          type: item.key.type,
-        }
-      }
-      updateNodeByPath(item.path, update)
-    })
-    rerender({})
-  }
-
-  const getSearchable = useCallback((entries: [string, string][]): void => {
-    dispatch(
-      fetchNamespaceSearchable(entries, controller.current?.signal, (results) =>
-        onSuccessFetchedSearchable(results),
-      ),
-    )
-  }, [])
-
-  const getSearchableDebounced = useMemo(
-    () =>
-      debounce(() => {
-        const entries = Object.entries(searchableElements.current)
-        if (entries.length === 0) return
-
-        getSearchable(entries)
-        searchableElements.current = {}
-      }, 100),
-    [getSearchable],
-  )
-
-  const checkSearchable = useCallback(
-    (prefix: string, path: string) => {
-      searchableElements.current[path] = prefix
-      getSearchableDebounced()
-    },
-    [getSearchableDebounced],
-  )
-
   // This helper function constructs the object that will be sent back at the step
   // [2] during the treeWalker function work. Except for the mandatory `data`
   // field you can put any additional data here.
@@ -255,10 +205,6 @@ const VirtualTree = (props: VirtualTreeProps) => {
         onDelete: onDeleteLeaf,
         onDeleteFolder,
         keyApproximate: node.keyApproximate,
-        hasSearchableKeys: !!node.firstSearchableKey,
-        firstSearchableKey: node.firstSearchableKey,
-        checkSearchable:
-          !node.isLeaf && !node.searchableChecked ? checkSearchable : undefined,
         isSelected: !!node.isLeaf && statusSelected === node?.nameString,
         isOpenByDefault: statusOpen[node.fullName],
         visibleColumns,

@@ -77,8 +77,9 @@ describe('useConnectivityOptions', () => {
     expect(azureOption?.title).toBe('Azure Managed Redis')
   })
 
-  it('should use initiateLogin for Azure option onClick when not logged in', () => {
+  it('should request the Azure sign-in dialog on Azure onClick when not logged in', () => {
     const mockHistoryPush = jest.fn()
+    const mockOnRequestAzureSignIn = jest.fn()
     reactRouterDom.useHistory = jest
       .fn()
       .mockReturnValue({ push: mockHistoryPush })
@@ -92,7 +93,10 @@ describe('useConnectivityOptions', () => {
     })
 
     const { result } = renderHook(() =>
-      useConnectivityOptions({ onClickOption: mockOnClickOption }),
+      useConnectivityOptions({
+        onClickOption: mockOnClickOption,
+        onRequestAzureSignIn: mockOnRequestAzureSignIn,
+      }),
     )
 
     const azureOption = result.current.find(
@@ -101,7 +105,8 @@ describe('useConnectivityOptions', () => {
 
     azureOption?.onClick()
 
-    expect(mockInitiateLogin).toHaveBeenCalled()
+    expect(mockOnRequestAzureSignIn).toHaveBeenCalled()
+    expect(mockInitiateLogin).not.toHaveBeenCalled()
     expect(mockHistoryPush).not.toHaveBeenCalled()
     expect(mockOnClickOption).not.toHaveBeenCalled()
   })

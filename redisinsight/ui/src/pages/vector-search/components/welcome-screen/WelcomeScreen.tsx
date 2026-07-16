@@ -8,7 +8,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { useTranslation } from 'uiSrc/i18n'
 
 import { getFeatures } from './WelcomeScreen.constants'
@@ -18,11 +17,8 @@ import * as S from './WelcomeScreen.styles'
 export const WelcomeScreen = ({
   onTrySampleDataClick,
   onUseMyDatabaseClick,
-  useMyDatabaseDisabled,
 }: WelcomeScreenProps) => {
   const { t } = useTranslation()
-  const isUseMyDatabaseDisabled = !!useMyDatabaseDisabled
-  const useMyDatabaseTooltip = useMyDatabaseDisabled?.tooltip
   const features = getFeatures()
 
   return (
@@ -86,20 +82,14 @@ export const WelcomeScreen = ({
               {t('vectorSearch.welcome.trySampleData')}
             </PrimaryButton>
 
-            <RiTooltip
-              content={isUseMyDatabaseDisabled ? useMyDatabaseTooltip : null}
-              anchorClassName="euiToolTip__btn-disabled"
+            <SecondaryButton
+              filled
+              size="l"
+              onClick={onUseMyDatabaseClick}
+              data-testid="welcome-screen--use-my-database-btn"
             >
-              <SecondaryButton
-                filled
-                size="l"
-                onClick={onUseMyDatabaseClick}
-                disabled={isUseMyDatabaseDisabled}
-                data-testid="welcome-screen--use-my-database-btn"
-              >
-                {t('vectorSearch.welcome.useMyDatabase')}
-              </SecondaryButton>
-            </RiTooltip>
+              {t('vectorSearch.welcome.useMyDatabase')}
+            </SecondaryButton>
           </Row>
         </S.Content>
       </S.ScrollArea>

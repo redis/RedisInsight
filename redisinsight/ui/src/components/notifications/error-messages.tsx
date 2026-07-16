@@ -82,7 +82,7 @@ export default {
     description: <RdiDeployErrorContent message={message} onClose={onClose} />,
   }),
   AZURE_TOKEN_EXPIRED: (
-    { message }: { message: string | JSX.Element },
+    { message, tenantId }: { message: string | JSX.Element; tenantId?: string },
     onClose: () => void,
   ) => ({
     'data-testid': 'toast-info-azure-token-expired',
@@ -90,7 +90,11 @@ export default {
     showCloseButton: true,
     onClose,
     description: (
-      <AzureTokenExpiredErrorContent text={message} onClose={onClose} />
+      <AzureTokenExpiredErrorContent
+        text={message}
+        tenantId={tenantId}
+        onClose={onClose}
+      />
     ),
   }),
   PERSISTENT: (

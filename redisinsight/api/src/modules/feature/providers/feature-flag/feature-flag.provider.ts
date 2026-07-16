@@ -104,7 +104,7 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.DevArray,
+      KnownFeatures.Array,
       new SwitchableFlagStrategy(
         this.featuresConfigService,
         this.settingsService,
@@ -123,6 +123,10 @@ export class FeatureFlagProvider {
     );
     this.strategies.set(
       KnownFeatures.WhatsNew,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
+    this.strategies.set(
+      KnownFeatures.ValueDecoder,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
   }

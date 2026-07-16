@@ -115,6 +115,7 @@ export class DatabaseImportService {
     ['tags', ['tags']],
     ['providerDetails', ['providerDetails']],
     ['environment', ['environment']],
+    ['connectionFamily', ['connectionFamily']],
   ];
 
   constructor(

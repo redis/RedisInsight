@@ -110,6 +110,7 @@ describe('AzureDatabasesPage', () => {
     expect(fetchDatabasesAzure).toHaveBeenCalledWith(
       mockAccount.id,
       mockSubscription.subscriptionId,
+      undefined,
     )
   })
 
@@ -177,6 +178,7 @@ describe('AzureDatabasesPage', () => {
       expect(fetchDatabasesAzure).toHaveBeenCalledWith(
         mockAccount.id,
         mockSubscription.subscriptionId,
+        undefined,
       )
     })
   })

@@ -2,6 +2,8 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import React, { useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import {
   DEFAULT_EXTRAPOLATION,
   SectionName,
@@ -49,6 +51,7 @@ export interface Props {
 
 const ExpirationGroupsView = (props: Props) => {
   const { data, loading, extrapolation, onSwitchExtrapolation } = props
+  const { t } = useTranslation()
   const { totalMemory, totalKeys } = data || {}
 
   const { showNoExpiryGroup } = useAppSelector(dbAnalysisReportsSelector)
@@ -115,11 +118,11 @@ const ExpirationGroupsView = (props: Props) => {
       <SectionTitleWrapper>
         <TitleWrapper>
           <Title size="M" className="section-title">
-            MEMORY LIKELY TO BE FREED OVER TIME
+            {t('analytics.databaseAnalysis.expiration.title')}
           </Title>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
             <SwitchExtrapolateResults
-              title="Extrapolate results"
+              title={t('analytics.databaseAnalysis.extrapolateResults')}
               checked={isExtrapolated}
               onCheckedChange={(checked) => {
                 setIsExtrapolated(checked)
@@ -133,7 +136,7 @@ const ExpirationGroupsView = (props: Props) => {
           )}
         </TitleWrapper>
         <Switch
-          title={'Show "No Expiry"'}
+          title={t('analytics.databaseAnalysis.expiration.showNoExpiry')}
           checked={showNoExpiryGroup}
           onCheckedChange={onSwitchChange}
           data-testid="show-no-expiry-switch"

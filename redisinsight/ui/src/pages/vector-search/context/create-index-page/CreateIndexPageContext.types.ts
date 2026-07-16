@@ -34,6 +34,9 @@ export interface CreateIndexPageContextValue {
   /** Whether the KeysBrowser panel should be shown (browse mode). */
   showBrowser: boolean
 
+  /** Whether the index is defined manually (no keys in the database). */
+  isManualCreation: boolean
+
   /** Pre-selected key from navigation (triggers auto-selection on mount). */
   initialKey?: RedisResponseBuffer
 
@@ -101,7 +104,7 @@ export interface CreateIndexPageProviderProps {
   instanceId: string
   mode?: CreateIndexMode
   sampleData?: SampleDataContent
-  showBrowser?: boolean
+  isManualCreation?: boolean
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
   initialPrefix?: string

@@ -22,10 +22,15 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const latestVersion = whatsNewFeed[0].version
 
-const getOpenState = (flagsOn = false) => {
+// Card-level assertions pin to a shipped version so they don't churn when a
+// new release is added to the top of the feed. 3.6.0 has both a flag-gated
+// card (vector-sets) and an unflagged one (geodata-workbench).
+const CONTENT_VERSION = '3.6.0'
+
+const getOpenState = (flagsOn = false, version = latestVersion) => {
   let state = set(cloneDeep(initialStateDefault), 'app.whatsNew', {
     isOpen: true,
-    selectedVersion: latestVersion,
+    selectedVersion: version,
     lastVersionSeen: null,
   })
   if (flagsOn) {
@@ -70,7 +75,9 @@ describe('WhatsNewModal', () => {
   })
 
   it('should show where to find a feature', () => {
-    render(<WhatsNewModal />, { store: mockStore(getOpenState()) })
+    render(<WhatsNewModal />, {
+      store: mockStore(getOpenState(false, CONTENT_VERSION)),
+    })
 
     expect(
       screen.getByTestId('whats-new-card-location-geodata-workbench'),
@@ -78,7 +85,9 @@ describe('WhatsNewModal', () => {
   })
 
   it('should show flag-gated cards marked as coming soon when their flags are off', () => {
-    render(<WhatsNewModal />, { store: mockStore(getOpenState(false)) })
+    render(<WhatsNewModal />, {
+      store: mockStore(getOpenState(false, CONTENT_VERSION)),
+    })
 
     expect(screen.getByTestId('whats-new-card-vector-sets')).toBeInTheDocument()
     expect(
@@ -106,7 +115,9 @@ describe('WhatsNewModal', () => {
   })
 
   it('should not mark flag-gated cards when their flags are on', () => {
-    render(<WhatsNewModal />, { store: mockStore(getOpenState(true)) })
+    render(<WhatsNewModal />, {
+      store: mockStore(getOpenState(true, CONTENT_VERSION)),
+    })
 
     expect(screen.getByTestId('whats-new-card-vector-sets')).toBeInTheDocument()
     expect(

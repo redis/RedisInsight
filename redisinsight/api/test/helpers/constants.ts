@@ -128,6 +128,8 @@ export const constants = {
   // redis client
   TEST_REDIS_HOST: process.env.TEST_REDIS_HOST || 'localhost',
   TEST_REDIS_PORT: parseInt(process.env.TEST_REDIS_PORT) || 6379,
+  // Optional IPv6-reachable endpoint used to exercise connectionFamily=ipv6 connections.
+  TEST_REDIS_IPV6_HOST: process.env.TEST_REDIS_IPV6_HOST,
   TEST_REDIS_TIMEOUT: 30_000,
   TEST_REDIS_COMPRESSOR: Compressor.NONE,
   TEST_REDIS_DB_INDEX: 7,

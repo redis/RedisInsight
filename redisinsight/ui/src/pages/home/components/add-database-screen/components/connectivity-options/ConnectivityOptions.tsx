@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
+import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
-import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import {
+  AzureLoginSource,
+  OAuthSocialAction,
+  OAuthSocialSource,
+} from 'uiSrc/slices/interfaces'
 import { Col, FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text/Text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { AzureSignInDialog } from 'uiSrc/components/azure-sign-in-dialog'
 import { useConnectivityOptions } from '../../hooks/useConnectivityOptions'
 
 import {
@@ -27,7 +33,18 @@ export interface Props {
 
 const ConnectivityOptions = (props: Props) => {
   const { onClickOption, onClose } = props
-  const connectivityOptions = useConnectivityOptions({ onClickOption })
+  const [isAzureDialogOpen, setIsAzureDialogOpen] = useState(false)
+  const { initiateLogin, loading: azureLoading } = useAzureAuth()
+
+  const connectivityOptions = useConnectivityOptions({
+    onClickOption,
+    onRequestAzureSignIn: () => setIsAzureDialogOpen(true),
+  })
+
+  const handleAzureSignIn = (tenantId?: string) => {
+    setIsAzureDialogOpen(false)
+    initiateLogin(AzureLoginSource.Autodiscovery, tenantId)
+  }
 
   const loadingOption = connectivityOptions.find(
     (option) => option.loading && option.onCancel,
@@ -119,6 +136,12 @@ const ConnectivityOptions = (props: Props) => {
           </>
         )}
       </section>
+      <AzureSignInDialog
+        isOpen={isAzureDialogOpen}
+        loading={azureLoading}
+        onClose={() => setIsAzureDialogOpen(false)}
+        onSignIn={handleAzureSignIn}
+      />
     </>
   )
 }

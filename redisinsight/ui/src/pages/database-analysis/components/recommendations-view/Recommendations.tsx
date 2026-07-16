@@ -5,6 +5,7 @@ import { isNull } from 'lodash'
 import cx from 'classnames'
 import styled from 'styled-components'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   FeatureFlagComponent,
@@ -43,6 +44,7 @@ const RecommendationContent = styled(Card)`
 `
 
 const Recommendations = () => {
+  const { t } = useTranslation()
   const { data, loading } = useAppSelector(dbAnalysisSelector)
   const { provider } = useAppSelector(connectedInstanceSelector)
   const { content: recommendationsContent } = useAppSelector(
@@ -107,7 +109,9 @@ const Recommendations = () => {
             data-testid={`${id}-redis-stack-link`}
           >
             <RiTooltip
-              content="Redis Stack"
+              content={t(
+                'analytics.databaseAnalysis.recommendations.redisStackTooltip',
+              )}
               position="top"
               anchorClassName="flex-row"
             >
@@ -147,10 +151,16 @@ const Recommendations = () => {
           className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
-        <Text size="m">No Tips at the moment,</Text>
+        <Text className={styles.bigText}>
+          {t('analytics.databaseAnalysis.recommendations.empty.title')}
+        </Text>
+        <Text size="m">
+          {t('analytics.databaseAnalysis.recommendations.empty.line1')}
+        </Text>
         <br />
-        <Text size="m">keep up the good work!</Text>
+        <Text size="m">
+          {t('analytics.databaseAnalysis.recommendations.empty.line2')}
+        </Text>
       </div>
     )
   }
@@ -218,7 +228,7 @@ const Recommendations = () => {
                       onClick={() => goToTutorial(tutorialId, id)}
                       data-testid={`${id}-to-tutorial-btn`}
                     >
-                      Tutorial
+                      {t('analytics.databaseAnalysis.recommendations.tutorial')}
                     </PrimaryButton>
                   )}
                 </div>

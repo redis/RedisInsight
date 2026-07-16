@@ -8,6 +8,9 @@ import { CustomErrorCodes } from 'src/constants';
 
 export class AzureEntraIdTokenExpiredException extends HttpException {
   constructor(
+    // Realm the expired connection was created for, so interactive recovery
+    // re-authenticates against it instead of the home tenant.
+    tenantId?: string,
     message = ERROR_MESSAGES.AZURE_ENTRA_ID_TOKEN_EXPIRED,
     options?: HttpExceptionOptions,
   ) {
@@ -18,6 +21,7 @@ export class AzureEntraIdTokenExpiredException extends HttpException {
       errorCode: CustomErrorCodes.AzureEntraIdTokenExpired,
       additionalInfo: {
         errorCode: CustomErrorCodes.AzureEntraIdTokenExpired,
+        tenantId,
       },
     };
 
