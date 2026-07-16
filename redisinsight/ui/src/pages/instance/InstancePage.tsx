@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 
 import {
+  checkConnectToInstanceAction,
   fetchConnectedInstanceAction,
   fetchConnectedInstanceInfoAction,
   fetchInstancesAction,
@@ -75,12 +76,21 @@ const InstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchConnectedInstanceAction(connectionInstanceId))
-    dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
-    dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
-    dispatch(fetchRecommendationsAction(connectionInstanceId))
-    let intervalId: ReturnType<typeof setInterval>
+    dispatch(
+      checkConnectToInstanceAction(
+        connectionInstanceId,
+        () => {
+          dispatch(fetchConnectedInstanceAction(connectionInstanceId))
+          dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
+          dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
+          dispatch(fetchRecommendationsAction(connectionInstanceId))
+        },
+        undefined,
+        contextInstanceId !== connectionInstanceId,
+      ),
+    )
 
+    let intervalId: ReturnType<typeof setInterval>
     if (shouldGetRecommendations) {
       intervalId = setInterval(() => {
         dispatch(fetchRecommendationsAction(connectionInstanceId))

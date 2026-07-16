@@ -39,10 +39,8 @@ import {
   setInitialRecommendationsState,
 } from 'uiSrc/slices/recommendations/recommendations'
 import {
-  getDatabaseConfigInfo,
   loadInstances,
-  setConnectedInfoInstance,
-  setConnectedInstance,
+  resetConnectedInstance,
   setDefaultInstance,
 } from 'uiSrc/slices/instances/instances'
 import * as rdiInstanceSlice from 'uiSrc/slices/rdi/instances'
@@ -157,10 +155,7 @@ describe('InstancePage', () => {
       loadRdiInstances(),
       getAllPlugins(),
       setDefaultInstance(),
-      setConnectedInstance(),
-      getDatabaseConfigInfo(),
-      setConnectedInfoInstance(),
-      getRecommendations(),
+      resetConnectedInstance(),
       ...resetContextActions,
       clearExpertChatHistory(),
       setConnectivityError(null),
