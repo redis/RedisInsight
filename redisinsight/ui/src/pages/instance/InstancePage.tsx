@@ -78,19 +78,23 @@ const InstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   useEffect(() => {
+    const loadInstanceData = () => {
+      dispatch(fetchConnectedInstanceAction(connectionInstanceId))
+      dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
+      dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
+      dispatch(fetchRecommendationsAction(connectionInstanceId))
+    }
+
     // Only reset when switching away from a different connected DB.
     // Redis Stack already set connectedInstance.id before routing here;
     // resetting would clear it and ProtectedRoute would bounce to home.
+    // Always load instance data after connect attempt (success or fail) so
+    // connectedInstance.loading settles and Vector Search does not spin forever.
     dispatch(
       checkConnectToInstanceAction(
         connectionInstanceId,
-        () => {
-          dispatch(fetchConnectedInstanceAction(connectionInstanceId))
-          dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
-          dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
-          dispatch(fetchRecommendationsAction(connectionInstanceId))
-        },
-        undefined,
+        loadInstanceData,
+        loadInstanceData,
         Boolean(connectedInstanceId) &&
           connectedInstanceId !== connectionInstanceId,
       ),

@@ -34,10 +34,7 @@ import {
 import { setClusterDetailsInitialState } from 'uiSrc/slices/analytics/clusterDetails'
 import { setDatabaseAnalysisInitialState } from 'uiSrc/slices/analytics/dbAnalysis'
 import { setInitialAnalyticsSettings } from 'uiSrc/slices/analytics/settings'
-import {
-  getRecommendations,
-  setInitialRecommendationsState,
-} from 'uiSrc/slices/recommendations/recommendations'
+import { setInitialRecommendationsState } from 'uiSrc/slices/recommendations/recommendations'
 import {
   loadInstances,
   resetConnectedInstance,
