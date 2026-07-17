@@ -137,7 +137,9 @@ export class DatabaseInfoProvider {
 
   /**
    * Determine database modules from HELLO or INFO response when MODULE LIST
-   * and COMMAND INFO are unavailable (e.g. restricted ACL users)
+   * and COMMAND INFO are unavailable (e.g. restricted ACL users).
+   * Prefer HELLO: getInfo()'s INFO parser collapses duplicate `module:` lines into
+   * a single { module: "name=...,ver=..." } entry, which is not a usable module list.
    * @param client
    * @private
    */
@@ -145,8 +147,17 @@ export class DatabaseInfoProvider {
     client: RedisClient,
   ): Promise<AdditionalRedisModule[]> {
     try {
-      const info = await client.getInfo();
-      const rawModules = this.normalizeModulesFromInfo(info?.modules);
+      let rawModules = await this.getModulesFromHello(client);
+
+      if (!rawModules.length) {
+        try {
+          const info = await client.getInfo();
+          rawModules = this.normalizeModulesFromInfo(info?.modules);
+        } catch {
+          // INFO may be denied
+        }
+      }
+
       if (!rawModules.length) {
         return [];
       }
@@ -168,20 +179,50 @@ export class DatabaseInfoProvider {
     }
   }
 
+  private async getModulesFromHello(
+    client: RedisClient,
+  ): Promise<{ name: string; ver?: number }[]> {
+    try {
+      const helloResponse = (await client.call(['hello'], {
+        replyEncoding: 'utf8',
+      })) as string[];
+      const helloInfo = convertArrayReplyToObject(helloResponse);
+      const modules = Array.isArray(helloInfo.modules)
+        ? helloInfo.modules.map((module) =>
+            Array.isArray(module)
+              ? convertArrayReplyToObject(module)
+              : module,
+          )
+        : helloInfo.modules;
+
+      return this.normalizeModulesFromInfo(modules);
+    } catch {
+      return [];
+    }
+  }
+
   private normalizeModulesFromInfo(modules: unknown): { name: string; ver?: number }[] {
     if (!modules) {
       return [];
     }
     if (Array.isArray(modules)) {
-      return modules;
+      return modules.filter(
+        (module) =>
+          module &&
+          typeof module === 'object' &&
+          typeof (module as { name?: unknown }).name === 'string',
+      ) as { name: string; ver?: number }[];
     }
     if (typeof modules === 'object') {
-      return Object.entries(modules as Record<string, unknown>).map(
-        ([name, ver]) => ({
-          name,
-          ver: parseInt(String(ver), 10) || undefined,
-        }),
-      );
+      const entries = Object.entries(modules as Record<string, unknown>);
+      // INFO # Modules collapses to { module: "name=...,ver=..." } — not usable
+      if (entries.some(([key]) => key === 'module')) {
+        return [];
+      }
+      return entries.map(([name, ver]) => ({
+        name,
+        ver: parseInt(String(ver), 10) || undefined,
+      }));
     }
     return [];
   }

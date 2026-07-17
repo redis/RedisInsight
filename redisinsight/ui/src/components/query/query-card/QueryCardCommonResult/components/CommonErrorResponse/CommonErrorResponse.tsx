@@ -98,12 +98,12 @@ const CommonErrorResponse = (id: string, command = '', result?: any) => {
         (item) => item?.status === CommandExecutionStatus.Success,
       )
     : result?.status === CommandExecutionStatus.Success
-  const modulesUnknown = !modules?.length
 
-  const unsupportedModule =
-    !isSuccessfulResult && !modulesUnknown
-      ? checkUnsupportedModuleCommand(modules, commandLine)
-      : undefined
+  // Don't replace a successful reply with ModuleNotLoaded — under ACL, modules
+  // may be unknown even when the command ran fine (see #5357).
+  const unsupportedModule = !isSuccessfulResult
+    ? checkUnsupportedModuleCommand(modules, commandLine)
+    : undefined
 
   if (unsupportedModule) {
     return <ModuleNotLoaded moduleName={unsupportedModule} id={id} />
