@@ -48,10 +48,30 @@ export const getStatusToShowFromState = (
   }
 }
 
+const STATUS_LABEL_KEYS: Record<PipelineStatus, string> = {
+  [PipelineStatus.Ready]: 'rdi.instance.status.ready',
+  [PipelineStatus.NotReady]: 'rdi.instance.status.notReady',
+  [PipelineStatus.Stopping]: 'rdi.instance.status.stopping',
+  [PipelineStatus.Started]: 'rdi.instance.status.started',
+  [PipelineStatus.Stopped]: 'rdi.instance.status.stopped',
+  [PipelineStatus.Error]: 'rdi.instance.status.error',
+  [PipelineStatus.Creating]: 'rdi.instance.status.creating',
+  [PipelineStatus.Updating]: 'rdi.instance.status.updating',
+  [PipelineStatus.Deleting]: 'rdi.instance.status.deleting',
+  [PipelineStatus.Starting]: 'rdi.instance.status.starting',
+  [PipelineStatus.Resetting]: 'rdi.instance.status.resetting',
+  [PipelineStatus.Pending]: 'rdi.instance.status.pending',
+  [PipelineStatus.Unknown]: 'rdi.instance.status.unknown',
+}
+
 export const getStatusToShowFromStatus = (
   status: Maybe<PipelineStatus>,
 ): StatusInfo => {
-  const label = capitalize(status || 'Error')
+  const label = !status
+    ? i18n.t('rdi.instance.status.error')
+    : STATUS_LABEL_KEYS[status]
+      ? i18n.t(STATUS_LABEL_KEYS[status] as never)
+      : capitalize(status)
 
   switch (status) {
     case PipelineStatus.Creating:
