@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { pubSubSelector } from 'uiSrc/slices/pubsub/pubsub'
 import { isVersionHigherOrEquals } from 'uiSrc/utils'
@@ -16,8 +17,8 @@ import { Table } from 'uiSrc/components/base/layout/table'
 import { Wrapper } from './MessagesListTable.styles'
 import {
   getDefaultPagination,
+  getPubSubTableColumns,
   handlePaginationChange,
-  PUB_SUB_TABLE_COLUMNS,
 } from './MessagesListTable.config'
 import { PubSubTableColumn } from './MessagesListTable.constants'
 import PatternsInfo from '../../patternsInfo'
@@ -25,6 +26,7 @@ import SubscribeForm from '../../subscribe-form'
 import EmptyMessagesList from '../EmptyMessagesList'
 
 const MessagesListTable = () => {
+  const { t } = useTranslation()
   const {
     messages = [],
     isSubscribed,
@@ -51,6 +53,8 @@ const MessagesListTable = () => {
 
   const hasMessages = messages.length > 0
 
+  const columns = useMemo(() => getPubSubTableColumns(t), [t])
+
   if (hasMessages || isSubscribed) {
     return (
       <Wrapper gap="l">
@@ -59,7 +63,7 @@ const MessagesListTable = () => {
             <PatternsInfo channels={channels} />
 
             <Row align="center" gap="s">
-              <Text>Messages:</Text>
+              <Text>{t('pubsub.messages.label')}</Text>
               <Text data-testid="pub-sub-messages-count">
                 {messages.length}
               </Text>
@@ -72,11 +76,17 @@ const MessagesListTable = () => {
             gap="s"
             data-testid="pub-sub-status"
           >
-            <Text>Status:</Text>
+            <Text>{t('pubsub.status.label')}</Text>
             {isSubscribed ? (
-              <RiBadge label="Subscribed" variant="success" />
+              <RiBadge
+                label={t('pubsub.status.subscribed')}
+                variant="success"
+              />
             ) : (
-              <RiBadge label="Unsubscribed" variant="default" />
+              <RiBadge
+                label={t('pubsub.status.unsubscribed')}
+                variant="default"
+              />
             )}
             <HorizontalSpacer size="s" />
 
@@ -86,7 +96,7 @@ const MessagesListTable = () => {
 
         <div data-testid="messages-list">
           <Table
-            columns={PUB_SUB_TABLE_COLUMNS}
+            columns={columns}
             data={messages}
             stripedRows
             enableColumnResizing
@@ -95,7 +105,7 @@ const MessagesListTable = () => {
             defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: true }]}
             onPaginationChange={handlePaginationChange}
             defaultPagination={getDefaultPagination()}
-            emptyState="No messages published yet"
+            emptyState={t('pubsub.table.empty')}
           />
         </div>
       </Wrapper>
