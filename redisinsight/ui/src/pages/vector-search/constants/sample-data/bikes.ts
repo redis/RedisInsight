@@ -1,8 +1,9 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import i18n from 'uiSrc/i18n'
 import { SampleDatasetConfig } from './types'
 
 export const BIKES_DATASET: SampleDatasetConfig = {
-  displayName: 'E-commerce discovery',
+  displayName: i18n.t('vectorSearch.sampleData.ecommerce.label'),
   indexName: 'idx:bikes_vss',
   indexPrefix: 'bikes:',
   collectionName: 'bikes',
@@ -27,9 +28,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
   ],
   sampleQueries: [
     {
-      name: 'Basic semantic search',
-      description:
-        'Performs a simple K-nearest neighbors (KNN) vector search to find the 3 bikes most semantically similar to "Comfortable commuter bike." Returns the similarity score along with brand, type, and description fields.',
+      name: i18n.t('vectorSearch.sampleData.bikes.query1.name'),
+      description: i18n.t('vectorSearch.sampleData.bikes.query1.description'),
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -39,9 +39,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: 'Age-targeted semantic search',
-      description:
-        'Searches for bikes matching the natural language query "Commuter bike for people over 60." Demonstrates how vector search can understand intent and context beyond keyword matching, finding bikes suited for older riders prioritizing comfort and ease of use.',
+      name: i18n.t('vectorSearch.sampleData.bikes.query2.name'),
+      description: i18n.t('vectorSearch.sampleData.bikes.query2.description'),
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -51,9 +50,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: 'Gender-specific product search',
-      description:
-        'Finds mountain bikes semantically similar to "Female specific mountain bike." Shows how embeddings can capture product attributes like gender-specific geometry, sizing, and design features without requiring exact keyword matches.',
+      name: i18n.t('vectorSearch.sampleData.bikes.query3.name'),
+      description: i18n.t('vectorSearch.sampleData.bikes.query3.description'),
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -63,9 +61,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: 'Hybrid search (vector + filters)',
-      description:
-        'Combines semantic vector search with traditional attribute filtering. Searches for "Female specific mountain bike" but restricts results to bikes of type "Mountain Bikes" with prices between $3,000–$3,500. Demonstrates pre-filtering before KNN to narrow the candidate set.',
+      name: i18n.t('vectorSearch.sampleData.bikes.query4.name'),
+      description: i18n.t('vectorSearch.sampleData.bikes.query4.description'),
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"(@type:{Mountain Bikes} @price:[3000 3500])=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
