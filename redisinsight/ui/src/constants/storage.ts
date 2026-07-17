@@ -18,6 +18,7 @@ enum BrowserStorageItem {
   treeViewDelimiter = 'treeViewDelimiter',
   treeViewSort = 'treeViewSort',
   autoRefreshRate = 'autoRefreshRate',
+  autoRefreshEnabled = 'autoRefreshEnabled',
   bulkActionDeleteId = 'bulkActionDeleteId',
   dbConfig = 'dbConfig_',
   RunQueryMode = 'RunQueryMode',
@@ -48,6 +49,8 @@ enum BrowserStorageItem {
   wbTsResultPreferences = 'wbTsResultPreferences_',
   prodModeCtaActioned = 'prodModeCtaActioned',
   whatsNewLastVersionSeen = 'whatsNewLastVersionSeen',
+  agentMemoryPanelSizes = 'agentMemoryPanelSizes',
+  agentMemoryLtmPanelSizes = 'agentMemoryLtmPanelSizes',
 }
 
 export default BrowserStorageItem

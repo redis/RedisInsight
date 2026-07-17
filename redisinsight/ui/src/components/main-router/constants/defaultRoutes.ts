@@ -22,6 +22,8 @@ import RdiPage from 'uiSrc/pages/rdi/home'
 import RdiInstancePage from 'uiSrc/pages/rdi/instance'
 import RdiStatisticsPage from 'uiSrc/pages/rdi/statistics'
 import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
+import AgentMemoryPage from 'uiSrc/pages/agent-memory/home'
+import AgentMemoryWorkspacePage from 'uiSrc/pages/agent-memory/workspace'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
@@ -66,6 +68,10 @@ const LazyRdiInstancePage = lazy(() => import('uiSrc/pages/rdi/instance'))
 const LazyRdiStatisticsPage = lazy(() => import('uiSrc/pages/rdi/statistics'))
 const LazyPipelineManagementPage = lazy(
   () => import('uiSrc/pages/rdi/pipeline-management'),
+)
+const LazyAgentMemoryPage = lazy(() => import('uiSrc/pages/agent-memory/home'))
+const LazyAgentMemoryWorkspacePage = lazy(
+  () => import('uiSrc/pages/agent-memory/workspace'),
 )
 
 const INSTANCE_ROUTES: IRoute[] = [
@@ -187,6 +193,19 @@ const ROUTES: IRoute[] = [
       component: LAZY_LOAD ? LazyRdiInstancePage : RdiInstancePage,
       routes: RDI_INSTANCE_ROUTES,
       featureFlag: FeatureFlags.rdi,
+    },
+    {
+      path: Pages.agentMemory,
+      component: LAZY_LOAD ? LazyAgentMemoryPage : AgentMemoryPage,
+      exact: true,
+      featureFlag: FeatureFlags.agentMemory,
+    },
+    {
+      path: Pages.agentMemoryWorkspace(':endpointId', ':tab?'),
+      component: LAZY_LOAD
+        ? LazyAgentMemoryWorkspacePage
+        : AgentMemoryWorkspacePage,
+      featureFlag: FeatureFlags.agentMemory,
     },
   ]),
   {

@@ -1,0 +1,1 @@
+export { getAgentMemoryUrl } from './getUrlAgentMemory'

@@ -20,6 +20,13 @@ const tabs: HomeTab[] = [
     path: Pages.rdi,
     featureFlag: FeatureFlags.rdi,
   },
+  {
+    value: 'agent-memory',
+    label: 'Agent Memory',
+    content: null,
+    path: Pages.agentMemory,
+    featureFlag: FeatureFlags.agentMemory,
+  },
 ]
 
 export { tabs }

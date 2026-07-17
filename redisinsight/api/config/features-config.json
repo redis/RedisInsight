@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "features": {
     "dev-language": {
       "flag": true,
@@ -16,6 +16,11 @@
           "cond": "neq"
         }
       ]
+    },
+    "agentMemory": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": []
     },
     "insightsRecommendations": {
       "flag": true,

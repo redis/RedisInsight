@@ -256,6 +256,8 @@
   "notification.infinite.successDeployPipeline.message": "Поздравления!",
   "notification.success.addLibrary.message": "<bold>{{name}}</bold> беше добавена.",
   "notification.success.addLibrary.title": "Библиотеката беше добавена",
+  "notification.success.addedAgentMemoryEndpoint.message": "<bold>{{name}}</bold> беше добавена към RedisInsight.",
+  "notification.success.addedAgentMemoryEndpoint.title": "Крайната точка за агентна памет беше добавена",
   "notification.success.addedInstance.message": "<bold>{{name}}</bold> беше добавена към Redis Insight.",
   "notification.success.addedInstance.title": "Базата данни беше добавена",
   "notification.success.addedKey.message": "<bold>{{name}}</bold> беше добавен.",

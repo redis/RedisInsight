@@ -256,6 +256,8 @@
   "notification.infinite.successDeployPipeline.message": "Congratulations!",
   "notification.success.addLibrary.message": "<bold>{{name}}</bold> has been added.",
   "notification.success.addLibrary.title": "Library has been added",
+  "notification.success.addedAgentMemoryEndpoint.message": "<bold>{{name}}</bold> has been added to RedisInsight.",
+  "notification.success.addedAgentMemoryEndpoint.title": "Agent memory endpoint has been added",
   "notification.success.addedInstance.message": "<bold>{{name}}</bold> has been added to Redis Insight.",
   "notification.success.addedInstance.title": "Database has been added",
   "notification.success.addedKey.message": "<bold>{{name}}</bold> has been added.",
