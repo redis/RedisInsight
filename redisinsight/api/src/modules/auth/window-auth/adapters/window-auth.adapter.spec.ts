@@ -81,12 +81,13 @@ describe('WindowsAuthAdapter', () => {
     expect(socket.join).toHaveBeenCalledWith('user:1');
   });
 
-  it('should not bind handlers or attach session metadata when the window id is not authorized', async () => {
+  it('should disconnect the socket and bind nothing when the window id is not authorized', async () => {
     (windowAuthService.isAuthorized as jest.Mock).mockResolvedValue(false);
     const socket = createMockSocket();
 
     await adapter.bindMessageHandlers(socket, [], jest.fn());
 
+    expect(socket.disconnect).toHaveBeenCalledWith(true);
     expect(mockBaseBindMessageHandlers).not.toHaveBeenCalled();
     expect(socket.data).toEqual({});
     expect(socket.join).not.toHaveBeenCalled();

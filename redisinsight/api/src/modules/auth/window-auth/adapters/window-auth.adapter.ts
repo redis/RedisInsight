@@ -30,6 +30,8 @@ export class WindowsAuthAdapter extends SessionMetadataAdapter {
 
     if (!isAuthorized) {
       this.logger.error(ERROR_MESSAGES.UNDEFINED_WINDOW_ID);
+      // Drop the connection so it can no longer receive namespace broadcasts.
+      socket.disconnect(true);
       return;
     }
 
