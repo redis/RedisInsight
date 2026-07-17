@@ -9,6 +9,7 @@ import { PipelineState, PipelineStatus } from 'uiSrc/slices/interfaces'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { IconType } from 'uiSrc/components/base/forms/buttons'
 import { Maybe } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 
 export interface StatusInfo {
   label: string
@@ -24,25 +25,25 @@ export const getStatusToShowFromState = (
       return {
         icon: IndicatorSyncingIcon,
         iconColor: 'success300',
-        label: 'Initial sync',
+        label: i18n.t('rdi.instance.status.initialSync'),
       }
     case PipelineState.CDC:
       return {
         icon: IndicatorSyncedIcon,
         iconColor: 'success500',
-        label: 'Streaming',
+        label: i18n.t('rdi.instance.status.streaming'),
       }
     case PipelineState.NotRunning:
       return {
         icon: IndicatorSyncstoppedIcon,
         iconColor: 'attention500',
-        label: 'Not running',
+        label: i18n.t('rdi.instance.status.notRunning'),
       }
     default:
       return {
         icon: IndicatorSyncerrorIcon,
         iconColor: 'danger500',
-        label: 'Error',
+        label: i18n.t('rdi.instance.status.error'),
       }
   }
 }
