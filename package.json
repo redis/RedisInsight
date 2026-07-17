@@ -97,7 +97,7 @@
     "word-wrap": "1.2.4",
     "semver": "7.7.2",
     "rawproto": {
-      "protobufjs": "^7.2.5"
+      "protobufjs": "^7.6.5"
     },
     "@electron/notarize": "2.3.2",
     "@elastic/eui": {
