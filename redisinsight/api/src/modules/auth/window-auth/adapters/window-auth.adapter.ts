@@ -1,21 +1,21 @@
 import { INestApplication, Logger } from '@nestjs/common';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import { MessageMappingProperties } from '@nestjs/websockets';
 import { get } from 'lodash';
 import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
 import { API_HEADER_WINDOW_ID } from 'src/common/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { SessionMetadataAdapter } from 'src/modules/auth/session-metadata/adapters/session-metadata.adapter';
 import { WindowAuthService } from '../window-auth.service';
 
-export class WindowsAuthAdapter extends IoAdapter {
+export class WindowsAuthAdapter extends SessionMetadataAdapter {
   private windowAuthService: WindowAuthService;
 
   private logger = new Logger('WindowsAuthAdapter');
 
-  constructor(private app: INestApplication) {
+  constructor(app: INestApplication) {
     super(app);
-    this.windowAuthService = this.app.get(WindowAuthService);
+    this.windowAuthService = app.get(WindowAuthService);
   }
 
   async bindMessageHandlers(
