@@ -133,14 +133,14 @@ export class PluginsService {
     clientMetadata: ClientMetadata,
     commandLine: string,
   ) {
-    const targetCommand = commandLine.toLowerCase();
+    const targetCommand = commandLine.toLowerCase().split(' ')[0];
 
     const whitelist = await this.getWhitelistCommands(clientMetadata);
 
-    if (!whitelist.find((command) => targetCommand.startsWith(command))) {
+    if (!whitelist.includes(targetCommand)) {
       throw new CommandNotSupportedError(
         ERROR_MESSAGES.PLUGIN_COMMAND_NOT_SUPPORTED(
-          targetCommand.split(' ')[0].toUpperCase(),
+          targetCommand.toUpperCase(),
         ),
       );
     }
