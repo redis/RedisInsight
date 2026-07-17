@@ -1,9 +1,8 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import i18n from 'uiSrc/i18n'
 import { SampleDatasetConfig } from './types'
 
 export const BIKES_DATASET: SampleDatasetConfig = {
-  displayName: i18n.t('vectorSearch.sampleData.ecommerce.label'),
+  displayName: 'vectorSearch.sampleData.ecommerce.label',
   indexName: 'idx:bikes_vss',
   indexPrefix: 'bikes:',
   collectionName: 'bikes',
@@ -28,8 +27,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
   ],
   sampleQueries: [
     {
-      name: i18n.t('vectorSearch.sampleData.bikes.query1.name'),
-      description: i18n.t('vectorSearch.sampleData.bikes.query1.description'),
+      name: 'vectorSearch.sampleData.bikes.query1.name',
+      description: 'vectorSearch.sampleData.bikes.query1.description',
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -39,8 +38,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: i18n.t('vectorSearch.sampleData.bikes.query2.name'),
-      description: i18n.t('vectorSearch.sampleData.bikes.query2.description'),
+      name: 'vectorSearch.sampleData.bikes.query2.name',
+      description: 'vectorSearch.sampleData.bikes.query2.description',
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -50,8 +49,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: i18n.t('vectorSearch.sampleData.bikes.query3.name'),
-      description: i18n.t('vectorSearch.sampleData.bikes.query3.description'),
+      name: 'vectorSearch.sampleData.bikes.query3.name',
+      description: 'vectorSearch.sampleData.bikes.query3.description',
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"*=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
@@ -61,8 +60,8 @@ export const BIKES_DATASET: SampleDatasetConfig = {
         'DIALECT 2',
     },
     {
-      name: i18n.t('vectorSearch.sampleData.bikes.query4.name'),
-      description: i18n.t('vectorSearch.sampleData.bikes.query4.description'),
+      name: 'vectorSearch.sampleData.bikes.query4.name',
+      description: 'vectorSearch.sampleData.bikes.query4.description',
       query:
         'FT.SEARCH idx:bikes_vss ' +
         '"(@type:{Mountain Bikes} @price:[3000 3500])=>[KNN 3 @description_embeddings $my_blob AS score ]" ' +
