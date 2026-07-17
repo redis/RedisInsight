@@ -6,6 +6,7 @@ import { setTitle } from 'uiSrc/utils'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
@@ -27,20 +28,18 @@ export interface Props {
   onBack: (sendEvent?: boolean) => void
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found'
-
 const RedisClusterDatabasesResult = ({
   columns,
   instances,
   onBack,
   onView,
 }: Props) => {
+  const { t } = useTranslation()
   const [items, setItems] = useState<InstanceRedisCluster[]>([])
-  const [message, setMessage] = useState(loadingMsg)
+  const [message, setMessage] = useState(t('cluster.loadingMsg'))
 
   useEffect(() => {
-    setTitle('Redis Enterprise Databases Added')
+    setTitle(t('cluster.result.pageTitle'))
   }, [])
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const RedisClusterDatabasesResult = ({
     )
 
     if (!itemsTemp.length) {
-      setMessage(notFoundMsg)
+      setMessage(t('cluster.notFound'))
     }
     setItems(itemsTemp)
   }
@@ -74,15 +73,9 @@ const RedisClusterDatabasesResult = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title={`
-          Redis Enterprise
-          ${
-            countSuccessAdded + countFailAdded > 1
-              ? ' Databases '
-              : ' Database '
-          }
-          Added
-          `}
+          title={t('cluster.result.title', {
+            count: countSuccessAdded + countFailAdded,
+          })}
           onBack={onBack}
           onQueryChange={onQueryChange}
         />
@@ -118,7 +111,7 @@ const RedisClusterDatabasesResult = ({
             onClick={() => onView(false)}
             data-testid="btn-view-databases"
           >
-            View Databases
+            {t('cluster.result.viewButton')}
           </PrimaryButton>
         </Row>
       </Footer>

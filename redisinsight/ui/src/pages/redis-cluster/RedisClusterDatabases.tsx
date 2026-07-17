@@ -4,6 +4,7 @@ import { RiTooltip } from 'uiSrc/components/base'
 import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
@@ -32,22 +33,6 @@ interface Props {
   loading: boolean
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found'
-const noResultsMessage =
-  'Your Redis Enterprise Cluster has no databases available.'
-
-function getSubtitle(items: InstanceRedisCluster[]) {
-  if (!items.length) {
-    return null
-  }
-
-  return `These are the ${items.length > 1 ? 'databases ' : 'database '}
-in your Redis Enterprise Cluster. Select the
-${items.length > 1 ? ' databases ' : ' database '} that you want
-to add.`
-}
-
 const hasSelection = (selection: RowSelectionState) =>
   Object.values(selection).some(Boolean)
 const RedisClusterDatabases = ({
@@ -58,8 +43,9 @@ const RedisClusterDatabases = ({
   instances,
   loading,
 }: Props) => {
+  const { t } = useTranslation()
   const [items, setItems] = useState<InstanceRedisCluster[]>([])
-  const [message, setMessage] = useState(loadingMsg)
+  const [message, setMessage] = useState(t('cluster.loadingMsg'))
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   const [selection, setSelection] = useState<RowSelectionState>({})
@@ -72,7 +58,7 @@ const RedisClusterDatabases = ({
 
   useEffect(() => {
     if (instances?.length === 0) {
-      setMessage(noResultsMessage)
+      setMessage(t('cluster.databases.noResults'))
     }
   }, [instances])
 
@@ -109,7 +95,7 @@ const RedisClusterDatabases = ({
       ) ?? []
 
     if (!itemsTemp?.length) {
-      setMessage(notFoundMsg)
+      setMessage(t('cluster.notFound'))
     }
     setItems(itemsTemp)
   }
@@ -118,10 +104,14 @@ const RedisClusterDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
         <Header
-          title="Auto-Discover Redis Enterprise Databases"
+          title={t('cluster.databases.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
-          subTitle={getSubtitle(items)}
+          subTitle={
+            items.length
+              ? t('cluster.databases.subtitle', { count: items.length })
+              : null
+          }
         />
         <Spacer size="m" />
         <DatabaseWrapper>
@@ -169,7 +159,7 @@ const RedisClusterDatabases = ({
               icon={isSubmitDisabled() ? InfoIcon : undefined}
               data-testid="btn-add-databases"
             >
-              Add selected Databases
+              {t('cluster.databases.addButton')}
             </PrimaryButton>
           </RiTooltip>
         </Row>
