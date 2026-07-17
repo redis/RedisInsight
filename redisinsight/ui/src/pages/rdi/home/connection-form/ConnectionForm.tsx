@@ -25,6 +25,7 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { useTranslation } from 'uiSrc/i18n'
 import ValidationTooltip from './components/ValidationTooltip'
 
 export interface AppendInfoProps
@@ -57,6 +58,7 @@ const getInitialValues = (
 
 const ConnectionForm = (props: Props) => {
   const { onSubmit, onCancel, editInstance, isLoading } = props
+  const { t } = useTranslation()
 
   const [initialFormValues, setInitialFormValues] = useState(
     getInitialValues(editInstance),
@@ -67,7 +69,9 @@ const ConnectionForm = (props: Props) => {
     setInitialFormValues(getInitialValues(editInstance))
     setModalHeader(
       <Title size="M">
-        {editInstance ? 'Edit endpoint' : 'Add RDI endpoint'}
+        {editInstance
+          ? t('rdi.home.form.editTitle')
+          : t('rdi.home.form.addTitle')}
       </Title>,
     )
   }, [editInstance])
@@ -76,10 +80,10 @@ const ConnectionForm = (props: Props) => {
     const errors: FormikErrors<ConnectionFormValues> = {}
 
     if (!values.name) {
-      errors.name = 'RDI Alias'
+      errors.name = t('rdi.home.form.name.label')
     }
     if (!values.url) {
-      errors.url = 'URL'
+      errors.url = t('rdi.home.form.url.label')
     }
 
     return errors
@@ -112,7 +116,7 @@ const ConnectionForm = (props: Props) => {
                 data-testid="connection-form-cancel-button"
                 onClick={onCancel}
               >
-                Cancel
+                {t('rdi.home.form.cancel')}
               </SecondaryButton>
             </FlexItem>
             <FlexItem>
@@ -125,7 +129,9 @@ const ConnectionForm = (props: Props) => {
                   disabled={!isValid}
                   onClick={onSubmit}
                 >
-                  {editInstance ? 'Apply Changes' : 'Add Endpoint'}
+                  {editInstance
+                    ? t('rdi.home.form.applyButton')
+                    : t('rdi.home.form.addButton')}
                 </PrimaryButton>
               </ValidationTooltip>
             </FlexItem>
@@ -147,12 +153,12 @@ const ConnectionForm = (props: Props) => {
       {({ isValid, errors, values }) => (
         <Form>
           <Col data-testid="connection-form" gap="l">
-            <FormField label="RDI Alias" required>
+            <FormField label={t('rdi.home.form.name.label')} required>
               <Field name="name">
                 {({ field }: { field: FieldInputProps<string> }) => (
                   <TextInput
                     data-testid="connection-form-name-input"
-                    placeholder="Enter RDI Alias"
+                    placeholder={t('rdi.home.form.name.placeholder')}
                     maxLength={500}
                     name={field.name}
                     value={field.value}
@@ -164,18 +170,17 @@ const ConnectionForm = (props: Props) => {
               </Field>
             </FormField>
             <FormField
-              label="URL"
+              label={t('rdi.home.form.url.label')}
               required
               infoIconProps={{
-                content:
-                  'The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443.',
+                content: t('rdi.home.form.url.info'),
               }}
             >
               <Field name="url">
                 {({ field }: { field: FieldInputProps<string> }) => (
                   <TextInput
                     data-testid="connection-form-url-input"
-                    placeholder="Enter the RDI host IP as: https://[IP-Address]"
+                    placeholder={t('rdi.home.form.url.placeholder')}
                     disabled={!!editInstance}
                     name={field.name}
                     value={field.value}
@@ -190,17 +195,16 @@ const ConnectionForm = (props: Props) => {
               <Row gap="xxl">
                 <FlexItem grow={2}>
                   <FormField
-                    label="Username"
+                    label={t('rdi.home.form.username.label')}
                     infoIconProps={{
-                      content:
-                        'The RDI REST API authentication is using the RDI Redis username and password.',
+                      content: t('rdi.home.form.auth.info'),
                     }}
                   >
                     <Field name="username">
                       {({ field }: { field: FieldInputProps<string> }) => (
                         <TextInput
                           data-testid="connection-form-username-input"
-                          placeholder="Enter the RDI Redis username"
+                          placeholder={t('rdi.home.form.username.placeholder')}
                           maxLength={500}
                           name={field.name}
                           value={field.value}
@@ -217,10 +221,9 @@ const ConnectionForm = (props: Props) => {
                 <FlexItem grow={1}>
                   <FormField
                     infoIconProps={{
-                      content:
-                        'The RDI REST API authentication is using the RDI Redis username and password.',
+                      content: t('rdi.home.form.auth.info'),
                     }}
-                    label="Password"
+                    label={t('rdi.home.form.password.label')}
                   >
                     <Field name="password">
                       {({
@@ -234,7 +237,7 @@ const ConnectionForm = (props: Props) => {
                       }) => (
                         <PasswordInput
                           data-testid="connection-form-password-input"
-                          placeholder="Enter the RDI Redis password"
+                          placeholder={t('rdi.home.form.password.placeholder')}
                           maxLength={500}
                           {...field}
                           onChangeCapture={field.onChange}
