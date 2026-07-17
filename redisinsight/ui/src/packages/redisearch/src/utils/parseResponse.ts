@@ -77,17 +77,9 @@ const parseInfoRawResponse = (initResult: any[]) => {
           : value
       return [
         field,
-        values.map((attrs: any[]) => {
-          const newAttrs = attrs.reduce(
-            (prev, current) =>
-              InfoAttributesBoolean.indexOf(current) !== -1
-                ? [...prev, current, true]
-                : [...prev, current],
-            [],
-          )
-
-          return fromPairsChunk(newAttrs, 2)
-        }),
+        values.map((attrs: any[]) =>
+          fromPairsChunk(expandBooleanAttributeFlags(attrs), 2),
+        ),
       ]
     }
     if (isArray(value) && field !== ResultInfoField.Options) {
@@ -98,6 +90,29 @@ const parseInfoRawResponse = (initResult: any[]) => {
   })
 
   return fromPairs(result)
+}
+
+/**
+ * Expand valueless FT.INFO attribute flags to [flag, true] only when the token
+ * is in key position. Matching any occurrence (e.g. array.includes / reduce on
+ * every token) false-positives when a field alias is literally WITHSUFFIXTRIE.
+ */
+const expandBooleanAttributeFlags = (attrs: any[] = []) => {
+  const expanded: any[] = []
+  let i = 0
+
+  while (i < attrs.length) {
+    const token = attrs[i]
+    if (InfoAttributesBoolean.indexOf(token) !== -1) {
+      expanded.push(token, true)
+      i += 1
+      continue
+    }
+    expanded.push(token, attrs[i + 1])
+    i += 2
+  }
+
+  return expanded
 }
 
 const fromPairsChunk = (arr: any[] = [], count: number = 2) =>

@@ -1,9 +1,13 @@
-import { chunk, isArray, keyBy } from 'lodash';
+import { keyBy } from 'lodash';
 import {
   quicktype,
   InputData,
   jsonInputForTargetLanguage,
 } from 'quicktype-core';
+import {
+  convertArrayReplyToObject,
+  convertIndexInfoAttributeReply,
+} from 'src/modules/browser/utils/redisIndexInfo';
 
 type ArrayReplyEntry = string | string[];
 // todo: find a way to avoid this
@@ -15,38 +19,8 @@ const HSCAN_COUNT = 500;
 export const quotesIfNeeded = (str: string) =>
   str?.indexOf?.(' ') > -1 ? JSON.stringify(str) : str;
 
-// ====================================================================
-// Reply converter
-// ====================================================================
-export const convertArrayReplyToObject = (
-  input: ArrayReplyEntry[],
-): { [key: string]: any } => {
-  const obj = {};
-
-  chunk(input, 2).forEach(([key, value]) => {
-    obj[key as string] = value;
-  });
-
-  return obj;
-};
-
-export const convertIndexInfoAttributeReply = (input: string[]): object => {
-  const attribute = convertArrayReplyToObject(input);
-
-  if (isArray(input)) {
-    attribute['SORTABLE'] = input.includes('SORTABLE') || undefined;
-    attribute['NOINDEX'] = input.includes('NOINDEX') || undefined;
-    attribute['CASESENSITIVE'] = input.includes('CASESENSITIVE') || undefined;
-    attribute['UNF'] = input.includes('UNF') || undefined;
-    attribute['NOSTEM'] = input.includes('NOSTEM') || undefined;
-    attribute['WITHSUFFIXTRIE'] =
-      input.includes('WITHSUFFIXTRIE') || undefined;
-    attribute['INDEXEMPTY'] = input.includes('INDEXEMPTY') || undefined;
-    attribute['INDEXMISSING'] = input.includes('INDEXMISSING') || undefined;
-  }
-
-  return attribute;
-};
+// Re-export shared FT.INFO converters so AI context stays in sync with Browser.
+export { convertArrayReplyToObject, convertIndexInfoAttributeReply };
 
 export const convertIndexInfoReply = (input: ArrayReplyEntry[]): object => {
   const infoReply = convertArrayReplyToObject(input);

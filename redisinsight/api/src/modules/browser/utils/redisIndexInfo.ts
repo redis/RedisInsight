@@ -12,6 +12,23 @@ const infoFieldsToConvert = [
   errorField,
 ];
 
+/**
+ * Valueless FT.INFO attribute flags. These appear as standalone tokens in the
+ * attribute array (not as key/value pairs), so they must only be matched when
+ * the parser is expecting a key — never via array.includes(), which false-positives
+ * when a field identifier/alias is literally named the same as a flag.
+ */
+export const INDEX_INFO_ATTRIBUTE_BOOLEAN_FLAGS = [
+  'SORTABLE',
+  'NOINDEX',
+  'CASESENSITIVE',
+  'UNF',
+  'NOSTEM',
+  'WITHSUFFIXTRIE',
+  'INDEXEMPTY',
+  'INDEXMISSING',
+] as const;
+
 export const convertArrayReplyToObject = (
   input: ArrayReplyEntry[],
 ): { [key: string]: any } => {
@@ -25,18 +42,27 @@ export const convertArrayReplyToObject = (
 };
 
 export const convertIndexInfoAttributeReply = (input: string[]): object => {
-  const attribute = convertArrayReplyToObject(input);
+  if (!isArray(input)) {
+    return {};
+  }
 
-  if (isArray(input)) {
-    attribute['SORTABLE'] = input.includes('SORTABLE') || undefined;
-    attribute['NOINDEX'] = input.includes('NOINDEX') || undefined;
-    attribute['CASESENSITIVE'] = input.includes('CASESENSITIVE') || undefined;
-    attribute['UNF'] = input.includes('UNF') || undefined;
-    attribute['NOSTEM'] = input.includes('NOSTEM') || undefined;
-    attribute['WITHSUFFIXTRIE'] =
-      input.includes('WITHSUFFIXTRIE') || undefined;
-    attribute['INDEXEMPTY'] = input.includes('INDEXEMPTY') || undefined;
-    attribute['INDEXMISSING'] = input.includes('INDEXMISSING') || undefined;
+  const attribute: Record<string, any> = {};
+  let i = 0;
+
+  while (i < input.length) {
+    const token = input[i];
+
+    if (
+      typeof token === 'string' &&
+      (INDEX_INFO_ATTRIBUTE_BOOLEAN_FLAGS as readonly string[]).includes(token)
+    ) {
+      attribute[token] = true;
+      i += 1;
+      continue;
+    }
+
+    attribute[token as string] = input[i + 1];
+    i += 2;
   }
 
   return attribute;
