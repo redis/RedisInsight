@@ -4,6 +4,7 @@ import { useLocation, useParams } from 'react-router-dom'
 
 import {
   checkConnectToInstanceAction,
+  connectedInstanceSelector,
   fetchConnectedInstanceAction,
   fetchConnectedInstanceInfoAction,
   fetchInstancesAction,
@@ -50,6 +51,7 @@ const InstancePage = ({ routes = [] }: Props) => {
 
   const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
   const { data: dbInstances } = useAppSelector(dbInstancesSelector)
+  const { id: connectedInstanceId } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId: connectionInstanceId } = useParams<{
     instanceId: string
@@ -76,6 +78,9 @@ const InstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   useEffect(() => {
+    // Only reset when switching away from a different connected DB.
+    // Redis Stack already set connectedInstance.id before routing here;
+    // resetting would clear it and ProtectedRoute would bounce to home.
     dispatch(
       checkConnectToInstanceAction(
         connectionInstanceId,
@@ -86,7 +91,8 @@ const InstancePage = ({ routes = [] }: Props) => {
           dispatch(fetchRecommendationsAction(connectionInstanceId))
         },
         undefined,
-        contextInstanceId !== connectionInstanceId,
+        Boolean(connectedInstanceId) &&
+          connectedInstanceId !== connectionInstanceId,
       ),
     )
 
