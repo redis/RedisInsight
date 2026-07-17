@@ -11,6 +11,7 @@ import { RiPopover } from 'uiSrc/components'
 import { useRdiPageDataProvider } from 'uiSrc/pages/rdi/home/contexts/RdiPageDataProvider'
 import { dispatch } from 'uiSrc/slices/store'
 import { deleteInstancesAction } from 'uiSrc/slices/rdi/instances'
+import { useTranslation } from 'uiSrc/i18n'
 import { IRdiListCell } from '../../RdiInstancesList.types'
 
 const suffix = '_rdi_instance'
@@ -23,6 +24,7 @@ const handleClickDeleteInstance = (id: string) => {
 }
 
 const RdiInstancesListCellControls: IRdiListCell = ({ row }) => {
+  const { t } = useTranslation()
   const instance = row.original as RdiInstance
   const [isDeletePopoverOpen, setIsDeletePopoverOpen] = useState(false)
   const { setEditInstance, setIsConnectionFormOpen } = useRdiPageDataProvider()
@@ -55,7 +57,7 @@ const RdiInstancesListCellControls: IRdiListCell = ({ row }) => {
         button={
           <IconButton
             icon={MoreactionsIcon}
-            aria-label="Controls icon"
+            aria-label={t('rdi.home.instanceControls.controlsAria')}
             data-testid={`controls-button-${instance.id}`}
           />
         }
@@ -65,15 +67,15 @@ const RdiInstancesListCellControls: IRdiListCell = ({ row }) => {
           <EmptyButton
             justify="start"
             icon={EditIcon}
-            aria-label="Edit instance"
+            aria-label={t('rdi.home.instanceControls.editAria')}
             onClick={handleClickEditInstance}
             data-testid={`edit-instance-${instance.id}`}
           >
-            Edit endpoint
+            {t('rdi.home.form.editTitle')}
           </EmptyButton>
           <PopoverDelete
             header={formatLongName(instance.name, 50, 10, '...')}
-            text="will be removed from RedisInsight."
+            text={t('rdi.home.instanceControls.deleteText')}
             item={instance.id}
             suffix={suffix}
             deleting={deletingId}
@@ -83,7 +85,7 @@ const RdiInstancesListCellControls: IRdiListCell = ({ row }) => {
             handleDeleteItem={handleConfirmDelete}
             handleButtonClick={() => handleClickDeleteInstance(instance.id)}
             testid={`delete-instance-${instance.id}`}
-            buttonLabel="Remove instance"
+            buttonLabel={t('rdi.home.instanceControls.removeButton')}
           />
         </Col>
       </RiPopover>

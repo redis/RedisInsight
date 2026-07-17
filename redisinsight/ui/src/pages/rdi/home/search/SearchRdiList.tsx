@@ -9,8 +9,10 @@ import {
 } from 'uiSrc/slices/rdi/instances'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { lastConnectionFormat } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 const SearchRdiList = () => {
+  const { t } = useTranslation()
   const { data: instances } = useAppSelector(instancesSelector)
 
   const dispatch = useAppDispatch()
@@ -41,9 +43,9 @@ const SearchRdiList = () => {
 
   return (
     <SearchInput
-      placeholder="Endpoint List Search"
+      placeholder={t('rdi.home.search.placeholder')}
       onChange={onQueryChange}
-      aria-label="Search rdi instance list"
+      aria-label={t('rdi.home.search.ariaLabel')}
       data-testid="search-rdi-instance-list"
     />
   )
