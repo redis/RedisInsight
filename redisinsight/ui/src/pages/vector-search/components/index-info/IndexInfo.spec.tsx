@@ -62,6 +62,11 @@ describe('IndexInfo', () => {
 
     expect(identifierValue).toBeInTheDocument()
     expect(attributeValue).toBeInTheDocument()
+
+    // Boolean WITHSUFFIXTRIE cells must render icons (React omits raw booleans)
+    expect(screen.getAllByTestId('index-info--with-suffix-trie').length).toBe(
+      mockIndexInfo.attributes.length,
+    )
   })
 
   it('should use custom dataTestId', () => {
