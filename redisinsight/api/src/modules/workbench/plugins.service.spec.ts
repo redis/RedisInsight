@@ -134,7 +134,7 @@ describe('PluginsService', () => {
       });
       expect(workbenchCommandsExecutor.sendCommand).not.toHaveBeenCalled();
     });
-    it.each(['getdel foo', 'getex foo', 'getset foo bar'])(
+    it.each(['getdel foo', 'getex foo', 'getset foo bar', 'getdel\tfoo'])(
       'should reject non-whitelisted command "%s" that shares a prefix with a whitelisted command',
       async (command) => {
         pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
@@ -152,21 +152,24 @@ describe('PluginsService', () => {
         expect(workbenchCommandsExecutor.sendCommand).not.toHaveBeenCalled();
       },
     );
-    it('should allow a whitelisted command regardless of casing', async () => {
-      pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
-        mockWhitelistCommandsResponse,
-      );
+    it.each(['GET foo', 'get\tfoo'])(
+      'should allow whitelisted command "%s" regardless of casing or delimiter',
+      async (command) => {
+        pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
+          mockWhitelistCommandsResponse,
+        );
 
-      const result = await service.sendCommand(mockWorkbenchClientMetadata, {
-        command: 'GET foo',
-        mode: RunQueryMode.ASCII,
-      });
+        const result = await service.sendCommand(mockWorkbenchClientMetadata, {
+          command,
+          mode: RunQueryMode.ASCII,
+        });
 
-      expect(result.result?.[0]?.status).not.toEqual(
-        CommandExecutionStatus.Fail,
-      );
-      expect(workbenchCommandsExecutor.sendCommand).toHaveBeenCalled();
-    });
+        expect(result.result?.[0]?.status).not.toEqual(
+          CommandExecutionStatus.Fail,
+        );
+        expect(workbenchCommandsExecutor.sendCommand).toHaveBeenCalled();
+      },
+    );
     it('should throw an error when command execution failed', async () => {
       pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
         mockWhitelistCommandsResponse,
