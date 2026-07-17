@@ -2,7 +2,7 @@ import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-ind
 import { SampleDatasetConfig } from './types'
 
 export const MOVIES_DATASET: SampleDatasetConfig = {
-  displayName: 'vectorSearch.sampleData.content.label',
+  displayName: 'vectorSearch.sampleData.movies.displayName',
   indexName: 'idx:movies_vss',
   indexPrefix: 'movie:',
   collectionName: 'movies',

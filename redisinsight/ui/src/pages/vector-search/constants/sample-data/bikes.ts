@@ -2,7 +2,7 @@ import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-ind
 import { SampleDatasetConfig } from './types'
 
 export const BIKES_DATASET: SampleDatasetConfig = {
-  displayName: 'vectorSearch.sampleData.ecommerce.label',
+  displayName: 'vectorSearch.sampleData.bikes.displayName',
   indexName: 'idx:bikes_vss',
   indexPrefix: 'bikes:',
   collectionName: 'bikes',
