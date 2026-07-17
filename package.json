@@ -100,18 +100,8 @@
       "protobufjs": "^7.2.5"
     },
     "@electron/notarize": "2.3.2",
-    "webpack-bundle-analyzer": {
-      "ws": "^7.5.10"
-    },
-    "msw": {
-      "path-to-regexp": "^6.3.0"
-    },
-    "cross-spawn": "^7.0.5",
     "@elastic/eui": {
       "prismjs": "~1.30.0"
-    },
-    "vite": {
-      "esbuild": "^0.25.0"
     },
     "react-router-dom": {
       "react-router": {
