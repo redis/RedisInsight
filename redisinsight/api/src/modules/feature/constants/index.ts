@@ -28,6 +28,7 @@ export enum KnownFeatures {
   DocumentationChat = 'documentationChat',
   DatabaseChat = 'databaseChat',
   Rdi = 'redisDataIntegration',
+  AgentMemory = 'agentMemory',
   HashFieldExpiration = 'hashFieldExpiration',
   EnhancedCloudUI = 'enhancedCloudUI',
   DatabaseManagement = 'databaseManagement',

@@ -74,7 +74,7 @@ describe('RdiClientStorage', () => {
     it('should remove client with exceeded time in idle', async () => {
       expect(service['clients'].size).toEqual(5);
       const toDelete = service['clients'].get(mockRdiClient1.id);
-      toDelete['lastUsed'] = Date.now() - IDLE_THRESHOLD - 1;
+      toDelete!['lastUsed'] = Date.now() - IDLE_THRESHOLD - 1;
       service['syncClients']();
 
       expect(service['clients'].size).toEqual(4);
@@ -89,7 +89,7 @@ describe('RdiClientStorage', () => {
         const result = await service.get(mockRdiClient1.id);
 
         expect(result).toEqual(service['clients'].get(mockRdiClient1.id));
-        expect(result['lastUsed']).toBeGreaterThan(lastUsed);
+        expect(result!['lastUsed']).toBeGreaterThan(lastUsed);
       });
       it('should not fail when there is no client', async () => {
         const result = await service.get('not-existing');
@@ -106,7 +106,7 @@ describe('RdiClientStorage', () => {
         const result = await service.getByMetadata(mockClientMetadata1);
 
         expect(result).toEqual(service['clients'].get(mockRdiClient1.id));
-        expect(result['lastUsed']).toBeGreaterThan(lastUsed);
+        expect(result!['lastUsed']).toBeGreaterThan(lastUsed);
       });
 
       it('should not fail when there is no client', async () => {
@@ -255,7 +255,9 @@ describe('RdiClientStorage', () => {
 
     describe('findClients + deleteManyByRdiId', () => {
       it('should correctly find clients for particular rdi instance', async () => {
-        const result = service['findClientsById'](mockClientMetadata1.id);
+        const result = service['findClientsByMetadataId'](
+          mockClientMetadata1.id,
+        );
 
         expect(result.length).toEqual(4);
         result.forEach((id) => {
@@ -271,7 +273,7 @@ describe('RdiClientStorage', () => {
       });
 
       it('should not find any instances', async () => {
-        const result = service['findClientsById']('not existing');
+        const result = service['findClientsByMetadataId']('not existing');
 
         expect(result).toEqual([]);
 
