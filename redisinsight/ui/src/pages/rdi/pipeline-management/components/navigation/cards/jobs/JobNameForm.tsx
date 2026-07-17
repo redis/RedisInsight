@@ -5,6 +5,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { IRdiPipelineJob } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 
 type JobNameFormProps = {
   name: string
@@ -38,13 +39,13 @@ const validateJobName = (
   jobs: IRdiPipelineJob[],
 ) => {
   if (!jobName) {
-    return buildValidationMessage('Job name is required')
+    return buildValidationMessage(i18n.t('rdi.pipeline.jobName.required'))
   }
 
   if (jobName === currentJobName) return undefined
 
   if (jobs.some((job) => job.name === jobName)) {
-    return buildValidationMessage('Job name is already in use')
+    return buildValidationMessage(i18n.t('rdi.pipeline.jobName.inUse'))
   }
 
   return undefined
@@ -71,7 +72,7 @@ const JobNameForm = ({
       isLoading={isLoading}
       declineOnUnmount={false}
       initialValue={currentJobName || ''}
-      placeholder="Enter job name"
+      placeholder={i18n.t('rdi.pipeline.jobName.placeholder')}
       maxLength={250}
       viewChildrenMode={false}
       disableEmpty

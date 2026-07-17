@@ -19,6 +19,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import BaseCard, { BaseCardProps } from '../BaseCard'
 import JobNameForm from './JobNameForm'
@@ -32,6 +33,7 @@ export type JobsCardProps = Omit<
 }
 
 const JobsCard = (props: JobsCardProps) => {
+  const { t } = useTranslation()
   const { onSelect, isSelected } = props
 
   const [currentJobName, setCurrentJobName] = useState<Nullable<string>>(null)
@@ -132,10 +134,10 @@ const JobsCard = (props: JobsCardProps) => {
 
   return (
     <BaseCard
-      title="Transform and Validate"
+      title={t('rdi.pipeline.nav.jobsTitle')}
       titleActions={
         <RiTooltip
-          content={!hideTooltip ? 'Add a job file' : null}
+          content={!hideTooltip ? t('rdi.pipeline.nav.addJobTooltip') : null}
           position="top"
           anchorClassName="flex-row"
         >
@@ -151,7 +153,7 @@ const JobsCard = (props: JobsCardProps) => {
               setHideTooltip(true)
             }}
             disabled={isNewJob}
-            aria-label="add new job file"
+            aria-label={t('rdi.pipeline.nav.addJobAria')}
             data-testid="add-new-job"
           />
         </RiTooltip>
