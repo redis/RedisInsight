@@ -18,7 +18,7 @@ export interface NumericFieldRef {
   dataType: string
 }
 
-export interface NumericFieldOption {
+export type NumericFieldOption = {
   value: string
   label: string
 }
