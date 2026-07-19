@@ -6,6 +6,7 @@ import {
   CopyTextContainer,
   CopyBtnWrapper,
 } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface EndpointCellProps {
   dnsName: string
@@ -13,6 +14,7 @@ export interface EndpointCellProps {
 }
 
 export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
+  const { t } = useTranslation()
   if (!dnsName) {
     return null
   }
@@ -22,7 +24,7 @@ export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
     <CopyTextContainer>
       <RiTooltip
         position="bottom"
-        title="Endpoint"
+        title={t('cluster.column.endpoint')}
         content={formatLongName(text)}
       >
         <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
@@ -30,7 +32,7 @@ export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
 
       <CopyBtnWrapper
         copy={text}
-        aria-label="Copy public endpoint"
+        aria-label={t('cluster.endpoint.copyAriaLabel')}
         successLabel=""
       />
     </CopyTextContainer>

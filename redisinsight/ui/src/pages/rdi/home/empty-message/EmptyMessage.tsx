@@ -11,6 +11,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiImage } from 'uiSrc/components/base/display'
 import { EmptyPageContainer } from 'uiSrc/pages/rdi/home/empty-message/styles'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   onAddInstanceClick: () => void
@@ -18,26 +19,17 @@ export interface Props {
 
 const EmptyMessage = ({ onAddInstanceClick }: Props) => {
   const { theme } = useContext(ThemeContext)
+  const { t } = useTranslation()
   return (
     <EmptyPageContainer grow>
       <Col data-testid="empty-rdi-instance-list" align="center" gap="xxl">
         <Spacer size="space400" />
         <FlexItem>
           <Col align="center" gap="m">
-            <Title color="primary">Create data pipeline</Title>
+            <Title color="primary">{t('rdi.home.empty.title')}</Title>
             <FlexItem>
               <Col align="center">
-                <Text color="primary">
-                  Redis data integration (RDI) streams data to Redis Cloud,
-                  ensuring
-                </Text>
-                <Text color="primary">
-                  real-time sync while saving time and costs. It eliminates
-                  cache
-                </Text>
-                <Text color="primary">
-                  misses and simplifies data management.
-                </Text>
+                <Text color="primary">{t('rdi.home.empty.description')}</Text>
               </Col>
             </FlexItem>
           </Col>
@@ -48,7 +40,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
             size="l"
             onClick={onAddInstanceClick}
           >
-            Let’s connect to RDI
+            {t('rdi.home.empty.button')}
           </PrimaryButton>
         </FlexItem>
         <Spacer size="space600" />

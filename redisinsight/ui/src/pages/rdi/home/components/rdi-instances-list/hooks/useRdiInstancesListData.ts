@@ -8,14 +8,16 @@ import {
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { instancesSelector } from 'uiSrc/slices/rdi/instances'
 import { RdiListColumn } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   ENABLE_PAGINATION_COUNT,
-  BASE_COLUMNS,
+  getBaseColumns,
   SELECT_COL_ID,
 } from '../RdiInstancesList.config'
 
 const useRdiInstancesListData = () => {
+  const { t } = useTranslation()
   const {
     data: instances,
     loading,
@@ -31,12 +33,12 @@ const useRdiInstancesListData = () => {
 
   const columns: ColumnDef<RdiInstance>[] = useMemo(
     () =>
-      BASE_COLUMNS.filter(
+      getBaseColumns(t).filter(
         (col) =>
           col.id === SELECT_COL_ID ||
           (shownColumns as RdiListColumn[]).includes(col.id as RdiListColumn),
       ),
-    [shownColumns],
+    [shownColumns, t],
   )
 
   const visibleInstances = useMemo(
@@ -53,10 +55,10 @@ const useRdiInstancesListData = () => {
   )
 
   const emptyMessage = useMemo(() => {
-    if (loading) return 'Loading...'
-    if (!instances.length) return 'No added endpoints'
-    return 'No results found'
-  }, [loading, instances.length])
+    if (loading) return t('rdi.home.list.empty.loading')
+    if (!instances.length) return t('rdi.home.list.empty.noEndpoints')
+    return t('rdi.home.list.empty.noResults')
+  }, [loading, instances.length, t])
 
   return {
     loading,
