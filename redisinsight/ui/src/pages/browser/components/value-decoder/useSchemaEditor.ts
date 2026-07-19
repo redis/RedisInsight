@@ -56,8 +56,10 @@ export const applyRepeatFieldsChange = (
     return { ...node, fields }
   })
 
-export const applyRemoveNode = (nodes: SchemaNode[], id: string): SchemaNode[] =>
-  removeSchemaNode(nodes, id)
+export const applyRemoveNode = (
+  nodes: SchemaNode[],
+  id: string,
+): SchemaNode[] => removeSchemaNode(nodes, id)
 
 export const applyReorder = (
   nodes: SchemaNode[],

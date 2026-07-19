@@ -101,7 +101,10 @@ describe('schema editor mutations', () => {
     })
 
     it('returns the same array for an invalid move', () => {
-      const nodes = [field({ id: 'a', name: 'a' }), field({ id: 'b', name: 'b' })]
+      const nodes = [
+        field({ id: 'a', name: 'a' }),
+        field({ id: 'b', name: 'b' }),
+      ]
       expect(applyReorder(nodes, 0, 0)).toBe(nodes)
       expect(applyReorder(nodes, -1, 1)).toBe(nodes)
     })
@@ -109,7 +112,12 @@ describe('schema editor mutations', () => {
 
   describe('applyFieldChange', () => {
     it('patches field name without changing size', () => {
-      const target = field({ id: 'f1', name: 'old', dataType: 'uint8', size: 1 })
+      const target = field({
+        id: 'f1',
+        name: 'old',
+        dataType: 'uint8',
+        size: 1,
+      })
       const next = applyFieldChange([target], 'f1', { name: 'new' })
 
       expect(next[0]).toMatchObject({
