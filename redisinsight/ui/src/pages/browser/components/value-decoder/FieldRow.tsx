@@ -63,14 +63,12 @@ export const FieldRow = ({
         valueRender={dataTypeValueRender}
         data-testid={`${VALUE_DECODER_TEST_ID}-field-type-${field.id}`}
       />
-      <div>
-        <FieldSizeEditor
-          field={field}
-          sizeSource={sizeSource}
-          sizeRefs={sizeRefs}
-          onFieldChange={onFieldChange}
-        />
-      </div>
+      <FieldSizeEditor
+        field={field}
+        sizeSource={sizeSource}
+        sizeRefs={sizeRefs}
+        onFieldChange={onFieldChange}
+      />
       <ActionIconButton
         icon={DeleteIcon}
         aria-label="Remove field"
