@@ -1,27 +1,15 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
-import {
-  createEmptyField,
-  createEmptyRepeatBlock,
-  isRepeatNode,
-  VALUE_DECODER_TEST_ID,
-} from './constants'
+import { isRepeatNode, VALUE_DECODER_TEST_ID } from './constants'
 import { FieldRow } from './FieldRow'
 import { RepeatBlockEditor } from './RepeatBlockEditor'
-import {
-  getPriorNumericFieldsInScope,
-  isCustomSizeType,
-  NumericFieldRef,
-  removeSchemaNode,
-  updateSchemaNode,
-} from './schemaUtils'
-import { reorderList } from './reorderList'
+import { getPriorNumericFieldsInScope, NumericFieldRef } from './schemaUtils'
 import { SortableItem } from './SortableItem'
-import { BinaryFieldDefinition, SchemaNode } from './types'
-import { getFixedSize } from './utils'
+import { SchemaNode } from './types'
+import { useSchemaEditor } from './useSchemaEditor'
 import * as S from './ValueDecoderModal.styles'
 
 export interface FieldsSchemaEditorProps {
@@ -39,79 +27,15 @@ export const FieldsSchemaEditor = ({
   priorNumericFields = [],
   depth = 0,
 }: FieldsSchemaEditorProps) => {
-  const handleFieldChange = useCallback(
-    (id: string, patch: Partial<BinaryFieldDefinition>) => {
-      onChange(
-        updateSchemaNode(nodes, id, (node) => {
-          if (node.kind !== 'field') {
-            return node
-          }
-
-          const nextField = { ...node, ...patch }
-          if (patch.dataType) {
-            const fixedSize = getFixedSize(patch.dataType)
-            nextField.size = fixedSize === 'custom' ? '' : fixedSize
-            if (!isCustomSizeType(patch.dataType)) {
-              nextField.sizeSource = 'fixed'
-              nextField.sizeFieldRef = undefined
-            }
-          }
-          return nextField
-        }),
-      )
-    },
-    [nodes, onChange],
-  )
-
-  const handleRepeatChange = useCallback(
-    (id: string, patch: Partial<{ countFieldRef: string }>) => {
-      onChange(
-        updateSchemaNode(nodes, id, (node) => {
-          if (node.kind !== 'repeat') {
-            return node
-          }
-          return { ...node, ...patch }
-        }),
-      )
-    },
-    [nodes, onChange],
-  )
-
-  const handleRepeatFieldsChange = useCallback(
-    (repeatId: string, fields: SchemaNode[]) => {
-      onChange(
-        updateSchemaNode(nodes, repeatId, (node) => {
-          if (node.kind !== 'repeat') {
-            return node
-          }
-          return { ...node, fields }
-        }),
-      )
-    },
-    [nodes, onChange],
-  )
-
-  const handleRemoveNode = useCallback(
-    (id: string) => {
-      onChange(removeSchemaNode(nodes, id))
-    },
-    [nodes, onChange],
-  )
-
-  const handleReorder = useCallback(
-    (fromIndex: number, toIndex: number) => {
-      onChange(reorderList(nodes, fromIndex, toIndex))
-    },
-    [nodes, onChange],
-  )
-
-  const handleAddField = useCallback(() => {
-    onChange([...nodes, createEmptyField()])
-  }, [nodes, onChange])
-
-  const handleAddRepeat = useCallback(() => {
-    onChange([...nodes, createEmptyRepeatBlock()])
-  }, [nodes, onChange])
+  const {
+    handleFieldChange,
+    handleRepeatChange,
+    handleRepeatFieldsChange,
+    handleRemoveNode,
+    handleReorder,
+    handleAddField,
+    handleAddRepeat,
+  } = useSchemaEditor({ nodes, onChange })
 
   const renderNode = (node: SchemaNode, index: number) => {
     const repeatScopeNumeric = getPriorNumericFieldsInScope(
