@@ -5,24 +5,13 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 
 import { VALUE_DECODER_TEST_ID } from './constants'
-import { getPriorNumericFieldsInScope, NumericFieldRef } from './schemaUtils'
+import {
+  getPriorNumericFieldsInScope,
+  NumericFieldRef,
+  toNumericOptions,
+} from './schemaUtils'
 import { RepeatBlockDefinition, SchemaNode } from './types'
 import * as S from './ValueDecoderModal.styles'
-
-const toNumericOptions = (fields: NumericFieldRef[]) => {
-  const nameCounts = fields.reduce<Record<string, number>>((counts, item) => {
-    counts[item.name] = (counts[item.name] ?? 0) + 1
-    return counts
-  }, {})
-
-  return fields.map((item) => ({
-    value: item.id,
-    label:
-      nameCounts[item.name] > 1
-        ? `${item.name} (${item.dataType}) · ${item.id}`
-        : `${item.name} (${item.dataType})`,
-  }))
-}
 
 export interface RepeatBlockEditorProps {
   repeat: RepeatBlockDefinition

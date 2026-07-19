@@ -13,7 +13,12 @@ import {
 } from './constants'
 import { createDescriptionSelectValueRender } from './DescriptionSelectValueRender'
 import { DATA_TYPE_DESCRIPTIONS } from './descriptions'
-import { getPriorNumericFieldsInScope, NumericFieldRef } from './schemaUtils'
+import {
+  getPriorNumericFieldsInScope,
+  NumericFieldOption,
+  NumericFieldRef,
+  toNumericOptions,
+} from './schemaUtils'
 import { BinaryFieldDefinition, FieldSizeSource, SchemaNode } from './types'
 import { getFixedSize, getSizeUnit } from './utils'
 import * as S from './ValueDecoderModal.styles'
@@ -32,25 +37,10 @@ const dataTypeValueRender = createDescriptionSelectValueRender(
   DATA_TYPE_DESCRIPTIONS,
 )
 
-const toNumericOptions = (fields: NumericFieldRef[]) => {
-  const nameCounts = fields.reduce<Record<string, number>>((counts, item) => {
-    counts[item.name] = (counts[item.name] ?? 0) + 1
-    return counts
-  }, {})
-
-  return fields.map((item) => ({
-    value: item.id,
-    label:
-      nameCounts[item.name] > 1
-        ? `${item.name} (${item.dataType}) · ${item.id}`
-        : `${item.name} (${item.dataType})`,
-  }))
-}
-
 interface FieldSizeEditorProps {
   field: BinaryFieldDefinition
   sizeSource: FieldSizeSource
-  sizeRefs: ReturnType<typeof toNumericOptions>
+  sizeRefs: NumericFieldOption[]
   onFieldChange: (id: string, patch: Partial<BinaryFieldDefinition>) => void
 }
 

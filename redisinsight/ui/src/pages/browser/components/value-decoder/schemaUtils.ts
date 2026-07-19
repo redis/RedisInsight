@@ -18,6 +18,29 @@ export interface NumericFieldRef {
   dataType: string
 }
 
+export interface NumericFieldOption {
+  value: string
+  label: string
+}
+
+/** Select options for numeric field refs; disambiguates duplicate names with id. */
+export const toNumericOptions = (
+  fields: NumericFieldRef[],
+): NumericFieldOption[] => {
+  const nameCounts = fields.reduce<Record<string, number>>((counts, item) => {
+    counts[item.name] = (counts[item.name] ?? 0) + 1
+    return counts
+  }, {})
+
+  return fields.map((item) => ({
+    value: item.id,
+    label:
+      nameCounts[item.name] > 1
+        ? `${item.name} (${item.dataType}) · ${item.id}`
+        : `${item.name} (${item.dataType})`,
+  }))
+}
+
 export const isNumericCountType = (dataType: string): boolean =>
   NUMERIC_COUNT_DATA_TYPES.includes(
     dataType as (typeof NUMERIC_COUNT_DATA_TYPES)[number],
