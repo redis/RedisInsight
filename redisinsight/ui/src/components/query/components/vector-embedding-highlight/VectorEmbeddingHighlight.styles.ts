@@ -5,8 +5,7 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   theme: Theme
 }>`
   .monaco-vector-embedding {
-    background-color: ${({ theme }) => theme.semantic.color.background.informative200};
-    border-bottom: 1px solid ${({ theme }) => theme.semantic.color.border.informative400};
+    background-color: ${({ theme }) => theme.semantic.color.background.neutral300};
     border-radius: ${({ theme }) => theme.core.space.space050};
   }
 `
