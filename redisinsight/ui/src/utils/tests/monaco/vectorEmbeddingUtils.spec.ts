@@ -120,5 +120,21 @@ describe('detectVectorEmbeddings', () => {
       const marks = detectVectorEmbeddings(`HSET doc:1 v "${FP32_ESCAPED}"`)
       expect(marks[0].paramName).toBeUndefined()
     })
+
+    it('treats PARAMS nargs as a token count, not a pair count', () => {
+      // nargs=2 -> a single param (limit 10); the blob is a later, non-param value.
+      const query = `FT.SEARCH idx "q" PARAMS 2 limit 10 extra "${FP32_ESCAPED}"`
+      const marks = detectVectorEmbeddings(query)
+      expect(marks).toHaveLength(1)
+      expect(marks[0].paramName).toBeUndefined()
+    })
+
+    it('maps the name for a multi-param PARAMS clause', () => {
+      // nargs=4 -> two params (topk 10, blob <embedding>).
+      const query = `FT.SEARCH idx "q" PARAMS 4 topk 10 blob "${FP32_ESCAPED}" DIALECT 2`
+      const marks = detectVectorEmbeddings(query)
+      expect(marks).toHaveLength(1)
+      expect(marks[0].paramName).toBe('blob')
+    })
   })
 })

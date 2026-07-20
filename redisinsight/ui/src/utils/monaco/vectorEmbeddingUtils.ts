@@ -49,10 +49,12 @@ const buildParamNameLookup = (query: string): Map<string, string> => {
   const paramsIndex = tokens.findIndex((t) => t.toUpperCase() === 'PARAMS')
   if (paramsIndex === -1) return lookup
 
-  const declaredCount = Number(tokens[paramsIndex + 1])
+  // PARAMS <nargs> counts the tokens that follow (name/value each count),
+  // so the number of pairs is nargs / 2.
+  const declaredArgs = Number(tokens[paramsIndex + 1])
   const pairs =
-    Number.isInteger(declaredCount) && declaredCount > 0
-      ? declaredCount
+    Number.isInteger(declaredArgs) && declaredArgs > 0
+      ? Math.floor(declaredArgs / 2)
       : Math.floor((tokens.length - (paramsIndex + 2)) / 2)
 
   for (let pair = 0; pair < pairs; pair++) {
