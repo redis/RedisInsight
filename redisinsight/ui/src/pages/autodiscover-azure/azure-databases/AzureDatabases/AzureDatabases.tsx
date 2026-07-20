@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import {
@@ -31,7 +32,7 @@ import {
 } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 
 import {
-  AZURE_DATABASES_COLUMNS,
+  getAzureDatabasesColumns,
   MAX_DATABASES_SELECTION,
 } from './AzureDatabases.constants'
 
@@ -66,6 +67,8 @@ const AzureDatabases = ({
   onRefresh,
   onManualConnection,
 }: Props) => {
+  const { t } = useTranslation()
+  const columns = useMemo(() => getAzureDatabasesColumns(t), [t])
   const [items, setItems] = useState<AzureRedisDatabase[]>(databases)
 
   useEffect(() => {
@@ -141,14 +144,14 @@ const AzureDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Azure Redis Databases"
+          title={t('autodiscover.azure.databases.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
-          backButtonText="Subscriptions"
+          backButtonText={t('autodiscover.azure.databases.backButton')}
           subTitle={
             <Row gap="l" align="center">
               <Text size="M">
-                Subscription:{' '}
+                {t('autodiscover.azure.databases.subscription')}{' '}
                 <Text component="span" variant="semiBold">
                   {subscriptionName}
                 </Text>
@@ -157,11 +160,11 @@ const AzureDatabases = ({
                 icon={RefreshIcon}
                 onClick={onRefresh}
                 disabled={loading}
-                aria-label="Refresh databases"
+                aria-label={t('autodiscover.azure.databases.refreshAria')}
                 data-testid="btn-refresh-databases"
               />
               <Text size="M">|</Text>
-              <Text size="M">Auth:</Text>
+              <Text size="M">{t('autodiscover.azure.databases.auth')}</Text>
               <RiRadioGroupRoot
                 value={authType}
                 onChange={(value) => onAuthTypeChange(value as AzureAuthType)}
@@ -175,7 +178,7 @@ const AzureDatabases = ({
                     >
                       <RiRadioGroupItemIndicator />
                       <RiRadioGroupItemLabel>
-                        Microsoft Entra ID (Recommended)
+                        {t('autodiscover.azure.databases.authEntraId')}
                       </RiRadioGroupItemLabel>
                     </RiRadioGroupItemRoot>
                   </Row>
@@ -185,7 +188,9 @@ const AzureDatabases = ({
                       data-testid="auth-type-access-key"
                     >
                       <RiRadioGroupItemIndicator />
-                      <RiRadioGroupItemLabel>Access Key</RiRadioGroupItemLabel>
+                      <RiRadioGroupItemLabel>
+                        {t('autodiscover.azure.databases.authAccessKey')}
+                      </RiRadioGroupItemLabel>
                     </RiRadioGroupItemRoot>
                   </Row>
                 </Row>
@@ -202,7 +207,7 @@ const AzureDatabases = ({
             onRowClick={handleRowClick}
             getRowId={(row) => row.id}
             getRowCanSelect={canSelectRow}
-            columns={AZURE_DATABASES_COLUMNS}
+            columns={columns}
             data={items}
             defaultSorting={[{ id: 'name', desc: false }]}
             paginationEnabled={items.length > 10}
@@ -214,9 +219,7 @@ const AzureDatabases = ({
                 </Col>
               ) : (
                 <EmptyState
-                  message={
-                    error || 'No Redis databases found in this subscription.'
-                  }
+                  message={error || t('autodiscover.azure.databases.empty')}
                 />
               )
             }
@@ -230,19 +233,22 @@ const AzureDatabases = ({
         <Row justify="between" align="center">
           {isMaxSelected ? (
             <Text size="S" data-testid="max-selection-message">
-              Maximum of {MAX_DATABASES_SELECTION} databases can be added at a
-              time.
+              {t('autodiscover.azure.databases.maxSelection', {
+                max: MAX_DATABASES_SELECTION,
+              })}
             </Text>
           ) : (
             <div />
           )}
           <Row gap="m" grow={false}>
-            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <SecondaryButton onClick={onClose}>
+              {t('autodiscover.azure.button.cancel')}
+            </SecondaryButton>
             <SecondaryButton
               data-testid="btn-manual-connection"
               onClick={onManualConnection}
             >
-              Manual Connection
+              {t('autodiscover.azure.button.manualConnection')}
             </SecondaryButton>
             <PrimaryButton
               data-testid="btn-submit"
@@ -250,12 +256,11 @@ const AzureDatabases = ({
               loading={loading}
               onClick={onSubmit}
             >
-              Add{' '}
               {selectedDatabases.length > 0
-                ? `(${selectedDatabases.length})`
-                : ''}{' '}
-              Database
-              {selectedDatabases.length !== 1 ? 's' : ''}
+                ? t('autodiscover.azure.databases.addButton', {
+                    count: selectedDatabases.length,
+                  })
+                : t('autodiscover.azure.databases.addButtonEmpty')}
             </PrimaryButton>
           </Row>
         </Row>

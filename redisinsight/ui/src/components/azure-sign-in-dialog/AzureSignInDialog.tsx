@@ -11,6 +11,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { AzureSignInDialogProps } from './AzureSignInDialog.types'
 import * as S from './AzureSignInDialog.styles'
@@ -22,25 +23,13 @@ const TEST_ID = 'azure-sign-in-dialog'
 const AZURE_TENANT_ID_REGEX =
   /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,})$/i
 
-const TENANT_ID_ERROR = 'Enter a valid tenant GUID or domain.'
-
-const TENANT_ID_HINT =
-  'Only needed if your resources and your account are in different tenants.'
-
-// Explains the cross-tenant case: authenticate against the tenant that OWNS the
-// resources, not the user's home tenant.
-const TENANT_ID_INFO =
-  "Leave blank to use your account's default (home) tenant. " +
-  'If your Azure Managed Redis resources are in a different tenant than your ' +
-  'account, enter the tenant that owns the resources (you need guest access ' +
-  'to it) — not your own home tenant.'
-
 export const AzureSignInDialog = ({
   isOpen,
   loading,
   onClose,
   onSignIn,
 }: AzureSignInDialogProps) => {
+  const { t } = useTranslation()
   const [tenantId, setTenantId] = useState('')
 
   useEffect(() => {
@@ -71,7 +60,7 @@ export const AzureSignInDialog = ({
 
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title>
-            Connect to Azure Managed Redis
+            {t('autodiscover.azure.signIn.title')}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
@@ -79,26 +68,29 @@ export const AzureSignInDialog = ({
 
         <Col gap="l" data-testid={`${TEST_ID}-body`}>
           <Text color="secondary">
-            Sign in with your Microsoft account to discover and add Azure
-            Managed Redis databases.
+            {t('autodiscover.azure.signIn.description')}
           </Text>
 
           <Spacer size="xxl" />
 
           <FormField
-            label="Tenant ID (optional)"
-            infoIconProps={{ content: TENANT_ID_INFO }}
+            label={t('autodiscover.azure.signIn.tenantLabel')}
+            infoIconProps={{
+              content: t('autodiscover.azure.signIn.tenantInfo'),
+            }}
           >
             <TextInput
               value={tenantId}
               onChange={setTenantId}
-              placeholder="your-tenant.onmicrosoft.com or GUID"
+              placeholder={t('autodiscover.azure.signIn.tenantPlaceholder')}
               name="tenantId"
               data-testid={`${TEST_ID}-tenant-input`}
             />
             <Spacer size="s" />
             <Text size="S" color={isTenantInvalid ? 'danger' : 'secondary'}>
-              {isTenantInvalid ? TENANT_ID_ERROR : TENANT_ID_HINT}
+              {isTenantInvalid
+                ? t('autodiscover.azure.signIn.tenantError')
+                : t('autodiscover.azure.signIn.tenantHint')}
             </Text>
           </FormField>
         </Col>
@@ -111,7 +103,7 @@ export const AzureSignInDialog = ({
             onClick={onClose}
             data-testid={`${TEST_ID}-cancel`}
           >
-            Cancel
+            {t('autodiscover.azure.button.cancel')}
           </SecondaryButton>
           <PrimaryButton
             size="large"
@@ -120,7 +112,7 @@ export const AzureSignInDialog = ({
             onClick={handleSignIn}
             data-testid={`${TEST_ID}-sign-in`}
           >
-            Sign in with Microsoft
+            {t('autodiscover.azure.signIn.signInButton')}
           </PrimaryButton>
         </Row>
       </S.ModalContent>

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AzureSignInDialog } from 'uiSrc/components/azure-sign-in-dialog'
 import { azureAuthTenantSelector } from 'uiSrc/slices/oauth/azure'
@@ -18,6 +19,7 @@ import {
 import AzureSubscriptions from './AzureSubscriptions/AzureSubscriptions'
 
 const AzureSubscriptionsPage = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useAppDispatch()
   const { initiateLogin, loading: azureLoading, account } = useAzureAuth()
@@ -33,7 +35,7 @@ const AzureSubscriptionsPage = () => {
       return
     }
 
-    setTitle('Azure Subscriptions')
+    setTitle(t('autodiscover.azure.subscriptions.title'))
 
     if (!loaded.subscriptions) {
       dispatch(fetchSubscriptionsAzure(account.id, tenant ?? undefined))

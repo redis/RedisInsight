@@ -1,19 +1,22 @@
 import React from 'react'
+import { TFunction } from 'i18next'
 
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 import { ColumnHeader } from 'uiSrc/components/column-header'
 import { DescriptionsTooltip } from 'uiSrc/pages/autodiscover-azure/components'
-import { AZURE_SUBSCRIPTION_STATE_DESCRIPTIONS } from 'uiSrc/pages/autodiscover-azure/constants'
+import { getAzureSubscriptionStateDescriptions } from 'uiSrc/pages/autodiscover-azure/constants'
 
-export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
+export const getAzureSubscriptionsColumns = (
+  t: TFunction,
+): ColumnDef<AzureSubscription>[] => [
   {
     id: 'row-selection',
     maxSize: 15,
     size: 15,
     isHeaderCustom: true,
-    header: '#',
+    header: t('autodiscover.azure.column.number'),
     cell: ({ row }) => (
       <Table.RowSelectionButton
         row={row}
@@ -23,14 +26,14 @@ export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
   },
   {
     id: 'displayName',
-    header: 'Subscription Name',
+    header: t('autodiscover.azure.column.subscriptionName'),
     accessorKey: 'displayName',
     enableSorting: true,
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
   },
   {
     id: 'subscriptionId',
-    header: 'Subscription ID',
+    header: t('autodiscover.azure.column.subscriptionId'),
     accessorKey: 'subscriptionId',
     enableSorting: true,
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
@@ -42,10 +45,10 @@ export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
     isHeaderCustom: true,
     header: () => (
       <ColumnHeader
-        label="State"
+        label={t('autodiscover.azure.column.state')}
         tooltip={
           <DescriptionsTooltip
-            descriptions={AZURE_SUBSCRIPTION_STATE_DESCRIPTIONS}
+            descriptions={getAzureSubscriptionStateDescriptions(t)}
           />
         }
       />
