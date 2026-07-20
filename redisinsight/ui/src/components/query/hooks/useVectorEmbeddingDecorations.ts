@@ -1,19 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { Nullable, VectorEmbeddingMark } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
+import { Nullable } from 'uiSrc/utils'
 
 import { UseVectorEmbeddingDecorationsProps } from './useVectorEmbeddingDecorations.types'
 
 const EMBEDDING_INLINE_CLASS = 'monaco-vector-embedding'
-
-const hoverMessage = ({
-  format,
-  dimensions,
-  byteSize,
-}: VectorEmbeddingMark) => ({
-  value: `Vector embedding (${format}) — ${dimensions} dims, ${byteSize} bytes`,
-})
 
 /**
  * Applies an inline highlight behind every detected embedding. Lazily creates
@@ -23,6 +16,7 @@ export const useVectorEmbeddingDecorations = ({
   monacoObjects,
   marks,
 }: UseVectorEmbeddingDecorationsProps) => {
+  const { t } = useTranslation()
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
 
@@ -50,13 +44,18 @@ export const useVectorEmbeddingDecorations = ({
         ),
         options: {
           inlineClassName: EMBEDDING_INLINE_CLASS,
-          hoverMessage: hoverMessage(mark),
+          hoverMessage: {
+            value: t('query.editor.vectorEmbedding.hover', {
+              dimensions: mark.dimensions,
+              byteSize: mark.byteSize,
+            }),
+          },
         },
       }
     })
 
     decorationCollection.current.set(newDecorations)
-  }, [marks])
+  }, [marks, t])
 
   return { decorationCollection }
 }

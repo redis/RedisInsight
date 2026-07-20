@@ -2,8 +2,8 @@ import React from 'react'
 
 import { useVectorEmbeddingMarks } from '../../hooks/useVectorEmbeddingMarks'
 import { useVectorEmbeddingDecorations } from '../../hooks/useVectorEmbeddingDecorations'
-import { VectorEmbeddingHighlightStyles } from './VectorEmbeddingHighlight.styles'
 import { VectorEmbeddingHighlightProps } from './VectorEmbeddingHighlight.types'
+import { VectorEmbeddingHighlightStyles } from './VectorEmbeddingHighlight.styles'
 
 /**
  * Detects large vector embeddings in the query and highlights them in the

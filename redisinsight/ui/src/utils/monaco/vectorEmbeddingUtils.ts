@@ -25,6 +25,21 @@ const stripQuotes = (token: string): string => token.replace(/^["']|["']$/g, '')
 const normaliseForParamMatch = (value: string): string =>
   stripQuotes(value).replace(/\\/g, '')
 
+const buildMark = (
+  start: number,
+  length: number,
+  format: VectorEmbeddingFormat,
+  byteSize: number,
+  values: number[],
+): VectorEmbeddingMark => ({
+  range: { start, end: start + length },
+  format,
+  byteSize,
+  dimensions: values.length,
+  firstValues: values.slice(0, PREVIEW_HEAD),
+  lastValues: values.slice(-PREVIEW_TAIL),
+})
+
 // Maps each FT.SEARCH/FT.AGGREGATE PARAMS value to its argument name.
 const buildParamNameLookup = (query: string): Map<string, string> => {
   const { args } = splitQueryByArgs(query)
@@ -72,14 +87,15 @@ export const detectVectorEmbeddings = (
     if (!isBinaryVector(buffer)) continue
 
     const values = Array.from(bufferToFloat32Array(new Uint8Array(buffer.data)))
-    marks.push({
-      range: { start: match.index, end: match.index + match[0].length },
-      format: VectorEmbeddingFormat.BinaryString,
-      byteSize: buffer.data.length,
-      dimensions: buffer.data.length / FLOAT32_BYTES,
-      firstValues: values.slice(0, PREVIEW_HEAD),
-      lastValues: values.slice(-PREVIEW_TAIL),
-    })
+    marks.push(
+      buildMark(
+        match.index,
+        match[0].length,
+        VectorEmbeddingFormat.BinaryString,
+        buffer.data.length,
+        values,
+      ),
+    )
   }
 
   const arrayRegex = new RegExp(NUMERIC_ARRAY_REGEX)
@@ -95,14 +111,15 @@ export const detectVectorEmbeddings = (
       continue
 
     const values = parts.map(Number)
-    marks.push({
-      range: { start: match.index, end: match.index + match[0].length },
-      format: VectorEmbeddingFormat.FloatArray,
-      byteSize: values.length * FLOAT32_BYTES,
-      dimensions: values.length,
-      firstValues: values.slice(0, PREVIEW_HEAD),
-      lastValues: values.slice(-PREVIEW_TAIL),
-    })
+    marks.push(
+      buildMark(
+        match.index,
+        match[0].length,
+        VectorEmbeddingFormat.FloatArray,
+        values.length * FLOAT32_BYTES,
+        values,
+      ),
+    )
   }
 
   const paramNames = buildParamNameLookup(query)
