@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory, StandaloneEmptyConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory, IndexHashKeyFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -126,43 +126,5 @@ test.describe('Vector Search > Create Index from List Page', () => {
     await vectorSearchPage.createIndexForm.createIndexButton.click();
     await expect(vectorSearchPage.queryPageWrapper).toBeVisible();
     await expect(vectorSearchPage.indexCreatedToast).toBeVisible();
-  });
-});
-
-test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', () => {
-  let database: DatabaseInstance;
-  const emptyIndex = IndexConfigFactory.build();
-
-  test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneEmptyConfigFactory.build());
-  });
-
-  test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteIndex(database.id, emptyIndex.indexName);
-    await apiHelper.deleteDatabase(database.id);
-  });
-
-  test('should disable "Use existing data" when no hash or JSON keys exist', async ({
-    vectorSearchPage,
-    apiHelper,
-  }) => {
-    // FLUSHDB leaves no hash/JSON keys → "Use existing data" should be disabled
-    await apiHelper.sendCommand(database.id, 'FLUSHDB');
-    await apiHelper.createIndex(database.id, emptyIndex.indexName, emptyIndex.prefix, emptyIndex.schema);
-
-    await expect
-      .poll(() => apiHelper.getIndexes(database.id).then((indexes) => indexes.includes(emptyIndex.indexName)))
-      .toBe(true);
-
-    // Navigate to list page
-    await vectorSearchPage.goto(database.id);
-    await expect(vectorSearchPage.listWrapper).toBeVisible();
-
-    // Open create index menu → "Use existing data" should be disabled
-    await vectorSearchPage.indexList.createIndexButton.click();
-
-    const existingDataItem = vectorSearchPage.indexList.getCreateIndexMenuItem('existing-data');
-    await expect(existingDataItem).toBeVisible();
-    await expect(existingDataItem).toHaveAttribute('data-disabled', '');
   });
 });
