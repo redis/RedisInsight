@@ -13,6 +13,7 @@ import config from 'src/utils/config';
 import { ClientMetadata } from 'src/common/models';
 import { PluginStateRepository } from 'src/modules/workbench/repositories/plugin-state.repository';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { splitCliCommandLine } from 'src/utils/cli-helper';
 
 const PLUGINS_CONFIG = config.get('plugins');
 
@@ -133,14 +134,22 @@ export class PluginsService {
     clientMetadata: ClientMetadata,
     commandLine: string,
   ) {
-    const targetCommand = commandLine.toLowerCase();
+    let targetCommand = '';
+    try {
+      // Tokenize exactly as the executor does so validation and execution
+      // agree on the command word; unparseable input stays rejected.
+      targetCommand =
+        `${splitCliCommandLine(commandLine)[0] ?? ''}`.toLowerCase();
+    } catch (e) {
+      // ignore parsing errors and fall through to the not-supported error
+    }
 
     const whitelist = await this.getWhitelistCommands(clientMetadata);
 
-    if (!whitelist.find((command) => targetCommand.startsWith(command))) {
+    if (!targetCommand || !whitelist.includes(targetCommand)) {
       throw new CommandNotSupportedError(
         ERROR_MESSAGES.PLUGIN_COMMAND_NOT_SUPPORTED(
-          targetCommand.split(' ')[0].toUpperCase(),
+          targetCommand.toUpperCase(),
         ),
       );
     }

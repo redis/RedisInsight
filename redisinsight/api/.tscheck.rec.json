@@ -1329,10 +1329,6 @@
   "src/modules/tag/tag.service.spec.ts": {
     "TS2345": 2
   },
-  "src/modules/workbench/plugins.service.spec.ts": {
-    "TS7005": 11,
-    "TS7034": 3
-  },
   "src/modules/workbench/providers/plugin-commands-whitelist.provider.spec.ts": {
     "TS7005": 10,
     "TS7034": 2

@@ -14,6 +14,7 @@ import { WorkbenchCommandsExecutor } from 'src/modules/workbench/providers/workb
 import { BadRequestException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { PluginsService } from 'src/modules/workbench/plugins.service';
+import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { PluginCommandsWhitelistProvider } from 'src/modules/workbench/providers/plugin-commands-whitelist.provider';
 import { PluginStateRepository } from 'src/modules/workbench/repositories/plugin-state.repository';
 import { PluginState } from 'src/modules/workbench/models/plugin-state';
@@ -52,9 +53,13 @@ const mockPluginStateProvider = () => ({
 
 describe('PluginsService', () => {
   let service: PluginsService;
-  let workbenchCommandsExecutor;
-  let pluginsCommandsWhitelistProvider;
-  let pluginStateProvider;
+  let workbenchCommandsExecutor: ReturnType<
+    typeof mockWorkbenchCommandsExecutor
+  >;
+  let pluginsCommandsWhitelistProvider: ReturnType<
+    typeof mockPluginCommandsWhitelistProvider
+  >;
+  let pluginStateProvider: ReturnType<typeof mockPluginStateProvider>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -80,14 +85,15 @@ describe('PluginsService', () => {
     }).compile();
 
     service = module.get<PluginsService>(PluginsService);
-    workbenchCommandsExecutor = module.get<WorkbenchCommandsExecutor>(
+    workbenchCommandsExecutor = module.get(
       WorkbenchCommandsExecutor,
-    );
-    pluginsCommandsWhitelistProvider =
-      module.get<PluginCommandsWhitelistProvider>(
-        PluginCommandsWhitelistProvider,
-      );
-    pluginStateProvider = module.get(PluginStateRepository);
+    ) as unknown as typeof workbenchCommandsExecutor;
+    pluginsCommandsWhitelistProvider = module.get(
+      PluginCommandsWhitelistProvider,
+    ) as unknown as typeof pluginsCommandsWhitelistProvider;
+    pluginStateProvider = module.get(
+      PluginStateRepository,
+    ) as unknown as typeof pluginStateProvider;
   });
 
   describe('sendCommand', () => {
@@ -128,6 +134,42 @@ describe('PluginsService', () => {
       });
       expect(workbenchCommandsExecutor.sendCommand).not.toHaveBeenCalled();
     });
+    it.each(['getdel foo', 'getex foo', 'getset foo bar', 'getdel\tfoo'])(
+      'should reject non-whitelisted command "%s" that shares a prefix with a whitelisted command',
+      async (command) => {
+        pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
+          mockWhitelistCommandsResponse,
+        );
+
+        const dto = { command, mode: RunQueryMode.ASCII };
+
+        const result = await service.sendCommand(
+          mockWorkbenchClientMetadata,
+          dto,
+        );
+
+        expect(result.result?.[0]?.status).toEqual(CommandExecutionStatus.Fail);
+        expect(workbenchCommandsExecutor.sendCommand).not.toHaveBeenCalled();
+      },
+    );
+    it.each(['GET foo', 'get\tfoo'])(
+      'should allow whitelisted command "%s" regardless of casing or delimiter',
+      async (command) => {
+        pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
+          mockWhitelistCommandsResponse,
+        );
+
+        const result = await service.sendCommand(mockWorkbenchClientMetadata, {
+          command,
+          mode: RunQueryMode.ASCII,
+        });
+
+        expect(result.result?.[0]?.status).not.toEqual(
+          CommandExecutionStatus.Fail,
+        );
+        expect(workbenchCommandsExecutor.sendCommand).toHaveBeenCalled();
+      },
+    );
     it('should throw an error when command execution failed', async () => {
       pluginsCommandsWhitelistProvider.getWhitelistCommands.mockResolvedValueOnce(
         mockWhitelistCommandsResponse,
