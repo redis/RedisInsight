@@ -16,7 +16,7 @@ import {
   rdiPipelineStrategiesSelector,
 } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { INGEST_OPTION, NO_TEMPLATE_LABEL } from './constants'
+import { INGEST_OPTION } from './constants'
 import TemplateForm, { Props } from './TemplateForm'
 
 const mockedProps = mock<Props>()
@@ -114,7 +114,7 @@ describe('TemplateForm', () => {
     )
 
     expect(screen.getByTestId('db-type-select')).toHaveTextContent(
-      NO_TEMPLATE_LABEL,
+      'No template',
     )
   })
 

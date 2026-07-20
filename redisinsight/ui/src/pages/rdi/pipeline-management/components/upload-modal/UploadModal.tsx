@@ -15,7 +15,18 @@ import {
   setPipelineJobs,
 } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
 import UploadDialog from './components/upload-dialog/UploadDialog'
+
+const UPLOAD_VALIDATION_ERRORS = {
+  noConfig: 'config.yaml is missing',
+  noJobs: 'No jobs folder found',
+}
+
+const UPLOAD_ERROR_LABEL_KEYS: Record<string, string> = {
+  [UPLOAD_VALIDATION_ERRORS.noConfig]: 'rdi.pipeline.upload.errorNoConfig',
+  [UPLOAD_VALIDATION_ERRORS.noJobs]: 'rdi.pipeline.upload.errorNoJobs',
+}
 
 export interface Props {
   trigger?: React.ReactElement
@@ -25,6 +36,7 @@ export interface Props {
 }
 
 const UploadModal = (props: Props) => {
+  const { t } = useTranslation()
   const { trigger, visible, onUploadedPipeline, onClose } = props
 
   const [isModalVisible, setIsModalVisible] = useState(visible)
@@ -48,7 +60,7 @@ const UploadModal = (props: Props) => {
   const validateZip = (zip: JSZip) => {
     // check if config.yaml exists
     if (zip.file('config.yaml') === null) {
-      throw new Error('config.yaml is missing')
+      throw new Error(UPLOAD_VALIDATION_ERRORS.noConfig)
     }
 
     // check if job files exist
@@ -56,7 +68,7 @@ const UploadModal = (props: Props) => {
       filename.startsWith('jobs/'),
     )
     if (!jobFiles.length) {
-      throw new Error('No jobs folder found')
+      throw new Error(UPLOAD_VALIDATION_ERRORS.noJobs)
     }
   }
 
@@ -150,7 +162,8 @@ const UploadModal = (props: Props) => {
         },
       })
 
-      setError(errorMessage)
+      const labelKey = UPLOAD_ERROR_LABEL_KEYS[errorMessage]
+      setError(labelKey ? t(labelKey as never) : errorMessage)
     }
   }
 

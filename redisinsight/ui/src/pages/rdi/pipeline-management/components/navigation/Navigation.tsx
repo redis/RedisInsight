@@ -9,6 +9,7 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 import { LoadingContent } from 'uiSrc/components/base'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ConfigurationCard, JobsCard } from './cards'
 
@@ -27,6 +28,7 @@ const getSelectedTab = (path: string, rdiInstanceId: string) => {
 }
 
 const Navigation = () => {
+  const { t } = useTranslation()
   const [selectedTab, setSelectedTab] =
     useState<Nullable<RdiPipelineTabs>>(null)
 
@@ -52,7 +54,7 @@ const Navigation = () => {
   return (
     <Col gap="l">
       <Title size="S" color="primary">
-        Pipeline management
+        {t('rdi.pipeline.nav.title')}
       </Title>
 
       {loading && <LoadingContent lines={4} />}

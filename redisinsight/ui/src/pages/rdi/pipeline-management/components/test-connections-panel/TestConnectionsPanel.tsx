@@ -10,6 +10,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import Divider from 'uiSrc/components/divider/Divider'
+import { useTranslation } from 'uiSrc/i18n'
 import { TestConnectionContainer } from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-panel/styles'
 
 interface TestConnectionPanelWrapperProps {
@@ -20,31 +21,36 @@ interface TestConnectionPanelWrapperProps {
 const TestConnectionPanelWrapper = ({
   children,
   onClose,
-}: TestConnectionPanelWrapperProps) => (
-  <TestConnectionContainer grow data-testid="test-connection-panel" gap="xxl">
-    <FlexItem>
-      <Row align="center" justify="between">
-        <Title size="L" color="primary">
-          Test connection
-        </Title>
-        <IconButton
-          icon={CancelSlimIcon}
-          aria-label="close test connections panel"
-          onClick={onClose}
-          data-testid="close-test-connections-btn"
-        />
-      </Row>
-    </FlexItem>
-    <FlexItem />
-    <FlexItem grow>{children}</FlexItem>
-  </TestConnectionContainer>
-)
+}: TestConnectionPanelWrapperProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <TestConnectionContainer grow data-testid="test-connection-panel" gap="xxl">
+      <FlexItem>
+        <Row align="center" justify="between">
+          <Title size="L" color="primary">
+            {t('rdi.pipeline.testConn.title')}
+          </Title>
+          <IconButton
+            icon={CancelSlimIcon}
+            aria-label={t('rdi.pipeline.testConn.closeAria')}
+            onClick={onClose}
+            data-testid="close-test-connections-btn"
+          />
+        </Row>
+      </FlexItem>
+      <FlexItem />
+      <FlexItem grow>{children}</FlexItem>
+    </TestConnectionContainer>
+  )
+}
 
 export interface Props {
   onClose: () => void
 }
 
 const TestConnectionsPanel = (props: Props) => {
+  const { t } = useTranslation()
   const { onClose } = props
   const { loading, results } = useAppSelector(rdiTestConnectionsSelector)
 
@@ -53,7 +59,7 @@ const TestConnectionsPanel = (props: Props) => {
       <TestConnectionPanelWrapper onClose={onClose}>
         <Col centered>
           <FlexItem>
-            <Text>Loading results...</Text>
+            <Text>{t('rdi.pipeline.testConn.loading')}</Text>
           </FlexItem>
           <FlexItem>
             <Loader
@@ -71,7 +77,7 @@ const TestConnectionsPanel = (props: Props) => {
     return (
       <TestConnectionPanelWrapper onClose={onClose}>
         <Col centered>
-          <Text>No results found. Please try again.</Text>
+          <Text>{t('rdi.pipeline.testConn.noResults')}</Text>
         </Col>
       </TestConnectionPanelWrapper>
     )
@@ -81,14 +87,14 @@ const TestConnectionsPanel = (props: Props) => {
     <TestConnectionPanelWrapper onClose={onClose}>
       <Col gap="xxl">
         <FlexItem>
-          <Text color="primary">Source connections</Text>
+          <Text color="primary">{t('rdi.pipeline.testConn.source')}</Text>
           <TestConnectionsLog data={results.source} />
         </FlexItem>
         <FlexItem>
           <Divider colorVariable="separatorColor" />
         </FlexItem>
         <FlexItem>
-          <Text color="primary">Target connections</Text>
+          <Text color="primary">{t('rdi.pipeline.testConn.target')}</Text>
           <TestConnectionsLog data={results.target} />
         </FlexItem>
       </Col>

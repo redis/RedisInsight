@@ -6,6 +6,7 @@ import { Indicator } from 'uiSrc/components/base/text/text.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Icon, ToastNotificationIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 import { useConfigurationState } from './hooks'
 
 import BaseCard, { BaseCardProps } from './BaseCard'
@@ -22,6 +23,7 @@ const ConfigurationCard = ({
   onSelect,
   isSelected,
 }: ConfigurationCardProps) => {
+  const { t } = useTranslation()
   const { hasChanges, isValid, configValidationErrors } =
     useConfigurationState()
 
@@ -31,7 +33,7 @@ const ConfigurationCard = ({
 
   return (
     <BaseCard
-      title="Configuration"
+      title={t('rdi.pipeline.nav.configTitle')}
       isSelected={isSelected}
       tabIndex={0}
       onClick={handleClick}
@@ -42,7 +44,7 @@ const ConfigurationCard = ({
 
         {hasChanges && (
           <RiTooltip
-            content="This file contains undeployed changes."
+            content={t('rdi.pipeline.nav.undeployedChanges')}
             position="top"
           >
             <Indicator
@@ -52,7 +54,7 @@ const ConfigurationCard = ({
           </RiTooltip>
         )}
 
-        <Text>Configuration file</Text>
+        <Text>{t('rdi.pipeline.nav.configFile')}</Text>
 
         {!isValid && (
           <RiTooltip

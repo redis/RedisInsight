@@ -34,6 +34,7 @@ import { Loader } from 'uiSrc/components/base/display'
 import TemplateButton from '../../components/template-button'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Link, TextButton } from '@redis-ui/components'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { StyledRdiJobConfigContainer } from 'uiSrc/pages/rdi/pipeline-management/pages/job/styles'
 
 export interface Props {
@@ -45,6 +46,7 @@ export interface Props {
 }
 
 const Job = (props: Props) => {
+  const { t } = useTranslation()
   const { name, value = '', deployedJobValue, jobIndex, rdiInstanceId } = props
 
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false)
@@ -199,7 +201,7 @@ const Job = (props: Props) => {
                     data-testid="open-dedicated-editor-btn"
                     variant="primary-inline"
                   >
-                    SQL and JMESPath Editor
+                    {t('rdi.pipeline.job.dedicatedEditorButton')}
                   </TextButton>
                 </RiTooltip>
                 <TemplateButton
@@ -221,23 +223,33 @@ const Job = (props: Props) => {
             </FlexItem>
           </Row>
           <Text color="primary">
-            {'Create a job per source table to filter, transform, and '}
-            <Link
-              data-testid="rdi-pipeline-transformation-link"
-              target="_blank"
-              href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipelineTransforms, {
-                medium: UTM_MEDIUMS.Rdi,
-                campaign: 'job_file',
-              })}
-              variant="inline"
-            >
-              map data
-            </Link>
-            {' to Redis.'}
+            <Trans
+              i18nKey="rdi.pipeline.job.description"
+              components={{
+                docsLink: (
+                  <Link
+                    data-testid="rdi-pipeline-transformation-link"
+                    target="_blank"
+                    href={getUtmExternalLink(
+                      EXTERNAL_LINKS.rdiPipelineTransforms,
+                      {
+                        medium: UTM_MEDIUMS.Rdi,
+                        campaign: 'job_file',
+                      },
+                    )}
+                    variant="inline"
+                  />
+                ),
+              }}
+            />
           </Text>
           {loading ? (
             <div data-testid="rdi-job-loading">
-              <Loader color="secondary" size="l" loaderText="Loading..." />
+              <Loader
+                color="secondary"
+                size="l"
+                loaderText={t('rdi.pipeline.loading')}
+              />
             </div>
           ) : (
             <MonacoYaml
@@ -272,7 +284,7 @@ const Job = (props: Props) => {
               disabled={isPanelOpen}
               data-testid="rdi-job-dry-run"
             >
-              Dry Run
+              {t('rdi.pipeline.job.dryRunButton')}
             </PrimaryButton>
           </Row>
         </Col>

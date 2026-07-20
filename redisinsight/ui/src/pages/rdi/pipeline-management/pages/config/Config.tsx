@@ -40,9 +40,11 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Link } from '@redis-ui/components'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { StyledRdiDatabaseConfigContainer } from 'uiSrc/pages/rdi/pipeline-management/pages/config/styles'
 
 const Config = () => {
+  const { t } = useTranslation()
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false)
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
 
@@ -149,7 +151,7 @@ const Config = () => {
         <Col gap="m">
           <Row grow={false} align="center" justify="between">
             <Title size="S" color="primary">
-              Target database configuration
+              {t('rdi.pipeline.config.title')}
             </Title>
             <TemplatePopover
               isPopoverOpen={isPopoverOpen && !isOpenDialog}
@@ -164,25 +166,32 @@ const Config = () => {
           </Row>
           <FlexItem>
             <Text>
-              {'Configure target instance '}
-              <Link
-                data-testid="rdi-pipeline-config-link"
-                target="_blank"
-                href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipeline, {
-                  medium: UTM_MEDIUMS.Rdi,
-                  campaign: 'config_file',
-                })}
-                variant="inline"
-              >
-                connection details
-              </Link>
-              {' and applier settings.'}
+              <Trans
+                i18nKey="rdi.pipeline.config.description"
+                components={{
+                  docsLink: (
+                    <Link
+                      data-testid="rdi-pipeline-config-link"
+                      target="_blank"
+                      href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipeline, {
+                        medium: UTM_MEDIUMS.Rdi,
+                        campaign: 'config_file',
+                      })}
+                      variant="inline"
+                    />
+                  ),
+                }}
+              />
             </Text>
           </FlexItem>
           <FlexItem grow>
             {pipelineLoading ? (
               <Col grow data-testid="rdi-config-loading">
-                <Loader color="secondary" size="l" loaderText="Loading..." />
+                <Loader
+                  color="secondary"
+                  size="l"
+                  loaderText={t('rdi.pipeline.loading')}
+                />
               </Col>
             ) : (
               <MonacoYaml
@@ -203,7 +212,7 @@ const Config = () => {
               aria-labelledby="test target connections"
               data-testid="rdi-test-connection-btn"
             >
-              Test Connection
+              {t('rdi.pipeline.config.testButton')}
             </PrimaryButton>
           </Row>
         </Col>

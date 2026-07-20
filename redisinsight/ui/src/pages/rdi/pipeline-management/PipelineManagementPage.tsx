@@ -15,6 +15,7 @@ import {
   setLastPipelineManagementPage,
 } from 'uiSrc/slices/app/context'
 import { formatLongName, setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import SourcePipelineDialog from 'uiSrc/pages/rdi/pipeline-management/components/source-pipeline-dialog'
 import Navigation from 'uiSrc/pages/rdi/pipeline-management/components/navigation'
 
@@ -32,6 +33,7 @@ export interface Props {
 }
 
 const PipelineManagementPage = ({ routes = [] }: Props) => {
+  const { t } = useTranslation()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { lastViewedPage } = useAppSelector(appContextPipelineManagement)
   const { name: connectedRdiInstanceName } = useAppSelector(
@@ -45,7 +47,7 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
   const { pathname } = useLocation()
 
   const rdiInstanceName = formatLongName(connectedRdiInstanceName, 33, 0, '...')
-  setTitle(`${rdiInstanceName} - Pipeline Management`)
+  setTitle(t('rdi.pipeline.pageTitle', { name: rdiInstanceName }))
 
   useEffect(() => {
     if (
