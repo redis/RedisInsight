@@ -839,7 +839,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | should open sample data modal and complete "Start querying" flow |
 | ✅ | main | should open sample data modal and navigate to "See index definition" |
 | ✅ | main | should create index from existing data via list page menu |
-| ✅ | main | should disable "Use existing data" when no hash or JSON keys exist |
+| ✅ | main | should open "Use existing data" into manual creation with the browser collapsed |
 
 ### 8.8 Query Page
 
@@ -898,7 +898,6 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | should show "View index" button for key indexed by a single index |
 | ✅ | main | should show "View index" dropdown for key indexed by multiple indexes |
 | ✅ | main | should show "Make searchable" button for non-indexed key and create index |
-| ✅ | main | should show "Index" button on folder node and create index |
 | ✅ | main | should show RQE not available when navigating to Search tab on Redis without search module |
 
 ---
