@@ -80,4 +80,41 @@ describe('EditableTextArea', () => {
 
     expect(onDecline).toBeCalled()
   })
+
+  it('should show the edit pencil on hover by default', () => {
+    render(
+      <EditableTextArea
+        {...mockedProps}
+        isEditing={false}
+        field="field"
+        testIdPrefix="item"
+        onEdit={jest.fn()}
+      >
+        <Text />
+      </EditableTextArea>,
+    )
+
+    fireEvent.mouseEnter(screen.getByTestId('item_content-value-field'))
+
+    expect(screen.getByTestId('item_edit-btn-field')).toBeInTheDocument()
+  })
+
+  it('should not render the edit pencil when hideEditButton is set', () => {
+    render(
+      <EditableTextArea
+        {...mockedProps}
+        isEditing={false}
+        field="field"
+        testIdPrefix="item"
+        onEdit={jest.fn()}
+        hideEditButton
+      >
+        <Text />
+      </EditableTextArea>,
+    )
+
+    fireEvent.mouseEnter(screen.getByTestId('item_content-value-field'))
+
+    expect(screen.queryByTestId('item_edit-btn-field')).not.toBeInTheDocument()
+  })
 })

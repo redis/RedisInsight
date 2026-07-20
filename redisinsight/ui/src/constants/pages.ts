@@ -38,10 +38,16 @@ const sentinel = '/sentinel'
 const azure = '/azure'
 const rdi = '/integrate'
 
+// Query-param keys used to deep-link into the home page's edit-database dialog
+// and (optionally) reveal one of its fields.
+export const EDIT_INSTANCE_QUERY_PARAM = 'editInstance'
+export const FOCUS_FIELD_QUERY_PARAM = 'focusField'
+
 export type PageValues = (typeof Pages)[keyof typeof Pages]
 export const Pages = {
   home: '/',
-  homeEditInstance: (instanceId: string) => `/?editInstance=${instanceId}`,
+  homeEditInstance: (instanceId: string, focusField?: string) =>
+    `/?${EDIT_INSTANCE_QUERY_PARAM}=${instanceId}${focusField ? `&${FOCUS_FIELD_QUERY_PARAM}=${focusField}` : ''}`,
   notFound: '/not-found',
   redisEnterpriseAutodiscovery: '/redis-enterprise-autodiscovery',
   settings: `/${PageNames.settings}`,

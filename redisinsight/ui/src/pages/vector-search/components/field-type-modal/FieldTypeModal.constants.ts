@@ -1,3 +1,5 @@
+import i18n from 'uiSrc/i18n'
+
 import {
   VectorAlgorithm,
   VectorDataType,
@@ -46,12 +48,16 @@ export const VECTOR_DATA_TYPE_FLOAT16_OPTIONS = [
 
 export const PHONETIC_NONE = 'none'
 
-export const PHONETIC_OPTIONS = [
-  { value: PHONETIC_NONE, label: 'None' },
-  { value: 'dm:en', label: 'English (dm:en)' },
-  { value: 'dm:fr', label: 'French (dm:fr)' },
-  { value: 'dm:pt', label: 'Portuguese (dm:pt)' },
-  { value: 'dm:es', label: 'Spanish (dm:es)' },
+// Built at call time (not module scope) so labels resolve in the active language.
+export const getPhoneticOptions = () => [
+  {
+    value: PHONETIC_NONE,
+    label: i18n.t('vectorSearch.fieldType.phonetic.none'),
+  },
+  { value: 'dm:en', label: i18n.t('vectorSearch.fieldType.phonetic.en') },
+  { value: 'dm:fr', label: i18n.t('vectorSearch.fieldType.phonetic.fr') },
+  { value: 'dm:pt', label: i18n.t('vectorSearch.fieldType.phonetic.pt') },
+  { value: 'dm:es', label: i18n.t('vectorSearch.fieldType.phonetic.es') },
 ]
 
 export const VECTOR_ALGORITHM_OPTIONS = [
@@ -65,26 +71,45 @@ export const VECTOR_DISTANCE_METRIC_OPTIONS = [
   { value: VectorDistanceMetric.COSINE, label: 'COSINE' },
 ]
 
-export const VALIDATION_MESSAGES = {
-  FIELD_NAME_REQUIRED: 'Field name is required.',
-  FIELD_NAME_DUPLICATE: 'A field with this name already exists.',
-  DIMENSIONS_REQUIRED: 'Dimensions value is required.',
-  DIMENSIONS_RANGE:
-    `Dimensions must be between` +
-    ` ${VECTOR_CONSTRAINTS.DIMENSIONS_MIN}` +
-    ` and ${VECTOR_CONSTRAINTS.DIMENSIONS_MAX}.`,
-  MAX_EDGES_RANGE:
-    `Max edges must be between` +
-    ` ${VECTOR_CONSTRAINTS.MAX_EDGES_MIN}` +
-    ` and ${VECTOR_CONSTRAINTS.MAX_EDGES_MAX}.`,
-  MAX_NEIGHBORS_RANGE:
-    `Max neighbors must be between` +
-    ` ${VECTOR_CONSTRAINTS.MAX_NEIGHBORS_MIN}` +
-    ` and ${VECTOR_CONSTRAINTS.MAX_NEIGHBORS_MAX}.`,
-  CANDIDATE_LIMIT_RANGE:
-    `Candidate limit must be between` +
-    ` ${VECTOR_CONSTRAINTS.CANDIDATE_LIMIT_MIN}` +
-    ` and ${VECTOR_CONSTRAINTS.CANDIDATE_LIMIT_MAX}.`,
-  EPSILON_MIN: `Epsilon must be ${VECTOR_CONSTRAINTS.EPSILON_MIN} or greater.`,
-  WEIGHT_MIN: 'Weight must be greater than 0.',
-}
+// Built at call time (not module scope) so messages resolve in the active
+// language; numeric bounds are interpolated from VECTOR_CONSTRAINTS.
+export const getValidationMessages = () => ({
+  FIELD_NAME_REQUIRED: i18n.t(
+    'vectorSearch.fieldType.validation.fieldNameRequired',
+  ),
+  FIELD_NAME_DUPLICATE: i18n.t(
+    'vectorSearch.fieldType.validation.fieldNameDuplicate',
+  ),
+  DIMENSIONS_REQUIRED: i18n.t(
+    'vectorSearch.fieldType.validation.dimensionsRequired',
+  ),
+  DIMENSIONS_RANGE: i18n.t(
+    'vectorSearch.fieldType.validation.dimensionsRange',
+    {
+      min: VECTOR_CONSTRAINTS.DIMENSIONS_MIN,
+      max: VECTOR_CONSTRAINTS.DIMENSIONS_MAX,
+    },
+  ),
+  MAX_EDGES_RANGE: i18n.t('vectorSearch.fieldType.validation.maxEdgesRange', {
+    min: VECTOR_CONSTRAINTS.MAX_EDGES_MIN,
+    max: VECTOR_CONSTRAINTS.MAX_EDGES_MAX,
+  }),
+  MAX_NEIGHBORS_RANGE: i18n.t(
+    'vectorSearch.fieldType.validation.maxNeighborsRange',
+    {
+      min: VECTOR_CONSTRAINTS.MAX_NEIGHBORS_MIN,
+      max: VECTOR_CONSTRAINTS.MAX_NEIGHBORS_MAX,
+    },
+  ),
+  CANDIDATE_LIMIT_RANGE: i18n.t(
+    'vectorSearch.fieldType.validation.candidateLimitRange',
+    {
+      min: VECTOR_CONSTRAINTS.CANDIDATE_LIMIT_MIN,
+      max: VECTOR_CONSTRAINTS.CANDIDATE_LIMIT_MAX,
+    },
+  ),
+  EPSILON_MIN: i18n.t('vectorSearch.fieldType.validation.epsilonMin', {
+    min: VECTOR_CONSTRAINTS.EPSILON_MIN,
+  }),
+  WEIGHT_MIN: i18n.t('vectorSearch.fieldType.validation.weightMin'),
+})

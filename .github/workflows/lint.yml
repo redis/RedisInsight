@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: ESLint
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Install dependencies
         uses: ./.github/actions/install-all-build-libs
@@ -20,7 +20,7 @@ jobs:
           skip-system-deps: '1'
 
       - name: Restore ESLint cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .eslintcache
           key: eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-${{ github.ref_name }}

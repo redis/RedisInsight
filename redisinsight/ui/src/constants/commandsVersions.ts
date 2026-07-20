@@ -15,6 +15,6 @@ export const CommandsVersions = {
     since: '8.0',
   },
   ARRAY: {
-    since: '8.8',
+    since: '8.8.0',
   },
 }

@@ -1,6 +1,6 @@
 import { isArray, isNull, isString } from 'lodash'
 import JSONBigInt from 'json-bigint'
-import { JSONScalarValue, ObjectTypes } from '../interfaces'
+import { ObjectTypes } from '../interfaces'
 import styles from '../styles.module.scss'
 
 enum ClassNames {
@@ -11,7 +11,7 @@ enum ClassNames {
   others = 'jsonNonStringPrimitive',
 }
 
-export function isScalar(x: JSONScalarValue) {
+export function isScalar(x: unknown) {
   return (
     ['string', 'number', 'boolean', 'bigint'].indexOf(typeof x) !== -1 ||
     x === null

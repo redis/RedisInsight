@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { faker } from '@faker-js/faker'
 import { AxiosError } from 'axios'
 import { configureStore } from '@reduxjs/toolkit'
 import { getConfig } from 'uiSrc/config'
@@ -10,6 +11,7 @@ import {
 } from 'uiSrc/constants'
 import {
   ListElementDestination,
+  CreateArrayWithExpireDto,
   CreateHashWithExpireDto,
   CreateListWithExpireDto,
   CreateRejsonRlWithExpireDto,
@@ -52,6 +54,7 @@ import reducer, {
   addKey,
   addKeyFailure,
   addKeySuccess,
+  addArrayKey,
   addListKey,
   addReJSONKey,
   addSetKey,
@@ -111,7 +114,6 @@ import reducer, {
   setLastBatchPatternKeys,
   updateSelectedKeyRefreshTime,
   refreshKey,
-  fetchNamespaceSearchable,
 } from '../../browser/keys'
 
 const riConfig = getConfig()
@@ -144,7 +146,7 @@ describe('keys slice', () => {
       const nextState = initialState
 
       // Act
-      const result = reducer(undefined, {})
+      const result = reducer(undefined, { type: '' })
 
       // Assert
       expect(result).toEqual(nextState)
@@ -511,7 +513,7 @@ describe('keys slice', () => {
         selectedKey: {
           ...initialState.selectedKey,
           refreshing: false,
-          data: { ...initialState.selectedKey.data, ...data },
+          data: { ...data, nameString: 'keyName' },
         },
       }
 
@@ -523,6 +525,45 @@ describe('keys slice', () => {
         browser: { keys: nextState },
       })
       expect(keysSelector(rootState)).toEqual(state)
+    })
+
+    it('should drop type-specific fields absent from the new payload', () => {
+      // Refresh after a key is overwritten as a different type should
+      // not leak stale type-specific fields (count from Array,
+      // vectorDim/quantType from Vector Set, etc.). Reducer replaces
+      // `data` outright instead of merging the payload over it.
+      const previous = {
+        ...initialState,
+        selectedKey: {
+          ...initialState.selectedKey,
+          data: {
+            name: stringToBuffer('keyName'),
+            type: KeyTypes.Array,
+            ttl: -1,
+            size: 100,
+            length: 6,
+            count: '7',
+            nameString: 'keyName',
+          },
+        },
+      }
+      // Simulates the same key being overwritten as a String — the BE's
+      // string key-info strategy omits `count`.
+      const refreshed = {
+        name: stringToBuffer('keyName'),
+        type: KeyTypes.String,
+        ttl: -1,
+        size: 5,
+        length: 5,
+      }
+
+      const nextState = reducer(previous, refreshKeyInfoSuccess(refreshed))
+
+      expect(nextState.selectedKey.data).toEqual({
+        ...refreshed,
+        nameString: 'keyName',
+      })
+      expect(nextState.selectedKey.data?.count).toBeUndefined()
     })
   })
 
@@ -1761,6 +1802,33 @@ describe('keys slice', () => {
       })
     })
 
+    describe('addArrayKey', () => {
+      it('success to add key', async () => {
+        // Arrange
+        const keyName = stringToBuffer(faker.string.alphanumeric(10))
+        const data = {
+          keyName,
+          mode: 'sparse',
+          elements: [{ index: '5', value: 'value' }],
+        } as unknown as CreateArrayWithExpireDto
+        const responsePayload = { data, status: 200 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(addArrayKey(data, jest.fn()))
+
+        // Assert
+        const expectedActions = [
+          addKey(),
+          addKeySuccess(),
+          updateKeyList({ keyName: data.keyName, keyType: KeyTypes.Array }),
+          addMessageNotification(successMessages.ADDED_NEW_KEY(keyName)),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
     describe('addReJSONKey', () => {
       it('success to add key', async () => {
         // Arrange
@@ -2302,74 +2370,6 @@ describe('keys slice', () => {
           deleteSearchHistoryFailure(),
         ]
         expect(store.getActions()).toEqual(expectedActions)
-      })
-    })
-
-    describe('fetchNamespaceSearchable', () => {
-      it('should call API with correct prefixes and invoke onSuccess', async () => {
-        const prefixes: [string, string][] = [
-          ['0.0', 'user:'],
-          ['0.1', 'session:'],
-        ]
-        const apiResponse = [
-          { prefix: 'user:', key: { name: 'user:1', type: 'hash' } },
-          { prefix: 'session:' },
-        ]
-        const responsePayload = { data: apiResponse, status: 200 }
-        const apiServiceMock = jest.fn().mockResolvedValue(responsePayload)
-        const onSuccessMock = jest.fn()
-        apiService.post = apiServiceMock
-
-        await store.dispatch<any>(
-          fetchNamespaceSearchable(prefixes, undefined, onSuccessMock),
-        )
-
-        expect(apiServiceMock).toBeCalledWith(
-          '/databases//keys/get-namespace-searchable',
-          { prefixes: ['user:', 'session:'] },
-          { signal: undefined },
-        )
-
-        expect(onSuccessMock).toBeCalledWith([
-          {
-            prefix: 'user:',
-            key: { name: 'user:1', type: 'hash' },
-            path: '0.0',
-          },
-          { prefix: 'session:', path: '0.1' },
-        ])
-      })
-
-      it('should call onFail on error', async () => {
-        const prefixes: [string, string][] = [['0.0', 'user:']]
-        const responsePayload = {
-          response: {
-            status: 500,
-            data: { message: 'Internal error' },
-          },
-        }
-        apiService.post = jest.fn().mockRejectedValue(responsePayload)
-        const onFailMock = jest.fn()
-
-        await store.dispatch<any>(
-          fetchNamespaceSearchable(prefixes, undefined, undefined, onFailMock),
-        )
-
-        expect(onFailMock).toHaveBeenCalled()
-      })
-
-      it('should not throw or call onFail on cancelled request', async () => {
-        const prefixes: [string, string][] = [['0.0', 'user:']]
-        const cancelError = { __CANCEL__: true }
-        Object.defineProperty(cancelError, '__CANCEL__', { value: true })
-        apiService.post = jest.fn().mockRejectedValue(cancelError)
-        const onFailMock = jest.fn()
-
-        await store.dispatch<any>(
-          fetchNamespaceSearchable(prefixes, undefined, undefined, onFailMock),
-        )
-
-        expect(onFailMock).not.toHaveBeenCalled()
       })
     })
 

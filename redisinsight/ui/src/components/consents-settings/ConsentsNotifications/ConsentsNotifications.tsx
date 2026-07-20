@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { useTranslation } from 'uiSrc/i18n'
 import ConsentOption from '../ConsentOption'
 import { IConsent, ConsentCategories } from '../ConsentsSettings'
 
@@ -20,6 +21,7 @@ export interface Props {
 }
 
 const ConsentsNotifications = () => {
+  const { t } = useTranslation()
   const [consents, setConsents] = useState<IConsent[]>([])
   const [notificationConsents, setNotificationConsents] = useState<IConsent[]>(
     [],
@@ -90,7 +92,7 @@ const ConsentsNotifications = () => {
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
-        <Title size="XS">Notifications</Title>
+        <Title size="XS">{t('settings.general.notifications.title')}</Title>
         {notificationConsents.map((consent: IConsent) => (
           <ConsentOption
             consent={consent}

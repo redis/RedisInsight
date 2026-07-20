@@ -158,6 +158,7 @@ export enum KeyValueFormat {
   Vector32Bit = 'Vector 32-bit',
   Vector64Bit = 'Vector 64-bit',
   DateTime = 'DateTime',
+  Markdown = 'Markdown',
 }
 
 export const DATETIME_FORMATTER_DEFAULT = 'HH:mm:ss d MMM yyyy'
@@ -193,6 +194,7 @@ export const ENDPOINT_BASED_ON_KEY_TYPE = Object.freeze({
   [KeyTypes.ReJSON]: ApiEndpoints.REJSON,
   [KeyTypes.Stream]: ApiEndpoints.STREAMS,
   [KeyTypes.VectorSet]: ApiEndpoints.VECTOR_SET,
+  [KeyTypes.Array]: ApiEndpoints.ARRAY,
 })
 
 export type EndpointBasedOnKeyType = keyof typeof ENDPOINT_BASED_ON_KEY_TYPE

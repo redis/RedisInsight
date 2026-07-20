@@ -1,3 +1,5 @@
+import { ParseKeys } from 'i18next'
+
 import { BadgeVariants } from 'uiSrc/components/base/display/badge/RiBadge'
 
 export enum QueryLibraryItemType {
@@ -23,6 +25,6 @@ export interface QueryLibraryItemProps {
 }
 
 export interface QueryTypeBadgeConfig {
-  label: string
+  labelKey: ParseKeys
   variant: BadgeVariants
 }

@@ -1,0 +1,53 @@
+meta {
+  name: Get Element
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-element
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "index": "1"
+  }
+}
+
+docs {
+  # ARGET
+
+  Get the value at a single index. Returns `null` for an empty slot or an
+  index past the array length.
+
+  ## Request body
+
+  | Field     | Type   | Notes                                                  |
+  |-----------|--------|--------------------------------------------------------|
+  | `keyName` | string | The Array key name.                                    |
+  | `index`   | string | Unsigned 64-bit integer as string.                     |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "value": "20.4"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARGET`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

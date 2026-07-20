@@ -1,0 +1,1164 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import axios, { AxiosError } from 'axios'
+import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
+import {
+  AggregateArrayResponse,
+  DeleteArrayResponse,
+  GetArrayCountResponse,
+  GetArrayLengthResponse,
+  GetArrayRangeResponse,
+  GetArraySearchResponse,
+  GetArrayScanResponse,
+} from 'apiClient'
+import { apiService } from 'uiSrc/services'
+import { ApiEndpoints } from 'uiSrc/constants'
+import { get } from 'lodash'
+import {
+  DEFAULT_ERROR_MESSAGE,
+  getApiErrorMessage,
+  getUrl,
+  isEqualBuffers,
+  isStatusNotFoundError,
+  isStatusSuccessful,
+  Maybe,
+  stringToBuffer,
+} from 'uiSrc/utils'
+import successMessages from 'uiSrc/components/notifications/success-messages'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+
+import {
+  ArrayActiveQuery,
+  ArrayAggregateActiveQuery,
+  ArrayDataElement,
+  ArraySearchActiveQuery,
+  StateArray,
+  FetchArrayAggregateParams,
+  FetchArrayRangeParams,
+  FetchArrayScanParams,
+  SearchArrayParams,
+  UpdateArrayElementParams,
+  AppendArrayElementParams,
+  AddArrayElementParams,
+} from 'uiSrc/slices/interfaces/array'
+import { RedisString, RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
+import {
+  refreshKeyInfoAction,
+  updateSelectedKeyRefreshTime,
+  deleteKeyFromList,
+  deleteSelectedKeySuccess,
+} from './keys'
+import { appContextSelectedKey } from 'uiSrc/slices/app/context'
+import { AppDispatch, RootState } from '../store'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from '../app/notifications'
+
+/** Inclusive default range bounds for the View tab. Mirrored in
+ * `pages/.../array-details/constants.ts`; kept duplicated here so the slice
+ * stays free of UI-layer imports.
+ */
+const DEFAULT_QUERY_START = '0'
+const DEFAULT_QUERY_END = '9'
+
+/**
+ * Safety cap on ARSCAN result-set size. The form intentionally lets users
+ * type ranges far wider than `ARRAY_RANGE_MAX_ELEMENTS` here (unlike
+ * ARGETRANGE) because ARSCAN only returns populated slots, but a dense
+ * 0..10M region would still blow up the response. Pin to the BE's
+ * `ARRAY_RANGE_MAX_ELEMENTS` so the worst case matches what ARGETRANGE
+ * already guarantees. A dedicated Limit input will replace this default
+ * with the next vertical.
+ */
+export const DEFAULT_SCAN_LIMIT = 1_000_000
+
+export const initialState: StateArray = {
+  loading: false,
+  error: '',
+  updating: false,
+  query: {
+    start: DEFAULT_QUERY_START,
+    end: DEFAULT_QUERY_END,
+    showEmpty: true,
+  },
+  data: {
+    keyName: '',
+    length: '0',
+    count: '0',
+    elements: [],
+  },
+  aggregate: {
+    loading: false,
+    error: '',
+    result: null,
+    hasResult: false,
+    query: null,
+  },
+  search: {
+    loading: false,
+    error: '',
+    loaded: false,
+    data: [],
+    query: null,
+  },
+}
+
+// Adapts an ARGETRANGE response (gap-preserving, parallel array starting at
+// `start`) into the slice's `{ index, value }` shape so range and scan
+// reducers can write to the same `data.elements` field. Reversed ranges
+// (`start > end`) step the offset downwards so the table reflects the
+// descending order the BE returned the elements in.
+const expandRangeElements = (
+  start: string,
+  end: string,
+  values: GetArrayRangeResponse['elements'],
+): ArrayDataElement[] => {
+  if (!values) return []
+  const base = BigInt(start)
+  const step = BigInt(start) > BigInt(end) ? BigInt(-1) : BigInt(1)
+  return values.map((value, offset) => ({
+    index: (base + BigInt(offset) * step).toString(),
+    value: (value ?? null) as ArrayDataElement['value'],
+  }))
+}
+
+const arraySlice = createSlice({
+  name: 'array',
+  initialState,
+  reducers: {
+    setArrayInitialState: () => initialState,
+
+    loadArrayRange: (
+      state,
+      { payload: resetData = true }: PayloadAction<Maybe<boolean>>,
+    ) => {
+      state.loading = true
+      state.error = ''
+      if (resetData) state.data = { ...initialState.data }
+    },
+    loadArrayRangeSuccess: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        start: string
+        end: string
+        response: GetArrayRangeResponse
+      }>,
+    ) => {
+      state.data = {
+        ...state.data,
+        keyName: payload.response.keyName as RedisString,
+        elements: expandRangeElements(
+          payload.start,
+          payload.end,
+          payload.response.elements,
+        ),
+      }
+      state.loading = false
+    },
+    loadArrayRangeFailure: (state, { payload }: PayloadAction<string>) => {
+      state.loading = false
+      state.error = payload
+    },
+
+    loadArrayScanSuccess: (
+      state,
+      { payload }: PayloadAction<GetArrayScanResponse>,
+    ) => {
+      state.data = {
+        ...state.data,
+        keyName: payload.keyName as RedisString,
+        elements: payload.elements.map((element) => ({
+          index: element.index,
+          value: element.value as ArrayDataElement['value'],
+        })),
+      }
+      state.loading = false
+    },
+
+    loadArrayLengthSuccess: (
+      state,
+      { payload }: PayloadAction<GetArrayLengthResponse>,
+    ) => {
+      state.data = { ...state.data, length: payload.length }
+    },
+
+    loadArrayCountSuccess: (
+      state,
+      { payload }: PayloadAction<GetArrayCountResponse>,
+    ) => {
+      state.data = { ...state.data, count: payload.count }
+    },
+
+    /**
+     * Records the query that was just dispatched so the header refresh
+     * button can replay it instead of falling back to the default range.
+     */
+    setArrayActiveQuery: (
+      state,
+      { payload }: PayloadAction<ArrayActiveQuery>,
+    ) => {
+      state.query = payload
+    },
+
+    loadArrayAggregate: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        query: ArrayAggregateActiveQuery
+        resetData?: boolean
+      }>,
+    ) => {
+      state.aggregate.loading = true
+      state.aggregate.error = ''
+      // Record the query so the header refresh can replay it. On a header
+      // refresh (`resetData: false`) keep the previous result/`hasResult`
+      // on screen so the recompute swaps in place without a loader flash;
+      // a fresh run clears them first.
+      state.aggregate.query = payload.query
+      if (payload.resetData !== false) {
+        state.aggregate.hasResult = false
+        state.aggregate.result = null
+      }
+    },
+    loadArrayAggregateSuccess: (
+      state,
+      { payload }: PayloadAction<AggregateArrayResponse>,
+    ) => {
+      state.aggregate.loading = false
+      state.aggregate.error = ''
+      state.aggregate.result = payload.result
+      state.aggregate.hasResult = true
+    },
+    loadArrayAggregateFailure: (state, { payload }: PayloadAction<string>) => {
+      state.aggregate.loading = false
+      state.aggregate.error = payload
+    },
+    clearArrayAggregate: (state) => {
+      state.aggregate = { ...initialState.aggregate }
+    },
+
+    // ARGREP search lives in its own sub-state so the View and Search tabs
+    // (both mounted at once) never overwrite each other's results. The full
+    // query is recorded so the header refresh button can replay it.
+    loadArraySearch: (
+      state,
+      { payload }: PayloadAction<ArraySearchActiveQuery>,
+    ) => {
+      state.search.loading = true
+      state.search.error = ''
+      state.search.data = []
+      state.search.query = payload
+    },
+    loadArraySearchSuccess: (
+      state,
+      { payload }: PayloadAction<GetArraySearchResponse>,
+    ) => {
+      state.search.loading = false
+      state.search.loaded = true
+      state.search.data = payload.elements.map((element) => ({
+        index: element.index,
+        value: element.value as ArrayDataElement['value'],
+      }))
+    },
+    loadArraySearchFailure: (state, { payload }: PayloadAction<string>) => {
+      state.search.loading = false
+      state.search.loaded = true
+      state.search.error = payload
+    },
+    resetArraySearch: (state) => {
+      state.search = { ...initialState.search }
+    },
+
+    // Tracks an in-flight inline ARSET so the table can disable overlapping
+    // edits and hold the header refresh until the write settles.
+    setArrayUpdating: (state, { payload }: PayloadAction<boolean>) => {
+      state.updating = payload
+    },
+
+    // Optimistically reflect a successful ARSET in the loaded page so the
+    // table updates without a refetch. The View tab renders from
+    // `data.elements` and the Search tab from `search.data` through the same
+    // table, so patch the matching index in both. No-op where the edited
+    // index isn't loaded.
+    updateArrayElement: (
+      state,
+      { payload }: PayloadAction<{ index: string; value: RedisString }>,
+    ) => {
+      const patch = (elements: ArrayDataElement[]) => {
+        const target = elements.find(
+          (element) => element.index === payload.index,
+        )
+        if (target) target.value = payload.value
+      }
+      patch(state.data.elements)
+      // A WITHVALUES=false search holds index-only rows on purpose; writing a
+      // value here would surface one the active query never asked to load.
+      // Leave those rows value-less (a later refetch/replay fills them).
+      if (state.search.query?.withValues !== false) {
+        patch(state.search.data)
+      }
+    },
+  },
+})
+
+export const {
+  setArrayInitialState,
+  loadArrayRange,
+  loadArrayRangeSuccess,
+  loadArrayRangeFailure,
+  loadArrayScanSuccess,
+  loadArrayLengthSuccess,
+  loadArrayCountSuccess,
+  setArrayActiveQuery,
+  loadArrayAggregate,
+  loadArrayAggregateSuccess,
+  loadArrayAggregateFailure,
+  clearArrayAggregate,
+  loadArraySearch,
+  loadArraySearchSuccess,
+  loadArraySearchFailure,
+  resetArraySearch,
+  updateArrayElement,
+  setArrayUpdating,
+} = arraySlice.actions
+
+export const arraySelector = (state: RootState) => state.browser.array
+export const arrayDataSelector = (state: RootState) => state.browser.array?.data
+export const arrayAggregateSelector = (state: RootState) =>
+  state.browser.array?.aggregate
+export const arraySearchSelector = (state: RootState) =>
+  state.browser.array?.search
+
+export default arraySlice.reducer
+
+// Resolves the URL for an array endpoint scoped to the connected instance.
+const arrayUrl = (state: RootState, endpoint: ApiEndpoints) =>
+  getUrl(state.connections.instances.connectedInstance?.id, endpoint)
+
+const encodingParams = (state: RootState) => ({
+  params: { encoding: state.app.info.encoding },
+})
+
+/**
+ * Module-scoped controller shared between `fetchArrayRange` and
+ * `scanArrayRange` since both write to the same `data.elements` slice.
+ * A newer dispatch aborts the previous in-flight request so a slower
+ * response for a previously selected key can't land on top of the
+ * fresh selection's data. Mirrors the pattern used by Vector Set's
+ * similarity-search preview.
+ */
+let arrayRangeController: AbortController | null = null
+
+/**
+ * Abort the in-flight ARGETRANGE / ARSCAN request (if any) so its late
+ * response cannot dispatch into the just-cleared slice. Called by the
+ * View tab hook on unmount; safe no-op when nothing is in flight.
+ */
+export const abortArrayRange = (): void => {
+  arrayRangeController?.abort()
+  arrayRangeController = null
+}
+
+// ARGETRANGE — gap-preserving fetch of a contiguous slot range.
+export function fetchArrayRange(params: FetchArrayRangeParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayRangeController?.abort()
+    const controller = new AbortController()
+    arrayRangeController = controller
+
+    dispatch(loadArrayRange(params.resetData))
+    dispatch(
+      setArrayActiveQuery({
+        start: params.start,
+        end: params.end,
+        showEmpty: true,
+      }),
+    )
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArrayRangeResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_GET_RANGE),
+        { keyName: params.key, start: params.start, end: params.end },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          loadArrayRangeSuccess({
+            start: params.start,
+            end: params.end,
+            response: data,
+          }),
+        )
+        dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArrayRangeFailure(errorMessage))
+    } finally {
+      // Only clear the module-scoped controller if it still points to ours
+      // — a later dispatch may have already swapped a fresh one in.
+      if (arrayRangeController === controller) {
+        arrayRangeController = null
+      }
+    }
+  }
+}
+
+// ARSCAN — populated-only fetch within a slot range. Gaps are skipped.
+export function scanArrayRange(params: FetchArrayScanParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayRangeController?.abort()
+    const controller = new AbortController()
+    arrayRangeController = controller
+
+    dispatch(loadArrayRange(params.resetData))
+    dispatch(
+      setArrayActiveQuery({
+        start: params.start,
+        end: params.end,
+        showEmpty: false,
+      }),
+    )
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArrayScanResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_SCAN),
+        {
+          keyName: params.key,
+          start: params.start,
+          end: params.end,
+          limit: DEFAULT_SCAN_LIMIT,
+        },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArrayScanSuccess(data))
+        dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArrayRangeFailure(errorMessage))
+    } finally {
+      if (arrayRangeController === controller) {
+        arrayRangeController = null
+      }
+    }
+  }
+}
+
+/**
+ * Search-tab counterpart to `arrayRangeController`. Kept separate so a
+ * search and a View-tab range fetch can be in flight at once (both tabs
+ * stay mounted) without aborting each other. A newer search aborts the
+ * previous one so a slow earlier response can't land on fresh results.
+ */
+let arraySearchController: AbortController | null = null
+
+/**
+ * Abort the in-flight ARGREP search (if any). Called by the Search tab hook
+ * on key switch / unmount; safe no-op when nothing is in flight.
+ */
+export const abortArraySearch = (): void => {
+  arraySearchController?.abort()
+  arraySearchController = null
+}
+
+// ARGREP — predicate search across the array's index range. Blank bounds are
+// dropped so the server applies its `-`/`+` (whole-array) defaults; the
+// connective is sent only with 2+ predicates; WITHVALUES is sent only when
+// turned off (the server defaults it on, so results carry values for the
+// table); LIMIT is sent only when the user sets one, otherwise the search is
+// uncapped (the server omits LIMIT and returns every match).
+export function searchArray(params: SearchArrayParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const { key, ...query } = params
+
+    arraySearchController?.abort()
+    const controller = new AbortController()
+    arraySearchController = controller
+
+    dispatch(loadArraySearch(query))
+    try {
+      const state = stateInit()
+      const body: Record<string, unknown> = {
+        keyName: key,
+        predicates: query.predicates,
+      }
+      if (query.combinator && query.predicates.length > 1) {
+        body.combinator = query.combinator
+      }
+      if (query.start) body.start = query.start
+      if (query.end) body.end = query.end
+      if (query.nocase) body.nocase = true
+      if (query.withValues === false) body.withValues = false
+      if (typeof query.limit === 'number') body.limit = query.limit
+
+      const { data, status } = await apiService.post<GetArraySearchResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_SEARCH),
+        body,
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArraySearchSuccess(data))
+      } else {
+        dispatch(loadArraySearchFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArraySearchFailure(errorMessage))
+    } finally {
+      if (arraySearchController === controller) {
+        arraySearchController = null
+      }
+    }
+  }
+}
+
+/**
+ * Monotonic token identifying the most recently started ARSET edit. A key
+ * switch resets the slice (clearing `updating`) and can let a new edit begin
+ * before an earlier request settles; the token lets a stale completion skip
+ * releasing the lock so it can't re-enable refresh/edits for the newer write.
+ */
+let latestEditRequestToken = 0
+
+/**
+ * Compares two key names by value. In buffer-encoding mode key names are
+ * `RedisResponseBuffer`s and Redux may swap the instance for the same bytes
+ * (e.g. a key-info refetch), so byte-compare rather than rely on reference
+ * identity; fall back to strict equality for plain-string names / nullish
+ * values.
+ */
+export const isSameKey = (a?: unknown, b?: unknown): boolean => {
+  if (
+    a == null ||
+    b == null ||
+    typeof a === 'string' ||
+    typeof b === 'string'
+  ) {
+    return a === b
+  }
+  return isEqualBuffers(a as RedisResponseBuffer, b as RedisResponseBuffer)
+}
+
+// ARSET — in-place value edit. Editing a populated slot can't change
+// ARLEN/ARCOUNT, so the header counters are intentionally not refreshed.
+// `value` must already be in the formatter's serialized-buffer shape.
+export function updateArrayElementAction(
+  params: UpdateArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    const startInstanceId = state.connections.instances.connectedInstance?.id
+    // Skip the write if the connected database changed since the edit was
+    // initiated — e.g. a production-write confirmation confirmed after the
+    // connection switched. Never write this value into a different database.
+    if (
+      params.startInstanceId != null &&
+      params.startInstanceId !== startInstanceId
+    ) {
+      return
+    }
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_EDITED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+          },
+        })
+
+        // The user may have switched database or key while the POST was in
+        // flight. Only patch the table when the edit still belongs to the
+        // current selection, so a late success can't overwrite a same-index
+        // row in a different key — or, for a same-named key in another
+        // database, apply the old connection's value to the new one.
+        const latest = stateInit()
+        // Read the live selection from the app context, not selectedKey.data:
+        // fetchKeyInfo's loading action leaves the previous key's data in place
+        // while the newly selected key loads, so selectedKey.data lags a switch
+        // (the delete thunk below guards the same way).
+        const selectedKey = appContextSelectedKey(latest)
+        const sameInstance =
+          latest.connections.instances.connectedInstance?.id === startInstanceId
+        if (sameInstance && isSameKey(selectedKey, params.key)) {
+          dispatch(
+            updateArrayElement({ index: params.index, value: params.value }),
+          )
+          // The edit can change a value a previously-run AROP was computed
+          // from, so drop the stored aggregate rather than show a stale number
+          // when the user returns to the (still-mounted) Aggregate tab. Abort
+          // any in-flight AROP too, or its late success would repopulate the
+          // result we just cleared.
+          abortArrayAggregate()
+          dispatch(clearArrayAggregate())
+          // Refetch key info (not just stamp the refresh time): editing a value
+          // to a different byte length changes the key's Size even though
+          // ARLEN/ARCOUNT don't — matches the List/Hash/String edit thunks.
+          dispatch(refreshKeyInfoAction(params.key as RedisResponseBuffer))
+          // Only close the editor when this completion still belongs to the
+          // current selection. A stale success after a key/database switch
+          // would otherwise close (and discard) an editor the user has since
+          // opened on the new selection's same-index row.
+          onSuccessAction?.()
+        }
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      // Only the latest edit releases the lock; a stale completion (e.g. after
+      // a key switch let a newer edit start) leaves it held for the newer write.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
+    }
+  }
+}
+
+/**
+ * Fetches the ±N context window for one search match via ARGETRANGE and
+ * returns the normalized elements. Writes nothing into the shared array
+ * slice — the View tab owns `data.elements`; the search context band holds
+ * this result in local component state. Pass an AbortSignal so a re-expand,
+ * context-count change, or unmount can cancel the request.
+ */
+export function fetchArrayNeighbours(
+  params: { key: RedisString; start: string; end: string },
+  signal?: AbortSignal,
+) {
+  return async (
+    _dispatch: AppDispatch,
+    stateInit: () => RootState,
+  ): Promise<ArrayDataElement[]> => {
+    const state = stateInit()
+    const { data, status } = await apiService.post<GetArrayRangeResponse>(
+      arrayUrl(state, ApiEndpoints.ARRAY_GET_RANGE),
+      { keyName: params.key, start: params.start, end: params.end },
+      { ...encodingParams(state), signal },
+    )
+    if (!isStatusSuccessful(status)) {
+      throw new Error(DEFAULT_ERROR_MESSAGE)
+    }
+    return expandRangeElements(params.start, params.end, data.elements)
+  }
+}
+
+export function fetchArrayLength(key: RedisString) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArrayLengthResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_GET_LENGTH),
+        { keyName: key },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) dispatch(loadArrayLengthSuccess(data))
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+export function fetchArrayCount(key: RedisString) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArrayCountResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+        { keyName: key },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) dispatch(loadArrayCountSuccess(data))
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+// The success toast lists at most this many deleted indexes; a bulk select-all
+// can span thousands, so only a sample is rendered (with the full count).
+const REMOVED_ELEMENTS_TOAST_SAMPLE = 10
+
+type ArrayDeleteOutcome = 'stale-selection' | 'key-deleted' | 'key-survived'
+
+/**
+ * Shared tail of the ARDEL / ARDELRANGE thunks. The slice's data.count isn't
+ * kept fresh and arrays are sparse, so probe ARCOUNT after the delete to
+ * learn whether the key survived: it 404s once the last element is gone (the
+ * server drops the empty key). Any other ARCOUNT outcome leaves the delete
+ * intact, so the views are refreshed regardless rather than reporting the
+ * delete as failed.
+ *
+ * `state` is the snapshot taken before the delete request, so the probe and
+ * the stale-selection guard target the instance the delete actually ran on.
+ *
+ * On 'key-survived' the loaded views are already refreshed — the caller only
+ * follows up with its own success notification.
+ */
+async function finalizeArrayDelete(
+  key: RedisString,
+  state: RootState,
+  dispatch: AppDispatch,
+  stateInit: () => RootState,
+): Promise<ArrayDeleteOutcome> {
+  const startInstanceId = state.connections.instances.connectedInstance?.id
+
+  let keyDeleted = false
+  try {
+    await apiService.post<GetArrayCountResponse>(
+      arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+      { keyName: key },
+      encodingParams(state),
+    )
+  } catch (countError) {
+    // 404 ⇒ the last element went and the server dropped the key. Any
+    // other ARCOUNT failure is unrelated to the (already-succeeded) delete,
+    // so fall through and refresh instead of masking it as a failure.
+    const countStatus = get(countError, ['response', 'status'])
+    keyDeleted = Boolean(countStatus && isStatusNotFoundError(countStatus))
+  }
+
+  // If the user switched database or array key while the delete was in
+  // flight, the shared array slice/header now belong to a different
+  // selection. The delete already applied server-side, so skip the UI
+  // updates rather than clobber the current view with the old key's data.
+  const latest = stateInit()
+  // Read the user's current selection, not `selectedKey.data`: on a key
+  // switch the details reducer keeps the old `data` in place while the new
+  // key info loads, so `data.name` would still return the deleted key
+  // during that window and the guard below would wrongly pass.
+  const selectedKey = appContextSelectedKey(latest)
+  const sameInstance =
+    latest.connections.instances.connectedInstance?.id === startInstanceId
+  // Compare by bytes: array keys are binary, and distinct binary keys can
+  // decode to the same display string, so a string compare isn't safe.
+  const sameKey =
+    !!selectedKey && isEqualBuffers(selectedKey, key as RedisResponseBuffer)
+  if (!sameInstance || !sameKey) return 'stale-selection'
+
+  if (keyDeleted) {
+    dispatch(deleteSelectedKeySuccess())
+    dispatch(deleteKeyFromList(key as RedisResponseBuffer))
+    dispatch(
+      addMessageNotification(
+        successMessages.DELETED_KEY(key as RedisResponseBuffer),
+      ),
+    )
+    return 'key-deleted'
+  }
+
+  // Replay every loaded array view (View range/scan, Search, Aggregate)
+  // plus the counters — not just the tab that triggered the delete. All
+  // three tabs stay mounted, so a sibling would otherwise keep showing the
+  // deleted element (or a stale aggregate) until a manual refresh.
+  dispatch(refreshArray(key))
+  dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
+  return 'key-survived'
+}
+
+// Per-element delete (ARDEL). Resolves true when the delete completed and
+// the UI was updated; false when it failed or the selection changed
+// mid-flight (so the caller doesn't clear a selection that now belongs to a
+// different key).
+export function deleteArrayElements(key: RedisString, indexes: string[]) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { status } = await apiService.delete(
+        arrayUrl(state, ApiEndpoints.ARRAY_ELEMENTS),
+        { data: { keyName: key, indexes }, ...encodingParams(state) },
+      )
+      if (!isStatusSuccessful(status)) return false
+
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_ELEMENT_DELETED,
+        eventData: {
+          databaseId: state.connections.instances.connectedInstance?.id,
+        },
+      })
+
+      const outcome = await finalizeArrayDelete(key, state, dispatch, stateInit)
+      if (outcome === 'stale-selection') return false
+      if (outcome === 'key-deleted') return true
+
+      dispatch(
+        addMessageNotification(
+          indexes.length > 1
+            ? // Summarize a bulk delete: show the count and only a sample, so a
+              // select-all over a large result set can't build a giant string.
+              successMessages.REMOVED_LIST_ELEMENTS(
+                key as RedisResponseBuffer,
+                indexes.length,
+                indexes
+                  .slice(0, REMOVED_ELEMENTS_TOAST_SAMPLE)
+                  .map((index) => stringToBuffer(index)),
+              )
+            : successMessages.REMOVED_KEY_VALUE(
+                key as RedisResponseBuffer,
+                indexes.join(', ') as unknown as RedisResponseBuffer,
+                'Element',
+              ),
+        ),
+      )
+      return true
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      return false
+    }
+  }
+}
+
+// Range delete (ARDELRANGE). The window is inclusive and a reversed range
+// (start > end) deletes the same window. The response's `affected` counts
+// elements actually removed — empty slots inside the window contribute 0 —
+// so the toast reports it instead of the window size. Resolves true/false
+// with the same completion contract as deleteArrayElements.
+export function deleteArrayRange(key: RedisString, start: string, end: string) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.delete<DeleteArrayResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_RANGE),
+        { data: { keyName: key, start, end }, ...encodingParams(state) },
+      )
+      if (!isStatusSuccessful(status)) return false
+
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_RANGE_DELETED,
+        eventData: {
+          databaseId: state.connections.instances.connectedInstance?.id,
+        },
+      })
+
+      const outcome = await finalizeArrayDelete(key, state, dispatch, stateInit)
+      if (outcome === 'stale-selection') return false
+      if (outcome === 'key-deleted') return true
+
+      dispatch(
+        addMessageNotification(
+          successMessages.REMOVED_ARRAY_RANGE(
+            key as RedisResponseBuffer,
+            data.affected,
+          ),
+        ),
+      )
+      return true
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      return false
+    }
+  }
+}
+
+/**
+ * Dedicated controller for AROP so an in-flight aggregate isn't aborted by
+ * a concurrent range/scan in the View tab (which uses
+ * `arrayRangeController`). A newer aggregate dispatch still aborts the
+ * previous one so stale results don't land on top of a fresh request.
+ */
+let arrayAggregateController: AbortController | null = null
+
+export const abortArrayAggregate = (): void => {
+  arrayAggregateController?.abort()
+  arrayAggregateController = null
+}
+
+// AROP — aggregate elements over a range.
+export function aggregateArray(params: FetchArrayAggregateParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayAggregateController?.abort()
+    const controller = new AbortController()
+    arrayAggregateController = controller
+
+    dispatch(
+      loadArrayAggregate({
+        query: {
+          start: params.start,
+          end: params.end,
+          operation: params.operation,
+          ...(params.value !== undefined ? { value: params.value } : {}),
+        },
+        resetData: params.resetData,
+      }),
+    )
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<AggregateArrayResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_AGGREGATE),
+        {
+          keyName: params.key,
+          start: params.start,
+          end: params.end,
+          operation: params.operation,
+          ...(params.value !== undefined ? { value: params.value } : {}),
+        },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArrayAggregateSuccess(data))
+      } else {
+        dispatch(loadArrayAggregateFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArrayAggregateFailure(errorMessage))
+    } finally {
+      if (arrayAggregateController === controller) {
+        arrayAggregateController = null
+      }
+    }
+  }
+}
+
+/**
+ * Reloads the array's currently-displayed surface in response to the
+ * header's refresh button (dispatched via `refreshKey` in
+ * `slices/browser/keys`). Replays whichever query the form last ran —
+ * range/scan and the user's bounds — so refresh doesn't silently swap
+ * the table for a different slice. Keeps `resetData: false` so the
+ * table doesn't flash through an empty loading state. Also replays the
+ * last Search-tab query so its results don't go stale after a refresh.
+ */
+export function refreshArray(key: RedisString) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const { query, aggregate, search } = stateInit().browser.array
+    const { start, end, showEmpty } = query
+
+    dispatch(fetchArrayLength(key))
+    dispatch(fetchArrayCount(key))
+
+    if (showEmpty) {
+      dispatch(fetchArrayRange({ key, start, end, resetData: false }))
+    } else {
+      dispatch(scanArrayRange({ key, start, end, resetData: false }))
+    }
+
+    // Replay the last AROP so the Aggregate tab's result reflects the
+    // array's current contents instead of a value computed before the
+    // refresh. `resetData: false` keeps the existing value on screen while
+    // the recompute is in flight (no loader flash), mirroring the
+    // range/scan replay above. Runs whenever a query is stored and either has
+    // a result or is still in flight — replaying aborts a pre-refresh AROP
+    // that would otherwise land later with a stale result.
+    if (aggregate.query && (aggregate.hasResult || aggregate.loading)) {
+      dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
+    }
+
+    if (search.query) {
+      dispatch(searchArray({ key, ...search.query }))
+    }
+  }
+}
+
+/**
+ * Apply a successful write's side effects — close/clear the panel
+ * (`onSuccessAction`) and replay the read surface + key header — but only if
+ * `key` is still the selected key. A write can resolve after the user moved to
+ * another key: `onSuccessAction` would close/clear the now-different panel, and
+ * refreshArray writes into the shared array slice (its range controller would
+ * abort the newly-selected key's load) while the header reads Length/Count/Size
+ * from the keys slice.
+ *
+ * The live selection is read from the browser context, not
+ * `keys.selectedKey.data` — fetchKeyInfo keeps the previous `data` in place
+ * while the newly clicked key loads, so that field is stale during the switch.
+ * Comparison is byte-exact (isEqualBuffers), since two distinct binary names
+ * can decode to the same Unicode string.
+ */
+function applyArrayWriteResult(
+  key: RedisResponseBuffer,
+  startInstanceId: Maybe<string>,
+  index: Maybe<string>,
+  onSuccessAction?: (index?: string) => void,
+) {
+  return (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const latest = stateInit()
+    const selectedKey = appContextSelectedKey(latest)
+    // The user may have switched key or database while the POST was in flight.
+    // Applying the result (closing the panel, refreshing) only makes sense when
+    // both still match, so a same-named key in another database can't be
+    // repainted as if the add happened there (mirrors the edit/delete thunks).
+    const sameInstance =
+      latest.connections.instances.connectedInstance?.id === startInstanceId
+    if (!sameInstance || !selectedKey || !isEqualBuffers(selectedKey, key)) {
+      return
+    }
+    // Pass the landed index so the caller can reveal it: an append lands at the
+    // current length, which may be above the View's active upper bound. Runs
+    // before refreshArray so a range change here is what refreshArray replays.
+    onSuccessAction?.(index)
+    dispatch<any>(refreshArray(key))
+    dispatch<any>(refreshKeyInfoAction(key))
+  }
+}
+
+/**
+ * True while the write's target still matches what it was when the user
+ * requested it: the same connected instance AND the same selected key. A
+ * pending production-write confirmation can fire after a database/key switch,
+ * and the POST URL is built from the live connection — so this stops a stale
+ * confirmation from writing the old form into the newly selected database/key.
+ */
+function isArrayWriteTargetCurrent(
+  state: RootState,
+  key: RedisResponseBuffer,
+  expectedInstanceId: Maybe<string>,
+) {
+  const currentInstanceId = state.connections.instances.connectedInstance?.id
+  const selectedKey = appContextSelectedKey(state)
+  return (
+    currentInstanceId === expectedInstanceId &&
+    !!selectedKey &&
+    isEqualBuffers(selectedKey, key)
+  )
+}
+
+/**
+ * Append a value to the end of the array (POST /array/append → ARSET at the
+ * current length). On success the displayed surface, counters, and key header
+ * are refreshed so the new element appears.
+ */
+export function appendArrayElement(
+  params: AppendArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // Hold the same lock inline ARSET uses so the key-header refresh (and
+    // range/aggregate forms) pause while the write is in flight — otherwise a
+    // pre-write refreshKeyInfoAction could resolve after the add and repaint
+    // the header with stale Length/Count/Size.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const startInstanceId = state.connections.instances.connectedInstance?.id
+      const { status, data } = await apiService.post<{ index: string }>(
+        arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
+        { keyName: params.key, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+            mode: 'append',
+          },
+        })
+
+        dispatch<any>(
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            data?.index,
+            onSuccessAction,
+          ),
+        )
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      // Only the latest write releases the shared lock, so an add overlapping
+      // an edit (or another add) can't re-enable refresh while one is pending.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
+    }
+  }
+}
+
+/**
+ * Add a value at an explicit index (POST /array/set-element → ARSET key index
+ * value). Used by the "Add element" form when the user points at an index.
+ * Refreshes the displayed surface, counters, and key header on success.
+ */
+export function addArrayElement(
+  params: AddArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // See appendArrayElement: hold the shared updating lock so a pre-write key
+    // refresh can't resolve after the add and overwrite the header metadata.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const startInstanceId = state.connections.instances.connectedInstance?.id
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+            mode: 'at_index',
+          },
+        })
+
+        dispatch<any>(
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            params.index,
+            onSuccessAction,
+          ),
+        )
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
+    }
+  }
+}

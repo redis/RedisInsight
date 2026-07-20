@@ -1,4 +1,4 @@
-import { isAzureDatabase } from 'uiSrc/utils'
+import { isAzureDatabase, isManagedDatabase } from 'uiSrc/utils'
 import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 
 // "as any" is used for providerDetails because Instance extends Partial<DatabaseInstanceResponse>
@@ -56,5 +56,47 @@ describe('isAzureDatabase', () => {
 
   it('should return false for empty object instance', () => {
     expect(isAzureDatabase({})).toBe(false)
+  })
+})
+
+describe('isManagedDatabase', () => {
+  it('should return true for an Azure database', () => {
+    const instance = DBInstanceFactory.build({
+      providerDetails: {
+        provider: 'azure',
+        authType: 'entraId',
+      } as any,
+    })
+
+    expect(isManagedDatabase(instance)).toBe(true)
+  })
+
+  it('should return true when the database has cloudDetails with a cloudId', () => {
+    const instance = DBInstanceFactory.build({
+      cloudDetails: { cloudId: 12345 } as any,
+    })
+
+    expect(isManagedDatabase(instance)).toBe(true)
+  })
+
+  it('should return false for a plain database without cloud/provider metadata', () => {
+    const instance = DBInstanceFactory.build({
+      providerDetails: undefined,
+      cloudDetails: undefined,
+    })
+
+    expect(isManagedDatabase(instance)).toBe(false)
+  })
+
+  it('should return false when cloudDetails has no cloudId', () => {
+    const instance = DBInstanceFactory.build({
+      cloudDetails: {} as any,
+    })
+
+    expect(isManagedDatabase(instance)).toBe(false)
+  })
+
+  it('should return false when instance is null', () => {
+    expect(isManagedDatabase(null)).toBe(false)
   })
 })

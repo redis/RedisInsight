@@ -194,9 +194,9 @@ describe('Geodata App', () => {
       GeodataMode.RqeInspector,
     )
 
-    expect(screen.getByText('Cannot inspect RQE geo command')).toBeInTheDocument()
+    expect(screen.getByText('Cannot inspect Redis Search geo command')).toBeInTheDocument()
     expect(
-      screen.getByText('No Redis Query Engine geospatial predicate found.'),
+      screen.getByText('No Redis Search geospatial predicate found.'),
     ).toBeInTheDocument()
   })
 
@@ -207,7 +207,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeMarkers,
     )
 
-    expect(screen.getByText('Cannot render RQE geo map')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo map')).toBeInTheDocument()
     expect(
       screen.getByText(
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
@@ -242,7 +242,7 @@ describe('Geodata App', () => {
     const plot = screen.getByRole('img', {
       name: 'Leaflet geospatial shape plot',
     })
-    const summary = screen.getByLabelText('RQE command summary')
+    const summary = screen.getByLabelText('Redis Search command summary')
     expect(
       Boolean(
         plot.compareDocumentPosition(summary) &
@@ -258,7 +258,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeShape,
     )
 
-    expect(screen.getByText('Cannot render RQE geo shape')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo shape')).toBeInTheDocument()
     expect(
       screen.getByText(
         'No returned geospatial fields found. Add RETURN 1 geom to the FT.SEARCH command.',

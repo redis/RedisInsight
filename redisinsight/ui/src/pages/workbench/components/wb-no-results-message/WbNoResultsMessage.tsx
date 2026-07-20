@@ -2,6 +2,8 @@ import React from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   changeSelectedTab,
@@ -25,6 +27,7 @@ import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
 
 const WbNoResultsMessage = () => {
+  const { t } = useTranslation()
   const { provider } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -50,13 +53,13 @@ const WbNoResultsMessage = () => {
         className={styles.noResultsTitle}
         data-testid="wb_no-results__title"
       >
-        No results to display yet
+        {t('workbench.noResults.title')}
       </Text>
       <Title style={{ marginTop: 12, fontSize: 28 }}>
-        This is our advanced CLI
+        {t('workbench.noResults.cliTitle')}
       </Title>
       <Title style={{ marginTop: 6, fontSize: 20, lineHeight: 1.2 }}>
-        for Redis commands.
+        {t('workbench.noResults.cliSubtitle')}
       </Title>
       <Spacer />
 
@@ -67,7 +70,7 @@ const WbNoResultsMessage = () => {
             <img
               className={styles.noResultsIcon}
               src={BulbImg}
-              alt="no results"
+              alt={t('workbench.noResults.imageAlt')}
               data-testid="wb_no-results__icon"
             />
           </FlexItem>
@@ -76,8 +79,7 @@ const WbNoResultsMessage = () => {
               className={styles.noResultsText}
               data-testid="wb_no-results__summary"
             >
-              Try Workbench with our interactive Tutorials to learn how Redis
-              can solve your use cases.
+              {t('workbench.noResults.summary')}
             </Text>
             <Spacer size="xl" />
             <div>
@@ -87,12 +89,12 @@ const WbNoResultsMessage = () => {
                 className={styles.exploreBtn}
                 data-testid="no-results-explore-btn"
               >
-                Explore
+                {t('workbench.noResults.button.explore')}
               </PrimaryButton>
             </div>
             <Spacer size="s" />
             <Text textAlign="left" size="xs">
-              Or click the icon in the top right corner.
+              {t('workbench.noResults.hint')}
             </Text>
           </FlexItem>
         </Panel>

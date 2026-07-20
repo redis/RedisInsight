@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Pages } from 'uiSrc/constants'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
@@ -60,14 +61,16 @@ export const CreateIndexPageProvider = ({
   instanceId,
   sampleData,
   mode: modeProp,
-  showBrowser: showBrowserProp = true,
+  isManualCreation: isManualCreationProp = false,
   initialKey: initialKeyProp,
   initialKeyType: initialKeyTypeProp,
   initialPrefix: initialPrefixProp,
   children,
 }: CreateIndexPageProviderProps) => {
+  const { t } = useTranslation()
   const mode = modeProp ?? CreateIndexMode.SampleData
   const isSampleData = mode === CreateIndexMode.SampleData
+  const isManualCreation = !isSampleData && isManualCreationProp
 
   const [activeTab, setActiveTab] = useState<CreateIndexTab>(
     CreateIndexTab.Table,
@@ -172,10 +175,10 @@ export const CreateIndexPageProvider = ({
   const displayName = useMemo(() => {
     if (isSampleData && sampleData)
       return getDisplayNameBySampleData(sampleData)
-    return 'existing data'
-  }, [isSampleData, sampleData])
+    return t('vectorSearch.createIndex.displayNameFallback')
+  }, [isSampleData, sampleData, t])
 
-  const showBrowser = !isSampleData && showBrowserProp
+  const showBrowser = !isSampleData && !initialKeyProp && !isManualCreation
 
   const selectedFields = useMemo(() => {
     if (isSampleData) return fields
@@ -203,10 +206,12 @@ export const CreateIndexPageProvider = ({
   const createDisabledReason = useMemo((): string | null => {
     if (isSampleData) return null
     if (selectedFields.length === 0)
-      return 'Select a key and at least one field to index.'
+      return isManualCreation
+        ? t('vectorSearch.createIndex.createDisabledReasonManual')
+        : t('vectorSearch.createIndex.createDisabledReason')
     if (indexNameError !== null) return indexNameError
     return null
-  }, [isSampleData, indexNameError, selectedFields])
+  }, [isSampleData, isManualCreation, indexNameError, selectedFields, t])
 
   const isCreateDisabled = createDisabledReason !== null
 
@@ -424,6 +429,7 @@ export const CreateIndexPageProvider = ({
       setActiveTab: changeActiveTab,
       isReadonly,
       showBrowser,
+      isManualCreation,
       initialKey: initialKeyProp,
       initialKeyType: initialKeyTypeProp,
       displayName,
@@ -459,6 +465,7 @@ export const CreateIndexPageProvider = ({
       changeActiveTab,
       isReadonly,
       showBrowser,
+      isManualCreation,
       initialKeyProp,
       initialKeyTypeProp,
       displayName,

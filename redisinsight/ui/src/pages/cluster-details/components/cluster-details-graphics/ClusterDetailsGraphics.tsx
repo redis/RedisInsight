@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { DonutChart } from 'uiSrc/components/charts'
 import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { ModifiedClusterNodes } from 'uiSrc/pages/cluster-details/ClusterDetailsPage'
+import { useTranslation } from 'uiSrc/i18n'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -18,6 +19,7 @@ const ClusterDetailsGraphics = ({
   nodes: Nullable<ModifiedClusterNodes[]>
   dataLoaded: boolean
 }) => {
+  const { t } = useTranslation()
   // Show loading until data is received; don't show during refresh polls
   const showLoading = !dataLoaded
   const [memoryData, setMemoryData] = useState<ChartData[]>([])
@@ -38,7 +40,8 @@ const ClusterDetailsGraphics = ({
           className={styles.tooltipPercentage}
           data-testid="tooltip-node-percent"
         >
-          {getPercentage(data.value, memorySum)}%
+          {getPercentage(data.value, memorySum)}
+          {t('analytics.units.percent')}
         </span>
         <span data-testid="tooltip-total-memory">
           (&thinsp;{formatBytes(data.value, 3, false)}&thinsp;)
@@ -60,7 +63,8 @@ const ClusterDetailsGraphics = ({
           className={styles.tooltipPercentage}
           data-testid="tooltip-node-percent"
         >
-          {getPercentage(data.value, keysSum)}%
+          {getPercentage(data.value, keysSum)}
+          {t('analytics.units.percent')}
         </span>
         <span data-testid="tooltip-total-keys">
           (&thinsp;{numberWithSpaces(data.value)}&thinsp;)
@@ -119,7 +123,9 @@ const ClusterDetailsGraphics = ({
           <div className={styles.chartCenter}>
             <div className={styles.chartTitle} data-testid="donut-title-memory">
               <RiIcon type="MemoryIconIcon" className={styles.icon} size="m" />
-              <Title size="XS">Memory</Title>
+              <Title size="XS">
+                {t('analytics.clusterDetails.graphics.memory')}
+              </Title>
             </div>
             <hr className={styles.titleSeparator} />
             <div className={styles.centerCount}>
@@ -137,7 +143,9 @@ const ClusterDetailsGraphics = ({
           <div className={styles.chartCenter}>
             <div className={styles.chartTitle} data-testid="donut-title-keys">
               <RiIcon type="KeyIconIcon" className={styles.icon} size="m" />
-              <Title size="XS">Keys</Title>
+              <Title size="XS">
+                {t('analytics.clusterDetails.graphics.keys')}
+              </Title>
             </div>
             <hr className={styles.titleSeparator} />
             <div className={styles.centerCount}>

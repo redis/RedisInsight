@@ -13,6 +13,7 @@ import {
   GetListElementsResponse,
   Database as DatabaseInstanceResponse,
   Environment,
+  RedisConnectionFamily,
   SearchZSetMembersResponse,
   SentinelMaster,
   CreateSentinelDatabaseDto,
@@ -58,6 +59,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   loading?: boolean
   isFreeDb?: boolean
   environment: Environment
+  connectionFamily?: RedisConnectionFamily
   tags?: Tag[]
 }
 
@@ -214,10 +216,10 @@ export const DATABASE_LIST_MODULES_TEXT = Object.freeze({
   [RedisDefaultModules.TimeSeries]: 'Time Series',
   [RedisCustomModulesName.Proto]: 'redis-protobuf',
   [RedisCustomModulesName.IpTables]: 'RedisPushIpTables',
-  [RedisDefaultModules.Search]: 'Redis Query Engine',
-  [RedisDefaultModules.SearchLight]: 'Redis Query Engine',
-  [RedisDefaultModules.FT]: 'Redis Query Engine',
-  [RedisDefaultModules.FTL]: 'Redis Query Engine',
+  [RedisDefaultModules.Search]: 'Redis Search',
+  [RedisDefaultModules.SearchLight]: 'Redis Search',
+  [RedisDefaultModules.FT]: 'Redis Search',
+  [RedisDefaultModules.FTL]: 'Redis Search',
   [RedisDefaultModules.VectorSet]: 'Vector Set',
 })
 
@@ -354,6 +356,13 @@ export interface InitialStateInstances {
   }
   shownColumns: DatabaseListColumn[]
   dangerousCommands: string[]
+}
+
+// Fields on the edit-database form that can be deep-linked to via the
+// `focusField` query param (see `Pages.homeEditInstance`). Feature-agnostic —
+// each field's component reacts only to its own key, so intents never collide.
+export enum EditDatabaseField {
+  Environment = 'environment',
 }
 
 export interface ErrorImportResult {

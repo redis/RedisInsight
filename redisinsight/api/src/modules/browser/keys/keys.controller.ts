@@ -9,7 +9,14 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { KeysService } from 'src/modules/browser/keys/keys.service';
 import { ApiRedisParams } from 'src/decorators/api-redis-params.decorator';
 import { BrowserClientMetadata } from 'src/modules/browser/decorators/browser-client-metadata.decorator';
@@ -18,6 +25,7 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteKeysDto,
   DeleteKeysResponse,
+  GetArrayKeyInfoResponse,
   GetKeyInfoDto,
   GetKeysDto,
   GetKeysWithDetailsResponse,
@@ -27,8 +35,6 @@ import {
   UpdateKeyTtlDto,
   KeyTtlResponse,
   GetKeysInfoDto,
-  GetNamespaceSearchableDto,
-  NamespaceSearchableResponse,
 } from 'src/modules/browser/keys/dto';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
 
@@ -80,39 +86,26 @@ export class KeysController {
   @ApiOperation({ description: 'Get key info' })
   @ApiRedisParams()
   @ApiBody({ type: GetKeyInfoDto })
+  @ApiExtraModels(GetKeyInfoResponse, GetArrayKeyInfoResponse)
   @ApiOkResponse({
     description: 'Keys info',
-    type: GetKeyInfoResponse,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(GetKeyInfoResponse) },
+        { $ref: getSchemaPath(GetArrayKeyInfoResponse) },
+      ],
+    },
   })
   @ApiQueryRedisStringEncoding()
   async getKeyInfo(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: GetKeyInfoDto,
-  ): Promise<GetKeyInfoResponse> {
+  ): Promise<GetKeyInfoResponse | GetArrayKeyInfoResponse> {
     return await this.keysService.getKeyInfo(
       clientMetadata,
       dto.keyName,
       dto.includeSize,
     );
-  }
-
-  @Post('get-namespace-searchable')
-  @HttpCode(200)
-  @ApiOperation({
-    description: 'Check if namespaces contain searchable keys (hash/json)',
-  })
-  @ApiBody({ type: GetNamespaceSearchableDto })
-  @ApiRedisParams()
-  @ApiOkResponse({
-    description: 'Searchable key info per namespace prefix',
-    type: [NamespaceSearchableResponse],
-  })
-  @ApiQueryRedisStringEncoding()
-  async getNamespaceSearchable(
-    @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: GetNamespaceSearchableDto,
-  ): Promise<NamespaceSearchableResponse[]> {
-    return this.keysService.getNamespaceSearchable(clientMetadata, dto);
   }
 
   @Delete('')

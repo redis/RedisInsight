@@ -1,25 +1,21 @@
+import i18n from 'uiSrc/i18n'
+
 import {
   SampleDataContent,
   SampleDataOption,
 } from './PickSampleDataModal.types'
 
-export const MODAL_TITLE = 'Getting your sample data ready for Search'
-export const MODAL_SUBTITLE_LINE_1 = 'Select a sample dataset.'
-export const MODAL_SUBTITLE_LINE_2 =
-  "We'll load the data and generate the index needed for search."
-export const CANCEL_BUTTON_TEXT = 'Cancel'
-export const SEE_INDEX_DEFINITION_BUTTON_TEXT = 'See index definition'
-export const START_QUERYING_BUTTON_TEXT = 'Start querying'
-
-export const SAMPLE_DATA_OPTIONS: SampleDataOption[] = [
+// Built at call time (not module scope) so label/description resolve in the
+// active language; the enum `value` stays stable as an identifier.
+export const getSampleDataOptions = (): SampleDataOption[] => [
   {
     value: SampleDataContent.E_COMMERCE_DISCOVERY,
-    label: 'E-commerce Discovery',
-    description: 'Discover products that match intent, not just text',
+    label: i18n.t('vectorSearch.sampleData.ecommerce.label'),
+    description: i18n.t('vectorSearch.sampleData.ecommerce.description'),
   },
   {
     value: SampleDataContent.CONTENT_RECOMMENDATIONS,
-    label: 'Content recommendations',
-    description: 'Discover content by theme or plot.',
+    label: i18n.t('vectorSearch.sampleData.content.label'),
+    description: i18n.t('vectorSearch.sampleData.content.description'),
   },
 ]

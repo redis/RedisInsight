@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
 import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/profile'
@@ -42,6 +43,7 @@ export interface Props {
 
 /** @deprecated Use QueryResults from 'uiSrc/components/query/query-results' instead. */
 const WBResults = (props: Props) => {
+  const { t } = useTranslation()
   const {
     isResultsLoaded,
     items = [],
@@ -91,7 +93,7 @@ const WBResults = (props: Props) => {
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
-            Clear Results
+            {t('workbench.results.clear')}
           </EmptyButton>
         </div>
       )}

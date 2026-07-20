@@ -22,6 +22,10 @@ export const KEY_VALUE_FORMATTER_OPTIONS = [
     value: KeyValueFormat.JSON,
   },
   {
+    text: 'Markdown',
+    value: KeyValueFormat.Markdown,
+  },
+  {
     text: 'Msgpack',
     value: KeyValueFormat.Msgpack,
   },

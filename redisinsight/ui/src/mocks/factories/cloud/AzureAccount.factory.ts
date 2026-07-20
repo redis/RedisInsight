@@ -6,4 +6,5 @@ export const AzureAccountFactory = Factory.define<AzureAccount>(() => ({
   id: faker.string.uuid(),
   username: faker.internet.email(),
   name: faker.person.fullName(),
+  tenantId: faker.string.uuid(),
 }))

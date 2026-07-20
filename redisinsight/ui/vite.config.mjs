@@ -6,15 +6,29 @@ import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
 import { reactClickToComponent } from 'vite-plugin-react-click-to-component';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import istanbul from 'vite-plugin-istanbul';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 // import { compression } from 'vite-plugin-compression2'
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
+import rimraf from 'rimraf';
 import { defaultConfig } from './src/config/default';
 
 const isElectron = defaultConfig.app.type === 'ELECTRON';
 // set path to index.tsx in the index.html
 process.env.RI_INDEX_NAME = isElectron ? 'indexElectron.tsx' : 'index.tsx';
+
+// Only generate + upload source maps when Sentry is enabled AND we have an
+// auth token. This keeps disabled builds from generating maps that would
+// otherwise ship (the upload plugin is what deletes them afterwards).
+// Mirror the runtime/booleanEnv semantics ('true' OR '1') so a build configured
+// with RI_SENTRY_ENABLED=1 still generates + uploads (and deletes) source maps.
+const shouldUploadSourceMaps =
+  !!process.env.RI_SENTRY_AUTH_TOKEN &&
+  ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '');
+
 const outDir = isElectron ? '../dist/renderer' : './dist';
+// Hidden source maps emitted for upload; must never ship in the artifact.
+const sourceMapsGlob = `${outDir}/**/*.js.map`;
 
 let base;
 if (defaultConfig.api.hostedBase) {
@@ -72,6 +86,45 @@ export default defineConfig({
     //   include: [/\.(js)$/, /\.(css)$/],
     //   deleteOriginalAssets: true
     // }),
+    // Upload source maps to Sentry (debug IDs match bundle↔map), then delete
+    // them so they never ship inside the app (Electron renderer or web). Gated on
+    // shouldUploadSourceMaps (Sentry enabled + auth token). Must stay last.
+    ...(shouldUploadSourceMaps
+      ? [
+          sentryVitePlugin({
+            org: process.env.RI_SENTRY_ORG,
+            project: process.env.RI_SENTRY_PROJECT,
+            authToken: process.env.RI_SENTRY_AUTH_TOKEN,
+            // dist labels the source-map bundle by build OS; inject: false
+            // keeps release/dist on the uploaded bundle only (set in
+            // Sentry.init), not on events.
+            release: {
+              name: defaultConfig.app.version,
+              dist: process.platform,
+              inject: false,
+            },
+            sourcemaps: {
+              // Delete maps from whichever outDir this build wrote to
+              // (`../dist/renderer` for Electron, `./dist` for web/Docker) so
+              // they are never shipped.
+              filesToDeleteAfterUpload: [sourceMapsGlob],
+            },
+            telemetry: false,
+            // A failed upload must not fail the build — but the hidden maps are
+            // already emitted and `filesToDeleteAfterUpload` only runs on
+            // success, so delete them here too, or a failed upload would ship
+            // the maps.
+            errorHandler: (err) => {
+              // eslint-disable-next-line no-console
+              console.warn(
+                '[Sentry] renderer source-map upload failed (continuing):',
+                err.message,
+              );
+              rimraf.sync(sourceMapsGlob);
+            },
+          }),
+        ]
+      : []),
   ],
   resolve: {
     alias: {
@@ -132,10 +185,17 @@ export default defineConfig({
     outDir,
     target: 'es2020',
     minify: 'esbuild',
+    // Emit hidden source maps only when uploading to Sentry (the plugin above
+    // deletes them after upload, so they never ship). Off otherwise.
+    sourcemap: shouldUploadSourceMaps ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Keep all Sentry packages in one chunk to preserve initialization order
+            if (id.includes('@sentry')) {
+              return 'sentry';
+            }
             return id
               .toString()
               .split('node_modules/')[1]

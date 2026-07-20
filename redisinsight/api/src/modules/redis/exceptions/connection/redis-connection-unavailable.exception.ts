@@ -7,16 +7,14 @@ import {
 } from 'src/modules/redis/exceptions/connection/redis-connection-failed.exception';
 
 export class RedisConnectionUnavailableException extends RedisConnectionFailedException {
-  constructor(
-    message: string = ERROR_MESSAGES.INCORRECT_DATABASE_URL('this host'),
-    options?: HttpExceptionOptions,
-  ) {
+  constructor(url: string = 'this host', options?: HttpExceptionOptions) {
     super(
       {
-        message,
+        message: ERROR_MESSAGES.INCORRECT_DATABASE_URL(url),
         error: 'RedisConnectionUnavailableException',
         statusCode: RedisConnectionFailedStatusCode,
         errorCode: CustomErrorCodes.RedisConnectionUnavailable,
+        resource: { url },
       },
       options,
     );

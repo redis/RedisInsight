@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios'
+import { RootState } from 'uiSrc/slices/store'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -86,9 +87,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, setListInitialState())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -106,9 +107,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadListElements())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -141,9 +142,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadListElementsSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -163,9 +164,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadListElementsFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -184,9 +185,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadMoreListElements())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -230,9 +231,9 @@ describe('list slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -249,9 +250,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadMoreListElementsSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(initialState)
     })
@@ -271,9 +272,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, loadMoreListElementsFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -295,9 +296,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, updateValue())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -319,9 +320,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, updateValueSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -344,9 +345,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, updateValueFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -368,9 +369,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, resetUpdateValue())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -397,9 +398,9 @@ describe('list slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -430,9 +431,9 @@ describe('list slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -460,9 +461,9 @@ describe('list slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -485,9 +486,9 @@ describe('list slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -504,9 +505,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, insertListElements())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -523,9 +524,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, insertListElementsSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -545,9 +546,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, insertListElementsFailure(error))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -564,9 +565,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, deleteListElements())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -583,9 +584,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, deleteListElementsSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })
@@ -605,9 +606,9 @@ describe('list slice', () => {
       const nextState = reducer(initialState, deleteListElementsFailure(error))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { list: nextState },
+        browser: { ...initialStateDefault.browser, list: nextState },
       }
       expect(listSelector(rootState)).toEqual(state)
     })

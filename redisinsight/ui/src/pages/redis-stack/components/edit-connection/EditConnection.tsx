@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { AxiosError } from 'axios'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
@@ -68,11 +69,11 @@ const EditConnection = () => {
         setState({ ...state, loading: false, data })
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       if (isApiSubscribed) {
         setState({ ...state, loading: false, error: errorMessage })
       }
-      dispatch(addErrorNotification(error))
+      dispatch(addErrorNotification(error as AxiosError))
     }
   }
   const onInstanceChanged = () => {

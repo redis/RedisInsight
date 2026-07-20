@@ -104,11 +104,29 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.DevArray,
-      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+      KnownFeatures.Array,
+      new SwitchableFlagStrategy(
+        this.featuresConfigService,
+        this.settingsService,
+      ),
     );
     this.strategies.set(
       KnownFeatures.ProdMode,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
+    this.strategies.set(
+      KnownFeatures.DevLanguage,
+      new SwitchableFlagStrategy(
+        this.featuresConfigService,
+        this.settingsService,
+      ),
+    );
+    this.strategies.set(
+      KnownFeatures.WhatsNew,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
+    this.strategies.set(
+      KnownFeatures.ValueDecoder,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
   }

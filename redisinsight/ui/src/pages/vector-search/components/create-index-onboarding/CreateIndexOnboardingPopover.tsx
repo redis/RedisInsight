@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { AnchorPosition, RiPopover } from 'uiSrc/components/base'
 import {
   Button,
@@ -15,7 +16,7 @@ import { useCreateIndexOnboarding } from '../../context/create-index-onboarding'
 import {
   CreateIndexOnboardingStep,
   ONBOARDING_STEPS,
-  STEP_CONTENT,
+  getStepContent,
   TOTAL_STEPS,
 } from './CreateIndexOnboarding.constants'
 import * as S from './CreateIndexOnboardingPopover.styles'
@@ -31,6 +32,7 @@ export const CreateIndexOnboardingPopover = ({
   children,
   anchorPosition = 'rightCenter',
 }: CreateIndexOnboardingPopoverProps) => {
+  const { t } = useTranslation()
   const { currentStep, isActive, nextStep, prevStep, skipOnboarding } =
     useCreateIndexOnboarding()
 
@@ -40,7 +42,7 @@ export const CreateIndexOnboardingPopover = ({
     return <>{children}</>
   }
 
-  const content = STEP_CONTENT[step]
+  const content = getStepContent()[step]
 
   if (!content) {
     return <>{children}</>
@@ -54,7 +56,9 @@ export const CreateIndexOnboardingPopover = ({
   const stepNumber = stepIndex + 1
 
   const handleAction = isLastStep ? skipOnboarding : nextStep
-  const actionLabel = isLastStep ? 'Got it' : 'Next'
+  const actionLabel = isLastStep
+    ? t('vectorSearch.onboarding.gotIt')
+    : t('vectorSearch.onboarding.next')
 
   return (
     <div onClick={(e) => e.stopPropagation()} role="presentation">
@@ -75,7 +79,7 @@ export const CreateIndexOnboardingPopover = ({
                   icon={CancelSlimIcon}
                   onClick={skipOnboarding}
                   size="S"
-                  aria-label="close-onboarding"
+                  aria-label={t('vectorSearch.onboarding.close')}
                   data-testid="create-index-onboarding-close"
                 />
               ) : (
@@ -84,7 +88,7 @@ export const CreateIndexOnboardingPopover = ({
                   data-testid="create-index-onboarding-skip"
                 >
                   <Text size="m" color="primary">
-                    Skip tour
+                    {t('vectorSearch.onboarding.skipTour')}
                   </Text>
                 </EmptyButton>
               )}
@@ -99,7 +103,10 @@ export const CreateIndexOnboardingPopover = ({
           <Row justify="between" align="center">
             <S.StepCounter>
               <Text size="s" color="secondary">
-                {stepNumber}/{TOTAL_STEPS}
+                {t('vectorSearch.onboarding.stepCounter', {
+                  current: stepNumber,
+                  total: TOTAL_STEPS,
+                })}
               </Text>
             </S.StepCounter>
 
@@ -110,7 +117,7 @@ export const CreateIndexOnboardingPopover = ({
                   onClick={prevStep}
                   data-testid="create-index-onboarding-back"
                 >
-                  Back
+                  {t('vectorSearch.onboarding.back')}
                 </SecondaryButton>
               )}
               <Button

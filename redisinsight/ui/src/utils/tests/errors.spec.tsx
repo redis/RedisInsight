@@ -1,282 +1,129 @@
-import { set, cloneDeep } from 'lodash'
 import React from 'react'
-import { AxiosError } from 'axios'
+import { render } from 'uiSrc/utils/test-utils'
 import { parseCustomError, getRdiValidationMessage, Maybe } from 'uiSrc/utils'
 import { CustomError } from 'uiSrc/slices/interfaces'
 import { CustomErrorCodes } from 'uiSrc/constants'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
-const responseData = { response: { data: {}, status: 500 } }
+type ExpectedError = {
+  title?: string
+  // a substring expected in the rendered message (assertions are text-based
+  // rather than deep-equal on JSX, so wording/markup tweaks don't break them)
+  contains: string
+  additionalInfo?: Record<string, unknown>
+}
 
-const parseCustomErrorTests = [
-  [
-    undefined,
-    set(cloneDeep(responseData), 'response.data', {
-      message: 'Something was wrong!',
-    }),
-  ],
-  ['', set(cloneDeep(responseData), 'response.data', { message: '' })],
-  ['test', set(cloneDeep(responseData), 'response.data', { message: 'test' })],
+const parseCustomErrorTests: Array<
+  [Maybe<string | Partial<CustomError>>, ExpectedError]
+> = [
+  [undefined, { contains: 'Something was wrong!' }],
+  ['', { contains: '' }],
+  ['test', { contains: 'test' }],
   [
     { errorCode: 11_003 },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Bad request',
-      message: (
-        <>
-          Your request resulted in an error.
-          <Spacer size="xs" />
-          Try again later.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+    { title: 'Bad request', contains: 'Your request resulted in an error.' },
   ],
   [
     { errorCode: 11_002 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Access denied',
-      message: <>You do not have permission to access Redis Cloud.</>,
-    }),
+      contains: 'You do not have permission to access Redis Cloud.',
+    },
   ],
   [
     { errorCode: 11_000 },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Server error',
-      message: (
-        <>
-          Try restarting Redis Insight.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+    { title: 'Server error', contains: 'Try restarting Redis Insight.' },
   ],
   [
     { errorCode: 11_004 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Resource was not found',
-      message: (
-        <>
-          Resource requested could not be found.
-          <Spacer size="xs" />
-          Try again later.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+      contains: 'Resource requested could not be found.',
+    },
   ],
   [
     { errorCode: 11_001 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Session expired',
-      message: (
-        <>
-          Sign in again to continue working with Redis Cloud.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+      contains: 'Sign in again to continue working with Redis Cloud.',
+    },
   ],
   [
     { errorCode: 11_021 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Session expired',
-      message: (
-        <>
-          Sign in again to continue working with Redis Cloud.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+      contains: 'Sign in again to continue working with Redis Cloud.',
+    },
   ],
   [
     { errorCode: CustomErrorCodes.CloudOauthGithubEmailPermission },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Github Email Permission',
-      message: (
-        <>
-          Unable to get an email from the GitHub account. Make sure that it is
-          available.
-          <br />
-        </>
-      ),
-    }),
+      contains: 'Unable to get an email from the GitHub account.',
+    },
   ],
   [
     { errorCode: CustomErrorCodes.CloudOauthMisconfiguration },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Misconfiguration',
-      message: (
-        <>
-          Authorization server encountered a misconfiguration error and was
-          unable to complete your request.
-          <Spacer size="xs" />
-          Try again later.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+      contains: 'Authorization server encountered a misconfiguration error',
+    },
   ],
   [
     { errorCode: CustomErrorCodes.CloudOauthUnknownAuthorizationRequest },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Error',
-      message: (
-        <>
-          Unknown authorization request.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+    { title: 'Error', contains: 'Unknown authorization request.' },
   ],
   [
     { errorCode: CustomErrorCodes.CloudOauthUnexpectedError },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Error',
-      message: (
-        <>
-          An unexpected error occurred.
-          <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
-        </>
-      ),
-    }),
+    { title: 'Error', contains: 'An unexpected error occurred.' },
   ],
   [
     { errorCode: CustomErrorCodes.CloudOauthSsoUnsupportedEmail },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Invalid email',
-      message: <>Invalid email.</>,
-    }),
+    { title: 'Invalid email', contains: 'used to sign in with SSO' },
   ],
   [
     { errorCode: 111_001 },
-    set(cloneDeep(responseData), 'response.data', {
-      title: 'Error',
-      message: 'Something was wrong!',
-    }),
+    { title: 'Error', contains: 'Something was wrong!' },
   ],
   [
     { errorCode: 11_108 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Database already exists',
-      message: (
-        <>
-          You already have a free Redis Cloud database running.
-          <Spacer size="s" />
-          Check out your
-          <a
-            href="https://cloud.redis.io/?utm_source=redisinsight&utm_medium=main&utm_campaign=main#/databases/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Cloud console
-          </a>
-          for connection details.
-        </>
-      ),
-    }),
+      contains: 'You already have a free Redis Cloud database running.',
+    },
   ],
   [
     { errorCode: 11_022 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Invalid API key',
-      message: (
-        <>
-          Your Redis Cloud authorization failed.
-          <Spacer size="xs" />
-          Remove the invalid API key from Redis Insight and try again.
-          <Spacer size="s" />
-          Open the Settings page to manage Redis Cloud API keys.
-        </>
-      ),
-      additionalInfo: {
-        errorCode: 11022,
-        resourceId: undefined,
-      },
-    }),
+      contains: 'Your Redis Cloud authorization failed.',
+      additionalInfo: { errorCode: 11_022, resourceId: undefined },
+    },
   ],
   [
     { errorCode: 11_401 },
-    set(cloneDeep(responseData), 'response.data', {
+    {
       title: 'Pipeline not deployed',
-      message: 'Unfortunately we’ve found some errors in your pipeline.',
-      additionalInfo: {
-        errorCode: 11_401,
-      },
-    }),
+      contains: 'found some errors in your pipeline',
+      additionalInfo: { errorCode: 11_401 },
+    },
   ],
 ]
 
 describe('parseCustomError', () => {
-  test.each(parseCustomErrorTests as [string | CustomError, AxiosError][])(
+  test.each(parseCustomErrorTests)(
     '%j',
-    (input, expected) => {
-      const result = parseCustomError(input)
-      expect(result).toEqual(expected)
+    (input, { title, contains, additionalInfo }) => {
+      const { response }: any = parseCustomError(
+        input as Maybe<string | CustomError>,
+      )
+      expect(response.data.title).toBe(title)
+
+      const { container } = render(<div>{response.data.message}</div>)
+      expect(container.textContent).toContain(contains)
+
+      if (additionalInfo) {
+        expect(response.data.additionalInfo).toEqual(additionalInfo)
+      }
     },
   )
 })

@@ -17,6 +17,7 @@ import listReducer from './browser/list'
 import rejsonReducer from './browser/rejson'
 import streamReducer from './browser/stream'
 import vectorSetReducer from './browser/vectorSet'
+import arrayReducer from './browser/array'
 import bulkActionsReducer from './browser/bulkActions'
 import notificationsReducer from './app/notifications'
 import cliSettingsReducer from './cli/cli-settings'
@@ -33,6 +34,7 @@ import appRedisCommandsReducer from './app/redis-commands'
 import appPluginsReducer from './app/plugins'
 import appsSocketConnectionReducer from './app/socket-connection'
 import appFeaturesReducer from './app/features'
+import appWhatsNewReducer from './app/whatsNew'
 import appUrlHandlingReducer from './app/url-handling'
 import appOauthReducer from './oauth/cloud'
 import azureAuthReducer from './oauth/azure'
@@ -70,6 +72,7 @@ export const rootReducer = combineReducers({
     plugins: appPluginsReducer,
     socketConnection: appsSocketConnectionReducer,
     features: appFeaturesReducer,
+    whatsNew: appWhatsNewReducer,
     urlHandling: appUrlHandlingReducer,
     csrf: appCsrfReducer,
     init: appInitReducer,
@@ -96,6 +99,7 @@ export const rootReducer = combineReducers({
     rejson: rejsonReducer,
     stream: streamReducer,
     vectorSet: vectorSetReducer,
+    array: arrayReducer,
     bulkActions: bulkActionsReducer,
     redisearch: redisearchReducer,
   }),

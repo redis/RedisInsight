@@ -1,6 +1,7 @@
 import { BaseExceptionFilter } from '@nestjs/core';
-import { ArgumentsHost, Logger } from '@nestjs/common';
+import { ArgumentsHost, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { stampErrorCode } from './error-code.util';
 
 export class GlobalExceptionFilter extends BaseExceptionFilter {
   private staticServerLogger = new Logger('GlobalExceptionFilter');
@@ -21,6 +22,22 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
       });
     }
 
-    return super.catch(exception, host);
+    return super.catch(this.withErrorCode(exception), host);
+  }
+
+  private withErrorCode(exception: Error): Error {
+    if (!(exception instanceof HttpException)) {
+      return exception;
+    }
+
+    const body = stampErrorCode(exception);
+
+    // String responses can't carry a code; rebuild. Object responses are
+    // mutated in place, so the original exception stands.
+    if (typeof exception.getResponse() === 'string') {
+      return new HttpException(body, exception.getStatus());
+    }
+
+    return exception;
   }
 }

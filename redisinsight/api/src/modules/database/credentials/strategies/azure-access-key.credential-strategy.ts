@@ -90,6 +90,7 @@ export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
         providerDetails.resourceName,
         providerDetails.resourceType,
         providerDetails.clusterName,
+        providerDetails.tenantId,
       );
 
       // Use plainToInstance to ensure the result is a proper Database class instance

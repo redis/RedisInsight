@@ -201,7 +201,7 @@ test.describe('Browser > Key List View', () => {
     // Verify switching between Pattern search and Search by values UI
     await browserPage.keyList.searchByValuesButton.click();
     const indexOrHint = browserPage.keyList.indexSelector.or(
-      browserPage.page.getByText(/Redis Query Engine|Select an index|Query Engine/i),
+      browserPage.page.getByText(/Redis Search|Select an index/i),
     );
     await expect(indexOrHint.first()).toBeVisible();
     await browserPage.keyList.filterByNameButton.click();

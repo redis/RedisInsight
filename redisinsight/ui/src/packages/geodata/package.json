@@ -136,7 +136,7 @@
       },
       "iconDark": "./dist/geodata_icon_dark.svg",
       "iconLight": "./dist/geodata_icon_light.svg",
-      "description": "Show Redis Query Engine GEO results as plotted locations",
+      "description": "Show Redis Search GEO results as plotted locations",
       "default": false
     },
     {
@@ -156,7 +156,7 @@
       },
       "iconDark": "./dist/geodata_heatmap_icon_dark.svg",
       "iconLight": "./dist/geodata_heatmap_icon_light.svg",
-      "description": "Show Redis Query Engine GEO result density",
+      "description": "Show Redis Search GEO result density",
       "default": false
     },
     {
@@ -177,7 +177,7 @@
       },
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
       "iconLight": "./dist/geodata_inspector_icon_light.svg",
-      "description": "Inspect Redis Query Engine geospatial command inputs and results",
+      "description": "Inspect Redis Search geospatial command inputs and results",
       "default": false
     },
     {
@@ -196,7 +196,7 @@
       },
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
       "iconLight": "./dist/geodata_inspector_icon_light.svg",
-      "description": "Show Redis Query Engine GEOSHAPE WKT results",
+      "description": "Show Redis Search GEOSHAPE WKT results",
       "default": false
     }
   ],

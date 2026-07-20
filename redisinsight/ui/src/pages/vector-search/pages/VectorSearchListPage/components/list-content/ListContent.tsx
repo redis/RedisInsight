@@ -35,15 +35,17 @@ export const ListContent = () => {
           minSize={30}
           defaultSize={viewingIndexName !== null ? 70 : 100}
         >
-          <S.TableWrapper>
-            <IndexList
-              data={data}
-              loading={loading}
-              onQueryClick={onQueryClick}
-              actions={actions}
-              dataTestId="vector-search--list--table"
-            />
-          </S.TableWrapper>
+          <S.ScrollableWrapper>
+            <S.TableWrapper>
+              <IndexList
+                data={data}
+                loading={loading}
+                onQueryClick={onQueryClick}
+                actions={actions}
+                dataTestId="vector-search--list--table"
+              />
+            </S.TableWrapper>
+          </S.ScrollableWrapper>
         </ResizablePanel>
 
         {viewingIndexName !== null && (

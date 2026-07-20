@@ -1,11 +1,15 @@
 import React from 'react'
 import { FormikProps } from 'formik'
+import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import NumericInput from 'uiSrc/components/base/inputs/NumericInput'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 
-import { PHONETIC_NONE, PHONETIC_OPTIONS } from '../../FieldTypeModal.constants'
+import {
+  PHONETIC_NONE,
+  getPhoneticOptions,
+} from '../../FieldTypeModal.constants'
 import { FieldTypeFormValues } from '../FieldTypeForm/FieldTypeForm.types'
 
 export interface TextFieldOptionsProps {
@@ -13,16 +17,17 @@ export interface TextFieldOptionsProps {
 }
 
 export const TextFieldOptions = ({ formik }: TextFieldOptionsProps) => {
+  const { t } = useTranslation()
   const { values, errors, setFieldValue } = formik
+  const phoneticOptions = getPhoneticOptions()
 
   return (
     <Row gap="l">
       <FlexItem grow>
         <FormField
-          label="Weight"
+          label={t('vectorSearch.fieldType.text.weight')}
           infoIconProps={{
-            content:
-              'Declares the importance of this attribute when calculating result accuracy.',
+            content: t('vectorSearch.fieldType.text.weightTooltip'),
           }}
         >
           <NumericInput
@@ -39,13 +44,13 @@ export const TextFieldOptions = ({ formik }: TextFieldOptionsProps) => {
       </FlexItem>
       <FlexItem grow>
         <FormField
-          label="Phonetic matcher"
+          label={t('vectorSearch.fieldType.text.phoneticMatcher')}
           infoIconProps={{
-            content: 'Performs phonetic matching in searches.',
+            content: t('vectorSearch.fieldType.text.phoneticMatcherTooltip'),
           }}
         >
           <RiSelect
-            options={PHONETIC_OPTIONS}
+            options={phoneticOptions}
             value={values.phonetic ?? PHONETIC_NONE}
             onChange={(val: string) =>
               setFieldValue('phonetic', val === PHONETIC_NONE ? undefined : val)

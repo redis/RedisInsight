@@ -25,6 +25,11 @@ export class AddDatabaseDialog {
   readonly testConnectionButton: Locator;
   readonly dialog: Locator;
 
+  // Read-only endpoint info (shown in edit mode instead of editable fields
+  // for cloud/managed databases)
+  readonly dbInfoHost: Locator;
+  readonly dbInfoPort: Locator;
+
   // Additional settings
   readonly timeoutInput: Locator;
   readonly selectLogicalDatabaseCheckbox: Locator;
@@ -70,7 +75,7 @@ export class AddDatabaseDialog {
     this.page = page;
 
     // Dialog controls
-    this.dialog = page.getByRole('dialog', { name: /add database|connection settings/i });
+    this.dialog = page.getByRole('dialog', { name: /add database|edit database|connection settings/i });
     this.connectionUrlInput = page.getByPlaceholder(/redis:\/\//i);
     this.connectionSettingsButton = page.getByTestId('btn-connection-settings');
     this.addDatabaseButton = page.getByRole('button', {
@@ -80,6 +85,10 @@ export class AddDatabaseDialog {
     this.closeButton = page.getByRole('button', { name: 'close' });
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.testConnectionButton = page.getByRole('button', { name: 'Test Connection' });
+
+    // Read-only endpoint info
+    this.dbInfoHost = page.getByTestId('db-info-host');
+    this.dbInfoPort = page.getByTestId('db-info-port');
 
     // Connection settings form
     this.databaseAliasInput = page.getByPlaceholder('Enter Database Alias');

@@ -2,6 +2,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
 import { encodeIndexNameForUrl } from 'uiSrc/pages/vector-search/utils'
@@ -28,6 +30,7 @@ import { IndexListAction } from '../../components/index-list/IndexList.types'
 import { useIndexListData } from '../useIndexListData'
 
 export const useListContent = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -144,20 +147,27 @@ export const useListContent = () => {
 
   const actions: IndexListAction[] = useMemo(
     () => [
-      { name: 'View index', icon: ShowIcon, callback: handleViewIndex },
+      {
+        name: 'View index',
+        label: t('vectorSearch.list.action.viewIndex'),
+        icon: ShowIcon,
+        callback: handleViewIndex,
+      },
       {
         name: 'Browse dataset',
+        label: t('vectorSearch.list.action.browseDataset'),
         icon: VectorSearchKeyIcon,
         callback: handleBrowseDataset,
       },
       {
         name: 'Delete',
+        label: t('vectorSearch.list.action.delete'),
         icon: DeleteIcon,
         variant: 'destructive',
         callback: handleDelete,
       },
     ],
-    [handleViewIndex, handleBrowseDataset, handleDelete],
+    [handleViewIndex, handleBrowseDataset, handleDelete, t],
   )
 
   return {
@@ -172,3 +182,5 @@ export const useListContent = () => {
     onCloseDelete: handleCloseDelete,
   }
 }
+
+export type UseListContentReturn = ReturnType<typeof useListContent>

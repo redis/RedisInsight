@@ -24,9 +24,9 @@ import {
 } from 'uiSrc/utils/tests/decompressors'
 import { setSelectedKeyRefreshDisabled } from 'uiSrc/slices/browser/keys'
 import { MOCK_TRUNCATED_BUFFER_VALUE } from 'uiSrc/mocks/data/bigString'
-import { ListDetailsTable, Props } from './ListDetailsTable'
+import { ListDetailsTable } from './ListDetailsTable'
 
-const mockedProps = mock<Props>()
+const mockedProps = mock<Record<string, never>>()
 
 const elements = [
   { element: { type: 'Buffer', data: [49] }, index: 0 },

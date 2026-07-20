@@ -8,25 +8,18 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiTooltip } from 'uiSrc/components/base/tooltip'
+import { useTranslation } from 'uiSrc/i18n'
 
-import {
-  FEATURES,
-  TITLE,
-  SUBTITLE,
-  TRY_SAMPLE_DATA_LABEL,
-  USE_MY_DATABASE_LABEL,
-} from './WelcomeScreen.constants'
+import { getFeatures } from './WelcomeScreen.constants'
 import type { WelcomeScreenProps } from './WelcomeScreen.types'
 import * as S from './WelcomeScreen.styles'
 
 export const WelcomeScreen = ({
   onTrySampleDataClick,
   onUseMyDatabaseClick,
-  useMyDatabaseDisabled,
 }: WelcomeScreenProps) => {
-  const isUseMyDatabaseDisabled = !!useMyDatabaseDisabled
-  const useMyDatabaseTooltip = useMyDatabaseDisabled?.tooltip
+  const { t } = useTranslation()
+  const features = getFeatures()
 
   return (
     <S.Container data-testid="welcome-screen">
@@ -38,14 +31,14 @@ export const WelcomeScreen = ({
               color="primary"
               data-testid="welcome-screen--title"
             >
-              {TITLE}
+              {t('vectorSearch.welcome.title')}
             </Title>
             <Text
               size="L"
               color="primary"
               data-testid="welcome-screen--subtitle"
             >
-              {SUBTITLE}
+              {t('vectorSearch.welcome.subtitle')}
             </Text>
           </Col>
 
@@ -56,7 +49,7 @@ export const WelcomeScreen = ({
             gap="xl"
             data-testid="welcome-screen--features"
           >
-            {FEATURES.map((feature) => (
+            {features.map((feature) => (
               <S.FeatureItem
                 key={feature.title}
                 gap="xs"
@@ -86,23 +79,17 @@ export const WelcomeScreen = ({
               onClick={onTrySampleDataClick}
               data-testid="welcome-screen--try-sample-data-btn"
             >
-              {TRY_SAMPLE_DATA_LABEL}
+              {t('vectorSearch.welcome.trySampleData')}
             </PrimaryButton>
 
-            <RiTooltip
-              content={isUseMyDatabaseDisabled ? useMyDatabaseTooltip : null}
-              anchorClassName="euiToolTip__btn-disabled"
+            <SecondaryButton
+              filled
+              size="l"
+              onClick={onUseMyDatabaseClick}
+              data-testid="welcome-screen--use-my-database-btn"
             >
-              <SecondaryButton
-                filled
-                size="l"
-                onClick={onUseMyDatabaseClick}
-                disabled={isUseMyDatabaseDisabled}
-                data-testid="welcome-screen--use-my-database-btn"
-              >
-                {USE_MY_DATABASE_LABEL}
-              </SecondaryButton>
-            </RiTooltip>
+              {t('vectorSearch.welcome.useMyDatabase')}
+            </SecondaryButton>
           </Row>
         </S.Content>
       </S.ScrollArea>

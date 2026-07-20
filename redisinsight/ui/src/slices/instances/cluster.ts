@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import {
@@ -115,9 +116,9 @@ export function fetchInstancesRedisCluster(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(loadInstancesRedisClusterFailure(errorMessage))
-      dispatch(addErrorNotification(error))
+      dispatch(addErrorNotification(error as AxiosError))
     }
   }
 }
@@ -147,9 +148,9 @@ export function addInstancesRedisCluster(payload: {
         dispatch(createInstancesRedisClusterSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(createInstancesRedisClusterFailure(errorMessage))
-      dispatch(addErrorNotification(error))
+      dispatch(addErrorNotification(error as AxiosError))
     }
   }
 }

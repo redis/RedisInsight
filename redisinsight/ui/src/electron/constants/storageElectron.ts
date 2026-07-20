@@ -8,6 +8,7 @@ enum ElectronStorageItem {
   zoomFactor = 'zoomFactor',
   themeSource = 'themeSource',
   bounds = 'bounds',
+  analyticsConsent = 'analyticsConsent',
 }
 
 export default ElectronStorageItem

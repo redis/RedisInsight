@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { CommandExecutionResult } from 'uiSrc/slices/interfaces'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
@@ -75,6 +76,7 @@ export const getResultText = (
 }
 
 const QueryCardCliResultWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const {
     result = [],
     query,
@@ -99,16 +101,15 @@ const QueryCardCliResultWrapper = (props: Props) => {
         <>
           <CopyResultButton
             copy={copyText}
-            aria-label="Copy result"
+            aria-label={t('query.cliResult.copy')}
             data-testid="copy-result"
-            tooltipConfig={{ content: 'Copy result' }}
+            tooltipConfig={{ content: t('query.cliResult.copy') }}
           />
           <div data-testid="query-cli-result" className={cx(styles.content)}>
             {isNotStored && (
               <Text className={styles.alert} data-testid="query-cli-warning">
                 <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-                The result is too big to be saved. It will be deleted after the
-                application is closed.
+                {t('query.cliResult.tooBig')}
               </Text>
             )}
             {isGroupResults(resultsMode) && isArray(result[0]?.response) ? (

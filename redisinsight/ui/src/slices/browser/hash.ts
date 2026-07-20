@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { cloneDeep, remove, isNull } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
@@ -258,8 +259,8 @@ export function fetchHashFields(
         onSuccess?.(data)
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadHashFieldsFailure(errorMessage))
     }
   }
@@ -295,7 +296,7 @@ export function refreshHashFieldsAction(
         dispatch(loadHashFieldsSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(loadHashFieldsFailure(errorMessage))
     }
   }
@@ -332,8 +333,8 @@ export function fetchMoreHashFields(
         dispatch(loadMoreHashFieldsSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadMoreHashFieldsFailure(errorMessage))
     }
   }
@@ -386,8 +387,8 @@ export function deleteHashFields(
         }
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(removeHashFieldsFailure(errorMessage))
     }
   }
@@ -423,8 +424,8 @@ export function addHashFieldsAction(
       if (onFailAction) {
         onFailAction()
       }
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateValueFailure(errorMessage))
     }
   }
@@ -467,8 +468,8 @@ export function updateHashFieldsAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateValueFailure(errorMessage))
       onFailAction?.()
     }
@@ -531,8 +532,8 @@ export function updateHashTTLAction(
         dispatch(updateFieldsInList(data.fields as any))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateValueFailure(errorMessage))
       onFailAction?.()
     }

@@ -173,6 +173,17 @@ describe('AzureEntraIdCredentialStrategy', () => {
       );
     });
 
+    it('should carry the connection tenant on the expired exception for recovery', async () => {
+      const database = createMockAzureDatabase();
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+
+      await expect(strategy.resolve(database)).rejects.toMatchObject({
+        response: {
+          additionalInfo: { tenantId: database.providerDetails?.tenantId },
+        },
+      });
+    });
+
     it('should return database with credentials from token result', async () => {
       const database = createMockAzureDatabase();
       const tokenResult = createMockTokenResult();
@@ -186,7 +197,34 @@ describe('AzureEntraIdCredentialStrategy', () => {
       expect(result.password).toBe(tokenResult.token);
       expect(
         mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledWith(database.providerDetails?.azureAccountId);
+      ).toHaveBeenCalledWith(
+        database.providerDetails?.azureAccountId,
+        database.providerDetails?.tenantId,
+      );
+    });
+
+    it('should acquire the token against the stored tenant', async () => {
+      const tenantId = faker.string.uuid();
+      const database = createMockAzureDatabase({
+        providerDetails: {
+          provider: CloudProvider.Azure,
+          authType: AzureAuthType.EntraId,
+          azureAccountId: faker.string.uuid(),
+          tenantId,
+        },
+      });
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        createMockTokenResult(),
+      );
+
+      await strategy.resolve(database);
+
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledWith(
+        database.providerDetails?.azureAccountId,
+        tenantId,
+      );
     });
 
     it('should preserve other database properties', async () => {

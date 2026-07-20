@@ -23,12 +23,13 @@ const createMockTokenResult = () => {
   };
 };
 
-const createMockClient = (tokenExpiresOn?: Date) => ({
+const createMockClient = (tokenExpiresOn?: Date, tenantId?: string) => ({
   id: faker.string.uuid(),
   call: jest.fn().mockResolvedValue('OK'),
   database: {
     providerDetails: {
       azureAccountId: faker.string.uuid(),
+      tenantId,
       tokenExpiresOn,
     },
   },
@@ -77,18 +78,18 @@ describe('AzureTokenRefreshManager', () => {
       const azureAccountId = faker.string.uuid();
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       expect(jest.getTimerCount()).toBe(1);
     });
 
-    it('should clear existing timer when scheduling for same account with different expiry', () => {
+    it('should clear existing timer when scheduling for same account+tenant with different expiry', () => {
       const azureAccountId = faker.string.uuid();
       const expiresOn1 = new Date(Date.now() + 60 * 60 * 1000);
       const expiresOn2 = new Date(Date.now() + 2 * 60 * 60 * 1000);
 
-      manager.scheduleRefresh(azureAccountId, expiresOn1);
-      manager.scheduleRefresh(azureAccountId, expiresOn2);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn1);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn2);
 
       expect(jest.getTimerCount()).toBe(1);
     });
@@ -97,9 +98,9 @@ describe('AzureTokenRefreshManager', () => {
       const azureAccountId = faker.string.uuid();
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
-      manager.scheduleRefresh(azureAccountId, expiresOn);
-      manager.scheduleRefresh(azureAccountId, expiresOn);
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       // Should still be just 1 timer (not cleared and rescheduled)
       expect(jest.getTimerCount()).toBe(1);
@@ -110,8 +111,18 @@ describe('AzureTokenRefreshManager', () => {
       const accountId2 = faker.string.uuid();
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
-      manager.scheduleRefresh(accountId1, expiresOn);
-      manager.scheduleRefresh(accountId2, expiresOn);
+      manager.scheduleRefresh(accountId1, undefined, expiresOn);
+      manager.scheduleRefresh(accountId2, undefined, expiresOn);
+
+      expect(jest.getTimerCount()).toBe(2);
+    });
+
+    it('should keep separate timers per tenant for the same account', () => {
+      const azureAccountId = faker.string.uuid();
+      const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
+
+      manager.scheduleRefresh(azureAccountId, 'tenant-a', expiresOn);
+      manager.scheduleRefresh(azureAccountId, 'tenant-b', expiresOn);
 
       expect(jest.getTimerCount()).toBe(2);
     });
@@ -122,11 +133,11 @@ describe('AzureTokenRefreshManager', () => {
         const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
         // Simulate multiple token events arriving rapidly (e.g., from concurrent requests)
-        manager.scheduleRefresh(azureAccountId, expiresOn);
-        manager.scheduleRefresh(azureAccountId, expiresOn);
-        manager.scheduleRefresh(azureAccountId, expiresOn);
-        manager.scheduleRefresh(azureAccountId, expiresOn);
-        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
         // Should only have 1 timer, not 5
         expect(jest.getTimerCount()).toBe(1);
@@ -147,7 +158,7 @@ describe('AzureTokenRefreshManager', () => {
         ]);
 
         // Initial timer scheduled
-        manager.scheduleRefresh(azureAccountId, initialExpiry);
+        manager.scheduleRefresh(azureAccountId, undefined, initialExpiry);
         expect(jest.getTimerCount()).toBe(1);
 
         // Client reconnects 10 minutes later, gets new token with different expiry
@@ -177,19 +188,19 @@ describe('AzureTokenRefreshManager', () => {
         const expiresOn1 = new Date(Date.now() + 60 * 60 * 1000);
         const expiresOn2 = new Date(Date.now() + 2 * 60 * 60 * 1000);
 
-        manager.scheduleRefresh(azureAccountId, expiresOn1);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn1);
 
         // Access internal timers map to verify behavior
         const timersMap = (
           manager as unknown as { timers: Map<string, unknown> }
         ).timers;
-        expect(timersMap.has(azureAccountId)).toBe(true);
+        expect(timersMap.has(`${azureAccountId}::`)).toBe(true);
 
         // Schedule with new expiry - should overwrite, not delete then set
-        manager.scheduleRefresh(azureAccountId, expiresOn2);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn2);
 
         // Entry should still exist (was overwritten atomically)
-        expect(timersMap.has(azureAccountId)).toBe(true);
+        expect(timersMap.has(`${azureAccountId}::`)).toBe(true);
         expect(jest.getTimerCount()).toBe(1);
       });
     });
@@ -200,7 +211,7 @@ describe('AzureTokenRefreshManager', () => {
         // Token expires in 2 minutes (within 5-minute buffer)
         const expiresOn = new Date(Date.now() + 2 * 60 * 1000);
 
-        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
         expect(jest.getTimerCount()).toBe(1);
         // Timer should not fire immediately - minimum delay enforced
@@ -213,7 +224,7 @@ describe('AzureTokenRefreshManager', () => {
         // Token already expired 1 minute ago
         const expiresOn = new Date(Date.now() - 60 * 1000);
 
-        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
         expect(jest.getTimerCount()).toBe(1);
         // Timer should not fire immediately - minimum delay enforced
@@ -249,7 +260,11 @@ describe('AzureTokenRefreshManager', () => {
         ]);
 
         // Initial schedule
-        manager.scheduleRefresh(azureAccountId, nearExpiryToken.expiresOn);
+        manager.scheduleRefresh(
+          azureAccountId,
+          undefined,
+          nearExpiryToken.expiresOn,
+        );
 
         // Advance past minimum delay to trigger refresh
         await jest.advanceTimersByTimeAsync(MIN_REFRESH_DELAY_MS);
@@ -307,6 +322,33 @@ describe('AzureTokenRefreshManager', () => {
 
       expect(clientWithCurrentToken.call).not.toHaveBeenCalled();
     });
+
+    it('should only re-authenticate clients of the token tenant', async () => {
+      const accountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      // Same account, connections in two different tenants.
+      const clientTenantA = createMockClient(undefined, 'tenant-a');
+      const clientTenantB = createMockClient(undefined, 'tenant-b');
+
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        clientTenantA,
+        clientTenantB,
+      ]);
+
+      await manager.handleTokenAcquired({
+        accountId,
+        tenantId: 'tenant-a',
+        tokenResult,
+      });
+
+      // Only tenant-a's client gets tenant-a's token; tenant-b is untouched.
+      expect(clientTenantA.call).toHaveBeenCalledWith([
+        'AUTH',
+        tokenResult.account.localAccountId,
+        tokenResult.token,
+      ]);
+      expect(clientTenantB.call).not.toHaveBeenCalled();
+    });
   });
 
   describe('clearTimer', () => {
@@ -314,7 +356,7 @@ describe('AzureTokenRefreshManager', () => {
       const azureAccountId = faker.string.uuid();
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
       expect(jest.getTimerCount()).toBe(1);
 
       manager.clearTimer(azureAccountId);
@@ -330,9 +372,9 @@ describe('AzureTokenRefreshManager', () => {
     it('should clear all timers', () => {
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
-      manager.scheduleRefresh(faker.string.uuid(), expiresOn);
-      manager.scheduleRefresh(faker.string.uuid(), expiresOn);
-      manager.scheduleRefresh(faker.string.uuid(), expiresOn);
+      manager.scheduleRefresh(faker.string.uuid(), undefined, expiresOn);
+      manager.scheduleRefresh(faker.string.uuid(), undefined, expiresOn);
+      manager.scheduleRefresh(faker.string.uuid(), undefined, expiresOn);
       expect(jest.getTimerCount()).toBe(3);
 
       manager.clearAllTimers();
@@ -344,8 +386,8 @@ describe('AzureTokenRefreshManager', () => {
     it('should clear all timers on module destroy', () => {
       const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
 
-      manager.scheduleRefresh(faker.string.uuid(), expiresOn);
-      manager.scheduleRefresh(faker.string.uuid(), expiresOn);
+      manager.scheduleRefresh(faker.string.uuid(), undefined, expiresOn);
+      manager.scheduleRefresh(faker.string.uuid(), undefined, expiresOn);
       expect(jest.getTimerCount()).toBe(2);
 
       manager.onModuleDestroy();
@@ -381,13 +423,13 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
       expect(
         mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledWith(azureAccountId);
+      ).toHaveBeenCalledWith(azureAccountId, undefined);
       expect(
         mockRedisClientStorage.getClientsByDatabaseField,
       ).toHaveBeenCalledWith('providerDetails.azureAccountId', azureAccountId);
@@ -396,6 +438,38 @@ describe('AzureTokenRefreshManager', () => {
         tokenResult.account.localAccountId,
         tokenResult.token,
       ]);
+    });
+
+    it('should refresh against the tenant the timer was scheduled for', async () => {
+      const azureAccountId = faker.string.uuid();
+      const tenantId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const mockClient = createMockClient(undefined, tenantId);
+
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tenantId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        mockClient,
+      ]);
+
+      const expiresOn = new Date(
+        Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
+      );
+      manager.scheduleRefresh(azureAccountId, tenantId, expiresOn);
+
+      await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
+
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledWith(azureAccountId, tenantId);
     });
 
     it('should not re-authenticate when token refresh fails', async () => {
@@ -410,7 +484,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -431,7 +505,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -472,7 +546,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -505,7 +579,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -540,7 +614,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -572,7 +646,7 @@ describe('AzureTokenRefreshManager', () => {
       const expiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, expiresOn);
 
       await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
 
@@ -610,7 +684,7 @@ describe('AzureTokenRefreshManager', () => {
       const scheduleExpiresOn = new Date(
         Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
       );
-      manager.scheduleRefresh(azureAccountId, scheduleExpiresOn);
+      manager.scheduleRefresh(azureAccountId, undefined, scheduleExpiresOn);
       expect(jest.getTimerCount()).toBe(1);
 
       // Fire the timer

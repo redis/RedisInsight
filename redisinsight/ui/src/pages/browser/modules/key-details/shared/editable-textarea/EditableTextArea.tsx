@@ -28,6 +28,11 @@ export interface Props {
   disabledTooltipText?: { title: string; content: string }
   approveText?: { title: string; text: string }
   editToolTipContent?: React.ReactNode
+  /** Suppresses the built-in hover edit pencil (and the space reserved for
+   *  it) in the non-editing state. Used where the edit trigger lives outside
+   *  the cell (the array table drives editing from its actions column);
+   *  defaults to false, so all other consumers are unchanged. */
+  hideEditButton?: boolean
   approveByValidation?: (value: string) => boolean
   onEdit: (isEditing: boolean) => void
   onUpdateTextAreaHeight?: () => void
@@ -51,6 +56,7 @@ const EditableTextArea = (props: Props) => {
     disabledTooltipText,
     approveText,
     editToolTipContent,
+    hideEditButton = false,
     approveByValidation = () => true,
     onEdit,
     onUpdateTextAreaHeight,
@@ -93,7 +99,9 @@ const EditableTextArea = (props: Props) => {
   if (!isEditing) {
     return (
       <div
-        className={styles.contentWrapper}
+        className={cx(styles.contentWrapper, {
+          [styles.contentWrapperNoEditButton]: hideEditButton,
+        })}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
@@ -105,7 +113,7 @@ const EditableTextArea = (props: Props) => {
         >
           {children}
         </Text>
-        {isHovering && (
+        {!hideEditButton && isHovering && (
           <RiTooltip
             content={editToolTipContent}
             anchorClassName={styles.editBtnAnchor}

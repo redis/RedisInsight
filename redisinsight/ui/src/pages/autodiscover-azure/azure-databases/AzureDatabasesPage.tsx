@@ -18,7 +18,10 @@ import {
   AzureRedisDatabase,
   ImportAzureDatabaseResponse,
 } from 'uiSrc/slices/interfaces'
-import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
+import {
+  azureAuthAccountSelector,
+  azureAuthTenantSelector,
+} from 'uiSrc/slices/oauth/azure'
 import {
   addDatabasesAzureAction,
   azureSelector,
@@ -81,6 +84,7 @@ const AzureDatabasesPage = () => {
   const history = useHistory()
   const dispatch = useAppDispatch()
   const account = useAppSelector(azureAuthAccountSelector)
+  const tenant = useAppSelector(azureAuthTenantSelector)
   const { loading, error, databases, selectedSubscription, loaded } =
     useAppSelector(azureSelector)
 
@@ -110,7 +114,11 @@ const AzureDatabasesPage = () => {
     // Only fetch if not already loaded
     if (!loaded.databases) {
       dispatch(
-        fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
+        fetchDatabasesAzure(
+          account.id,
+          selectedSubscription.subscriptionId,
+          tenant ?? undefined,
+        ),
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,7 +168,12 @@ const AzureDatabasesPage = () => {
 
     const databaseIds = selectedDatabases.map((db) => db.id)
     const results = await dispatch(
-      addDatabasesAzureAction(account.id, databaseIds, authType),
+      addDatabasesAzureAction(
+        account.id,
+        databaseIds,
+        authType,
+        tenant ?? undefined,
+      ),
     )
 
     const successResults = results.filter(
@@ -189,7 +202,11 @@ const AzureDatabasesPage = () => {
     if (account?.id && selectedSubscription) {
       dispatch(clearDatabasesAzure())
       dispatch(
-        fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
+        fetchDatabasesAzure(
+          account.id,
+          selectedSubscription.subscriptionId,
+          tenant ?? undefined,
+        ),
       )
       setSelectedDatabases([])
     }

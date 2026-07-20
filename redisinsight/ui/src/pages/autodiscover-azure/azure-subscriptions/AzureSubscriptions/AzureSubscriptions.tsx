@@ -16,7 +16,10 @@ import {
   Header,
 } from 'uiSrc/components/auto-discover'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
-import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
+import {
+  azureAuthAccountSelector,
+  azureAuthTenantSelector,
+} from 'uiSrc/slices/oauth/azure'
 import { Text } from 'uiSrc/components/base/text'
 import {
   EmptyButton,
@@ -53,6 +56,7 @@ const AzureSubscriptions = ({
   onManualConnection,
 }: Props) => {
   const account = useAppSelector(azureAuthAccountSelector)
+  const tenant = useAppSelector(azureAuthTenantSelector)
   const [items, setItems] = useState<AzureSubscription[]>(subscriptions)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -125,12 +129,20 @@ const AzureSubscriptions = ({
                     {account.username}
                   </Text>
                 </Text>
+                {tenant && (
+                  <Text size="M" data-testid="azure-active-tenant">
+                    Tenant{' '}
+                    <Text component="span" variant="semiBold">
+                      {tenant}
+                    </Text>
+                  </Text>
+                )}
                 <EmptyButton
                   variant="primary-inline"
                   onClick={onSwitchAccount}
                   data-testid="btn-switch-account"
                 >
-                  Switch account
+                  Switch account or tenant
                 </EmptyButton>
                 <IconButton
                   icon={RefreshIcon}

@@ -1,3 +1,4 @@
+import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 import { GraphKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/graph.key-info.strategy';
 import { HashKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/hash.key-info.strategy';
 import { ListKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/list.key-info.strategy';
@@ -16,6 +17,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class KeyInfoProvider {
   constructor(
+    private readonly arrayKeyInfoStrategy: ArrayKeyInfoStrategy,
     private readonly graphKeyInfoStrategy: GraphKeyInfoStrategy,
     private readonly hashKeyInfoStrategy: HashKeyInfoStrategy,
     private readonly listKeyInfoStrategy: ListKeyInfoStrategy,
@@ -31,6 +33,8 @@ export class KeyInfoProvider {
 
   getStrategy(type?: string): KeyInfoStrategy {
     switch (type) {
+      case RedisDataType.Array:
+        return this.arrayKeyInfoStrategy;
       case RedisDataType.Graph:
         return this.graphKeyInfoStrategy;
       case RedisDataType.Hash:

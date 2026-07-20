@@ -4,6 +4,7 @@ import ConsentOption from './ConsentOption'
 import { IConsent } from '../ConsentsSettings'
 
 const mockConsent: IConsent = {
+  code: 'test-consent',
   agreementName: 'analytics',
   title: 'Analytics',
   label: 'Share usage data',
@@ -119,6 +120,59 @@ describe('ConsentOption', () => {
       screen.getByText('Help us improve Redis Insight by sharing usage data.'),
     ).toBeInTheDocument()
     expect(screen.queryByText('Privacy Policy')).not.toBeInTheDocument()
+  })
+
+  it('should localize label and description by agreement code', () => {
+    const analyticsConsent = {
+      ...mockConsent,
+      code: 'analytics',
+      label: 'Share usage data',
+      description: 'Help us improve Redis Insight by sharing usage data.',
+    }
+
+    render(<ConsentOption {...defaultProps} consent={analyticsConsent} />)
+
+    // The spec-provided English is overridden by the api.agreement.analytics.* copy.
+    expect(screen.getByText('Usage Data')).toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        'Help us improve Redis Insight by sharing usage data.',
+      ),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should keep server-provided copy when no code is sent (custom spec)', () => {
+    const customConsent = {
+      ...mockConsent,
+      code: undefined,
+      agreementName: 'analytics',
+      label: 'Custom usage data label',
+      description: 'Custom usage data description.',
+    }
+
+    render(<ConsentOption {...defaultProps} consent={customConsent} />)
+
+    // No code -> do not fall back to api.agreement.analytics.* built-in copy.
+    expect(screen.getByText('Custom usage data label')).toBeInTheDocument()
+    expect(
+      screen.getByText('Custom usage data description.'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText('Usage Data')).not.toBeInTheDocument()
+  })
+
+  it('should not render a description (or the raw key) when the agreement has none', () => {
+    const eulaConsent = {
+      ...mockConsent,
+      code: 'eula',
+      description: undefined,
+    }
+
+    render(<ConsentOption {...defaultProps} consent={eulaConsent} />)
+
+    // Missing description + missing key must not leak the i18n key string.
+    expect(
+      screen.queryByText('api.agreement.eula.description'),
+    ).not.toBeInTheDocument()
   })
 
   it('should render disabled switch when consent is disabled', () => {

@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect } from 'react'
 import { Provider } from 'react-redux'
+import { I18nextProvider } from 'react-i18next'
 import { useAppSelector } from 'uiSrc/slices/hooks'
+import i18n from 'uiSrc/i18n'
 
 import { Route, Switch } from 'react-router-dom'
 import { store } from 'uiSrc/slices/store'
@@ -10,6 +12,8 @@ import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { useSystemThemeListener } from 'uiSrc/services/hooks/useSystemThemeListener'
+import { useSentryConsentSync } from 'uiSrc/services/hooks/useSentryConsentSync'
+import { SentryErrorBoundary } from 'uiSrc/components/error-boundary'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {
@@ -38,13 +42,17 @@ themeService.registerTheme(Theme.Dark, themeDark)
 themeService.registerTheme(Theme.Light, themeLight)
 
 const AppWrapper = ({ children }: { children?: ReactElement[] }) => (
-  <Provider store={store}>
-    <ThemeProvider>
-      <AppInit>
-        <App>{children}</App>
-      </AppInit>
-    </ThemeProvider>
-  </Provider>
+  <I18nextProvider i18n={i18n}>
+    <Provider store={store}>
+      <SentryErrorBoundary>
+        <ThemeProvider>
+          <AppInit>
+            <App>{children}</App>
+          </AppInit>
+        </ThemeProvider>
+      </SentryErrorBoundary>
+    </Provider>
+  </I18nextProvider>
 )
 const App = ({ children }: { children?: ReactElement[] }) => {
   const { loading: serverLoading } = useAppSelector(appInfoSelector)
@@ -54,6 +62,7 @@ const App = ({ children }: { children?: ReactElement[] }) => {
     }
   }, [serverLoading])
   useSystemThemeListener()
+  useSentryConsentSync()
   return (
     <div className="main-container">
       <MonacoEnvironmentInitializer />

@@ -25,8 +25,8 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
       link: 'https://redis.io/docs/latest/develop/data-types/timeseries/',
     },
     [RedisDefaultModules.Search]: {
-      title: ['Redis Query Engine is not available for this database'],
-      text: ['Redis Query Engine allows to:'],
+      title: ['Redis Search is not available for this database'],
+      text: ['Redis Search allows to:'],
       improvements: ['Query', 'Secondary index', 'Full-text search'],
       additionalText: [
         'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, ',
@@ -45,7 +45,7 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
         'Retrieve JSON documents',
       ],
       additionalText: [
-        'JSON data structure also works seamlessly with Redis Query Engine to let you index and query JSON documents.',
+        'JSON data structure also works seamlessly with Redis Search to let you index and query JSON documents.',
       ],
       link: 'https://redis.io/docs/latest/develop/data-types/json/',
     },
@@ -68,6 +68,6 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
 export const MODULE_TEXT_VIEW: { [key in RedisDefaultModules]?: string } = {
   [RedisDefaultModules.Bloom]: 'probabilistic data structures',
   [RedisDefaultModules.ReJSON]: 'JSON data structure',
-  [RedisDefaultModules.Search]: 'Redis Query Engine',
+  [RedisDefaultModules.Search]: 'Redis Search',
   [RedisDefaultModules.TimeSeries]: 'time series data structure',
 }

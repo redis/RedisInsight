@@ -229,6 +229,8 @@ test.describe('Database List', () => {
     test('should edit database connection', async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
+      // Parallel suites can page the row out of the unfiltered list
+      await databaseList.expectDatabaseVisible(standaloneDb1.name, { searchFirst: true });
       await databaseList.edit(standaloneDb1.name);
 
       const editDialog = databasesPage.page.getByRole('dialog', { name: /edit database/i });

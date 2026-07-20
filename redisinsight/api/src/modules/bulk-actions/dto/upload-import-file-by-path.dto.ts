@@ -21,3 +21,14 @@ export class ImportVectorCollectionDto {
   @IsNotEmpty()
   collectionName: string;
 }
+
+export class ImportArrayCollectionDto {
+  @ApiProperty({
+    type: 'string',
+    description: 'Collection name to load array data',
+    example: 'temperature-readings',
+  })
+  @IsString()
+  @IsNotEmpty()
+  collectionName: string;
+}

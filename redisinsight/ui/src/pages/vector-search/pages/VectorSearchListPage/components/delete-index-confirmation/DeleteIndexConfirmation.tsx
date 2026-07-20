@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { DeleteConfirmationModal } from 'uiSrc/pages/vector-search/components/delete-confirmation-modal'
 
 export interface DeleteIndexConfirmationProps {
@@ -12,16 +13,19 @@ export const DeleteIndexConfirmation = ({
   isOpen,
   onConfirm,
   onClose,
-}: DeleteIndexConfirmationProps) => (
-  <DeleteConfirmationModal
-    isOpen={isOpen}
-    title="Delete Index"
-    question="Are you sure you want to delete this index?"
-    message="Deleting the index will remove it from Search and Vector Search, but will not delete your underlying data."
-    cancelLabel="Keep index"
-    confirmLabel="Delete index"
-    onConfirm={onConfirm}
-    onCancel={onClose}
-    testId="delete-index-modal"
-  />
-)
+}: DeleteIndexConfirmationProps) => {
+  const { t } = useTranslation()
+  return (
+    <DeleteConfirmationModal
+      isOpen={isOpen}
+      title={t('vectorSearch.list.delete.title')}
+      question={t('vectorSearch.list.delete.question')}
+      message={t('vectorSearch.list.delete.message')}
+      cancelLabel={t('vectorSearch.list.delete.cancel')}
+      confirmLabel={t('vectorSearch.list.delete.confirm')}
+      onConfirm={onConfirm}
+      onCancel={onClose}
+      testId="delete-index-modal"
+    />
+  )
+}

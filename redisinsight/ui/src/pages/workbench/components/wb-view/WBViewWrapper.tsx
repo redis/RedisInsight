@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
+import { Trans, escapeTrans, useTranslation } from 'uiSrc/i18n'
 import {
   getMonacoLines,
   getParsedParamsInQuery,
@@ -79,6 +80,7 @@ let state: IState = {
 
 /** @deprecated Use useQuery hook from 'pages/vector-search/pages/VectorSearchQueryPage/hooks/useQuery' instead. */
 const WBViewWrapper = () => {
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const {
@@ -283,20 +285,20 @@ const WBViewWrapper = () => {
           ),
         ),
       )
-      const isPlural = dangerousCommands.length > 1
       requestConfirmation({
-        title: 'Proceed with caution in production',
+        title: t('workbench.runConfirm.title'),
         actionDescription: (
-          <>
-            You&apos;re about to run{' '}
-            <strong>{dangerousCommands.join(', ')}</strong> on{' '}
-            <strong>{confirmationText}</strong>.{' '}
-            {isPlural ? 'These commands are' : 'This command is'} part of the
-            list of dangerous commands. This operation may affect server
-            stability.
-          </>
+          <Trans
+            i18nKey="workbench.runConfirm.body"
+            count={dangerousCommands.length}
+            values={{
+              commands: escapeTrans(dangerousCommands.join(', ')),
+              db: escapeTrans(confirmationText),
+            }}
+            components={{ bold: <strong /> }}
+          />
         ),
-        confirmButtonText: 'Run command',
+        confirmButtonText: t('workbench.runConfirm.button.run'),
         commandId: dangerousVerbs,
         tip: <AclTip />,
         onConfirm: () => {

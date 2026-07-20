@@ -129,7 +129,7 @@ describe('SimilaritySearchForm', () => {
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
-    ).toHaveTextContent('command is loading...')
+    ).toHaveTextContent('Building command…')
   })
 
   it('shows the loading placeholder even when a previous command exists', () => {
@@ -145,7 +145,7 @@ describe('SimilaritySearchForm', () => {
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
-    ).toHaveTextContent('command is loading...')
+    ).toHaveTextContent('Building command…')
   })
 
   it('renders the hook-supplied preview verbatim once toggled on', () => {

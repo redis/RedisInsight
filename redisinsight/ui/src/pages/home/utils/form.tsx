@@ -1,7 +1,7 @@
 import { isUndefined, toString } from 'lodash'
 import React from 'react'
 import { FormikErrors } from 'formik'
-import { Environment } from 'apiClient'
+import { Environment, RedisConnectionFamily } from 'apiClient'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import {
   ADD_NEW,
@@ -296,6 +296,7 @@ export const getFormValues = (instance?: Nullable<Record<string, any>>) => ({
   db: instance?.db,
   compressor: instance?.compressor ?? NONE,
   environment: instance?.environment ?? Environment.Unspecified,
+  connectionFamily: instance?.connectionFamily ?? RedisConnectionFamily.Auto,
   modules: instance?.modules,
   showDb: !!instance?.db,
   forceStandalone: instance?.forceStandalone ?? false,

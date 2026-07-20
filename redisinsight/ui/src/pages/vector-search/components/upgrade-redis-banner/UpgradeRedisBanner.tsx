@@ -9,8 +9,10 @@ import {
   OAuthSocialAction,
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces/cloud'
+import { useTranslation } from 'uiSrc/i18n'
 
 export const UpgradeRedisBanner = () => {
+  const { t } = useTranslation()
   const {
     [FeatureFlags.cloudSso]: featureFlagCloudSsl,
     [FeatureFlags.cloudAds]: featureFlagCloudAds,
@@ -27,7 +29,7 @@ export const UpgradeRedisBanner = () => {
           {...(isCloudSsoEnabled && {
             actions: {
               primary: {
-                label: 'Free Redis Cloud DB',
+                label: t('vectorSearch.upgradeBanner.cta'),
                 onClick: () =>
                   // @ts-ignore: We don't have the event arg here
                   ssoCloudHandlerClick(null, {
@@ -39,8 +41,7 @@ export const UpgradeRedisBanner = () => {
           })}
           data-testid="upgrade-redis-banner"
         >
-          Upgrade to Redis 7.2+ to unlock fast, real-time semantic AI search
-          with vector search
+          {t('vectorSearch.upgradeBanner.message')}
         </CallOut>
       )}
     </OAuthSsoHandlerDialog>

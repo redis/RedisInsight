@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Text } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { useIndexInfo } from '../../hooks'
 import { decodeIndexNameFromUrl } from '../../utils'
@@ -16,6 +17,7 @@ export const IndexInfoSidePanel = ({
   onClose,
   indexName: indexNameProp,
 }: IndexInfoSidePanelProps) => {
+  const { t } = useTranslation()
   const { indexName: indexNameParam } = useParams<{ indexName?: string }>()
   const resolvedName =
     indexNameProp ?? decodeIndexNameFromUrl(indexNameParam ?? '')
@@ -32,7 +34,7 @@ export const IndexInfoSidePanel = ({
         </Text>
         <IconButton
           icon={CancelIcon}
-          aria-label="Close panel"
+          aria-label={t('vectorSearch.indexInfo.closePanel')}
           onClick={onClose}
           data-testid="close-index-panel-btn"
         />

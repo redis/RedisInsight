@@ -42,7 +42,6 @@ import {
   resetBrowserTree,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
-import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
 
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 
@@ -54,6 +53,7 @@ import {
 } from './zset'
 import { fetchSetMembers, refreshSetMembersAction } from './set'
 import { fetchVectorSetElements } from './vectorSet'
+import { refreshArray } from './array'
 import { fetchReJSON, setEditorType, setIsWithinThreshold } from './rejson'
 import {
   setHashInitialState,
@@ -102,6 +102,7 @@ import {
   CreateHashWithExpireDto,
   CreateRejsonRlWithExpireDto,
   CreateSetWithExpireDto,
+  CreateArrayWithExpireDto,
   GetKeyInfoResponse,
   GetKeysWithDetailsResponse,
   CreateStreamDto,
@@ -167,6 +168,7 @@ export const initialKeyInfo = {
   length: 0,
   quantType: undefined,
   vectorDim: undefined,
+  count: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
@@ -246,9 +248,17 @@ const keysSlice = createSlice({
       }
     },
     refreshKeyInfoSuccess: (state, { payload }) => {
+      // Replace `data` outright (mirroring `loadKeyInfoSuccess`) rather
+      // than spreading the payload over the previous data. The merge
+      // form preserved any field absent from the new payload, which
+      // leaked type-specific fields when an underlying key was
+      // overwritten as a different type — e.g. an array key's `count`
+      // (or a vector set's `vectorDim` / `quantType`) would survive
+      // into the refreshed header for a String/List/etc. key, since
+      // those payloads omit the field entirely.
       state.selectedKey = {
         ...state.selectedKey,
-        data: { ...state.selectedKey.data, ...payload },
+        data: { ...payload, nameString: bufferToString(payload.name) },
         refreshing: false,
       }
     },
@@ -1043,6 +1053,15 @@ export function addListKey(
 }
 
 // Asynchronous thunk action
+export function addArrayKey(
+  data: CreateArrayWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.Array, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
 export function addReJSONKey(
   data: CreateRejsonRlWithExpireDto,
   onSuccessAction?: () => void,
@@ -1298,43 +1317,6 @@ export function fetchKeysMetadataTree(
         onFailAction?.()
         console.error(error)
       }
-    }
-  }
-}
-
-export function fetchNamespaceSearchable(
-  prefixes: [string, string][],
-  signal?: AbortSignal,
-  onSuccessAction?: (data: NamespaceSearchableResult[]) => void,
-  onFailAction?: () => void,
-) {
-  return async (_dispatch: AppDispatch, stateInit: () => RootState) => {
-    const state = stateInit()
-
-    try {
-      const { data, status } = await apiService.post<
-        NamespaceSearchableResult[]
-      >(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.KEYS_NAMESPACE_SEARCHABLE,
-        ),
-        { prefixes: prefixes.map(([, prefix]) => prefix) },
-        { signal },
-      )
-
-      if (isStatusSuccessful(status)) {
-        const results = data.map((item, i) => ({
-          ...item,
-          path: prefixes[i][0],
-        }))
-
-        onSuccessAction?.(results)
-      }
-    } catch (_err) {
-      if (axios.isCancel(_err)) return
-
-      onFailAction?.()
     }
   }
 }
@@ -1605,6 +1587,10 @@ export function refreshKey(
       }
       case KeyTypes.VectorSet: {
         dispatch(fetchVectorSetElements({ key, resetData }))
+        break
+      }
+      case KeyTypes.Array: {
+        dispatch(refreshArray(key))
         break
       }
       default:

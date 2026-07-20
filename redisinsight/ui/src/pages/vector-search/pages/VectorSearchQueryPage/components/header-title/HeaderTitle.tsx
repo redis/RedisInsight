@@ -2,6 +2,7 @@ import React from 'react'
 import { Breadcrumbs } from 'uiSrc/components/base/navigation/breadcrumbs'
 import { useHistory, useParams } from 'react-router-dom'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Title } from 'uiSrc/components/base/text'
 import { Pages } from 'uiSrc/constants'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -23,6 +24,7 @@ export const HeaderTitle = ({
   indexOptions,
   onIndexChange,
 }: HeaderTitleProps) => {
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
   const history = useHistory()
 
@@ -32,7 +34,7 @@ export const HeaderTitle = ({
 
   return (
     <Breadcrumbs.Compose
-      aria-label="Breadcrumb"
+      aria-label={t('vectorSearch.query.breadcrumb.ariaLabel')}
       data-testid="breadcrumb-search-indexes"
     >
       <Breadcrumbs.List>
@@ -44,7 +46,7 @@ export const HeaderTitle = ({
           >
             <RiIcon type="ChevronLeftIcon" size="S" />
             <Title size="M" color="primary">
-              Indexes
+              {t('vectorSearch.query.breadcrumb.indexes')}
             </Title>
           </S.BreadcrumbLink>
         </Breadcrumbs.Item>

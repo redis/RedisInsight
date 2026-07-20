@@ -1,8 +1,6 @@
 import { visit } from 'unist-util-visit'
 import { remarkLink } from 'uiSrc/utils/formatters/markdown'
 
-jest.mock('unist-util-visit')
-
 describe('remarkLink', () => {
   it('should not modify codeNode if title is not Redis Cloud', () => {
     const codeNode = {

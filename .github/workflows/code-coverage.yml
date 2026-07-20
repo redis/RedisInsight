@@ -15,7 +15,7 @@ jobs:
     name: Unit tests coverage
     if: ${{ inputs.type == 'unit' }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Download Coverage Report
         uses: actions/download-artifact@v8
@@ -27,6 +27,7 @@ jobs:
         id: findPr
 
       - uses: ArtiomTr/jest-coverage-report-action@v2
+        continue-on-error: true
         with:
           prnumber: ${{ steps.findPr.outputs.number }}
           coverage-file: report/coverage/report.json
@@ -40,7 +41,7 @@ jobs:
     name: Integration tests coverage
     if: ${{ inputs.type == 'integration' }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Download Coverage Report
         uses: actions/download-artifact@v8

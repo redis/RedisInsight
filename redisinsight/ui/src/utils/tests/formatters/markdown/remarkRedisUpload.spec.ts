@@ -1,8 +1,6 @@
 import { visit } from 'unist-util-visit'
 import { remarkRedisUpload } from 'uiSrc/utils/formatters/markdown'
 
-jest.mock('unist-util-visit')
-
 const getValue = (label: string, path: string) =>
   `<RedisUploadButton label="${label}" path="${path}" />`
 

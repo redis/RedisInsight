@@ -16,7 +16,9 @@ import {
 
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@redis-ui/styles'
+import { I18nextProvider } from 'react-i18next'
 import userEvent from '@testing-library/user-event'
+import i18n from 'uiSrc/i18n'
 import type { RootState } from 'uiSrc/slices/store'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
@@ -35,6 +37,7 @@ import { initialState as initialStateList } from 'uiSrc/slices/browser/list'
 import { initialState as initialStateRejson } from 'uiSrc/slices/browser/rejson'
 import { initialState as initialStateStream } from 'uiSrc/slices/browser/stream'
 import { initialState as initialStateVectorSet } from 'uiSrc/slices/browser/vectorSet'
+import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { initialState as initialStateBulkActions } from 'uiSrc/slices/browser/bulkActions'
 import { initialState as initialStateNotifications } from 'uiSrc/slices/app/notifications'
 import { initialState as initialStateAppInfo } from 'uiSrc/slices/app/info'
@@ -43,6 +46,7 @@ import { initialState as initialStateAppRedisCommands } from 'uiSrc/slices/app/r
 import { initialState as initialStateAppPluginsReducer } from 'uiSrc/slices/app/plugins'
 import { initialState as initialStateAppSocketConnectionReducer } from 'uiSrc/slices/app/socket-connection'
 import { initialState as initialStateAppFeaturesReducer } from 'uiSrc/slices/app/features'
+import { initialState as initialStateAppWhatsNewReducer } from 'uiSrc/slices/app/whatsNew'
 import { initialState as initialStateAppUrlHandlingReducer } from 'uiSrc/slices/app/url-handling'
 import { initialState as initialStateAppCsrfReducer } from 'uiSrc/slices/app/csrf'
 import { initialState as initialStateCliSettings } from 'uiSrc/slices/cli/cli-settings'
@@ -102,6 +106,7 @@ const initialStateDefault: RootState = {
     plugins: cloneDeep(initialStateAppPluginsReducer),
     socketConnection: cloneDeep(initialStateAppSocketConnectionReducer),
     features: cloneDeep(initialStateAppFeaturesReducer),
+    whatsNew: cloneDeep(initialStateAppWhatsNewReducer),
     urlHandling: cloneDeep(initialStateAppUrlHandlingReducer),
     csrf: cloneDeep(initialStateAppCsrfReducer),
     init: cloneDeep(initialStateAppInit),
@@ -128,6 +133,7 @@ const initialStateDefault: RootState = {
     rejson: cloneDeep(initialStateRejson),
     stream: cloneDeep(initialStateStream),
     vectorSet: cloneDeep(initialStateVectorSet),
+    array: cloneDeep(initialStateArray),
     bulkActions: cloneDeep(initialStateBulkActions),
     redisearch: cloneDeep(initialStateRedisearch),
   },
@@ -206,9 +212,11 @@ const render = (
   }
 
   const Wrapper = ({ children }: { children: JSX.Element }) => (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>{children}</Provider>
-    </ThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>{children}</Provider>
+      </ThemeProvider>
+    </I18nextProvider>
   )
 
   const wrapper = !withRouter ? Wrapper : BrowserRouter
@@ -230,7 +238,9 @@ const renderHook = <T,>(
   }
 
   const Wrapper = ({ children }: { children: JSX.Element }) => (
-    <Provider store={store}>{children}</Provider>
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>{children}</Provider>
+    </I18nextProvider>
   )
 
   const wrapper = !withRouter ? Wrapper : BrowserRouter

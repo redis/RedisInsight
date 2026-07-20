@@ -31,10 +31,21 @@ export interface RedisConnectionConfig {
 }
 
 /**
+ * Cloud (Redis Cloud) subscription metadata that marks a database as managed.
+ * When present on a created database, the app treats its endpoint as owned by
+ * the cloud provider and keeps host/port read-only.
+ */
+export interface CloudDatabaseDetailsConfig {
+  cloudId: number;
+  subscriptionType: 'fixed' | 'flexible';
+}
+
+/**
  * Configuration for adding a database via UI
  */
 export interface AddDatabaseConfig extends RedisConnectionConfig {
   name: string;
+  cloudDetails?: CloudDatabaseDetailsConfig;
 }
 
 /**

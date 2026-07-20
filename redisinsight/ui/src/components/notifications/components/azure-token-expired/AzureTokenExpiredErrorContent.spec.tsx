@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent, cleanup } from 'uiSrc/utils/test-utils'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 
 import AzureTokenExpiredErrorContent from './AzureTokenExpiredErrorContent'
 
@@ -27,18 +28,22 @@ describe('AzureTokenExpiredErrorContent', () => {
     )
   })
 
-  it('should call initiateLogin and onClose when sign in button is clicked', () => {
+  it('should re-authenticate against the connection tenant and close on click', () => {
     const onClose = jest.fn()
     render(
       <AzureTokenExpiredErrorContent
         text="Token has expired"
+        tenantId="realm-guid"
         onClose={onClose}
       />,
     )
 
     fireEvent.click(screen.getByTestId('azure-sign-in-btn'))
 
-    expect(mockInitiateLogin).toHaveBeenCalled()
+    expect(mockInitiateLogin).toHaveBeenCalledWith(
+      AzureLoginSource.TokenRefresh,
+      'realm-guid',
+    )
     expect(onClose).toHaveBeenCalled()
   })
 

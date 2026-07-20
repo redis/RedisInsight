@@ -6,6 +6,7 @@ const { server, request } = deps;
 const endpoint = () => request(server).get('/settings/agreements/spec');
 
 const agreementItemSchema = Joi.object().keys({
+  code: Joi.string().optional(),
   defaultValue: Joi.bool().required(),
   required: Joi.bool().required(),
   disabled: Joi.bool().required(),

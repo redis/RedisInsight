@@ -13,8 +13,11 @@ export enum FeatureFlags {
   customTutorials = 'customTutorials',
   vectorSearchV2 = 'vectorSearchV2',
   vectorSet = 'vectorSet',
-  devArray = 'dev-array',
+  array = 'array',
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
   prodMode = 'prodMode',
+  devLanguage = 'dev-language',
+  whatsNew = 'whatsNew',
+  valueDecoder = 'valueDecoder',
 }

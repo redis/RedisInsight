@@ -1,4 +1,5 @@
 import React from 'react'
+import i18n from 'uiSrc/i18n'
 import { ColumnDef, Row, Table } from 'uiSrc/components/base/layout/table'
 import { IndexDetailsColumn, IndexField } from './IndexDetails.types'
 
@@ -34,7 +35,10 @@ export const NAME_COLUMN: ColumnDef<IndexField> = {
       step={CreateIndexOnboardingStep.FieldName}
       anchorPosition="upCenter"
     >
-      <ColumnHeader label="Field name" tooltip={<FieldNameTooltip />} />
+      <ColumnHeader
+        label={i18n.t('vectorSearch.indexDetails.fieldName')}
+        tooltip={<FieldNameTooltip />}
+      />
     </CreateIndexOnboardingPopover>
   ),
   cell: ({ row }: { row: Row<IndexField> }) => (
@@ -53,7 +57,7 @@ export const VALUE_COLUMN: ColumnDef<IndexField> = {
       anchorPosition="upCenter"
     >
       <ColumnHeader
-        label="Field sample value"
+        label={i18n.t('vectorSearch.indexDetails.fieldSampleValue')}
         tooltip={<FieldValueTooltip />}
       />
     </CreateIndexOnboardingPopover>
@@ -74,7 +78,10 @@ export const TYPE_COLUMN_READONLY: ColumnDef<IndexField> = {
       step={CreateIndexOnboardingStep.IndexingType}
       anchorPosition="downCenter"
     >
-      <ColumnHeader label="Indexing type" tooltip={<FieldTypeTooltip />} />
+      <ColumnHeader
+        label={i18n.t('vectorSearch.indexDetails.indexingType')}
+        tooltip={<FieldTypeTooltip />}
+      />
     </CreateIndexOnboardingPopover>
   ),
   cell: ({ row }: { row: Row<IndexField> }) => (
@@ -94,7 +101,7 @@ export const TYPE_COLUMN_EDITABLE: ColumnDef<IndexField> = {
       anchorPosition="downCenter"
     >
       <ColumnHeader
-        label="Suggested indexing type"
+        label={i18n.t('vectorSearch.indexDetails.suggestedIndexingType')}
         tooltip={<FieldTypeTooltip />}
       />
     </CreateIndexOnboardingPopover>

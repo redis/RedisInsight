@@ -16,14 +16,14 @@ export const options = merge({}, defaultMonacoOptions, {
 export const TUTORIALS = [
   {
     id: TutorialsIds.IntroToSearch,
-    title: 'Intro to search',
+    titleKey: 'workbench.tutorials.introToSearch',
   },
   {
     id: TutorialsIds.BasicRedisUseCases,
-    title: 'Basic use cases',
+    titleKey: 'workbench.tutorials.basicUseCases',
   },
   {
     id: TutorialsIds.IntroVectorSearch,
-    title: 'Intro to vector search',
+    titleKey: 'workbench.tutorials.introToVectorSearch',
   },
-]
+] as const

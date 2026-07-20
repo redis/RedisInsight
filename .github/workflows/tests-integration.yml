@@ -45,8 +45,6 @@ on:
         type: boolean
         default: false
 env:
-  SLACK_AUDIT_REPORT_KEY: ${{ secrets.SLACK_AUDIT_REPORT_KEY }}
-  SLACK_AUDIT_REPORT_CHANNEL: ${{ secrets.SLACK_AUDIT_REPORT_CHANNEL }}
   TEST_MEDIUM_DB_DUMP: ${{ secrets.TEST_MEDIUM_DB_DUMP }}
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   REPORT_NAME: 'report-it'
@@ -57,6 +55,7 @@ env:
       "oss-st-5": "OSS Standalone v5",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
       "oss-st-6": "OSS Standalone v6 and all modules",
+      "oss-st-8": "OSS Standalone v8.8",
       "mods-preview": "OSS Standalone and all preview modules",
       "oss-st-6-tls": "OSS Standalone v6 with TLS enabled",
       "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
@@ -71,6 +70,7 @@ env:
   ITESTS_NAMES_SHORT: |
     {
       "mods-preview": "OSS Standalone and all preview modules",
+      "oss-st-8": "OSS Standalone v8.8",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
       "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
       "oss-clu-tls": "OSS Cluster with TLS enabled",
@@ -115,7 +115,7 @@ jobs:
       matrix:
         rte: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       # SSH Debug
       - name: Enable SSH
@@ -257,7 +257,7 @@ jobs:
       actions: write
       contents: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Merge coverage artifacts
         id: merge-artifacts

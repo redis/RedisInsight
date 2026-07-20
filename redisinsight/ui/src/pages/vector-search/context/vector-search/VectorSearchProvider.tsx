@@ -7,7 +7,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
-import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
+import { useCreateIndexFlow } from '../../hooks'
 import { CreateIndexMode } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import {
   SearchTelemetryCancelStep,
@@ -31,8 +31,6 @@ export const VectorSearchProvider = ({
 
   const { run: createIndexFlow, loading: createIndexLoading } =
     useCreateIndexFlow()
-  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
-    useHasExistingKeys()
 
   const openPickSampleDataModal = useCallback(
     (source: SearchTelemetrySource) => {
@@ -166,15 +164,8 @@ export const VectorSearchProvider = ({
     () => ({
       openPickSampleDataModal,
       navigateToExistingDataFlow,
-      hasExistingKeys,
-      hasExistingKeysLoading,
     }),
-    [
-      openPickSampleDataModal,
-      navigateToExistingDataFlow,
-      hasExistingKeys,
-      hasExistingKeysLoading,
-    ],
+    [openPickSampleDataModal, navigateToExistingDataFlow],
   )
 
   return (

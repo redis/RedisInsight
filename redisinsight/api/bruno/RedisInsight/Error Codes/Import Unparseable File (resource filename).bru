@@ -1,0 +1,50 @@
+meta {
+  name: Import Unparseable File (resource filename)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{API_URL}}/databases/import
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(Error Codes/fixtures/broken-import.txt)
+}
+
+docs {
+  # DatabaseImportUnableToParseFile — errorCode 11706 (with `resource`)
+
+  Uploads a file that isn't a valid database export, so `parseFile` yields
+  no importable array and the service throws
+  `UnableToParseDatabaseImportFileException`. The exception now carries the
+  **filename structurally** in `resource.filename` (the same value baked
+  into `message`), so the client can localize `Unable to parse {{filename}}.`
+
+  Bruno resolves the `@file()` path relative to the **collection root**
+  (`redisinsight/api/bruno/RedisInsight/`), so the fixture lives at
+  `Error Codes/fixtures/broken-import.txt`.
+
+  ## Expected response (400)
+
+  ```
+  {
+    "message": "Unable to parse broken-import.txt",
+    "statusCode": 400,
+    "error": "Unable To Parse Database Import File",
+    "errorCode": 11706,
+    "resource": {
+      "filename": "broken-import.txt"
+    }
+  }
+  ```
+
+  > Filenames longer than 50 chars are truncated with `...` in both
+  > `message` and `resource.filename`.
+}
+
+settings {
+  encodeUrl: true
+}

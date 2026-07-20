@@ -332,8 +332,8 @@ const ONBOARDING_FEATURES = {
         content: (
           <>
             This is Search, where you can index your data and query it using
-            Redis Query Engine. Run full-text search, vector similarity, and
-            filtered queries right from the UI.
+            Redis Search. Run full-text search, vector similarity, and filtered
+            queries right from the UI.
             <Spacer size="xs" />
             Load sample data to create your first index and run sample queries
             to see results instantly.

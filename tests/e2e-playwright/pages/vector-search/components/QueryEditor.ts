@@ -27,7 +27,7 @@ export class QueryEditor {
 
     this.container = page.getByTestId('vector-search-query-editor');
     this.actionsBar = page.getByTestId('vector-search-actions');
-    this.runButton = this.actionsBar.getByRole('button', { name: 'submit' });
+    this.runButton = this.actionsBar.getByRole('button', { name: 'Run' });
     this.explainButton = this.actionsBar.getByRole('button', { name: 'explain' });
     this.profileButton = this.actionsBar.getByRole('button', { name: 'profile' });
     this.saveButton = this.actionsBar.getByRole('button', { name: 'save' });

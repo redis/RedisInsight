@@ -15,6 +15,7 @@ enum ApiEndpoints {
   BULK_ACTIONS_IMPORT_DEFAULT_DATA = 'bulk-actions/import/default-data',
   BULK_ACTIONS_IMPORT_TUTORIAL_DATA = 'bulk-actions/import/tutorial-data',
   BULK_ACTIONS_IMPORT_VECTOR_COLLECTION = 'bulk-actions/import/vector-collection',
+  BULK_ACTIONS_IMPORT_ARRAY_COLLECTION = 'bulk-actions/import/array-collection',
 
   CA_CERTIFICATES = 'certificates/ca',
   CLIENT_CERTIFICATES = 'certificates/client',
@@ -35,7 +36,6 @@ enum ApiEndpoints {
   KEY_INFO = 'keys/get-info',
   KEY_NAME = 'keys/name',
   KEY_TTL = 'keys/ttl',
-  KEYS_NAMESPACE_SEARCHABLE = 'keys/get-namespace-searchable',
 
   ZSET = 'zSet',
   ZSET_MEMBERS = 'zSet/members',
@@ -65,6 +65,8 @@ enum ApiEndpoints {
   REJSON_ARRAPPEND = 'rejson-rl/arrappend',
   REJSON_DOWNLOAD = 'rejson-rl/download-value',
 
+  ARRAY = 'array',
+
   VECTOR_SET = 'vector-set',
   VECTOR_SET_GET_ELEMENTS = 'vector-set/get-elements',
   VECTOR_SET_ELEMENTS = 'vector-set/elements',
@@ -73,6 +75,17 @@ enum ApiEndpoints {
   VECTOR_SET_DOWNLOAD_EMBEDDING = 'vector-set/download-embedding',
   VECTOR_SET_SIMILARITY_SEARCH = 'vector-set/similarity-search',
   VECTOR_SET_SIMILARITY_SEARCH_PREVIEW = 'vector-set/similarity-search/preview',
+
+  ARRAY_GET_RANGE = 'array/get-range',
+  ARRAY_SCAN = 'array/scan',
+  ARRAY_GET_LENGTH = 'array/get-length',
+  ARRAY_GET_COUNT = 'array/get-count',
+  ARRAY_ELEMENTS = 'array/elements',
+  ARRAY_RANGE = 'array/range',
+  ARRAY_AGGREGATE = 'array/aggregate',
+  ARRAY_SEARCH = 'array/search',
+  ARRAY_SET_ELEMENT = 'array/set-element',
+  ARRAY_APPEND = 'array/append',
 
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',

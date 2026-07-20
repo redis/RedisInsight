@@ -9,6 +9,7 @@ import {
   _,
   it,
   validateApiCall,
+  before,
   after,
 } from '../deps';
 import { Joi } from '../../helpers/test';
@@ -55,6 +56,7 @@ const dataSchema = Joi.object({
   environment: Joi.string()
     .valid('unspecified', 'production', 'development')
     .allow(null),
+  connectionFamily: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -249,6 +251,95 @@ describe(`PATCH /databases/:id`, () => {
           statusCode: 404,
           message: 'Invalid database instance id.',
           error: 'Not Found',
+        },
+      },
+    ].map(mainCheckFn);
+  });
+  describe('Managed databases (cloud) endpoint guard', () => {
+    const managedHostPortMessage =
+      'Host and port cannot be changed for a database managed by a cloud provider.';
+    // Dedicated managed instance so we never mutate the shared TEST_INSTANCE_ID
+    // (its cloudDetails would otherwise leak into later tests).
+    const MANAGED_ID = 'cloud0000-0000-4000-8000-managed000001';
+    const managedEndpoint = () => endpoint(MANAGED_ID);
+    const managedName = constants.getRandomString();
+
+    // Seed once directly via the repository: cloudDetails marks the database as
+    // managed, and the guard rejects endpoint changes before any connection, so
+    // no real connectivity is required.
+    before(async () => {
+      const rep = await localDb.getRepository(localDb.repositories.DATABASE);
+      await rep.save({
+        id: MANAGED_ID,
+        name: 'cloud-managed-db',
+        host: constants.TEST_REDIS_HOST,
+        port: constants.TEST_REDIS_PORT,
+        connectionType: constants.STANDALONE,
+        tls: false,
+        verifyServerCert: false,
+        modules: '[]',
+        version: '7.0',
+        cloudDetails: {
+          cloudId: constants.TEST_CLOUD_ID,
+          subscriptionType: 'fixed',
+        },
+      });
+    });
+
+    after(async () => {
+      const rep = await localDb.getRepository(localDb.repositories.DATABASE);
+      await rep.delete(MANAGED_ID);
+    });
+
+    [
+      {
+        name: 'Should reject host change for a cloud-managed database',
+        endpoint: managedEndpoint,
+        data: {
+          host: constants.getRandomString(),
+        },
+        statusCode: 400,
+        responseBody: {
+          statusCode: 400,
+          error: 'Bad Request',
+          message: managedHostPortMessage,
+        },
+        after: async () => {
+          // endpoint must remain unchanged
+          const db = await localDb.getInstanceById(MANAGED_ID);
+          expect(db?.host).to.eq(constants.TEST_REDIS_HOST);
+          expect(db?.port).to.eq(constants.TEST_REDIS_PORT);
+        },
+      },
+      {
+        name: 'Should reject port change for a cloud-managed database',
+        endpoint: managedEndpoint,
+        data: {
+          port: 1234,
+        },
+        statusCode: 400,
+        responseBody: {
+          statusCode: 400,
+          error: 'Bad Request',
+          message: managedHostPortMessage,
+        },
+        after: async () => {
+          const db = await localDb.getInstanceById(MANAGED_ID);
+          expect(db?.port).to.eq(constants.TEST_REDIS_PORT);
+        },
+      },
+      {
+        name: 'Should allow non-endpoint change (name) for a cloud-managed database',
+        endpoint: managedEndpoint,
+        data: {
+          name: managedName,
+        },
+        responseBody: {
+          name: managedName,
+        },
+        after: async () => {
+          const db = await localDb.getInstanceById(MANAGED_ID);
+          expect(db?.name).to.eq(managedName);
         },
       },
     ].map(mainCheckFn);

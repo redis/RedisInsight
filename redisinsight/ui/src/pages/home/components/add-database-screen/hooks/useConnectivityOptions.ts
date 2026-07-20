@@ -15,19 +15,21 @@ import {
 
 interface UseConnectivityOptionsProps {
   onClickOption: (type: AddDbType) => void
+  /**
+   * Called when the user clicks Azure while not signed in. The caller opens the
+   * sign-in dialog (where an optional tenant can be entered) instead of starting
+   * the OAuth flow immediately.
+   */
+  onRequestAzureSignIn?: () => void
 }
 
 export const useConnectivityOptions = ({
   onClickOption,
+  onRequestAzureSignIn,
 }: UseConnectivityOptionsProps): ConnectivityOption[] => {
   const history = useHistory()
   const isAzureEntraIdEnabled = useAppSelector(isAzureEntraIdEnabledSelector)
-  const {
-    initiateLogin,
-    cancelLogin,
-    loading: azureLoading,
-    account,
-  } = useAzureAuth()
+  const { cancelLogin, loading: azureLoading, account } = useAzureAuth()
 
   const handleAzureClick = useCallback(() => {
     sendEventTelemetry({
@@ -36,9 +38,9 @@ export const useConnectivityOptions = ({
     if (account) {
       history.push(Pages.azureSubscriptions)
     } else {
-      initiateLogin()
+      onRequestAzureSignIn?.()
     }
-  }, [account, history, initiateLogin])
+  }, [account, history, onRequestAzureSignIn])
 
   return useMemo(() => {
     const getClickHandler = (option: ConnectivityOptionConfig) => {

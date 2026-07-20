@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { PayloadTooLargeException, HttpStatus } from '@nestjs/common';
+import { stampErrorCode } from 'src/exceptions/error-code.util';
 import { Config, get } from 'src/utils';
 
 const serverConfig = get('server') as Config['server'];
@@ -26,7 +27,7 @@ export default (
         'Access-Control-Allow-Credentials',
         `${serverConfig.cors.credentials}`,
       )
-      .json(exception.getResponse());
+      .json(stampErrorCode(exception));
   }
 
   next(err);

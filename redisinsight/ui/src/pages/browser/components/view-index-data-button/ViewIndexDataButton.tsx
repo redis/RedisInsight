@@ -11,7 +11,11 @@ import {
   MenuItem,
 } from 'uiSrc/components/base/layout/menu'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  SearchBrowserSource,
+  SearchIndexDetailsSource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
+import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/pages/VectorSearchQueryPage/VectorSearchQueryPage.constants'
 
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
 import * as S from './ViewIndexDataButton.styles'
@@ -35,13 +39,26 @@ export const ViewIndexDataButton = ({
           source: SearchBrowserSource.KeyDetails,
         },
       })
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: {
+          databaseId: instanceId,
+          source: SearchIndexDetailsSource.KeyDetails,
+        },
+      })
       if (onNavigate) {
         onNavigate(indexName)
         return
       }
-      history.push(
-        Pages.vectorSearchQuery(instanceId, encodeURIComponent(indexName)),
-      )
+      history.push({
+        pathname: Pages.vectorSearchQuery(
+          instanceId,
+          encodeURIComponent(indexName),
+        ),
+        search: new URLSearchParams({
+          [OPEN_INDEX_PANEL_PARAM]: 'true',
+        }).toString(),
+      })
     },
     [history, instanceId, onNavigate, indexes.length],
   )

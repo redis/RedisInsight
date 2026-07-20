@@ -14,7 +14,7 @@ import { ConnectionOptions } from 'tls';
 import { ClusterNodeRedisClient, RedisClient } from 'src/modules/redis/client';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
-import { discoverClusterNodes } from 'src/modules/redis/utils';
+import { discoverClusterNodes, getIpFamily } from 'src/modules/redis/utils';
 
 const REDIS_CLIENTS_CONFIG = serverConfig.get('redis_clients');
 
@@ -43,7 +43,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<RedisClientOptions> {
-    const { host, port, password, username, tls, db, timeout } = database;
+    const {
+      host,
+      port,
+      password,
+      username,
+      tls,
+      db,
+      timeout,
+      connectionFamily,
+    } = database;
 
     let tlsOptions = {};
     if (tls) {
@@ -57,7 +66,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       socket: {
         host,
         port,
-        family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
+        family: getIpFamily(connectionFamily),
         connectTimeout: timeout,
         ...tlsOptions,
         reconnectStrategy: options?.useRetry

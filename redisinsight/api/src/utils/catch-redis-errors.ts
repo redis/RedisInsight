@@ -94,18 +94,14 @@ export const getRedisConnectionException = (
       error?.code === RedisErrorCodes.ConnectionReset
     ) {
       return new RedisConnectionUnavailableException(
-        ERROR_MESSAGES.INCORRECT_DATABASE_URL(
-          errorPlaceholder || `${host}:${port}`,
-        ),
+        errorPlaceholder || `${host}:${port}`,
         { cause: error },
       );
     }
 
     if (isCertError(error)) {
       return new RedisConnectionIncorrectCertificateException(
-        ERROR_MESSAGES.INCORRECT_CERTIFICATES(
-          errorPlaceholder || `${host}:${port}`,
-        ),
+        errorPlaceholder || `${host}:${port}`,
         { cause: error },
       );
     }

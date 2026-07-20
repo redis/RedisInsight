@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 
 import { apiService, sessionStorageService } from 'uiSrc/services'
 import { ApiEndpoints, BrowserStorageItem } from 'uiSrc/constants'
@@ -219,7 +220,7 @@ export function createCliClientAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(processCliClientFailure(errorMessage))
       onFailAction?.(errorMessage)
     }
@@ -255,7 +256,7 @@ export function updateCliClientAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(processCliClientFailure(errorMessage))
       onFailAction?.(errorMessage)
     }
@@ -282,7 +283,7 @@ export function deleteCliClientAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(processCliClientFailure(errorMessage))
       onFailAction?.()
     }
@@ -327,7 +328,7 @@ export function fetchBlockingCliCommandsAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(processCliClientFailure(errorMessage))
       onFailAction?.()
     }
@@ -352,7 +353,7 @@ export function fetchUnsupportedCliCommandsAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(processCliClientFailure(errorMessage))
       onFailAction?.()
     }

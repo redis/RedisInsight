@@ -26,6 +26,7 @@ import {
 import { ColorScheme, getRGBColorByScheme, RGBColor } from 'uiSrc/utils/colors'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   ClusterDetailsHeader,
   ClusterDetailsGraphics,
@@ -43,6 +44,7 @@ export interface ModifiedClusterNodes extends ClusterNodeDetails {
 const POLLING_INTERVAL = 5_000
 
 const ClusterDetailsPage = () => {
+  const { t } = useTranslation()
   let interval: NodeJS.Timeout
   const { instanceId } = useParams<{ instanceId: string }>()
   const {
@@ -59,7 +61,7 @@ const ClusterDetailsPage = () => {
   const { theme } = useContext(ThemeContext)
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Overview`)
+  setTitle(t('analytics.clusterDetails.pageTitle', { dbName }))
 
   const colorScheme: ColorScheme = {
     cHueStart: 180,

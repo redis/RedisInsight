@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { RiPopover } from 'uiSrc/components/base'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { Row } from 'uiSrc/components/base/layout/flex'
@@ -12,6 +13,7 @@ import * as S from './QueryOnboardingPopover.styles'
 export const QueryOnboardingPopover = ({
   children,
 }: QueryOnboardingPopoverProps) => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(
     () =>
       localStorageService.get(
@@ -40,28 +42,27 @@ export const QueryOnboardingPopover = ({
     >
       <S.Content gap="l" data-testid="query-library-onboarding-content">
         <Text size="L" variant="semiBold" color="primary">
-          Start exploring your data
+          {t('vectorSearch.query.onboarding.title')}
         </Text>
         <Text size="m" color="secondary">
-          Build queries in the Query Editor or save them for later in the Query
-          Library.
+          {t('vectorSearch.query.onboarding.description')}
         </Text>
 
         <S.Section>
           <Text size="m" variant="semiBold" color="primary">
-            Query editor
+            {t('vectorSearch.query.onboarding.editorTitle')}
           </Text>
           <Text size="s" color="secondary">
-            write search queries directly using Redis commands.
+            {t('vectorSearch.query.onboarding.editorDescription')}
           </Text>
         </S.Section>
 
         <S.Section>
           <Text size="m" variant="semiBold" color="primary">
-            Query library
+            {t('vectorSearch.query.onboarding.libraryTitle')}
           </Text>
           <Text size="s" color="secondary">
-            reuse saved queries or use prebuilt examples for the sample data.
+            {t('vectorSearch.query.onboarding.libraryDescription')}
           </Text>
         </S.Section>
 
@@ -71,7 +72,7 @@ export const QueryOnboardingPopover = ({
             onClick={handleDismiss}
             data-testid="query-library-onboarding-dismiss"
           >
-            Got it
+            {t('vectorSearch.query.onboarding.dismiss')}
           </Button>
         </Row>
       </S.Content>
