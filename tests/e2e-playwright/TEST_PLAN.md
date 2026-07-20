@@ -839,7 +839,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | should open sample data modal and complete "Start querying" flow |
 | ✅ | main | should open sample data modal and navigate to "See index definition" |
 | ✅ | main | should create index from existing data via list page menu |
-| ✅ | main | should open "Use existing data" into manual creation with the browser collapsed |
+| ✅ | main | should open existing data flow into manual creation with the browser collapsed |
 
 ### 8.8 Query Page
 

@@ -63,7 +63,6 @@ test.describe('Vector Search > Create Index - Existing Data', () => {
       localStorage.setItem('vectorSearchCreateIndexOnboarding', 'true');
     });
 
-    // Navigate to list page and open "Use existing data" form
     await expect(vectorSearchPage.listWrapper).toBeVisible();
     await vectorSearchPage.indexList.openCreateIndex('existing-data');
     await expect(vectorSearchPage.createIndexForm.container).toBeVisible();

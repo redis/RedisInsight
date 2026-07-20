@@ -15,9 +15,8 @@ test.use({ featureFlags: { vectorSearchV2: true } });
 /**
  * Vector Search > Create Index from List Page
  *
- * Tests for creating indexes via the "+ Create search index" menu
- * on the list page, including sample data flow, existing data flow,
- * and disabled state when no hash/JSON keys exist.
+ * Tests for creating indexes via the "+ Create search index" menu on the list
+ * page: sample data, existing data, and the empty-database manual creation flow.
  */
 test.describe('Vector Search > Create Index from List Page', () => {
   let database: DatabaseInstance;
@@ -108,7 +107,6 @@ test.describe('Vector Search > Create Index from List Page', () => {
   });
 
   test('should create index from existing data via list page menu', async ({ vectorSearchPage }) => {
-    // Open create index menu → Use existing data
     await vectorSearchPage.indexList.createIndexButton.click();
 
     const existingDataItem = vectorSearchPage.indexList.getCreateIndexMenuItem('existing-data');
@@ -118,11 +116,9 @@ test.describe('Vector Search > Create Index from List Page', () => {
     await expect(vectorSearchPage.createIndexWrapper).toBeVisible();
     await expect(vectorSearchPage.createIndexForm.browserPanel).toBeVisible();
 
-    // Select key in browser panel and create index
     await vectorSearchPage.createIndexForm.selectKey(`${TEST_INDEX_PREFIX}key1`);
     await expect(vectorSearchPage.createIndexForm.content).toBeVisible();
 
-    // Create index and navigate to query page, verify toast
     await vectorSearchPage.createIndexForm.createIndexButton.click();
     await expect(vectorSearchPage.queryPageWrapper).toBeVisible();
     await expect(vectorSearchPage.indexCreatedToast).toBeVisible();
@@ -142,7 +138,7 @@ test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys',
     await apiHelper.deleteDatabase(database.id);
   });
 
-  test('should open "Use existing data" into manual creation with the browser collapsed', async ({
+  test('should open existing data flow into manual creation with the browser collapsed', async ({
     vectorSearchPage,
     apiHelper,
     page,
@@ -155,7 +151,6 @@ test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys',
       .poll(() => apiHelper.getIndexes(database.id).then((indexes) => indexes.includes(emptyIndex.indexName)))
       .toBe(true);
 
-    // Navigate to list page
     await vectorSearchPage.goto(database.id);
     await expect(vectorSearchPage.listWrapper).toBeVisible();
 
@@ -165,7 +160,6 @@ test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys',
       localStorage.setItem('vectorSearchCreateIndexOnboarding', 'true');
     });
 
-    // Open create index menu → "Use existing data" is enabled and clickable
     await vectorSearchPage.indexList.createIndexButton.click();
 
     const existingDataItem = vectorSearchPage.indexList.getCreateIndexMenuItem('existing-data');
@@ -173,8 +167,7 @@ test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys',
     await expect(existingDataItem).toBeEnabled();
     await existingDataItem.click();
 
-    // Lands on the create index page in manual creation mode: with no data to
-    // browse, the key browser is collapsed and the manual empty state is shown
+    // With no data to browse, the key browser is collapsed and the manual empty state shows
     await expect(vectorSearchPage.createIndexWrapper).toBeVisible();
     await expect(vectorSearchPage.createIndexForm.emptyState).toBeVisible();
     await expect(vectorSearchPage.createIndexForm.browserPanel).toBeHidden();
