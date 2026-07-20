@@ -20,6 +20,7 @@ import {
 } from 'uiSrc/components/auto-discover'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Header } from 'uiSrc/components/auto-discover/Header'
+import { useTranslation } from 'uiSrc/i18n'
 import { SummaryText } from './components/Summary'
 
 export interface Props {
@@ -30,9 +31,6 @@ export interface Props {
   onViewDatabases: () => void
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found.'
-
 const SentinelDatabasesResult = ({
   columns,
   onBack,
@@ -40,6 +38,10 @@ const SentinelDatabasesResult = ({
   countSuccessAdded,
   masters,
 }: Props) => {
+  const { t } = useTranslation()
+  const loadingMsg = t('autodiscover.sentinel.loading')
+  const notFoundMsg = t('autodiscover.sentinel.notFound')
+
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
   const [message, setMessage] = useState(loadingMsg)
 
@@ -82,7 +84,7 @@ const SentinelDatabasesResult = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Auto-Discover Redis Sentinel Primary Groups"
+          title={t('autodiscover.sentinel.databases.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
         />
@@ -130,7 +132,7 @@ const SentinelDatabasesResult = ({
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
           >
-            View Databases
+            {t('autodiscover.sentinel.result.viewDatabases')}
           </PrimaryButton>
         </Row>
       </Footer>

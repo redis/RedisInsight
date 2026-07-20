@@ -20,6 +20,7 @@ import {
   Header,
 } from 'uiSrc/components/auto-discover'
 import { Text } from 'uiSrc/components/base/text'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 
 import { getRowId } from '../../useSentinelDatabasesConfig'
 import { CancelButton, SubmitButton, NoMastersMessage } from './components'
@@ -34,10 +35,6 @@ export interface Props {
   onSubmit: (databases: ModifiedSentinelMaster[]) => void
 }
 
-const loadingMsg = 'loading...'
-const notMastersMsg = 'Your Redis Sentinel has no primary groups available.'
-const notFoundMsg = 'Not found.'
-
 const SentinelDatabases = ({
   columns,
   onSelectionChange,
@@ -47,6 +44,11 @@ const SentinelDatabases = ({
   masters,
   selection,
 }: Props) => {
+  const { t } = useTranslation()
+  const loadingMsg = t('autodiscover.sentinel.loading')
+  const notMastersMsg = t('autodiscover.sentinel.databases.noMasters')
+  const notFoundMsg = t('autodiscover.sentinel.notFound')
+
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
 
   const [message, setMessage] = useState(loadingMsg)
@@ -105,15 +107,16 @@ const SentinelDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Auto-Discover Redis Sentinel Primary Groups"
+          title={t('autodiscover.sentinel.databases.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
           subTitle={
             masters.length > 0 && (
               <Text size="m">
-                Redis Sentinel instance found. Here is a list of primary groups
-                your Sentinel instance is managing. <br />
-                Select the primary group(s) you want to add:
+                <Trans
+                  i18nKey="autodiscover.sentinel.databases.subtitle"
+                  components={{ br: <br /> }}
+                />
               </Text>
             )
           }
