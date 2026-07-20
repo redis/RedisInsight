@@ -1,0 +1,60 @@
+meta {
+  name: Create Array (Sparse)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "ar:readings:sparse",
+    "mode": "sparse",
+    "elements": [
+      { "index": "0", "value": "20.1" },
+      { "index": "5", "value": "21.4" },
+      { "index": "42", "value": "23.1" }
+    ]
+  }
+}
+
+docs {
+  # Create Array (Sparse)
+
+  Creates a new Array key in sparse mode. Uses the Redis `ARMSET` command internally: `ARMSET key index value [index value ...]` writes explicit index/value pairs, leaving the gaps between them unset.
+
+  The example above creates the `ar:readings:sparse` array with values at indexes `0`, `5`, and `42` only.
+
+  Indexes are passed as numeric strings because the Array type supports the full unsigned 64-bit range, which exceeds JavaScript's safe integer range.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The key name for the new Array |
+  | `mode` | string | Must be `sparse` for this request shape |
+  | `elements` | array | Index/value pairs to write |
+  | `elements[].index` | string | Element index as a numeric string (`0` to `18446744073709551614`) |
+  | `elements[].value` | string | Element value |
+  | `expire` | number (optional) | TTL in seconds |
+
+  ## Response
+
+  Returns `201 Created` with no body on success.
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Validation failed, e.g. a non-canonical index: `elements.0.index must be an integer string between 0 and 18446744073709551614` |
+  | `403` | User has no permissions |
+  | `409` | Key with this name already exists |
+}
+
+settings {
+  encodeUrl: true
+}

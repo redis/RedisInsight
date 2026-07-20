@@ -874,8 +874,8 @@ export function deleteConsumerGroupsAction(
         )
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(deleteConsumerGroupsFailure(errorMessage))
     }
   }
@@ -967,8 +967,8 @@ export function deleteConsumersAction(
         )
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(deleteConsumersFailure(errorMessage))
     }
   }

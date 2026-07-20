@@ -1,13 +1,12 @@
 import { visit } from 'unist-util-visit'
 import { remarkSanitize } from 'uiSrc/utils/formatters/markdown'
 
-jest.mock('unist-util-visit')
-
 const testCases = [
   { input: '', output: '' },
   {
     input: '<a href="https://localhost">',
-    output: '<a href="https://localhost" target="_blank">',
+    output:
+      '<a href="https://localhost" target="_blank" rel="noopener noreferrer">',
   },
   { input: '<a href="/settings">', output: '<a>' },
   { input: '<a href="javascript:alert(1)">', output: '<a>' },

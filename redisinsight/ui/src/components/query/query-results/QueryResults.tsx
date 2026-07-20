@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
 import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/profile'
@@ -39,6 +40,7 @@ export interface QueryResultsProps {
 }
 
 const QueryResults = (props: QueryResultsProps) => {
+  const { t } = useTranslation()
   const {
     isResultsLoaded,
     items = [],
@@ -91,7 +93,7 @@ const QueryResults = (props: QueryResultsProps) => {
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
-            Clear Results
+            {t('query.results.clear')}
           </EmptyButton>
         </S.Header>
       )}

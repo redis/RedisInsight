@@ -1,5 +1,6 @@
 import React from 'react'
 
+import i18n, { Trans } from 'uiSrc/i18n'
 import { Text } from 'uiSrc/components/base/text'
 import { IndexingTypeContent } from '../field-type-list'
 
@@ -28,70 +29,70 @@ export interface StepContent {
   body: React.ReactNode
 }
 
-export const STEP_CONTENT: Record<CreateIndexOnboardingStep, StepContent> = {
+// Built at call time (not module scope) so titles/bodies resolve in the active
+// language when the popover renders.
+export const getStepContent = (): Record<
+  CreateIndexOnboardingStep,
+  StepContent
+> => ({
   [CreateIndexOnboardingStep.DefineIndex]: {
-    title: 'Review and adjust the indexing schema',
+    title: i18n.t('vectorSearch.onboarding.defineIndex.title'),
     body: (
       <>
         <Text size="m" color="secondary">
-          An index defines how Redis searches and queries your data. The schema
-          controls which fields are indexed, their types, and other
-          configuration options.
+          {i18n.t('vectorSearch.onboarding.defineIndex.body1')}
         </Text>
         <Text size="m" color="secondary">
-          Review the suggested index name. You{'\u2019'}ll use it when building
-          queries.
+          {i18n.t('vectorSearch.onboarding.defineIndex.body2')}
         </Text>
         <Text size="m" color="secondary">
-          Tip: Index only fields you plan to search or filter on.
+          {i18n.t('vectorSearch.onboarding.defineIndex.body3')}
         </Text>
       </>
     ),
   },
   [CreateIndexOnboardingStep.IndexPrefix]: {
-    title: 'Index prefix',
+    title: i18n.t('vectorSearch.onboarding.indexPrefix.title'),
     body: (
       <>
         <Text size="m" color="secondary">
-          Controls which keys are included in the index. All keys starting with
-          this prefix will be indexed.
+          {i18n.t('vectorSearch.onboarding.indexPrefix.body1')}
         </Text>
         <Text size="m" color="secondary">
-          Example: <strong>bike:</strong> will index <strong>bike:1</strong>,{' '}
-          <strong>bike:road:3</strong>.
+          <Trans
+            i18nKey="vectorSearch.onboarding.indexPrefix.body2"
+            components={{ bold: <strong /> }}
+          />
         </Text>
       </>
     ),
   },
   [CreateIndexOnboardingStep.FieldName]: {
-    title: 'Field name',
+    title: i18n.t('vectorSearch.onboarding.fieldName.title'),
     body: (
       <Text size="m" color="secondary">
-        Represents a searchable attribute in your data. Only selected fields
-        will be searchable.
+        {i18n.t('vectorSearch.onboarding.fieldName.body')}
       </Text>
     ),
   },
   [CreateIndexOnboardingStep.SampleValue]: {
-    title: 'Sample value',
+    title: i18n.t('vectorSearch.onboarding.sampleValue.title'),
     body: (
       <Text size="m" color="secondary">
-        A sample value from the data to be indexed. Use it to verify the field
-        type and indexing choice.
+        {i18n.t('vectorSearch.onboarding.sampleValue.body')}
       </Text>
     ),
   },
   [CreateIndexOnboardingStep.IndexingType]: {
-    title: 'Indexing type & options',
+    title: i18n.t('vectorSearch.onboarding.indexingType.title'),
     body: <IndexingTypeContent />,
   },
   [CreateIndexOnboardingStep.CommandView]: {
-    title: 'Create index command',
+    title: i18n.t('vectorSearch.onboarding.commandView.title'),
     body: (
       <Text size="m" color="secondary">
-        This is the FT.CREATE command Redis will run. Once executed, your data
-        becomes searchable.
+        {i18n.t('vectorSearch.onboarding.commandView.body')}
       </Text>
     ),
   },
-}
+})

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { DeleteConfirmationModal } from 'uiSrc/pages/vector-search/components/delete-confirmation-modal'
 
 import { DeleteQueryModalProps } from './DeleteQueryModal.types'
@@ -7,16 +8,20 @@ import { DeleteQueryModalProps } from './DeleteQueryModal.types'
 export const DeleteQueryModal = ({
   onConfirm,
   onCancel,
-}: DeleteQueryModalProps) => (
-  <DeleteConfirmationModal
-    isOpen
-    title="Delete query"
-    question="Are you sure you want to delete this query?"
-    message="This action will remove the saved query, but won't affect your index or data."
-    cancelLabel="Keep query"
-    confirmLabel="Delete query"
-    onConfirm={onConfirm}
-    onCancel={onCancel}
-    testId="query-library-delete-modal"
-  />
-)
+}: DeleteQueryModalProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <DeleteConfirmationModal
+      isOpen
+      title={t('vectorSearch.queryLibrary.delete.title')}
+      question={t('vectorSearch.queryLibrary.delete.question')}
+      message={t('vectorSearch.queryLibrary.delete.message')}
+      cancelLabel={t('vectorSearch.queryLibrary.delete.cancel')}
+      confirmLabel={t('vectorSearch.queryLibrary.delete.confirm')}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+      testId="query-library-delete-modal"
+    />
+  )
+}

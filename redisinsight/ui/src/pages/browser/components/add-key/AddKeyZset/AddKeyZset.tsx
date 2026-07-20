@@ -178,6 +178,10 @@ const AddKeyZset = (props: Props) => {
         isClearDisabled={isClearDisabled}
         onClickRemove={onClickRemove}
         onClickAdd={addMember}
+        columnLabels={[
+          { label: config.member.label },
+          { label: config.score.label, required: config.score.isRequire },
+        ]}
       >
         {(item, index) => (
           <Row align="center" gap="m">

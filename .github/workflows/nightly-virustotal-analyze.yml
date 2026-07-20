@@ -34,9 +34,12 @@ jobs:
     steps:
       - name: Determine mode and files
         id: setup_matrix
+        env:
+          MODE: ${{ github.event.inputs.mode }}
+          FILE_URL: ${{ github.event.inputs.file_url }}
         run: |
-          mode="${{ github.event.inputs.mode }}"
-          file_url="${{ github.event.inputs.file_url }}"
+          mode="$MODE"
+          file_url="$FILE_URL"
 
           if [ "$mode" == "single" ] && [ -z "$file_url" ]; then
             echo "Error: For 'single' mode, a file URL must be provided."
@@ -61,18 +64,22 @@ jobs:
 
     steps:
       - name: Download file
+        env:
+          FILE: ${{ matrix.file }}
         run: |
-          echo "Downloading: ${{ matrix.file }}"
-          curl -sLo file_to_analyze "${{ matrix.file }}"
+          echo "Downloading: $FILE"
+          curl -sLo file_to_analyze "$FILE"
 
       - name: Get upload URL
         id: get_upload_url
+        env:
+          FILE: ${{ matrix.file }}
         run: |
           upload_url=$(curl -sq -XGET https://www.virustotal.com/api/v3/files/upload_url \
             -H "x-apikey: $VIRUSTOTAL_API_KEY" | jq -r '.data')
 
           if [ -z "$upload_url" ] || [ "$upload_url" == "null" ]; then
-            echo "Failed to retrieve upload URL for ${{ matrix.file }}"
+            echo "Failed to retrieve upload URL for $FILE"
             exit 1
           fi
 
@@ -80,6 +87,8 @@ jobs:
 
       - name: Upload file to VirusTotal
         id: upload_file
+        env:
+          FILE: ${{ matrix.file }}
         run: |
           upload_url="${{ env.UPLOAD_URL }}"
           analyzed_id=$(curl -sq -XPOST "$upload_url" \
@@ -87,13 +96,15 @@ jobs:
             --form "file=@file_to_analyze" | jq -r '.data.id')
 
           if [ -z "$analyzed_id" ] || [ "$analyzed_id" == "null" ]; then
-            echo "Failed to upload file: ${{ matrix.file }}"
+            echo "Failed to upload file: $FILE"
             exit 1
           fi
 
           echo "ANALYZED_ID=$analyzed_id" >> $GITHUB_ENV
 
       - name: Check analyze status
+        env:
+          FILE: ${{ matrix.file }}
         run: |
           analyzed_id="${{ env.ANALYZED_ID }}"
           retry_attempts=50
@@ -113,11 +124,13 @@ jobs:
           done
 
           if [ "$analyze_status" != "completed" ]; then
-            echo "Analysis not completed for ${{ matrix.file }}"
+            echo "Analysis not completed for $FILE"
             exit 1
           fi
 
       - name: Validate analyze
+        env:
+          FILE: ${{ matrix.file }}
         run: |
           analyzed_id="${{ env.ANALYZED_ID }}"
           analysis=$(curl -sq -XGET "https://www.virustotal.com/api/v3/analyses/${analyzed_id}" \
@@ -130,10 +143,10 @@ jobs:
           suspicious=$(echo "$analyze_stats" | jq '.suspicious')
           harmless=$(echo "$analyze_stats" | jq '.harmless')
 
-          echo "Results for ${{ matrix.file }}: Malicious: $malicious, Suspicious: $suspicious, Harmless: $harmless"
+          echo "Results for $FILE: Malicious: $malicious, Suspicious: $suspicious, Harmless: $harmless"
 
           if [ "$malicious" != "0" ] || [ "$suspicious" != "0" ]; then
-            echo "File ${{ matrix.file }} is flagged as potentially harmful."
+            echo "File $FILE is flagged as potentially harmful."
             echo "$analysis" | jq -r '.data.attributes.results[] | select(.result == "malicious" or .result == "suspicious")'
             exit 1
           fi

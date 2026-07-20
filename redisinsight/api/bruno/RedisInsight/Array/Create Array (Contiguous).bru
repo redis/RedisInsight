@@ -1,0 +1,57 @@
+meta {
+  name: Create Array (Contiguous)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "ar:readings",
+    "mode": "contiguous",
+    "startIndex": "0",
+    "values": ["20.1", "20.4", "20.9"],
+    "expire": 3600
+  }
+}
+
+docs {
+  # Create Array (Contiguous)
+
+  Creates a new Array key in contiguous mode. Uses the Redis `ARSET` command internally: `ARSET key startIndex value [value ...]` writes the provided values as a consecutive run starting at `startIndex`.
+
+  The example above creates the `ar:readings` array with three values at indexes `0`, `1`, and `2`, expiring after one hour.
+
+  Indexes are passed as numeric strings because the Array type supports the full unsigned 64-bit range, which exceeds JavaScript's safe integer range.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The key name for the new Array |
+  | `mode` | string | Must be `contiguous` for this request shape |
+  | `startIndex` | string | Start index as a numeric string (`0` to `18446744073709551614`) |
+  | `values` | string[] | Value(s) to write starting at `startIndex` |
+  | `expire` | number (optional) | TTL in seconds |
+
+  ## Response
+
+  Returns `201 Created` with no body on success.
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Validation failed, e.g. a non-canonical index: `startIndex must be an integer string between 0 and 18446744073709551614` |
+  | `403` | User has no permissions |
+  | `409` | Key with this name already exists |
+}
+
+settings {
+  encodeUrl: true
+}

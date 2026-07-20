@@ -189,6 +189,7 @@ describe('POST /rdi/:id/pipeline/test-connections', () => {
             errorCode: 11402,
             message: 'Unauthorized',
             statusCode: 401,
+            resource: { detail: 'Unauthorized' },
           });
         },
         before: async () => {

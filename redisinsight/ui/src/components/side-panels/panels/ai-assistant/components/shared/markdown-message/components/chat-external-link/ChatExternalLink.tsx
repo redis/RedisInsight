@@ -1,9 +1,9 @@
 import React from 'react'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { Link, LinkProps } from 'uiSrc/components/base/link/Link'
+import { Link, type RiLinkProps } from 'uiSrc/components/base/link'
 
-const ChatExternalLink = (props: LinkProps) => {
+const ChatExternalLink = (props: RiLinkProps) => {
   const { href } = props
   return (
     <Link

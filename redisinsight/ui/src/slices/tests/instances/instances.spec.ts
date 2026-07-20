@@ -71,6 +71,7 @@ import reducer, {
   resetConnectedInstanceDangerousCommands,
   fetchConnectedInstanceDangerousCommandsAction,
   connectedInstanceDangerousCommandsSelector,
+  isArraySupportedSelector,
 } from '../../instances/instances'
 import { Environment } from 'apiClient'
 import {
@@ -167,7 +168,7 @@ describe('instances slice', () => {
       const nextState = initialState
 
       // Act
-      const result = reducer(undefined, {})
+      const result = reducer(undefined, { type: '' })
 
       // Assert
       expect(result).toEqual(nextState)
@@ -2092,6 +2093,38 @@ describe('instances slice', () => {
         // Assert
         expect(store.getActions()).toEqual([])
         expect(onFail).toHaveBeenCalled()
+      })
+    })
+
+    describe('isArraySupportedSelector', () => {
+      const buildRootState = (version: string) =>
+        Object.assign(cloneDeep(initialStateDefault), {
+          connections: {
+            instances: {
+              ...initialState,
+              instanceOverview: {
+                ...initialState.instanceOverview,
+                version,
+              },
+            },
+          },
+        })
+
+      it('returns false when version is empty', () => {
+        expect(isArraySupportedSelector(buildRootState(''))).toBe(false)
+      })
+
+      it('returns false for versions below 8.8', () => {
+        expect(isArraySupportedSelector(buildRootState('7.4.0'))).toBe(false)
+        expect(isArraySupportedSelector(buildRootState('8.0.0'))).toBe(false)
+        expect(isArraySupportedSelector(buildRootState('8.7.99'))).toBe(false)
+      })
+
+      it('returns true for 8.8.0 and above', () => {
+        expect(isArraySupportedSelector(buildRootState('8.8'))).toBe(true)
+        expect(isArraySupportedSelector(buildRootState('8.8.0'))).toBe(true)
+        expect(isArraySupportedSelector(buildRootState('8.8.5'))).toBe(true)
+        expect(isArraySupportedSelector(buildRootState('9.0.0'))).toBe(true)
       })
     })
   })

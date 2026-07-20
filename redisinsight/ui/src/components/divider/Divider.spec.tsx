@@ -1,7 +1,8 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
-import Divider, { DividerProps } from './Divider'
+import Divider from './Divider'
+import { DividerProps } from './Divider.types'
 
 const mockedProps = mock<DividerProps>()
 

@@ -25,6 +25,7 @@ describe('KeyValueFormatter', () => {
       'Binary',
       'HEX',
       'JSON',
+      'Markdown',
       'Msgpack',
       'Pickle',
       'Protobuf',

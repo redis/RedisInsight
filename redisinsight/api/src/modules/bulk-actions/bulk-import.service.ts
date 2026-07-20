@@ -22,6 +22,7 @@ import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.anal
 import {
   UploadImportFileByPathDto,
   ImportVectorCollectionDto,
+  ImportArrayCollectionDto,
 } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 import {
   RedisClient,
@@ -39,6 +40,12 @@ const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
 const SERVER_CONFIG = config.get('server') as Config['server'];
 
 const ALLOWED_VECTOR_INDEX_COLLECTIONS = ['bikes', 'movies', 'vec2word'];
+
+const ALLOWED_ARRAY_COLLECTIONS = [
+  'temperature-readings',
+  'server-errors',
+  'readme-document',
+];
 
 @Injectable()
 export class BulkImportService {
@@ -337,6 +344,44 @@ export class BulkImportService {
     } catch (e) {
       this.logger.error(
         'Unable to import vector collection data',
+        e,
+        clientMetadata,
+      );
+      throw wrapHttpError(e);
+    }
+  }
+
+  /**
+   * Import array collection data
+   * @param clientMetadata
+   * @param dto
+   */
+  public async importArrayCollection(
+    clientMetadata: ClientMetadata,
+    dto: ImportArrayCollectionDto,
+  ): Promise<IBulkActionOverview> {
+    try {
+      if (!ALLOWED_ARRAY_COLLECTIONS.includes(dto.collectionName)) {
+        throw new BadRequestException('Invalid collection name');
+      }
+
+      const collectionFilePath = join(
+        PATH_CONFIG.dataDir,
+        'array-collections',
+        dto.collectionName,
+      );
+
+      if (!(await fs.pathExists(collectionFilePath))) {
+        throw new BadRequestException(
+          `No data file found for collection: ${dto.collectionName}`,
+        );
+      }
+
+      const fileStream = fs.createReadStream(collectionFilePath);
+      return this.import(clientMetadata, fileStream);
+    } catch (e) {
+      this.logger.error(
+        'Unable to import array collection data',
         e,
         clientMetadata,
       );

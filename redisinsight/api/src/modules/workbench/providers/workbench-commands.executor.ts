@@ -20,6 +20,7 @@ import {
   UTF8FormatterStrategy,
 } from 'src/common/transformers';
 import { RedisClient } from 'src/modules/redis/client';
+import { ARRAY_U64_INTEGER_REPLY_COMMANDS } from 'src/modules/browser/constants/browser-tool-commands';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
@@ -87,8 +88,16 @@ export class WorkbenchCommandsExecutor {
         ? 'utf8'
         : undefined;
 
+      const integerReply = ARRAY_U64_INTEGER_REPLY_COMMANDS.has(
+        command.toLowerCase(),
+      )
+        ? 'bigint'
+        : undefined;
       const response = formatter.format(
-        await client.sendCommand([command, ...commandArgs], { replyEncoding }),
+        await client.sendCommand([command, ...commandArgs], {
+          replyEncoding,
+          integerReply,
+        }),
       );
       const result: CommandExecutionResult[] = [
         { response, status: CommandExecutionStatus.Success },

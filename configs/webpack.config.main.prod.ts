@@ -3,6 +3,7 @@ import webpack from 'webpack'
 import { merge } from 'webpack-merge'
 import { toString } from 'lodash'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 import baseConfig from './webpack.config.base'
 import DeleteSourceMaps from '../scripts/DeleteSourceMaps'
 import { version } from '../redisinsight/package.json'
@@ -10,8 +11,20 @@ import webpackPaths from './webpack.paths'
 
 DeleteSourceMaps()
 
+// rimraf has no types; require keeps it `any` (configs/ is not type-strict here)
+const rimraf = require('rimraf')
+// Hidden main-process source maps emitted for upload; must never ship.
+const MAIN_SOURCE_MAPS_GLOB = './redisinsight/dist/main/**/*.js.map'
+
+// Generate source maps when debugging the prod bundle, or when uploading them
+// to Sentry (the upload plugin below deletes them again so they never ship).
+// Mirror the runtime/booleanEnv semantics ('true' OR '1') so RI_SENTRY_ENABLED=1
+// builds still generate + upload (then delete) source maps.
+const shouldUploadSourceMaps =
+  !!process.env.RI_SENTRY_AUTH_TOKEN &&
+  ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '')
 const devtoolsConfig =
-  process.env.DEBUG_PROD === 'true'
+  process.env.DEBUG_PROD === 'true' || shouldUploadSourceMaps
     ? {
         devtool: 'source-map',
       }
@@ -57,6 +70,9 @@ export default merge(baseConfig, {
       DEBUG_PROD: false,
       START_MINIMIZED: false,
       RI_APP_TYPE: process.env.RI_APP_TYPE || 'ELECTRON',
+      RI_SENTRY_ENABLED: process.env.RI_SENTRY_ENABLED || '',
+      RI_SENTRY_DSN: process.env.RI_SENTRY_DSN || '',
+      RI_SENTRY_ENVIRONMENT: process.env.RI_SENTRY_ENVIRONMENT || 'development',
       RI_AUTO_BOOTSTRAP: 'false',
       RI_SERVER_TLS_CERT: process.env.RI_SERVER_TLS_CERT || '',
       RI_SERVER_TLS_KEY: process.env.RI_SERVER_TLS_KEY || '',
@@ -136,6 +152,38 @@ export default merge(baseConfig, {
     new webpack.DefinePlugin({
       'process.type': '"browser"',
     }),
+
+    // Upload Electron-main source maps to Sentry (debug IDs match bundle↔map),
+    // then delete them so they never ship inside the app. Gated on
+    // shouldUploadSourceMaps (Sentry enabled + auth token).
+    ...(shouldUploadSourceMaps
+      ? [
+          sentryWebpackPlugin({
+            org: process.env.RI_SENTRY_ORG,
+            project: process.env.RI_SENTRY_PROJECT,
+            authToken: process.env.RI_SENTRY_AUTH_TOKEN,
+            // dist labels the source-map bundle by build OS; inject: false
+            // keeps release/dist on the uploaded bundle only (set in
+            // Sentry.init), not on events.
+            release: { name: version, dist: process.platform, inject: false },
+            sourcemaps: {
+              filesToDeleteAfterUpload: [MAIN_SOURCE_MAPS_GLOB],
+            },
+            telemetry: false,
+            // A failed upload must not fail the build — but the maps are already
+            // emitted and `filesToDeleteAfterUpload` only runs on success, so
+            // delete them here too, or a failed upload would ship the maps.
+            errorHandler: (err) => {
+              // eslint-disable-next-line no-console
+              console.warn(
+                '[Sentry] main source-map upload failed (continuing):',
+                err.message,
+              )
+              rimraf.sync(MAIN_SOURCE_MAPS_GLOB)
+            },
+          }),
+        ]
+      : []),
   ],
 
   /**

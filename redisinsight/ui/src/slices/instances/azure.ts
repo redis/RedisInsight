@@ -190,14 +190,14 @@ export const azureSelector = (state: RootState) => state.connections.azure
 export default azureSlice.reducer
 
 // Thunk actions
-export function fetchSubscriptionsAzure(accountId: string) {
+export function fetchSubscriptionsAzure(accountId: string, tenantId?: string) {
   return async (dispatch: AppDispatch) => {
     dispatch(loadSubscriptionsAzure())
 
     try {
       const { data, status } = await apiService.get<AzureSubscription[]>(
         ApiEndpoints.AZURE_SUBSCRIPTIONS,
-        { params: { accountId } },
+        { params: { accountId, ...(tenantId ? { tenantId } : {}) } },
       )
 
       if (isStatusSuccessful(status)) {
@@ -213,14 +213,18 @@ export function fetchSubscriptionsAzure(accountId: string) {
   }
 }
 
-export function fetchDatabasesAzure(accountId: string, subscriptionId: string) {
+export function fetchDatabasesAzure(
+  accountId: string,
+  subscriptionId: string,
+  tenantId?: string,
+) {
   return async (dispatch: AppDispatch) => {
     dispatch(loadDatabasesAzure())
 
     try {
       const { data, status } = await apiService.get<AzureRedisDatabase[]>(
         `${ApiEndpoints.AZURE_SUBSCRIPTIONS}/${subscriptionId}/databases`,
-        { params: { accountId } },
+        { params: { accountId, ...(tenantId ? { tenantId } : {}) } },
       )
 
       if (isStatusSuccessful(status)) {
@@ -240,6 +244,7 @@ export function addDatabasesAzureAction(
   accountId: string,
   databaseIds: string[],
   authType?: string,
+  tenantId?: string,
 ) {
   return async (dispatch: AppDispatch) => {
     dispatch(addDatabasesAzure())
@@ -250,6 +255,7 @@ export function addDatabasesAzureAction(
       >(ApiEndpoints.AZURE_AUTODISCOVERY_DATABASES, {
         accountId,
         databases: databaseIds.map((id) => ({ id, authType })),
+        ...(tenantId ? { tenantId } : {}),
       })
 
       if (isStatusSuccessful(status)) {

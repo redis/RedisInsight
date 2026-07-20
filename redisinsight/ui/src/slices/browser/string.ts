@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AxiosResponseHeaders } from 'axios'
+import { AxiosError, AxiosResponseHeaders } from 'axios'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import {
@@ -141,8 +141,8 @@ export function fetchString(
         dispatch(getStringSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(getStringFailure(errorMessage))
     }
   }
@@ -174,8 +174,8 @@ export function fetchDownloadStringValue(
         onSuccessAction?.(data, headers)
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(downloadStringFailure(errorMessage))
     }
   }
@@ -223,8 +223,8 @@ export function updateStringValueAction(
         onSuccess?.(value)
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateValueFailure(errorMessage))
       onFailed?.()
     }

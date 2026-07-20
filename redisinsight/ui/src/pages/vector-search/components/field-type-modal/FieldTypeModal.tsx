@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { useFormik } from 'formik'
+import { useTranslation } from 'uiSrc/i18n'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Modal } from 'uiSrc/components/base/display'
@@ -31,6 +32,7 @@ export const FieldTypeModal = ({
   onSubmit,
   onClose,
 }: FieldTypeModalProps) => {
+  const { t } = useTranslation()
   const validate = useFieldTypeValidation(mode, fields, field)
 
   const initialValues = useMemo(
@@ -62,7 +64,9 @@ export const FieldTypeModal = ({
   }, [formik, onClose])
 
   const isCreateMode = mode === FieldTypeModalMode.Create
-  const title = isCreateMode ? 'Add field' : 'Edit field'
+  const title = isCreateMode
+    ? t('vectorSearch.fieldType.modal.addTitle')
+    : t('vectorSearch.fieldType.modal.editTitle')
 
   if (!isOpen) return null
 
@@ -78,7 +82,10 @@ export const FieldTypeModal = ({
           content={
             <Col gap="l" data-testid="field-type-modal-form">
               {isCreateMode ? (
-                <FormField label="Field name" required>
+                <FormField
+                  label={t('vectorSearch.fieldType.modal.fieldName')}
+                  required
+                >
                   <TextInput
                     value={formik.values.fieldName}
                     onChange={(value: string) =>
@@ -86,7 +93,9 @@ export const FieldTypeModal = ({
                     }
                     onBlur={formik.handleBlur}
                     name="fieldName"
-                    placeholder="Enter field name"
+                    placeholder={t(
+                      'vectorSearch.fieldType.modal.fieldNamePlaceholder',
+                    )}
                     error={
                       formik.touched.fieldName
                         ? formik.errors.fieldName
@@ -102,7 +111,7 @@ export const FieldTypeModal = ({
                     data-testid="field-type-modal-field-name-readonly"
                   >
                     <Text color="secondary" component="span">
-                      Field name:
+                      {t('vectorSearch.fieldType.modal.fieldNameLabel')}
                     </Text>
                     <S.FieldValue color="primary" component="span">
                       {field?.name}
@@ -110,7 +119,7 @@ export const FieldTypeModal = ({
                   </Col>
                   <Col gap="s" data-testid="field-type-modal-sample-value">
                     <Text color="secondary" component="span">
-                      Field sample value:
+                      {t('vectorSearch.fieldType.modal.fieldSampleValue')}
                     </Text>
                     <S.FieldValue color="primary" component="span">
                       {truncateText(
@@ -131,9 +140,7 @@ export const FieldTypeModal = ({
               )}
 
               <Text color="secondary">
-                You can change the field type for this field. Keep in mind that
-                changing the field type will affect how the field is indexed and
-                queried.
+                {t('vectorSearch.fieldType.modal.changeTypeBody')}
               </Text>
 
               <FieldTypeSelect
@@ -155,7 +162,7 @@ export const FieldTypeModal = ({
               onClick={handleClose}
               data-testid="field-type-modal-cancel"
             >
-              Cancel
+              {t('vectorSearch.fieldType.modal.cancel')}
             </SecondaryButton>
             <PrimaryButton
               size="l"
@@ -163,7 +170,9 @@ export const FieldTypeModal = ({
               disabled={!formik.isValid}
               data-testid="field-type-modal-save"
             >
-              {isCreateMode ? 'Add' : 'Save'}
+              {isCreateMode
+                ? t('vectorSearch.fieldType.modal.add')
+                : t('vectorSearch.fieldType.modal.save')}
             </PrimaryButton>
           </Row>
         </Modal.Content.Footer.Compose>

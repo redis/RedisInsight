@@ -198,6 +198,12 @@ const getAdditionalAddedEventData = (endpoint: ApiEndpoints, data: any) => {
         length: data.elements?.length,
         TTL: data.expire || -1,
       }
+    case ApiEndpoints.ARRAY:
+      return {
+        keyType: KeyTypes.Array,
+        length: data.values?.length ?? data.elements?.length,
+        TTL: data.expire || -1,
+      }
     default:
       return {}
   }

@@ -8,7 +8,7 @@ export class TextFormatterStrategy implements IOutputFormatterStrategy {
     let result;
     if (isNull(reply)) {
       result = '(nil)';
-    } else if (isInteger(reply)) {
+    } else if (isInteger(reply) || typeof reply === 'bigint') {
       result = `(integer) ${reply}`;
     } else if (reply instanceof Buffer) {
       result = this.formatRedisBufferReply(reply);
@@ -37,11 +37,12 @@ export class TextFormatterStrategy implements IOutputFormatterStrategy {
           })
           .join('\n');
       }
+    } else if (reply instanceof Buffer) {
+      result = this.formatRedisBufferReply(reply);
+    } else if (typeof reply === 'bigint') {
+      result = `(integer) ${reply}`;
     } else {
-      result =
-        reply instanceof Buffer
-          ? this.formatRedisBufferReply(reply)
-          : JSON.stringify(reply);
+      result = JSON.stringify(reply);
     }
     return result;
   }

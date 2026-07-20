@@ -3,6 +3,7 @@ import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { debounce } from 'lodash'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 import { QueryLibraryItem } from 'uiSrc/services/query-library/types'
@@ -11,6 +12,7 @@ import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 const SEARCH_DEBOUNCE_MS = 300
 
 export const useQueryLibrary = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { instanceId: databaseId, indexName: rawIndexName } = useParams<{
     instanceId: string
@@ -49,12 +51,12 @@ export const useQueryLibrary = () => {
         }
       } catch {
         setItems([])
-        setError('Failed to load query library')
+        setError(t('vectorSearch.queryLibrary.error.load'))
       } finally {
         setLoading(false)
       }
     },
-    [databaseId, indexName],
+    [databaseId, indexName, t],
   )
 
   const debouncedFetch = useMemo(

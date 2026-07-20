@@ -67,8 +67,8 @@ jobs:
       docker: ${{ steps.filter.outputs.docker }}
       infra: ${{ steps.filter.outputs.infra }}
     steps:
-      - uses: actions/checkout@v6.0.2
-      - uses: dorny/paths-filter@v4.0.1
+      - uses: actions/checkout@v7.0.0
+      - uses: dorny/paths-filter@v4.0.2
         id: filter
         with:
           # Compare against main so each push's gating reflects the
@@ -253,6 +253,6 @@ jobs:
       ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts

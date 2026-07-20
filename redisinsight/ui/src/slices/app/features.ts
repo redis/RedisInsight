@@ -62,13 +62,16 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.cloudAds]: {
         flag: riConfig.features.cloudAds.defaultFlag,
       },
+      [FeatureFlags.whatsNew]: {
+        flag: false,
+      },
       [FeatureFlags.vectorSearchV2]: {
         flag: false,
       },
       [FeatureFlags.vectorSet]: {
         flag: false,
       },
-      [FeatureFlags.devArray]: {
+      [FeatureFlags.array]: {
         flag: false,
       },
       [FeatureFlags.azureEntraId]: {
@@ -78,6 +81,12 @@ export const initialState: StateAppFeatures = {
         flag: false,
       },
       [FeatureFlags.prodMode]: {
+        flag: false,
+      },
+      [FeatureFlags.devLanguage]: {
+        flag: false,
+      },
+      [FeatureFlags.valueDecoder]: {
         flag: false,
       },
     },
@@ -216,6 +225,10 @@ export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
 export const appFeatureFlagProdModeSelector = (state: RootState): boolean =>
   state.app.features.featureFlags.features[FeatureFlags.prodMode]?.flag ?? false
 
+export const isValueDecoderEnabledSelector = (state: RootState): boolean =>
+  state.app.features.featureFlags.features[FeatureFlags.valueDecoder]?.flag ??
+  false
+
 export const isDevelopment = riConfig.app.env === 'development'
 
 export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
@@ -239,13 +252,22 @@ export const isVectorSetEnabledSelector = (state: RootState): boolean => {
   return features[FeatureFlags.vectorSet]?.flag ?? false
 }
 
-export const isDevArrayEnabledSelector = (state: RootState): boolean => {
+export const isArrayEnabledSelector = (state: RootState): boolean => {
   if (isDevelopment) {
     return true
   }
 
   const features = state.app.features.featureFlags.features
-  return features[FeatureFlags.devArray]?.flag ?? false
+  return features[FeatureFlags.array]?.flag ?? false
+}
+
+export const isDevLanguageEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.devLanguage]?.flag ?? false
 }
 
 export default appFeaturesSlice.reducer

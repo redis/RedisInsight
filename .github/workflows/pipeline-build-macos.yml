@@ -35,7 +35,7 @@ jobs:
     runs-on: macos-14
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       # SSH Debug
       - name: Enable SSH
@@ -59,6 +59,7 @@ jobs:
         with:
           keytar-host-mirror: ${{ secrets.NPM_CONFIG_KEYTAR_BINARY_HOST_MIRROR }}
           sqlite3-host-mirror: ${{ secrets.NPM_CONFIG_NODE_SQLITE3_BINARY_HOST_MIRROR }}
+          cache-node-modules: '0'
 
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics
@@ -144,6 +145,12 @@ jobs:
       RI_CLOUD_IDP_REDIRECT_URI: ${{ secrets.RI_CLOUD_IDP_REDIRECT_URI }}
       RI_CLOUD_IDP_TOKEN_URL: ${{ secrets.RI_CLOUD_IDP_TOKEN_URL }}
       RI_SEGMENT_WRITE_KEY: ${{ secrets.RI_SEGMENT_WRITE_KEY }}
+      RI_SENTRY_DSN: ${{ secrets.RI_SENTRY_DSN }}
+      RI_SENTRY_ENABLED: ${{ vars.RI_SENTRY_ENABLED }}
+      RI_SENTRY_ENVIRONMENT: ${{ vars.ENV }}
+      RI_SENTRY_AUTH_TOKEN: ${{ secrets.RI_SENTRY_AUTH_TOKEN }}
+      RI_SENTRY_ORG: ${{ vars.RI_SENTRY_ORG }}
+      RI_SENTRY_PROJECT: ${{ vars.RI_SENTRY_PROJECT }}
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
       RI_FEATURES_CONFIG_URL: ${{ secrets.RI_FEATURES_CONFIG_URL }}

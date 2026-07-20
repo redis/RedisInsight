@@ -58,6 +58,44 @@ The UI workspace must not import from the backend codebase directly. Use `apiCli
 - **Constants**: `UPPER_SNAKE_CASE` - `MAX_RETRY_ATTEMPTS`
 - **Booleans**: Use `is/has/should` prefix - `isLoading`, `hasError`
 
+## Comments
+
+**Default to fewer comments.** Clear names, small functions, and good
+tests should carry the meaning. Write a comment only when the code
+genuinely can't explain itself — or when the user explicitly asks for
+more (for example, on a piece of complex logic).
+
+When you do write one, keep it short and use plain words to say
+**what** the code is doing or **why** it has to exist — not how it
+works under the hood, and not the story of why you made the change
+(that belongs in the commit message or PR description).
+
+✅ **Good** — plain, names the situation:
+
+```ts
+// When switching keys, hide the previous key's loader/error/result
+// until the new key is ready.
+const showLoader = isArrayKeyReady && loading
+```
+
+❌ **Avoid** — long, mechanism-heavy, re-derives what the code shows:
+
+```ts
+// Gate every aggregate-slice surface (loader, error, result) on
+// `isArrayKeyReady`: when the user switches keys, `keyProp` flips
+// immediately but `selectedKeyData` lags by a round-trip, so the
+// prior key's slice state would otherwise paint under the newly
+// selected (or empty) key for one frame before the hook's reset
+// effect fires.
+const showLoader = isArrayKeyReady && loading
+```
+
+Also avoid:
+
+- Restating identifier names in prose (`// set loading to true`).
+- Comments that duplicate what a clearly-named test already asserts.
+- Block comments that summarize obvious blocks (`// loop over items`).
+
 ## SonarJS Rules
 
 - Keep cognitive complexity low (refactor complex functions)
@@ -101,4 +139,5 @@ When updating npm packages (especially `@redis-ui/*` packages):
 - [ ] Descriptive variable names
 - [ ] Low cognitive complexity
 - [ ] No duplicate code
+- [ ] Comments kept to a minimum; any present are short and plain-language
 - [ ] Vite cache cleared (if updated dependencies)

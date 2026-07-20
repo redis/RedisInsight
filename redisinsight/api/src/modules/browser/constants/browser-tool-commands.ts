@@ -114,6 +114,40 @@ export enum BrowserToolVectorSetCommands {
   VSim = 'VSIM',
 }
 
+export enum BrowserToolArrayCommands {
+  ArSet = 'arset',
+  ArMSet = 'armset',
+  ArGet = 'arget',
+  ArMGet = 'armget',
+  ArLen = 'arlen',
+  ArCount = 'arcount',
+  ArGetRange = 'argetrange',
+  ArScan = 'arscan',
+  ArNext = 'arnext',
+  ArOp = 'arop',
+  ArGrep = 'argrep',
+  ArDel = 'ardel',
+  ArDelRange = 'ardelrange',
+  ArInsert = 'arinsert',
+  ArRing = 'arring',
+  ArInfo = 'arinfo',
+}
+
+// Array commands whose integer replies are u64 (indexes, counts, or bitwise
+// aggregates) and must stay exact above 2^53 — callers request them with
+// { integerReply: 'bigint' }.
+export const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
+  BrowserToolArrayCommands.ArLen,
+  BrowserToolArrayCommands.ArCount,
+  BrowserToolArrayCommands.ArNext,
+  BrowserToolArrayCommands.ArScan,
+  BrowserToolArrayCommands.ArGrep,
+  BrowserToolArrayCommands.ArInsert,
+  BrowserToolArrayCommands.ArRing,
+  BrowserToolArrayCommands.ArOp,
+  BrowserToolArrayCommands.ArInfo,
+]);
+
 export type BrowserToolCommands =
   | BrowserToolKeysCommands
   | BrowserToolStringCommands
@@ -125,4 +159,5 @@ export type BrowserToolCommands =
   | BrowserToolStreamCommands
   | BrowserToolGraphCommands
   | BrowserToolTSCommands
-  | BrowserToolVectorSetCommands;
+  | BrowserToolVectorSetCommands
+  | BrowserToolArrayCommands;

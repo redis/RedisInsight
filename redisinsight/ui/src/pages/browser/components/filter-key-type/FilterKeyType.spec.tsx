@@ -244,13 +244,13 @@ describe('FilterKeyType', () => {
     expect(queryByText('Vector Set')).not.toBeInTheDocument()
   })
 
-  it('should show Array when dev-array feature flag is enabled and redis version >= 8.8', async () => {
+  it('should show Array when array feature flag is enabled and redis version >= 8.8', async () => {
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
       version: '8.8.0',
     }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.devArray}`,
+      `app.features.featureFlags.features.${FeatureFlags.array}`,
       { flag: true },
     )
     const { queryByText } = render(<FilterKeyType />, {
@@ -262,7 +262,7 @@ describe('FilterKeyType', () => {
     expect(queryByText('Array')).toBeInTheDocument()
   })
 
-  it('should hide Array when dev-array feature flag is disabled', () => {
+  it('should hide Array when array feature flag is disabled', () => {
     // Ensure the version gate is satisfied so the assertion truly
     // exercises the feature-flag path and not the version path.
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
@@ -281,7 +281,7 @@ describe('FilterKeyType', () => {
     }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.devArray}`,
+      `app.features.featureFlags.features.${FeatureFlags.array}`,
       { flag: true },
     )
     const { queryByText } = render(<FilterKeyType />, {

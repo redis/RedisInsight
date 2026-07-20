@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Table } from 'uiSrc/components/base/layout/table'
 
 import { IndexListProps } from './IndexList.types'
@@ -13,6 +14,7 @@ export const IndexList = memo(
     onQueryClick,
     actions,
   }: IndexListProps) => {
+    const { t } = useTranslation()
     const columns = useMemo(
       () => getIndexListColumns({ onQueryClick, actions }),
       [onQueryClick, actions],
@@ -22,13 +24,13 @@ export const IndexList = memo(
 
     const emptyMessage = useMemo(() => {
       if (loading) {
-        return 'Loading...'
+        return t('vectorSearch.list.empty.loading')
       }
       if (!hasIndexes) {
-        return 'No indexes found'
+        return t('vectorSearch.list.empty.noIndexes')
       }
-      return 'No results found'
-    }, [loading, hasIndexes])
+      return t('vectorSearch.list.empty.noResults')
+    }, [loading, hasIndexes, t])
 
     return (
       <Table

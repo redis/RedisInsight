@@ -37,8 +37,11 @@ export enum KnownFeatures {
   DevAzureEntraId = 'dev-azureEntraId',
   DevBrowser = 'dev-browser',
   VectorSet = 'vectorSet',
-  DevArray = 'dev-array',
+  Array = 'array',
   ProdMode = 'prodMode',
+  DevLanguage = 'dev-language',
+  WhatsNew = 'whatsNew',
+  ValueDecoder = 'valueDecoder',
 }
 
 export interface IFeatureFlag {

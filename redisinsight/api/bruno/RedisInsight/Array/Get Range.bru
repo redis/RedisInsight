@@ -1,0 +1,55 @@
+meta {
+  name: Get Range
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-range
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "6"
+  }
+}
+
+docs {
+  # ARGETRANGE
+
+  Read an inclusive range of elements from an Array key. Empty slots are
+  returned as `null`. `start` must be less than or equal to `end`.
+
+  ## Request body
+
+  | Field     | Type   | Notes                                                     |
+  |-----------|--------|-----------------------------------------------------------|
+  | `keyName` | string | The Array key name.                                       |
+  | `start`   | string | Inclusive start index. Unsigned 64-bit integer as string. |
+  | `end`     | string | Inclusive end index. Unsigned 64-bit integer as string. Must be ≥ `start`. |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "elements": ["20.1", "20.4", "20.9", null, null, "21.4", "21.9"]
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | `start` is greater than `end`, range exceeds 1,000,000 elements per call, or the key holds a non-array type. |
+  | `403`  | User has no permission for `ARGETRANGE`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

@@ -11,12 +11,14 @@ export class RdiPipelineBadRequestException extends HttpException {
     message = ERROR_MESSAGES.BAD_REQUEST,
     options?: HttpExceptionOptions & { details?: unknown },
   ) {
+    const hasDetail = message && message !== ERROR_MESSAGES.BAD_REQUEST;
     const response = {
       message,
       statusCode: HttpStatus.BAD_REQUEST,
       error: 'RdiBadRequest',
       errorCode: CustomErrorCodes.RdiBadRequest,
       detail: options?.details,
+      ...(hasDetail ? { resource: { detail: message } } : {}),
     };
 
     super(response, response.statusCode, options);

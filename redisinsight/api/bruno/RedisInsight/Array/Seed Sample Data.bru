@@ -1,0 +1,75 @@
+meta {
+  name: Seed Sample Data
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/bulk-actions/import
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(Array/fixtures/readings.txt)
+}
+
+docs {
+  # Seed Sample Data (Array)
+
+  Loads the `readings` sample array used by the rest of the Array presets
+  by reusing the existing **bulk-actions import** pipeline (`POST
+  /bulk-actions/import`) — the same generic loader used for `.txt` files
+  of raw Redis CLI commands.
+
+  ## How it works
+
+  - The fixture lives at `Array/fixtures/readings.txt`. Bruno resolves
+    `@file()` paths relative to the **collection root**
+    (`redisinsight/api/bruno/RedisInsight/`), not the `.bru` file's
+    directory.
+  - Each line is one Redis CLI command, parsed via `splitCliCommandLine`
+    and dispatched through a Redis pipeline by the server.
+  - The fixture first `DEL`s the key, then `ARSET`s a sparse layout
+    (indexes 0, 1, 5) — matching the example responses in the other
+    Array presets.
+
+  Requires Redis 8.8+ on the target database (for the `ARSET` command).
+
+  ## Response
+
+  Returns `200 OK` with a `BulkActionOverview`, e.g.:
+
+  ```json
+  {
+    "summary": {
+      "processed": 4,
+      "succeed": 4,
+      "failed": 0,
+      "errors": [],
+      "keys": []
+    },
+    "status": "completed"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Fixture is malformed or unreadable. |
+  | `500`  | Generic import failure. |
+
+  Per-command failures (e.g. `ARSET` on a pre-8.8 server) do **not** fail
+  the whole request — they're reported in `summary.failed`.
+
+  ## Follow-up
+
+  Once seeded, run the other presets in the Array folder:
+  **Get Length** → **Get Count** → **Get Next Index** → **Get Range** →
+  **Scan** → **Get Element** → **Get Elements**.
+}
+
+settings {
+  encodeUrl: true
+}

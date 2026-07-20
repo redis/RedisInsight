@@ -1,4 +1,5 @@
 import { rehypeLinks } from './rehypeLinks'
+import { rehypeWrapSymbols } from './rehypeWrapSymbols'
 import { remarkImage } from './remarkImage'
 import { remarkLink } from './remarkLink'
 import { remarkCode } from './remarkCode'
@@ -8,6 +9,7 @@ import { escapeJsxAttribute } from './escapeJsxAttribute'
 
 export {
   rehypeLinks,
+  rehypeWrapSymbols,
   remarkImage,
   remarkLink,
   remarkCode,

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
@@ -22,6 +23,7 @@ export const SaveQueryModal = ({
   onSave,
   onClose,
 }: SaveQueryModalProps) => {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
 
   useEffect(() => {
@@ -50,19 +52,20 @@ export const SaveQueryModal = ({
         />
 
         <Modal.Content.Header.Compose>
-          <Modal.Content.Header.Title>Save query</Modal.Content.Header.Title>
+          <Modal.Content.Header.Title>
+            {t('vectorSearch.queryLibrary.save.title')}
+          </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
         <Col gap="l" data-testid={`${TEST_ID}-body`}>
           <Text color="secondary">
-            Name your query to add it to your saved queries list for quick
-            reuse.
+            {t('vectorSearch.queryLibrary.save.description')}
           </Text>
 
           <TextInput
             value={name}
             onChange={setName}
-            placeholder="Enter command name"
+            placeholder={t('vectorSearch.queryLibrary.save.placeholder')}
             name="queryName"
             autoFocus
             data-testid={`${TEST_ID}-name-input`}
@@ -76,7 +79,7 @@ export const SaveQueryModal = ({
             onClick={onClose}
             data-testid={`${TEST_ID}-cancel`}
           >
-            Cancel
+            {t('vectorSearch.queryLibrary.save.cancel')}
           </SecondaryButton>
           <PrimaryButton
             size="large"
@@ -85,7 +88,7 @@ export const SaveQueryModal = ({
             disabled={isSaveDisabled}
             data-testid={`${TEST_ID}-confirm`}
           >
-            Save query
+            {t('vectorSearch.queryLibrary.save.confirm')}
           </PrimaryButton>
         </Row>
       </S.ModalContent>

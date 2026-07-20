@@ -138,7 +138,7 @@ describe('QueryCard', () => {
 
   it('Should return correct summary string', () => {
     const summary = { total: 2, success: 1, fail: 1 }
-    const summaryText = '2 Command(s) - 1 success, 1 error(s)'
+    const summaryText = '2 Commands - 1 success, 1 error'
 
     const summaryString = getSummaryText(summary)
 

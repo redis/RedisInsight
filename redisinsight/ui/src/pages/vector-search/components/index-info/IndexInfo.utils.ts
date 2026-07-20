@@ -1,3 +1,4 @@
+import i18n from 'uiSrc/i18n'
 import {
   IndexInfo,
   IndexOptions,
@@ -27,11 +28,17 @@ export const formatOptions = (options: IndexOptions): string => {
   const optionParts: string[] = []
 
   if (options.filter) {
-    optionParts.push(`filter: ${options.filter}`)
+    optionParts.push(
+      i18n.t('vectorSearch.indexInfo.optionFilter', { value: options.filter }),
+    )
   }
 
   if (options.defaultLang) {
-    optionParts.push(`language: ${options.defaultLang}`)
+    optionParts.push(
+      i18n.t('vectorSearch.indexInfo.optionLanguage', {
+        value: options.defaultLang,
+      }),
+    )
   }
 
   return optionParts.join(', ')

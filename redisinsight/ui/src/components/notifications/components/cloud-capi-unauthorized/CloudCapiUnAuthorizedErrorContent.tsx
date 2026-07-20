@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
+import { useTranslation } from 'uiSrc/i18n'
 import { ColorText } from 'uiSrc/components/base/text'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Pages } from 'uiSrc/constants'
@@ -26,6 +27,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
 }: Props) => {
   const dispatch = useAppDispatch()
   const history = useHistory()
+  const { t } = useTranslation()
 
   const handleRemoveCapi = () => {
     dispatch(
@@ -59,7 +61,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
             className="toast-danger-btn euiBorderWidthThick"
             data-testid="go-to-settings-btn"
           >
-            Go to Settings
+            {t('api.error.code.11022.button.goToSettings')}
           </EmptyButton>
         </FlexItem>
         <FlexItem>
@@ -69,7 +71,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
             className="toast-danger-btn"
             data-testid="remove-api-key-btn"
           >
-            Remove API key
+            {t('api.error.code.11022.button.removeApiKey')}
           </DestructiveButton>
         </FlexItem>
       </Row>

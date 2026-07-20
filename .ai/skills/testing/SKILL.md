@@ -10,7 +10,6 @@ description: >-
   library, faker, or test patterns.
 ---
 
-
 # Testing Standards and Practices
 
 ## Core Principles
@@ -58,13 +57,14 @@ node 'node_modules/.bin/jest' 'redisinsight/ui/src/slices/tests/browser/keys.spe
 
 ```typescript
 import { faker } from '@faker-js/faker';
+// Pull structured data from a shared factory (redisinsight/ui/src/mocks/factories/);
+// only build ad-hoc primitives/callbacks inline.
 
 describe('MyComponent', () => {
-  // Define default props with faker
+  // Default props: factory for the entity, inline only for callbacks/primitives
+  const mockUser = UserFactory.build();
   const defaultProps: MyComponentProps = {
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
+    user: mockUser,
     onComplete: jest.fn(),
   };
 
@@ -380,10 +380,25 @@ const user = { id: '123', name: 'Test User' };
 
 ### Use Factories Instead of Static Mocks
 
-**Use Fishery** for creating test data factories with sensible defaults and overrides:
+**Use Fishery** for creating test data factories with sensible defaults and overrides.
+
+**CRITICAL — UI factories live in `redisinsight/ui/src/mocks/factories/`**, organized by
+domain (`<domain>/<TypeName>.factory.ts`), exported as `<TypeName>Factory`. Before writing
+test data in a UI spec, **check for an existing factory there and reuse it**; if none fits,
+**add a new factory file in that directory** rather than inlining mocks in the spec.
 
 ```typescript
-// ✅ GOOD: Fishery factory
+// ✅ GOOD: reuse the shared factory (redisinsight/ui/src/mocks/factories/database/DBInstance.factory.ts)
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory';
+
+const instance = DBInstanceFactory.build();
+const cluster = DBInstanceFactory.build({
+  connectionType: ConnectionType.Cluster,
+});
+const many = DBInstanceFactory.buildList(5);
+
+// ✅ GOOD: a new factory file, when none exists yet
+// redisinsight/ui/src/mocks/factories/<domain>/<TypeName>.factory.ts
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 

@@ -68,7 +68,7 @@ export class QueryResults {
    * exact: true prevents matching the outer div[role="button"] card header.
    */
   get firstCardToggleCollapseButton(): Locator {
-    return this.container.getByRole('button', { name: 'toggle collapse', exact: true }).first();
+    return this.container.getByRole('button', { name: 'Toggle result', exact: true }).first();
   }
 
   /**

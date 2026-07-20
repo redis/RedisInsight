@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     name: tsc baselines
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Install dependencies
         uses: ./.github/actions/install-all-build-libs
@@ -41,7 +41,7 @@ jobs:
       # type-checked too and need their deps installed for module resolution.
       - name: Cache UI plugin node_modules
         if: ${{ inputs.run-ui != false }}
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             redisinsight/ui/src/packages/node_modules

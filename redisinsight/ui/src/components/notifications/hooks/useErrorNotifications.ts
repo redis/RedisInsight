@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { IError } from 'uiSrc/slices/interfaces'
 import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { riToast } from 'uiSrc/components/base/display/toast'
@@ -11,11 +12,10 @@ import { errorsSelector, removeMessage } from 'uiSrc/slices/app/notifications'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
 
-const DEFAULT_ERROR_TITLE = 'Error'
-
 const AZURE_TOKEN_EXPIRED_TOAST_ID = 'azure-token-expired'
 
 export const useErrorNotifications = () => {
+  const { t } = useTranslation()
   const errorsData = useAppSelector(errorsSelector)
   const dispatch = useAppDispatch()
   const toastIdsRef = useRef(new Map<string, number | string>())
@@ -45,7 +45,7 @@ export const useErrorNotifications = () => {
         message = DEFAULT_ERROR_MESSAGE,
         instanceId = '',
         name,
-        title = DEFAULT_ERROR_TITLE,
+        title = t('notification.error.title.default'),
         additionalInfo,
         persistent,
       }) => {
@@ -88,7 +88,7 @@ export const useErrorNotifications = () => {
           // Only show toast if not already visible
           if (!riToast.isActive(AZURE_TOKEN_EXPIRED_TOAST_ID)) {
             errorMessage = errorMessages.AZURE_TOKEN_EXPIRED(
-              { message },
+              { message, tenantId: additionalInfo?.tenantId },
               removeAzureToast,
             )
             riToast(errorMessage, {

@@ -1,0 +1,71 @@
+diff --git a/node_modules/ioredis/built/Command.js b/node_modules/ioredis/built/Command.js
+index 40cd1a6..aad90af 100644
+--- a/node_modules/ioredis/built/Command.js
++++ b/node_modules/ioredis/built/Command.js
+@@ -39,6 +39,7 @@ class Command {
+         this.isResolved = false;
+         this.transformed = false;
+         this.replyEncoding = options.replyEncoding;
++        this.integerReply = options.integerReply;
+         this.errorStack = options.errorStack;
+         this.args = args.flat();
+         this.callback = callback;
+diff --git a/node_modules/ioredis/built/DataHandler.js b/node_modules/ioredis/built/DataHandler.js
+index 1db1848..f985ed5 100644
+--- a/node_modules/ioredis/built/DataHandler.js
++++ b/node_modules/ioredis/built/DataHandler.js
+@@ -8,6 +8,7 @@ const debug = (0, utils_1.Debug)("dataHandler");
+ class DataHandler {
+     constructor(redis, parserOptions) {
+         this.redis = redis;
++        this.stringNumbers = parserOptions.stringNumbers;
+         const parser = new RedisParser({
+             stringNumbers: parserOptions.stringNumbers,
+             returnBuffers: true,
+@@ -21,10 +22,27 @@ class DataHandler {
+                 this.returnReply(reply);
+             },
+         });
++        this.parser = parser;
+         redis.stream.on("data", (data) => {
++            this.updateIntegerReplyMode();
+             parser.execute(data);
+         });
+     }
++    updateIntegerReplyMode() {
++        var _a, _b;
++        const item = (_a = this.redis.commandQueue) === null || _a === void 0 ? void 0 : _a.peekFront();
++        const integerReply = (_b = item === null || item === void 0 ? void 0 : item.command) === null || _b === void 0 ? void 0 : _b.integerReply;
++        this.parser.setStringNumbers(this.stringNumbers || integerReply === "bigint");
++    }
++    convertIntegerReply(reply) {
++        if (typeof reply === "string") {
++            return BigInt(reply);
++        }
++        if (Array.isArray(reply)) {
++            return reply.map((item) => this.convertIntegerReply(item));
++        }
++        return reply;
++    }
+     returnFatalError(err) {
+         err.message += ". Please report this.";
+         this.redis.recoverFromFatalError(err, err, { offlineQueue: false });
+@@ -34,6 +52,7 @@ class DataHandler {
+         if (!item) {
+             return;
+         }
++        this.updateIntegerReplyMode();
+         err.command = {
+             name: item.command.name,
+             args: item.command.args,
+@@ -51,6 +70,10 @@ class DataHandler {
+         if (!item) {
+             return;
+         }
++        this.updateIntegerReplyMode();
++        if (item.command.integerReply === "bigint") {
++            reply = this.convertIntegerReply(reply);
++        }
+         if (Command_1.default.checkFlag("ENTER_SUBSCRIBER_MODE", item.command.name)) {
+             this.redis.condition.subscriber = new SubscriptionSet_1.default();
+             this.redis.condition.subscriber.add(item.command.name, reply[1].toString());

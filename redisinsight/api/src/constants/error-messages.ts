@@ -27,6 +27,8 @@ export default {
   UNDEFINED_INSTANCE_ID: 'Undefined redis database instance id.',
   NO_CONNECTION_TO_REDIS_DB: 'No connection to the Redis Database.',
   WRONG_DATABASE_TYPE: 'Wrong database type.',
+  HOST_PORT_NOT_EDITABLE_FOR_MANAGED_DATABASE:
+    'Host and port cannot be changed for a database managed by a cloud provider.',
   CONNECTION_TIMEOUT:
     'The connection has timed out, please check the connection details.',
   DB_CONNECTION_TIMEOUT:
@@ -78,6 +80,11 @@ export default {
   DATABASE_ALREADY_EXISTS: 'The database already exists.',
 
   INCORRECT_CLUSTER_CURSOR_FORMAT: 'Incorrect cluster cursor format.',
+  ARRAY_RANGE_TOO_LARGE: (max: number) =>
+    `Requested range exceeds the maximum of ${numberWithSpaces(max)} elements per call. Narrow the range and try again.`,
+  ARRAY_MATCH_VALUE_REQUIRED: 'value is required for MATCH operation.',
+  ARRAY_IS_FULL:
+    'The array has reached the maximum index (2^64-2), so there is no position left to append to.',
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: () =>
     'Removing multiple elements is available for Redis databases v. 6.2 or later.',
   SCAN_PER_KEY_TYPE_NOT_SUPPORT: () =>
@@ -103,6 +110,8 @@ export default {
     `Node ${node} not exist in OSS Cluster.`,
   REDIS_MODULE_IS_REQUIRED: (module: string) =>
     `Required ${module} module is not loaded.`,
+  UNABLE_TO_LIST_VECTOR_SET_ELEMENTS: (commands: string[]) =>
+    `Unable to list vector set elements. The following commands failed: ${commands.join(', ')}.`,
   APP_SETTINGS_NOT_FOUND: () => 'Could not find application settings.',
   SERVER_INFO_NOT_FOUND: () => 'Could not find server info.',
   INCREASE_MINIMUM_LIMIT: (count?: number) =>

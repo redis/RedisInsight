@@ -1,5 +1,6 @@
 import React from 'react'
 
+import i18n from 'uiSrc/i18n'
 import { InfoIcon, ToastDangerIcon } from 'uiSrc/components/base/icons'
 
 import RdiDeployErrorContent from './components/rdi-deploy-error-content'
@@ -11,7 +12,11 @@ import { NotificationTextLengthThreshold } from 'uiSrc/components/notifications/
 import { handleDownloadButton } from 'uiSrc/utils'
 
 export default {
-  DEFAULT: (text: any, onClose = () => {}, title: string = 'Error') => {
+  DEFAULT: (
+    text: any,
+    onClose = () => {},
+    title: string = i18n.t('notification.error.title.default'),
+  ) => {
     const isSafeMessage =
       text.length < NotificationTextLengthThreshold || typeof text !== 'string'
 
@@ -25,7 +30,7 @@ export default {
       actions: {
         secondary: !isSafeMessage
           ? {
-              label: 'Download full log',
+              label: i18n.t('notification.error.button.downloadFullLog'),
               closes: true,
               onClick: () =>
                 handleDownloadButton(text, 'error-log.txt', onClose),
@@ -37,7 +42,7 @@ export default {
   ENCRYPTION: (onClose = () => {}, instanceId = '') => ({
     'data-testid': 'toast-error-encryption',
     customIcon: InfoIcon,
-    message: 'Unable to decrypt',
+    message: i18n.t('notification.error.encryption.title'),
     description: (
       <EncryptionErrorContent instanceId={instanceId} onClose={onClose} />
     ),
@@ -77,7 +82,7 @@ export default {
     description: <RdiDeployErrorContent message={message} onClose={onClose} />,
   }),
   AZURE_TOKEN_EXPIRED: (
-    { message }: { message: string | JSX.Element },
+    { message, tenantId }: { message: string | JSX.Element; tenantId?: string },
     onClose: () => void,
   ) => ({
     'data-testid': 'toast-info-azure-token-expired',
@@ -85,11 +90,18 @@ export default {
     showCloseButton: true,
     onClose,
     description: (
-      <AzureTokenExpiredErrorContent text={message} onClose={onClose} />
+      <AzureTokenExpiredErrorContent
+        text={message}
+        tenantId={tenantId}
+        onClose={onClose}
+      />
     ),
   }),
   PERSISTENT: (
-    { message, title }: { message: string; title?: string },
+    {
+      message,
+      title = i18n.t('notification.error.title.default'),
+    }: { message: string; title?: string },
     onClose: () => void,
   ) => ({
     'data-testid': 'toast-error-persistent',

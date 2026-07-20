@@ -34,7 +34,7 @@ jobs:
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
 
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       - name: Enable SSH Debug
         if: ${{ inputs.debug }}

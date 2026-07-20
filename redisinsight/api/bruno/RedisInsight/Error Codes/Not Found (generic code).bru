@@ -1,0 +1,36 @@
+meta {
+  name: Not Found (generic code)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/databases/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: inherit
+}
+
+docs {
+  # GenericNotFound — errorCode 12404
+
+  Fetches a database by an id that does not exist. The handler throws a
+  built-in Nest `NotFoundException` (no specific code). The
+  `GlobalExceptionFilter` injects a **status-based generic code** (12_000 +
+  HTTP status, so 404 -> 12404) so even un-coded errors are translatable.
+  `message` stays the English fallback.
+
+  ## Expected response (404)
+
+  ```
+  {
+    "message": "Invalid database instance id.",
+    "statusCode": 404,
+    "error": "Not Found",
+    "errorCode": 12404
+  }
+  ```
+}
+
+settings {
+  encodeUrl: true
+}

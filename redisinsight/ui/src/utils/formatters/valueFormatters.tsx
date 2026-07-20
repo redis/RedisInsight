@@ -1,3 +1,4 @@
+import React from 'react'
 import { encode } from 'msgpackr'
 // eslint-disable-next-line import/order
 import { Buffer } from 'buffer'
@@ -9,6 +10,7 @@ import JSONBigInt from 'json-bigint'
 import { store } from 'uiSrc/slices/store'
 
 import JSONViewer from 'uiSrc/components/json-viewer/JSONViewer'
+import { MarkdownViewer } from 'uiSrc/components/markdown-viewer'
 import {
   DATETIME_FORMATTER_DEFAULT,
   KeyValueFormat,
@@ -237,6 +239,15 @@ const formattingBuffer = (
         // if error return default
       }
       return { value, isValid: false }
+    }
+    case KeyValueFormat.Markdown: {
+      const value = bufferToUTF8(reply)
+      // Selecting Markdown renders it wherever a value is shown, so it does not
+      // depend on a row being expanded. Tooltips still get the raw source.
+      if (props?.tooltip) {
+        return { value, isValid: true }
+      }
+      return { value: <MarkdownViewer value={value} />, isValid: true }
     }
     default:
       return { value: bufferToUnicode(reply), isValid: true }

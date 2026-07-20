@@ -4,6 +4,9 @@ import { IOutputFormatterStrategy } from '../output-formatter.interface';
 
 export class UTF8FormatterStrategy implements IOutputFormatterStrategy {
   public format(reply: any): any {
+    if (typeof reply === 'bigint') {
+      return reply.toString();
+    }
     if (reply instanceof Buffer) {
       return getUTF8FromBuffer(reply);
     }

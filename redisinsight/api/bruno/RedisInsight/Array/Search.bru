@@ -1,0 +1,104 @@
+meta {
+  name: Search
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/search
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "predicates": [{ "criteria": "GLOB", "value": "21.*" }],
+    "withValues": true
+  }
+}
+
+docs {
+  # ARGREP
+
+  Search a range of the array by predicate. Predicates are combined by a
+  single global AND/OR connective. Returns index + value pairs by default.
+
+  ## Request body
+
+  | Field        | Type                         | Notes                                                          |
+  |--------------|------------------------------|----------------------------------------------------------------|
+  | `keyName`    | string                       | The Array key name.                                            |
+  | `predicates` | ArrayGrepPredicate[]         | At least one predicate. Each has `criteria` and `value`.       |
+  | `combinator` | `"AND"` \| `"OR"`, optional  | Global connective across predicates. Default `OR` (server default). |
+  | `start`      | string, optional             | Inclusive start index. Unsigned 64-bit integer as string.      |
+  | `end`        | string, optional             | Inclusive end index. Unsigned 64-bit integer as string.        |
+  | `nocase`     | boolean, optional            | Case-insensitive matching (ARGREP NOCASE).                     |
+  | `withValues` | boolean, optional            | Return index + value pairs (default `true`).                   |
+  | `limit`      | number, optional             | Maximum matches to return (1..1,000,000).                      |
+
+  ### Criteria values
+
+  | Value   | Description              |
+  |---------|--------------------------|
+  | `EXACT` | Exact string match.      |
+  | `MATCH` | Pattern match.           |
+  | `GLOB`  | Glob-style match.        |
+  | `RE`    | Regular expression.      |
+
+  ### Examples
+
+  Either pattern within a range, case-insensitive (default `OR`):
+
+  ```
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "99",
+    "nocase": true,
+    "predicates": [
+      { "criteria": "GLOB", "value": "21.*" },
+      { "criteria": "EXACT", "value": "ERR" }
+    ]
+  }
+  ```
+
+  Both must match (`AND`), indexes only, capped to 50:
+
+  ```
+  {
+    "keyName": "readings",
+    "combinator": "AND",
+    "withValues": false,
+    "limit": 50,
+    "predicates": [
+      { "criteria": "RE", "value": "^2[0-9]" },
+      { "criteria": "MATCH", "value": "*.4" }
+    ]
+  }
+  ```
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "elements": [
+      { "index": "5", "value": "21.4" },
+      { "index": "6", "value": "21.9" }
+    ]
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARGREP`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

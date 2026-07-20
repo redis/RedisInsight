@@ -673,7 +673,7 @@ describe('ONBOARDING_FEATURES', () => {
         </OnboardingTour>,
       )
       expect(screen.getByTestId('step-content')).toHaveTextContent(
-        'This is Search, where you can index your data and query it using Redis Query Engine.',
+        'This is Search, where you can index your data and query it using Redis Search.',
       )
       expect(screen.getByTestId('step-content')).toHaveTextContent(
         'Load sample data to create your first index and run sample queries to see results instantly.',

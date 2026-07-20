@@ -87,7 +87,7 @@ export const createWindow = async ({
 
   initWindowHandlers(newWindow, prevWindow, windows, id)
 
-  contextMenu({ window: newWindow, showInspectElement: true })
+  contextMenu({ window: newWindow, showInspectElement: config.isDevelopment })
 
   windows.set(id, newWindow)
 

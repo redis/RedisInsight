@@ -4,6 +4,8 @@
 
 To use the Azure integration, your Azure tenant administrator may need to grant admin consent for the RedisInsight application. This is a one-time setup per Azure tenant — once done, all users in your organization can use RedisInsight with Entra ID seamlessly.
 
+> **Which tenant?** The commands below must be run **in the home tenant of every user who signs in through RedisInsight** — this is not necessarily the tenant that owns the Azure Managed Redis resources. If your users belong to a different tenant than the one hosting the resources, see [Multi-tenant scenarios](#multi-tenant-scenarios).
+
 > **Why is this needed?** See [Why This Setup is Required](#why-this-setup-is-required) for details on the authentication flow.
 
 > **Running in Docker?** See [Azure Docker Setup](azure-docker-setup.md) for configuration when using custom ports or reverse proxies.
@@ -54,6 +56,37 @@ az ad app permission list-grants \
 
 You should see `AzureRedisCacheAadApp` and `Windows Azure Service Management API` (or `Azure Resource Manager`) in the output.
 
+## Multi-tenant scenarios
+
+By default, RedisInsight signs you in through the multi-tenant `/common` endpoint, which issues the access token against **your home tenant**. That works when your account and the Azure Managed Redis resources live in the same tenant. Two situations need extra attention:
+
+- **Your resources are in a different tenant than your account.** The setup commands above (`az ad sp create` / `az ad app permission grant`) must exist in **your home tenant** — the tenant your user account belongs to — because that is where the token is issued. Running them only in the resource tenant is not enough and results in `AADSTS650052`.
+- **You are a guest / external user of the resource tenant.** Sign in against that tenant explicitly (see [Picking a tenant](#picking-a-tenant)) so the token is issued there and its subscriptions become visible.
+
+> **Personal Microsoft accounts.** Azure Resource Manager and Azure Cache for Redis are **organizational-only Azure APIs** — a personal Microsoft account (e.g. `@outlook.com`) can't be issued tokens for them, so the default sign-in fails with *"You can't sign in here with a personal account."* (This isn't about the app registration, which does allow personal accounts; it's the resources that are org-only.) To use a personal account, invite it as a **guest** into the organizational tenant that owns the resources, then sign in against that tenant with the **Tenant ID** field (see below).
+
+### Cross-tenant access (resources and user in different tenants)
+
+Say the Azure Managed Redis lives in **tenant A**, but your user account's home is **tenant B**. To reach A's resources from RedisInsight:
+
+1. **Get invited to tenant A.** An administrator of tenant A invites your account as a **guest** (Entra ID → External Identities), and you accept the invitation.
+2. **Get a role in tenant A.** You need **Reader** on the subscription (or resource group) so autodiscovery can list it, plus a **Redis data access policy** (e.g. *Data Owner*) on the cache if you want to connect to the data, not just discover it.
+3. **Make sure tenant A is set up.** The [admin-consent commands](#granting-admin-consent-azure-cli) must have been run **in tenant A** (the tenant the token will be issued for).
+4. **Sign in against tenant A.** In RedisInsight, use the **Tenant ID** field (see below) to enter tenant A's ID. The token is issued by A, and A's subscriptions and databases appear.
+
+Without the invitation and role (steps 1–2), sign-in may succeed but you'll see **no subscriptions** — see the [troubleshooting note](#signed-in-successfully-but-no-subscriptions-appear).
+
+### Picking a tenant
+
+When you click **Azure Managed Redis**, the sign-in dialog has an optional **Tenant ID** field. Enter a tenant GUID or domain (for example `your-tenant.onmicrosoft.com`) to authenticate against that specific tenant instead of your home tenant.
+
+Use it when:
+
+- Your home tenant differs from the tenant that owns the Azure Managed Redis resources, or
+- You are a guest in the resource tenant and its subscriptions don't appear by default.
+
+Leave the field blank to sign in against your home tenant (the default). The tenant you signed in with is shown on the subscriptions screen. To switch tenants, use the **Switch account or tenant** button there and enter a different tenant ID.
+
 ## Troubleshooting
 
 ### Error: AADSTS650057 - Invalid resource
@@ -97,6 +130,24 @@ az ad sp create --id acca5fbb-b7e4-4009-81f1-37e38fd66d78
 ```
 
 Then grant the permissions using the CLI commands above.
+
+> **Multi-tenant note:** This error most often means the service principals exist in the *resource* tenant but not in the tenant the token was issued for. The token is issued for your **home tenant** by default — so the commands must be run there. If your resources are in a different tenant, either run the setup in your home tenant, or sign in against the resource tenant using the **Tenant ID** field (see [Picking a tenant](#picking-a-tenant)).
+
+### Error: AADSTS50079 - Multi-factor authentication required
+
+If you see this error:
+
+> Due to a configuration change made by your administrator ... you must enroll in multi-factor authentication to access '797f4846-...'.
+
+The tenant you're signing in against enforces MFA (via Security Defaults or a Conditional Access policy), and RedisInsight refreshes the management token silently, which can't complete an interactive MFA prompt. Enroll the account in MFA once (e.g. sign in to the [Azure portal](https://portal.azure.com) as that account in the target tenant and complete the prompt), then sign in to RedisInsight again. Once enrolled, silent token refresh carries the MFA claim and autodiscovery works.
+
+### Signed in successfully but no subscriptions appear
+
+Sign-in worked and there's no error, but the subscriptions list is empty. This means your account has no role in the tenant you signed in against. Azure only returns subscriptions your identity can access, so you need at least **Reader** on the subscription (or resource group). For a guest/cross-tenant sign-in, an administrator of that tenant must assign the role — see [Cross-tenant access](#cross-tenant-access-resources-and-user-in-different-tenants).
+
+### "You can't sign in here with a personal account"
+
+**Azure Resource Manager and Azure Cache for Redis are organizational-only APIs**, so a personal Microsoft account can't be issued tokens for them — even though RedisInsight's app registration itself allows personal accounts. Signing in via the default (blank) flow routes a personal account to its consumer tenant, where those resources don't exist, so Azure blocks it. To use a personal account, it must be a **guest** in the organizational tenant that owns the resources, and you must sign in using the **Tenant ID** field (enter that tenant) rather than the blank/default sign-in — the token is then issued in that tenant's context.
 
 ## Why This Setup is Required
 

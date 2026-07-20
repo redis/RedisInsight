@@ -97,6 +97,17 @@ describe('ConfirmationPopover', () => {
     })
   })
 
+  describe('Keyboard safety', () => {
+    it('does not focus the confirm button when the popover opens', () => {
+      // Without redirecting the panel's open-autofocus, the confirm button is
+      // the first focusable element and would receive focus on open — arming
+      // the destructive action for a stray Enter press.
+      renderConfirmationPopover()
+
+      expect(screen.getByTestId('confirm-button')).not.toHaveFocus()
+    })
+  })
+
   describe('RiPopover Integration', () => {
     it('should pass through isOpen prop to RiPopover', () => {
       const { rerender } = renderConfirmationPopover({ isOpen: false })

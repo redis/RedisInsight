@@ -76,6 +76,7 @@ describe('GlobalAzureAuth', () => {
         id: faker.string.uuid(),
         username: faker.internet.email(),
         name: faker.person.fullName(),
+        tenantId: faker.string.uuid(),
       }
 
       const storedValue = JSON.stringify({

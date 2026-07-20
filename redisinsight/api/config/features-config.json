@@ -1,6 +1,11 @@
 {
-  "version": 3.93,
+  "version": 8,
   "features": {
+    "dev-language": {
+      "flag": true,
+      "perc": [[0, 0]],
+      "filters": []
+    },
     "redisDataIntegration": {
       "flag": true,
       "perc": [[0, 100]],
@@ -141,15 +146,23 @@
     },
     "vectorSet": {
       "flag": true,
-      "perc": [[0, 10]]
+      "perc": [[0, 100]]
     },
-    "dev-array": {
-      "flag": false,
+    "array": {
+      "flag": true,
       "perc": [[0, 100]]
     },
     "prodMode": {
       "flag": true,
-      "perc": [[0, 10]]
+      "perc": [[0, 100]]
+    },
+    "whatsNew": {
+      "flag": true,
+      "perc": [[0, 50]]
+    },
+    "valueDecoder": {
+      "flag": false,
+      "perc": [[0, 100]]
     }
   }
 }

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
@@ -21,6 +22,7 @@ const SERVICE_TYPE_TO_UI_TYPE: Record<QueryLibraryType, QueryLibraryItemType> =
   }
 
 export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
   const {
     items,
@@ -100,7 +102,7 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
       {showSearchBar && (
         <S.SearchBar>
           <SearchInput
-            placeholder="Search query"
+            placeholder={t('vectorSearch.queryLibrary.searchPlaceholder')}
             value={search}
             onChange={onSearchChange}
             data-testid="query-library-search"
@@ -127,8 +129,8 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
           <S.EmptyState align="center" justify="center">
             <Text data-testid="query-library-empty">
               {search
-                ? 'No queries match your search'
-                : 'No saved queries yet. Create your query in editor and click Save to add it here.'}
+                ? t('vectorSearch.queryLibrary.empty.noMatch')
+                : t('vectorSearch.queryLibrary.empty.noQueries')}
             </Text>
           </S.EmptyState>
         )}

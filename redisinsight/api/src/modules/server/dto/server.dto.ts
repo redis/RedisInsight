@@ -38,6 +38,13 @@ export class GetServerInfoResponse {
   osPlatform: string;
 
   @ApiProperty({
+    description: 'The operating system CPU architecture.',
+    type: String,
+    example: 'x64',
+  })
+  osArch: string;
+
+  @ApiProperty({
     description: 'Application build type.',
     type: String,
     example: 'ELECTRON',

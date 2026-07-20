@@ -73,7 +73,7 @@ const AddKeyReJSON = (props: Props) => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <FormField label={config.value.label}>
+      <FormField label={config.value.label} required={config.value.isRequire}>
         <>
           <MonacoJson
             value={ReJSONValue}

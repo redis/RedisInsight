@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import * as S from './DefaultErrorContent.styles'
 
 export interface Props {
   text: string | JSX.Element | JSX.Element[]
 }
 // TODO: use i18n file for texts
 const DefaultErrorContent = ({ text }: Props) => (
-  <ColorText color="danger">{text}</ColorText>
+  <S.ErrorText color="danger">{text}</S.ErrorText>
 )
 
 export default DefaultErrorContent

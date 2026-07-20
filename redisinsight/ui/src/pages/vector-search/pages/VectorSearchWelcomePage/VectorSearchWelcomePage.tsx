@@ -10,18 +10,8 @@ import { SearchTelemetrySource } from '../../telemetry.constants'
  * context, providing callbacks and configuration.
  */
 export const VectorSearchWelcomePage = () => {
-  const {
-    openPickSampleDataModal,
-    navigateToExistingDataFlow,
-    hasExistingKeys,
-    hasExistingKeysLoading,
-  } = useVectorSearch()
-
-  const useMyDatabaseDisabled = hasExistingKeysLoading
-    ? { tooltip: 'Checking for existing keys…' }
-    : !hasExistingKeys
-      ? { tooltip: 'No Hash or JSON keys found in your database' }
-      : undefined
+  const { openPickSampleDataModal, navigateToExistingDataFlow } =
+    useVectorSearch()
 
   const handleTrySampleData = useCallback(
     () => openPickSampleDataModal(SearchTelemetrySource.Welcome),
@@ -37,7 +27,6 @@ export const VectorSearchWelcomePage = () => {
     <WelcomeScreen
       onTrySampleDataClick={handleTrySampleData}
       onUseMyDatabaseClick={handleUseMyDatabase}
-      useMyDatabaseDisabled={useMyDatabaseDisabled}
     />
   )
 }

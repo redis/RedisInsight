@@ -1,0 +1,1 @@
+ARMSET log:server:errors 0 "boot: ok" 1 "warn: disk" 2 "ERROR: cpu" 3 "info: ready" 4 "error: net" 5 "info: heartbeat" 12 "warn: memory" 24 "ERROR: lost peer" 88 "ERROR: timeout" 100 "warn: slow query" 155 "info: cleanup" 200 "error: panic" 255 "shutdown"

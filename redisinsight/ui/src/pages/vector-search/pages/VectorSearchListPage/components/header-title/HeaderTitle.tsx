@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
@@ -13,12 +14,13 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import * as S from './HeaderTitle.styles'
 
 export const HeaderTitle = () => {
+  const { t } = useTranslation()
   const [isInfoPopoverOpen, setIsInfoPopoverOpen] = useState(false)
 
   return (
     <Row align="center" gap="xs">
       <Title size="M" color="primary" data-testid="vector-search--list--title">
-        Search indexes
+        {t('vectorSearch.list.header.title')}
       </Title>
       <RiPopover
         anchorPosition="downCenter"
@@ -35,10 +37,7 @@ export const HeaderTitle = () => {
         }
       >
         <S.PopoverContent>
-          <Text>
-            A search index organizes your data to enable fast Vector, full-text,
-            hybrid, and numeric searches in Redis.
-          </Text>
+          <Text>{t('vectorSearch.list.header.description')}</Text>
           <Spacer size="s" />
           <Link
             href={getUtmExternalLink(EXTERNAL_LINKS.searchIndexes, {
@@ -49,7 +48,7 @@ export const HeaderTitle = () => {
             external
             data-testid="vector-search--list--learn-more-link"
           >
-            Learn more
+            {t('vectorSearch.list.header.learnMore')}
           </Link>
         </S.PopoverContent>
       </RiPopover>

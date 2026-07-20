@@ -22,7 +22,7 @@ describe('getSourceTutorialByCapability', () => {
 
 const emptyCapability = { name: '', telemetryName: '', path: null }
 const searchCapability = {
-  name: 'Redis Query Engine',
+  name: 'Redis Search',
   telemetryName: 'searchAndQuery',
   path: null,
 }

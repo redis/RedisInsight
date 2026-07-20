@@ -11,11 +11,13 @@ export class RdiPipelineForbiddenException extends HttpException {
     message = ERROR_MESSAGES.FORBIDDEN,
     options?: HttpExceptionOptions & { details?: unknown },
   ) {
+    const hasDetail = message && message !== ERROR_MESSAGES.FORBIDDEN;
     const response = {
       message,
       statusCode: HttpStatus.FORBIDDEN,
       error: 'RdiForbidden',
       errorCode: CustomErrorCodes.RdiForbidden,
+      ...(hasDetail ? { resource: { detail: message } } : {}),
     };
 
     super(response, response.statusCode, options);

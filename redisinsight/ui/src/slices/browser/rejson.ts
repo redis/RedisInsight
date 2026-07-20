@@ -217,7 +217,7 @@ export function fetchReJSON(
       if (!axios.isCancel(error)) {
         const errorMessage = getApiErrorMessage(error as AxiosError)
         dispatch(loadRejsonBranchFailure(errorMessage))
-        dispatch(addErrorNotification(error))
+        dispatch(addErrorNotification(error as AxiosError))
       }
     }
   }
@@ -283,9 +283,9 @@ export function setReJSONDataAction(
         onSuccessAction?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(setReJSONDataFailure(errorMessage))
-      dispatch(addErrorNotification(error))
+      dispatch(addErrorNotification(error as AxiosError))
       onFailAction?.()
     }
   }
@@ -333,9 +333,9 @@ export function appendReJSONArrayItemAction(
         dispatch<any>(refreshKeyInfoAction(key))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(appendReJSONArrayItemFailure(errorMessage))
-      dispatch(addErrorNotification(error))
+      dispatch(addErrorNotification(error as AxiosError))
     }
   }
 }

@@ -10,6 +10,7 @@ import {
 import { RedisString } from 'src/common/constants';
 import { ClientMetadata } from 'src/common/models';
 import {
+  BrowserToolArrayCommands,
   BrowserToolHashCommands,
   BrowserToolVectorSetCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
@@ -45,6 +46,19 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSim);
+    // Array commands — must be registered for sendPipeline.
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArMSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArMGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArLen);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArCount);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGetRange);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArScan);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArNext);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGrep);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArDel);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArDelRange);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
@@ -56,6 +70,7 @@ export abstract class IoredisClient extends RedisClient {
 
     return {
       replyEncoding,
+      integerReply: options?.integerReply,
     };
   }
 

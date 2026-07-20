@@ -1,7 +1,7 @@
 import { RawFormatterStrategy } from './raw-formatter.strategy';
 
 describe('Cli RawFormatterStrategy', () => {
-  let strategy;
+  let strategy: RawFormatterStrategy;
   beforeEach(async () => {
     strategy = new RawFormatterStrategy();
   });
@@ -27,6 +27,24 @@ describe('Cli RawFormatterStrategy', () => {
       const output = strategy.format(input);
 
       expect(output).toEqual('string value');
+    });
+    it('should tag a bigint reply as an integer type', () => {
+      const output = strategy.format(BigInt('9007199254740994'));
+
+      expect(output).toEqual({ type: 'integer', value: '9007199254740994' });
+    });
+    it('should tag bigint leaves nested in an array', () => {
+      const input = [
+        BigInt('0'),
+        [BigInt('9007199254740994'), Buffer.from('value')],
+      ];
+      const mockResponse = [
+        { type: 'integer', value: '0' },
+        [{ type: 'integer', value: '9007199254740994' }, 'value'],
+      ];
+      const output = strategy.format(input);
+
+      expect(output).toEqual(mockResponse);
     });
     it('should return correct value for empty array', () => {
       const input = [];

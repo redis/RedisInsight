@@ -130,6 +130,7 @@ export class LocalDatabaseRepository extends DatabaseRepository {
         'cd',
         'd.createdAt',
         'd.environment',
+        'd.connectionFamily',
         'tags',
       ])
       .getMany();

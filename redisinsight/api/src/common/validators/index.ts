@@ -4,3 +4,4 @@ export * from './multi-number.validator';
 export * from './bigger-than.validator';
 export * from './github-link.validator';
 export * from './no-duplicates.validator';
+export * from './array-index.validator';

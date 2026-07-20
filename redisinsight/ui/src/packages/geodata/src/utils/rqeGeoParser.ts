@@ -307,10 +307,10 @@ export const parseRqeGeoCommand = (
   const tokens = tokenizeRedisCommand(command)
   const commandToken = tokens[0]?.toUpperCase() as RqeGeoCommand | undefined
   if (!commandToken) {
-    return { ok: false, error: 'Missing Redis Query Engine command.' }
+    return { ok: false, error: 'Missing Redis Search command.' }
   }
   if (!RQE_GEO_COMMANDS.has(commandToken)) {
-    return { ok: false, error: `Unsupported Redis Query Engine command: ${tokens[0]}.` }
+    return { ok: false, error: `Unsupported Redis Search command: ${tokens[0]}.` }
   }
   if (!tokens[1]) {
     return { ok: false, error: `${commandToken} requires an index.` }
@@ -333,7 +333,7 @@ export const parseRqeGeoCommand = (
     queryOverlay
 
   if (!parsedOverlay) {
-    return { ok: false, error: 'No Redis Query Engine geospatial predicate found.' }
+    return { ok: false, error: 'No Redis Search geospatial predicate found.' }
   }
   if (!parsedOverlay.ok) {
     return parsedOverlay
@@ -534,7 +534,7 @@ const parseRqeRows = (
 
   return {
     ok: false,
-    error: `Unsupported Redis Query Engine command: ${command.command}.`,
+    error: `Unsupported Redis Search command: ${command.command}.`,
   }
 }
 

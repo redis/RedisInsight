@@ -117,6 +117,7 @@ const StreamEntryFields = (props: Props) => {
       <EntryIdContainer>
         <FormField
           label={config.entryId.label}
+          required={config.entryId.isRequire}
           additionalText={
             <InlineRow align="center" gap="s">
               <RiTooltip

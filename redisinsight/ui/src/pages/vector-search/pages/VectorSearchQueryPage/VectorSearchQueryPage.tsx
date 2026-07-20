@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Pages } from 'uiSrc/constants'
@@ -13,6 +13,7 @@ import {
   decodeIndexNameFromUrl,
 } from '../../utils'
 import { useRedisearchListData } from '../../hooks'
+import { OPEN_INDEX_PANEL_PARAM } from './VectorSearchQueryPage.constants'
 import { VectorSearchQueryPageParams } from './VectorSearchQueryPage.types'
 import { PageHeader, PageContent } from './components'
 
@@ -21,8 +22,17 @@ import * as S from './VectorSearchQueryPage.styles'
 export const VectorSearchQueryPage = () => {
   const { instanceId, indexName } = useParams<VectorSearchQueryPageParams>()
   const history = useHistory()
+  const location = useLocation()
 
   const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
+
+  // Param intentionally kept in the URL; telemetry is sent at click time.
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    if (params.get(OPEN_INDEX_PANEL_PARAM) === 'true') {
+      setIsIndexPanelOpen(true)
+    }
+  }, [location.search])
 
   const { loading, error, stringData: indexes } = useRedisearchListData()
 

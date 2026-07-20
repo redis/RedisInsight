@@ -1,5 +1,5 @@
 import { app, ipcMain, nativeTheme } from 'electron'
-import { electronStore } from 'desktopSrc/lib'
+import { electronStore, setConsent } from 'desktopSrc/lib'
 import { ElectronStorageItem, IpcInvokeEvent } from 'uiSrc/electron/constants'
 
 export const initIPCHandlers = () => {
@@ -19,4 +19,8 @@ export const initIPCHandlers = () => {
     nativeTheme.themeSource = themeSource
     electronStore?.set(ElectronStorageItem.themeSource, themeSource)
   })
+
+  ipcMain.handle(IpcInvokeEvent.setSentryConsent, (_event, granted: boolean) =>
+    setConsent(!!granted),
+  )
 }

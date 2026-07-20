@@ -15,7 +15,7 @@ export const MODULE_CAPABILITY_TEXT_NOT_AVAILABLE: {
     text: 'Create a free Redis Cloud database with JSON capability that extends the core capabilities of your Redis.',
   },
   [RedisDefaultModules.Search]: {
-    title: 'Redis Query Engine capability is not available',
+    title: 'Redis Search capability is not available',
     text: 'Create a free Redis Cloud database with search and query features that extend the core capabilities of your Redis.',
   },
   [RedisDefaultModules.TimeSeries]: {
@@ -39,8 +39,8 @@ export const MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE: {
     text: 'Open a database with JSON.',
   },
   [RedisDefaultModules.Search]: {
-    title: 'Redis Query Engine capability is not available',
-    text: 'Open a database with Redis Query Engine.',
+    title: 'Redis Search capability is not available',
+    text: 'Open a database with Redis Search.',
   },
   [RedisDefaultModules.TimeSeries]: {
     title: 'Time series data structure is not available',

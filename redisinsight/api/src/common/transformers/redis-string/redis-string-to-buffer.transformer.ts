@@ -7,6 +7,14 @@ const SingleRedisStringToBuffer = ({ value }) => {
     return value;
   }
 
+  // Preserve null/undefined so callers can express "absent" entries (e.g.
+  // ARGETRANGE returns null for empty slots in a gap-preserving response).
+  // Mirrors the behaviour of the sibling ASCII / UTF8 transformers, which
+  // also short-circuit on non-Buffer values rather than throwing.
+  if (value === null || value === undefined) {
+    return value;
+  }
+
   return Buffer.from(value);
 };
 

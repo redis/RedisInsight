@@ -13,6 +13,14 @@ describe('AddKeyZset', () => {
     expect(render(<AddKeyZset {...instance(mockedProps)} />)).toBeTruthy()
   })
 
+  it('shows a Score column header with the required asterisk in front', () => {
+    render(<AddKeyZset {...instance(mockedProps)} />)
+
+    const score = screen.getByText('Score').closest('label')
+    expect(score?.textContent?.trimStart().startsWith('*')).toBe(true)
+    expect(screen.getByText('Member')).toBeInTheDocument()
+  })
+
   it('should set member value properly', () => {
     render(<AddKeyZset {...instance(mockedProps)} />)
     const memberInput = screen.getByTestId(MEMBER_NAME)

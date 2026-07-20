@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+import { CustomErrorCodes } from 'src/constants';
 
 export class EncryptionServiceErrorException extends HttpException {
   constructor(
@@ -6,6 +7,7 @@ export class EncryptionServiceErrorException extends HttpException {
       message: 'Encryption service error',
       name: 'EncryptionServiceError',
       statusCode: 500,
+      errorCode: CustomErrorCodes.EncryptionServiceError,
     },
     status = 500,
   ) {

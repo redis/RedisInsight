@@ -6,6 +6,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
 import { Text } from 'uiSrc/components/base/text'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'
@@ -27,14 +28,30 @@ const ConsentOption = (props: Props) => {
     withoutSpacer = false,
   } = props
 
+  const { t } = useTranslation()
+
+  // Localize the backend-supplied copy by its stable agreement code, falling
+  // back to the English text shipped in the spec (mirrors the error-code i18n).
+  const label = consent.code
+    ? t(`api.agreement.${consent.code}.label` as never, {
+        defaultValue: consent.label,
+      })
+    : consent.label
+  const description =
+    consent.code && consent.description
+      ? t(`api.agreement.${consent.code}.description` as never, {
+          defaultValue: consent.description,
+        })
+      : consent.description
+
   return (
     <FlexItem key={consent.agreementName} grow>
-      {isSettingsPage && consent.description && (
+      {isSettingsPage && description && (
         <>
           <Spacer size="s" />
           <Text size="M" color="primary">
             <ItemDescription
-              description={consent.description}
+              description={description}
               withLink={consent.linkToPrivacyPolicy}
             />
           </Text>
@@ -55,14 +72,14 @@ const ConsentOption = (props: Props) => {
         </FlexItem>
         <FlexItem>
           <Text size="M" color="primary">
-            {parse(consent.label)}
+            {parse(label)}
           </Text>
-          {!isSettingsPage && consent.description && (
+          {!isSettingsPage && description && (
             <>
               <Spacer size="xs" />
               <Text size="s" color="secondary">
                 <ItemDescription
-                  description={consent.description}
+                  description={description}
                   withLink={consent.linkToPrivacyPolicy}
                 />
               </Text>

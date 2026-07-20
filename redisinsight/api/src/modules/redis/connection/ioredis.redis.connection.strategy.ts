@@ -15,7 +15,7 @@ import {
   SentinelIoredisClient,
   ClusterIoredisClient,
 } from 'src/modules/redis/client';
-import { discoverClusterNodes } from 'src/modules/redis/utils';
+import { discoverClusterNodes, getIpFamily } from 'src/modules/redis/utils';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
 import { getRedisConnectionException } from 'src/utils';
 import { ReplyError } from 'src/models';
@@ -46,13 +46,22 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<RedisOptions> {
-    const { host, port, password, username, tls, db, timeout } = database;
+    const {
+      host,
+      port,
+      password,
+      username,
+      tls,
+      db,
+      timeout,
+      connectionFamily,
+    } = database;
     const redisOptions: RedisOptions = {
       host,
       port,
       username,
       password,
-      family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
+      family: getIpFamily(connectionFamily),
       connectTimeout: timeout,
       db: isNumber(clientMetadata.db) ? clientMetadata.db : db,
       connectionName:

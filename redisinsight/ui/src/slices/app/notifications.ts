@@ -4,8 +4,9 @@ import { findIndex, isUndefined } from 'lodash'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import {
-  getApiErrorMessage,
   getApiErrorName,
+  getTranslatedApiError,
+  getTranslatedApiTitle,
   isStatusSuccessful,
   Maybe,
   Nullable,
@@ -52,13 +53,14 @@ const notificationsSlice = createSlice({
   reducers: {
     addErrorNotification: (
       state,
-      { payload }: { payload: IAddInstanceErrorPayload },
+      { payload }: { payload: AxiosError & { instanceId?: string } },
     ) => {
-      const { instanceId } = payload
-      const title = payload?.response?.data?.title
+      const errorPayload = payload as IAddInstanceErrorPayload
+      const { instanceId } = errorPayload
+      const title = getTranslatedApiTitle(payload)
       const errorName = getApiErrorName(payload)
-      const message = getApiErrorMessage(payload)
-      const additionalInfo = payload?.response?.data?.additionalInfo
+      const message = getTranslatedApiError(payload)
+      const additionalInfo = errorPayload?.response?.data?.additionalInfo
       const errorExistedId = state.errors.findIndex(
         (err) => err.message === message,
       )

@@ -68,6 +68,13 @@ export enum Environment {
   Development = 'development',
 }
 
+// IP protocol used to resolve the host: auto (dual-stack), IPv4, or IPv6.
+export enum RedisConnectionFamily {
+  Auto = 'auto',
+  IPv4 = 'ipv4',
+  IPv6 = 'ipv6',
+}
+
 @Entity('database_instance')
 export class DatabaseEntity {
   @Expose()
@@ -300,4 +307,8 @@ export class DatabaseEntity {
   @Expose()
   @Column({ nullable: false, default: Environment.Unspecified })
   environment: Environment;
+
+  @Expose()
+  @Column({ nullable: false, default: RedisConnectionFamily.Auto })
+  connectionFamily: RedisConnectionFamily;
 }

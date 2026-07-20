@@ -13,7 +13,7 @@ import { PagePlaceholder } from 'uiSrc/components'
 import ProtectedRoute from 'uiSrc/pages/redis-stack/components/protected-route/ProtectedRoute'
 import ROUTES from '../constants/redisStackRoutes'
 
-interface IProps {
+export interface IProps {
   databaseId?: string
 }
 

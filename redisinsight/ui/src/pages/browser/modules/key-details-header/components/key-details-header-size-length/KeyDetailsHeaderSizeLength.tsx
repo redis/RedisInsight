@@ -22,7 +22,7 @@ export interface Props {
 }
 
 const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
-  const { type, size, length, quantType, vectorDim } =
+  const { type, size, length, quantType, vectorDim, count } =
     useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
 
   const isSizeTooLarge = size === -1
@@ -99,6 +99,18 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
           >
             {width > MIDDLE_SCREEN_RESOLUTION ? 'Vector dim: ' : 'Dim: '}
             {vectorDim}
+          </Text>
+        </FlexItem>
+      )}
+      {count !== undefined && (
+        <FlexItem>
+          <Text
+            size="s"
+            className={styles.subtitleText}
+            data-testid="key-count-text"
+          >
+            {width > MIDDLE_SCREEN_RESOLUTION ? 'Count: ' : 'Cnt: '}
+            {count}
           </Text>
         </FlexItem>
       )}

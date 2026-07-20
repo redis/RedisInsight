@@ -1,3 +1,4 @@
+import i18n from 'uiSrc/i18n'
 import { scrollIntoView } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { WORKBENCH_HISTORY_MAX_LENGTH } from 'uiSrc/pages/workbench/constants'
@@ -28,7 +29,7 @@ export const createGroupItem = (
   itemCount: number,
   commandId: string,
 ): CommandExecutionUI => ({
-  command: `${itemCount} - Command(s)`,
+  command: i18n.t('vectorSearch.query.groupCommandLabel', { count: itemCount }),
   id: commandId,
   loading: true,
   isOpen: true,

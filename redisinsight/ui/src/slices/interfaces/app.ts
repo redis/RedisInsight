@@ -22,6 +22,7 @@ export interface CustomError {
   statusCode: number
   errorCode?: number
   resourceId?: string
+  resource?: Record<string, unknown>
 }
 
 export interface ErrorOptions {
@@ -215,6 +216,12 @@ export interface FeatureFlagComponent {
   flag: boolean
   variant?: string
   data?: any
+}
+
+export interface StateWhatsNew {
+  isOpen: boolean
+  selectedVersion: string | null
+  lastVersionSeen: string | null
 }
 
 export interface StateAppFeatures {

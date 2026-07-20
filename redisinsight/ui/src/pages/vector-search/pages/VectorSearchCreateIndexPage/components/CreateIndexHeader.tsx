@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Title } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -13,12 +14,17 @@ import { CreateIndexOnboardingStep } from '../../../components/create-index-onbo
 import { IndexNameEditor } from './IndexNameEditor'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
-const INFO_TOOLTIP =
-  'Select a key from the left panel to auto-detect the indexing schema.'
-
 export const CreateIndexHeader = () => {
-  const { mode, displayName, indexName, setIndexName, indexNameError, fields } =
-    useCreateIndexPage()
+  const { t } = useTranslation()
+  const {
+    mode,
+    displayName,
+    indexName,
+    setIndexName,
+    indexNameError,
+    fields,
+    isManualCreation,
+  } = useCreateIndexPage()
   const { startOnboarding } = useCreateIndexOnboarding()
   const onboardingTriggeredRef = useRef(false)
 
@@ -46,14 +52,16 @@ export const CreateIndexHeader = () => {
             data-testid="vector-search--create-index--title"
           >
             {isSampleData
-              ? `View sample data index: ${displayName}`
-              : 'Define search index:'}
+              ? t('vectorSearch.createIndex.header.sampleTitle', {
+                  name: displayName,
+                })
+              : t('vectorSearch.createIndex.header.defineTitle')}
           </Title>
 
-          {!isSampleData && !hasFields && (
+          {!isSampleData && !hasFields && !isManualCreation && (
             <RiTooltip
               position="bottom"
-              content={INFO_TOOLTIP}
+              content={t('vectorSearch.createIndex.header.infoTooltip')}
               data-testid="index-name-info-tooltip"
             >
               <Row align="center" grow={false}>
@@ -68,7 +76,7 @@ export const CreateIndexHeader = () => {
         </Row>
       </CreateIndexOnboardingPopover>
 
-      {!isSampleData && hasFields && (
+      {!isSampleData && (hasFields || isManualCreation) && (
         <IndexNameEditor
           indexName={indexName}
           onNameChange={setIndexName}

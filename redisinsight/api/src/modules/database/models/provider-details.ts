@@ -58,6 +58,18 @@ export class AzureProviderDetails {
   azureAccountId?: string;
 
   @ApiPropertyOptional({
+    description:
+      'Azure tenant the token was issued against. Used as the authority for ' +
+      'silent token refresh so multi-tenant sign-ins keep refreshing against ' +
+      'the correct tenant.',
+    type: String,
+  })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  tenantId?: string;
+
+  @ApiPropertyOptional({
     description: 'Token expiration time for filtering during re-authentication',
     type: Date,
   })
