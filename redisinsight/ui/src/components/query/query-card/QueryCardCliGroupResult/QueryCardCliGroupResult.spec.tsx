@@ -61,6 +61,33 @@ describe('QueryCardCliGroupResult', () => {
     expect(errorBtn).toBeInTheDocument()
   })
 
+  it('should render (nil) when response is null', () => {
+    const mockResult = [
+      {
+        response: [
+          {
+            id: 'id',
+            command: 'psubscribe',
+            response: null,
+            status: CommandExecutionStatus.Success,
+          },
+        ],
+      },
+    ]
+    const { container } = render(
+      <QueryCardCliGroupResult
+        {...instance(mockedProps)}
+        result={mockResult}
+      />,
+    )
+    const errorBtn = container.querySelector(
+      '[data-test-subj="pubsub-page-btn"]',
+    )
+
+    expect(errorBtn).not.toBeInTheDocument()
+    expect(screen.getByText('(nil)')).toBeInTheDocument()
+  })
+
   it('should not show ModuleNotLoaded for successful TS.RANGE in group mode', () => {
     const mockResult = [
       {
