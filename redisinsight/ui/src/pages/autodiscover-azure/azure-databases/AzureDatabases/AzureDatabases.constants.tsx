@@ -1,4 +1,5 @@
 import React from 'react'
+import { TFunction } from 'i18next'
 
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
@@ -6,13 +7,15 @@ import { Text } from 'uiSrc/components/base/text'
 import { ColumnHeader } from 'uiSrc/components/column-header'
 import { DescriptionsTooltip } from 'uiSrc/pages/autodiscover-azure/components'
 import {
-  AZURE_DATABASE_TYPE_DESCRIPTIONS,
-  AZURE_PROVISIONING_STATE_DESCRIPTIONS,
+  getAzureDatabaseTypeDescriptions,
+  getAzureProvisioningStateDescriptions,
 } from 'uiSrc/pages/autodiscover-azure/constants'
 
 export const MAX_DATABASES_SELECTION = 10
 
-export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
+export const getAzureDatabasesColumns = (
+  t: TFunction,
+): ColumnDef<AzureRedisDatabase>[] => [
   {
     id: 'row-selection',
     maxSize: 20,
@@ -34,7 +37,7 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   },
   {
     id: 'name',
-    header: 'Database Name',
+    header: t('autodiscover.azure.column.databaseName'),
     accessorKey: 'name',
     enableSorting: true,
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
@@ -46,10 +49,10 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     isHeaderCustom: true,
     header: () => (
       <ColumnHeader
-        label="Type"
+        label={t('autodiscover.azure.column.type')}
         tooltip={
           <DescriptionsTooltip
-            descriptions={AZURE_DATABASE_TYPE_DESCRIPTIONS}
+            descriptions={getAzureDatabaseTypeDescriptions(t)}
           />
         }
       />
@@ -62,7 +65,7 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   },
   {
     id: 'location',
-    header: 'Region',
+    header: t('autodiscover.azure.column.region'),
     accessorKey: 'location',
     enableSorting: true,
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
@@ -74,10 +77,10 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     isHeaderCustom: true,
     header: () => (
       <ColumnHeader
-        label="Status"
+        label={t('autodiscover.azure.column.status')}
         tooltip={
           <DescriptionsTooltip
-            descriptions={AZURE_PROVISIONING_STATE_DESCRIPTIONS}
+            descriptions={getAzureProvisioningStateDescriptions(t)}
           />
         }
       />

@@ -14,6 +14,7 @@ import {
   validateField,
 } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface AzureManualConnectionFormValues {
   host: string
@@ -32,6 +33,7 @@ export interface Props {
 
 const AzureManualConnectionForm = (props: Props) => {
   const { formik } = props
+  const { t } = useTranslation()
 
   return (
     <form onSubmit={formik.handleSubmit} data-testid="azure-manual-form">
@@ -39,12 +41,15 @@ const AzureManualConnectionForm = (props: Props) => {
         {/* Database alias */}
         <Row gap="m">
           <FlexItem grow>
-            <FormField label="Database alias" required>
+            <FormField
+              label={t('autodiscover.azure.manual.aliasLabel')}
+              required
+            >
               <TextInput
                 name="name"
                 id="name"
                 data-testid="name"
-                placeholder="Enter Database Alias"
+                placeholder={t('autodiscover.azure.manual.aliasPlaceholder')}
                 onFocus={selectOnFocus}
                 value={formik.values.name ?? ''}
                 maxLength={500}
@@ -57,14 +62,17 @@ const AzureManualConnectionForm = (props: Props) => {
         {/* Host and Port */}
         <Row gap="m">
           <FlexItem grow={4}>
-            <FormField label="Host" required>
+            <FormField
+              label={t('autodiscover.azure.manual.hostLabel')}
+              required
+            >
               <TextInput
                 autoFocus
                 name="host"
                 id="host"
                 data-testid="host"
                 maxLength={200}
-                placeholder="Enter Hostname / IP address / Private Endpoint"
+                placeholder={t('autodiscover.azure.manual.hostPlaceholder')}
                 value={formik.values.host ?? ''}
                 onChange={(value) => {
                   formik.setFieldValue('host', validateField(value.trim()))
@@ -74,13 +82,16 @@ const AzureManualConnectionForm = (props: Props) => {
             </FormField>
           </FlexItem>
           <FlexItem grow={2}>
-            <FormField label="Port" required>
+            <FormField
+              label={t('autodiscover.azure.manual.portLabel')}
+              required
+            >
               <NumericInput
                 autoValidate
                 name="port"
                 id="port"
                 data-testid="port"
-                placeholder="Enter Port"
+                placeholder={t('autodiscover.azure.manual.portPlaceholder')}
                 onChange={(value) => formik.setFieldValue('port', value)}
                 value={Number(formik.values.port)}
                 min={0}
@@ -96,17 +107,17 @@ const AzureManualConnectionForm = (props: Props) => {
           <FlexItem grow>
             <Spacer size="xs" />
             <Text size="S" color="secondary">
-              Authentication will use your Azure Entra ID credentials
+              {t('autodiscover.azure.manual.entraCredentialsInfo')}
             </Text>
 
-            <FormField label="Username">
+            <FormField label={t('autodiscover.azure.manual.usernameLabel')}>
               <Spacer size="s" />
               <TextInput
                 name="username"
                 id="username"
                 data-testid="username"
                 maxLength={200}
-                placeholder="Enter Username"
+                placeholder={t('autodiscover.azure.manual.usernamePlaceholder')}
                 value={formik.values.username ?? ''}
                 onChangeCapture={formik.handleChange}
                 disabled
@@ -118,13 +129,13 @@ const AzureManualConnectionForm = (props: Props) => {
         {/* Timeout */}
         <Row gap="m" responsive>
           <FlexItem grow>
-            <FormField label="Timeout (s)">
+            <FormField label={t('autodiscover.azure.manual.timeoutLabel')}>
               <NumericInput
                 autoValidate
                 name="timeout"
                 id="timeout"
                 data-testid="timeout"
-                placeholder="Enter Timeout (in seconds)"
+                placeholder={t('autodiscover.azure.manual.timeoutPlaceholder')}
                 onChange={(value) => formik.setFieldValue('timeout', value)}
                 value={Number(formik.values.timeout)}
                 min={1}
@@ -145,14 +156,14 @@ const AzureManualConnectionForm = (props: Props) => {
           <Row gap="m">
             <FlexItem>
               <Text size="M">
-                <b>TLS Settings</b>
+                <b>{t('autodiscover.azure.manual.tlsSettings')}</b>
               </Text>
             </FlexItem>
           </Row>
           <Row gap="m">
             <FlexItem>
               <Text size="S" color="secondary">
-                TLS is always enabled for Azure Cache for Redis connections.
+                {t('autodiscover.azure.manual.tlsAlwaysEnabled')}
               </Text>
             </FlexItem>
           </Row>
@@ -164,7 +175,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 id="verifyServerCert"
                 name="verifyServerCert"
                 labelSize="M"
-                label="Verify server certificate"
+                label={t('autodiscover.azure.manual.verifyServerCert')}
                 checked={!!formik.values.verifyServerCert}
                 onChange={formik.handleChange}
                 data-testid="verify-server-cert"
@@ -174,8 +185,7 @@ const AzureManualConnectionForm = (props: Props) => {
           <Row gap="m">
             <FlexItem>
               <Text size="XS" color="secondary">
-                Recommended for production. Validates that the server
-                certificate matches the hostname.
+                {t('autodiscover.azure.manual.verifyServerCertInfo')}
               </Text>
             </FlexItem>
           </Row>
@@ -187,7 +197,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 id="sni"
                 name="sni"
                 labelSize="M"
-                label="Use SNI"
+                label={t('autodiscover.azure.manual.useSni')}
                 checked={!!formik.values.sni}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   // Pre-fill servername with host value when enabling SNI
@@ -203,15 +213,17 @@ const AzureManualConnectionForm = (props: Props) => {
           <Row gap="m">
             <FlexItem>
               <Text size="XS" color="secondary">
-                Enable SNI when connecting via Private Link using an IP address.
-                Enter the original Redis hostname as the Server Name.
+                {t('autodiscover.azure.manual.sniInfo')}
               </Text>
             </FlexItem>
           </Row>
           {formik.values.sni && (
             <Row gap="m">
               <FlexItem grow>
-                <FormField label="Server Name" required>
+                <FormField
+                  label={t('autodiscover.azure.manual.serverNameLabel')}
+                  required
+                >
                   <TextInput
                     name="servername"
                     id="servername"
