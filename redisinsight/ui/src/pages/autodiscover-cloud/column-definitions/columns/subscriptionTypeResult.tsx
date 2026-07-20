@@ -3,15 +3,13 @@ import {
   type InstanceRedisCloud,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
-import {
-  AutoDiscoverCloudIds,
-  AutoDiscoverCloudTitles,
-} from 'uiSrc/pages/autodiscover-cloud/constants/constants'
+import i18n from 'uiSrc/i18n'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const subscriptionTypeResultColumn =
   (): ColumnDef<InstanceRedisCloud> => {
     return {
-      header: AutoDiscoverCloudTitles.Type,
+      header: i18n.t('autodiscover.cloud.column.type'),
       id: AutoDiscoverCloudIds.SubscriptionType,
       accessorKey: AutoDiscoverCloudIds.SubscriptionType,
       enableSorting: true,

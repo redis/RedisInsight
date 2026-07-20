@@ -3,11 +3,13 @@ import React from 'react'
 import { formatLongName, replaceSpaces } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { CellText } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
 
 import { DatabaseCellProps } from './DatabaseCell.types'
 
 export const DatabaseCell = ({ name, className }: DatabaseCellProps) => {
+  const { t } = useTranslation()
   const cellContent = replaceSpaces(name.substring(0, 200))
 
   return (
@@ -18,7 +20,7 @@ export const DatabaseCell = ({ name, className }: DatabaseCellProps) => {
     >
       <RiTooltip
         position="bottom"
-        title="Database"
+        title={t('autodiscover.cloud.column.database')}
         className={styles.tooltipColumnName}
         anchorClassName="truncateText"
         content={formatLongName(name)}

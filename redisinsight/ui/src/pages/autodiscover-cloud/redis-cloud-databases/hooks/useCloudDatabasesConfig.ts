@@ -11,6 +11,7 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
 import { setTitle } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 import { Pages } from 'uiSrc/constants'
 import {
   InstanceRedisCloud,
@@ -59,7 +60,7 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     if (instances === null) {
       history.push(Pages.home)
     }
-    setTitle('Redis Cloud Databases')
+    setTitle(i18n.t('autodiscover.cloud.databases.title'))
 
     dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
   }, [instances])

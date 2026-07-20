@@ -18,6 +18,7 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
 import { Maybe, setTitle } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
@@ -48,7 +49,7 @@ export const useCloudSubscriptionConfig =
       if (subscriptions === null) {
         history.push(Pages.home)
       } else {
-        setTitle('Redis Cloud Subscriptions')
+        setTitle(i18n.t('autodiscover.cloud.subscriptions.title'))
       }
     }, [])
 
