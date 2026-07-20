@@ -7,6 +7,7 @@ import { Loader } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { getStatusToShowFromState, getStatusToShowFromStatus } from './utils'
 
 export interface Props {
@@ -22,6 +23,7 @@ const CurrentPipelineStatus = ({
   statusError,
   headerLoading,
 }: Props) => {
+  const { t } = useTranslation()
   const stateInfo = pipelineState
     ? getStatusToShowFromState(pipelineState)
     : getStatusToShowFromStatus(pipelineStatus)
@@ -31,7 +33,7 @@ const CurrentPipelineStatus = ({
     <Row align="center" gap="m">
       <FlexItem>
         <Title size="XS" color="primary">
-          Pipeline status
+          {t('rdi.instance.status.title')}
         </Title>
       </FlexItem>
       <FlexItem>
