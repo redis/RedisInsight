@@ -24,8 +24,7 @@ export class IndexList {
   }
 
   getCreateIndexMenuItem(option: 'sample-data' | 'existing-data'): Locator {
-    const text = option === 'sample-data' ? 'Use sample data' : 'Use existing data';
-    return this.page.getByRole('menuitem', { name: text });
+    return this.page.getByTestId(`vector-search--list--create-index--${option}`);
   }
 
   /**

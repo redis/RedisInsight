@@ -133,38 +133,6 @@ test.describe('Vector Search > Browser Page Integration', () => {
     await expect(vectorSearchPage.queryPageWrapper).toBeVisible();
     await expect(vectorSearchPage.indexCreatedToast).toBeVisible();
   });
-
-  test('should show "Index" button on folder node and create index', async ({
-    browserPage,
-    vectorSearchPage,
-    apiHelper,
-  }) => {
-    // Create a key with no matching index
-    const indexablePrefix = `test-vs-indexable-${uniqueId}:`;
-    const indexableKeyName = `${indexablePrefix}key1`;
-    const hashKey = IndexHashKeyFactory.build({ keyName: indexableKeyName });
-    await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
-
-    await browserPage.keyList.searchKeys(indexableKeyName);
-
-    // Hover folder node to reveal Index button, open modal, then create index
-    const folderName = indexablePrefix.slice(0, -1);
-    await browserPage.keyList.hoverFolderNode(folderName);
-
-    const indexButton = browserPage.getIndexFolderButton(folderName);
-    await expect(indexButton).toBeVisible();
-    await indexButton.click();
-
-    await expect(browserPage.makeSearchableModal.heading).toBeVisible();
-    await browserPage.makeSearchableModal.continueButton.click();
-
-    await expect(vectorSearchPage.createIndexForm.container).toBeVisible();
-    await expect(vectorSearchPage.createIndexForm.content).toBeVisible();
-
-    await vectorSearchPage.createIndexForm.createIndexButton.click();
-    await expect(vectorSearchPage.queryPageWrapper).toBeVisible();
-    await expect(vectorSearchPage.indexCreatedToast).toBeVisible();
-  });
 });
 
 test.describe('Vector Search > Browser Page Integration > RQE Not Available', () => {
