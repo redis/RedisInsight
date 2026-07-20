@@ -74,7 +74,7 @@ describe('useConnectivityOptions', () => {
     const azureOption = options.find((opt) => opt.type === AddDbType.azure)
 
     expect(azureOption).toBeDefined()
-    expect(azureOption?.title).toBe('Azure Managed Redis')
+    expect(azureOption?.title).toBe('addDatabase.option.azure')
   })
 
   it('should request the Azure sign-in dialog on Azure onClick when not logged in', () => {

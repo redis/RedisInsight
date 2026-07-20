@@ -18,6 +18,7 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { AzureSignInDialog } from 'uiSrc/components/azure-sign-in-dialog'
+import { useTranslation } from 'uiSrc/i18n'
 import { useConnectivityOptions } from '../../hooks/useConnectivityOptions'
 
 import {
@@ -32,6 +33,7 @@ export interface Props {
 }
 
 const ConnectivityOptions = (props: Props) => {
+  const { t } = useTranslation()
   const { onClickOption, onClose } = props
   const [isAzureDialogOpen, setIsAzureDialogOpen] = useState(false)
   const { initiateLogin, loading: azureLoading } = useAzureAuth()
@@ -53,7 +55,7 @@ const ConnectivityOptions = (props: Props) => {
   return (
     <>
       <section>
-        <Text color="primary">Get started with Redis Cloud account</Text>
+        <Text color="primary">{t('addDatabase.cloud.title')}</Text>
         <Spacer />
         <Grid gap="l" columns={3} responsive>
           <FlexItem>
@@ -63,7 +65,9 @@ const ConnectivityOptions = (props: Props) => {
             >
               <Col align="center" gap="s">
                 <StyledIcon type="CloudIcon" size="xl" />
-                <Text color="primary">Add databases</Text>
+                <Text color="primary">
+                  {t('addDatabase.cloud.addDatabases')}
+                </Text>
               </Col>
             </StyledConnectivityLink>
           </FlexItem>
@@ -86,10 +90,15 @@ const ConnectivityOptions = (props: Props) => {
                     })}
                     target="_blank"
                   >
-                    <StyledBadge label="FREE" variant="notice" />
+                    <StyledBadge
+                      label={t('addDatabase.cloud.freeBadge')}
+                      variant="notice"
+                    />
                     <Col align="center" gap="s">
                       <StyledIcon type="RocketIcon" size="xl" />
-                      <Text color="primary">New database</Text>
+                      <Text color="primary">
+                        {t('addDatabase.cloud.newDatabase')}
+                      </Text>
                     </Col>
                   </StyledConnectivityLink>
                 )}
@@ -100,7 +109,7 @@ const ConnectivityOptions = (props: Props) => {
       </section>
       <Spacer size="xxl" />
       <section>
-        <Text color="primary">More connectivity options</Text>
+        <Text color="primary">{t('addDatabase.moreOptions.title')}</Text>
         <Spacer />
         <Grid gap="l" responsive columns={4}>
           {connectivityOptions.map((option) => (
@@ -115,7 +124,7 @@ const ConnectivityOptions = (props: Props) => {
                   ) : (
                     <RiIcon type={option.icon} size="xl" />
                   )}
-                  <Text color="primary">{option.title}</Text>
+                  <Text color="primary">{t(option.title)}</Text>
                 </Row>
               </StyledConnectivityLink>
             </FlexItem>
@@ -130,7 +139,7 @@ const ConnectivityOptions = (props: Props) => {
                 onClick={loadingOption.onCancel}
                 data-testid="cancel-azure-login-btn"
               >
-                Cancel
+                {t('addDatabase.button.cancel')}
               </SecondaryButton>
             </Row>
           </>

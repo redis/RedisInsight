@@ -36,6 +36,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 import { Title } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { FixedWrapper } from '../ManualConnection.styles'
 
@@ -49,6 +50,7 @@ export interface Props {
 }
 
 const DatabasePanelDialog = (props: Props) => {
+  const { t } = useTranslation()
   const { editMode, onClose } = props
 
   const [initialValues, setInitialValues] = useState(null)
@@ -189,7 +191,9 @@ const DatabasePanelDialog = (props: Props) => {
     <FormDialog
       isOpen
       onClose={onClose}
-      header={modalHeader ?? <Title size="L">Add database</Title>}
+      header={
+        modalHeader ?? <Title size="L">{t('addDatabase.modal.title')}</Title>
+      }
       footer={<FooterDatabaseForm />}
     >
       <FixedWrapper>
