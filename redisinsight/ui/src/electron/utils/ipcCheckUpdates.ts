@@ -5,9 +5,9 @@ import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
-import { FeatureFlagsMap, isWhatsNewEligible } from 'uiSrc/utils'
+import { isWhatsNewEligible } from 'uiSrc/utils'
 import { localStorageService } from 'uiSrc/services'
-import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
+import { BrowserStorageItem } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { GetServerInfoResponse } from 'apiClient'
 import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
@@ -17,23 +17,16 @@ import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
  * installed version. Flag-gated cards render as "Coming soon", so no card
  * visibility check is needed.
  */
-const shouldOpenWhatsNew = (
-  version: string,
-  features?: FeatureFlagsMap,
-): boolean => {
+const shouldOpenWhatsNew = (version: string): boolean => {
   const lastVersionSeen =
     localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ?? null
 
-  return (
-    !!features?.[FeatureFlags.whatsNew]?.flag &&
-    isWhatsNewEligible(version, lastVersionSeen)
-  )
+  return isWhatsNewEligible(version, lastVersionSeen)
 }
 
 export const ipcCheckUpdates = async (
   serverInfo: GetServerInfoResponse,
   dispatch: Dispatch<any>,
-  features?: FeatureFlagsMap,
 ) => {
   const isUpdateDownloaded = await window.app.ipc.invoke(
     IpcInvokeEvent.getStoreValue,
@@ -51,7 +44,7 @@ export const ipcCheckUpdates = async (
   if (isUpdateDownloaded && !isUpdateAvailable) {
     if (
       serverInfo.appVersion === updateDownloadedVersion &&
-      shouldOpenWhatsNew(updateDownloadedVersion, features)
+      shouldOpenWhatsNew(updateDownloadedVersion)
     ) {
       dispatch(openWhatsNew(updateDownloadedVersion))
       sendEventTelemetry({

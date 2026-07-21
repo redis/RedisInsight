@@ -40,7 +40,6 @@ export enum KnownFeatures {
   Array = 'array',
   ProdMode = 'prodMode',
   DevLanguage = 'dev-language',
-  WhatsNew = 'whatsNew',
   ValueDecoder = 'valueDecoder',
 }
 
