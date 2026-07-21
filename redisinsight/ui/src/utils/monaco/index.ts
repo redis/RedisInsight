@@ -1,6 +1,7 @@
 export * from './monacoUtils'
 export * from './vectorEmbeddingUtils'
 export * from './vectorEmbeddingUtils.types'
+export * from './vectorEmbeddingPlaceholders'
 export * from './monacoInterfaces'
 export * from './monacoRedisCompletionProvider'
 export * from './monacoRedisMonarchTokensProvider'
