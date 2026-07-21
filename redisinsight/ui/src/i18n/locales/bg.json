@@ -737,6 +737,7 @@
   "query.cliResult.copy": "Копиране на резултата",
   "query.cliResult.tooBig": "Резултатът е твърде голям, за да бъде запазен. Ще бъде изтрит след затваряне на приложението.",
   "query.editor.vectorEmbedding.hover": "Векторно представяне — {{dimensions}} измерения ({{byteSize}} байта)",
+  "query.editor.vectorEmbedding.label": "вектор · {{dimensions}} изм.",
   "query.executing": "Моля, изчакайте, докато командите се изпълняват…",
   "query.liteActions.clear.aria": "Изчисти заявката",
   "query.liteActions.clear.label": "Изчисти",

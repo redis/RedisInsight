@@ -737,6 +737,7 @@
   "query.cliResult.copy": "Copy result",
   "query.cliResult.tooBig": "The result is too big to be saved. It will be deleted after the application is closed.",
   "query.editor.vectorEmbedding.hover": "Vector embedding — {{dimensions}} dimensions ({{byteSize}} bytes)",
+  "query.editor.vectorEmbedding.label": "vector · {{dimensions}} dims",
   "query.executing": "Please wait while the commands are being executed…",
   "query.liteActions.clear.aria": "Clear query",
   "query.liteActions.clear.label": "Clear",
