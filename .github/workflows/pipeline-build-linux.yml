@@ -87,7 +87,7 @@ jobs:
           cache-node-modules: '0'
 
       - name: Install plugins dependencies and build plugins
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: Resolve linux targets for matrix arch
         id: resolve-targets
@@ -147,11 +147,11 @@ jobs:
 
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && steps.resolve-targets.outputs.mode == 'default'
-        run: yarn package:prod --linux ${{ matrix.defaultTargets }}
+        run: npm run package:prod -- --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (staging)
         if: (vars.ENV == 'staging' || vars.ENV == 'development') && steps.resolve-targets.outputs.mode == 'default'
-        run: yarn package:stage --linux ${{ matrix.defaultTargets }}
+        run: npm run package:stage -- --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (custom)
         if: steps.resolve-targets.outputs.mode == 'custom'
@@ -160,9 +160,9 @@ jobs:
           CUSTOM_TARGETS: ${{ steps.resolve-targets.outputs.custom_targets }}
         run: |
           if [ "$IS_PRODUCTION" == "true" ]; then
-            yarn package:prod --linux $CUSTOM_TARGETS
+            npm run package:prod -- --linux $CUSTOM_TARGETS
           else
-            yarn package:stage --linux $CUSTOM_TARGETS
+            npm run package:stage -- --linux $CUSTOM_TARGETS
           fi
 
       - name: Verify native binaries

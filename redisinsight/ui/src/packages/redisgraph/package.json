@@ -43,9 +43,9 @@
     "react-json-tree": "^0.16.1",
     "redisinsight-plugin-sdk": "^1.1.0"
   },
-  "resolutions": {
+  "overrides": {
     "trim": "0.0.3",
-    "@elastic/eui/**/prismjs": "~1.30.0",
-    "**/semver": "^7.5.2"
+    "@elastic/eui": { "prismjs": "~1.30.0" },
+    "semver": "^7.5.2"
   }
 }

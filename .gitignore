@@ -6,8 +6,6 @@ node_modules
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 lerna-debug.log*
 
 # OS
@@ -56,7 +54,7 @@ redisinsight/api/dist-minified
 redisinsight/api/tutorials
 redisinsight/api/content
 
-# Generated OpenAPI artifacts (regenerated on install via `yarn generate:api-client`).
+# Generated OpenAPI artifacts (regenerated on install via `npm run generate:api-client`).
 # Both the spec dump and the TS client are derived from BE source — they are not committed.
 redisinsight/api/openapi.json
 redisinsight/api-client
@@ -91,7 +89,6 @@ redisinsight/ui/src/packages/common/index*
 static/
 
 .env*
-.npmrc
 
 # AI rules
 .windsurfrules

@@ -212,7 +212,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "resolutions": {
-    "**/semver": "^7.5.2"
+  "overrides": {
+    "semver": "^7.5.2"
   }
 }

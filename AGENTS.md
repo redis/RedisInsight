@@ -27,16 +27,16 @@ redisinsight/
 
 ```bash
 # Frontend development (web)
-yarn dev:ui
+npm run dev:ui
 
 # Backend development
-yarn dev:api
+npm run dev:api
 
 # Desktop app development (runs all: API + UI + Electron)
-yarn dev:desktop
+npm run dev:desktop
 
 # Frontend with coverage
-yarn dev:ui:coverage
+npm run dev:ui:coverage
 ```
 
 ## Testing Instructions
@@ -45,13 +45,13 @@ yarn dev:ui:coverage
 
 ```bash
 # Frontend tests
-yarn test              # Run all UI tests
+npm test               # Run all UI tests
 
 # Backend tests
-yarn test:api          # Run all API tests
+npm run test:api       # Run all API tests
 
 # E2E tests
-yarn --cwd tests/e2e-playwright test
+npm test --prefix tests/e2e-playwright
 ```
 
 ### Run Specific Frontend Tests
@@ -73,22 +73,22 @@ node 'node_modules/.bin/jest' 'redisinsight/ui/src/slices/tests/browser/keys.spe
 
 ```bash
 # Lint check
-yarn lint              # All code
-yarn lint:ui           # Frontend only
-yarn lint:api          # Backend only
+npm run lint           # All code
+npm run lint:ui        # Frontend only
+npm run lint:api       # Backend only
 
 # Type checking (compares against .tscheck.rec.json baselines for ui/api/desktop + configs)
-yarn type-check
+npm run type-check
 
 # Refresh baselines after intentionally adding or fixing TS errors (do not run casually)
-yarn tscheck
+npm run tscheck
 
 # Tests
-yarn test              # Frontend tests
-yarn test:api          # Backend tests
+npm test               # Frontend tests
+npm run test:api       # Backend tests
 ```
 
-`yarn type-check` is the gate — CI fails if any (file × error-code) TS-error count increases. If you intentionally changed TS-error counts, run `yarn tscheck` to refresh the baselines and commit the updated `.tscheck.rec.json` files. See `.ai/skills/type-check-baselines/SKILL.md` for details (including the `yarn tscheck:force` escape hatch).
+`npm run type-check` is the gate — CI fails if any (file × error-code) TS-error count increases. If you intentionally changed TS-error counts, run `npm run tscheck` to refresh the baselines and commit the updated `.tscheck.rec.json` files. See `.ai/skills/type-check-baselines/SKILL.md` for details (including the `npm run tscheck:force` escape hatch).
 
 **Fix any linting errors, type errors, or test failures before committing.**
 
@@ -98,7 +98,7 @@ These apply to every change in the repo. Skill files contain the full detail; th
 
 ### Code quality (always)
 
-- Run `yarn lint` and `yarn type-check` before committing — both must pass.
+- Run `npm run lint` and `npm run type-check` before committing — both must pass.
 - TypeScript everywhere. Avoid `any`; use `unknown` if you must.
 - Naming: `PascalCase` components, `camelCase` functions/variables, `UPPER_SNAKE_CASE` constants, `is/has/should` prefix for booleans.
 - No `console.log` in production code (use `console.warn`/`error`).
@@ -113,10 +113,10 @@ These apply to every change in the repo. Skill files contain the full detail; th
 
 ### Dependency / lockfile management (always)
 
-- The root `postinstall` runs `yarn-deduplicate yarn.lock`, so `yarn install` rewrites the lockfile whenever it isn't dedup-clean. After modifying any `package.json` (root, `redisinsight/`, or `redisinsight/api/`), run `yarn install` from that directory and commit the resulting lockfile changes.
-- Never edit `yarn.lock` files by hand and never run `yarn install --ignore-scripts` (or otherwise skip `postinstall`) when preparing a commit — the lockfile shipped to CI must match what `yarn install` produces locally.
-- CI runs `yarn install --frozen-lockfile` and then fails if `yarn.lock` is modified by the install. A green local install in every changed package's directory is required before pushing.
-- Use the right package manager for the change: `yarn add` / `yarn remove` (or `yarn upgrade`) for dependency changes, never manual edits to `package.json` versions without re-running install.
+- After modifying any `package.json` (root, `redisinsight/`, `redisinsight/api/`, or a `redisinsight/ui/src/packages/*` plugin), run `npm install` from that directory and commit the resulting `package-lock.json` changes.
+- Never edit `package-lock.json` files by hand and never run `npm install --ignore-scripts` (or otherwise skip `postinstall`) when preparing a commit — the `postinstall` applies `patch-package` patches, and the lockfile shipped to CI must match what `npm install` produces locally.
+- CI runs `npm ci`, which installs strictly from `package-lock.json` and fails if it is out of sync with `package.json`. A green local install in every changed package's directory is required before pushing.
+- Use the right package manager for the change: `npm install <pkg>` / `npm uninstall <pkg>` (or `npm update`) for dependency changes, never manual edits to `package.json` versions without re-running install.
 
 ## Skills
 
@@ -145,7 +145,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 
 - Ensure the current branch name follows `.ai/skills/branches/SKILL.md` before opening a PR; rename it if it doesn't
 - Write to `src/` and `tests/` directories
-- Run `yarn lint` and `yarn test` before commits
+- Run `npm run lint` and `npm test` before commits
 - Follow naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
 - Use faker library for test data generation
 - Use `renderComponent` helper in component tests
@@ -168,7 +168,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 
 - Commit secrets or API keys
 - Edit `node_modules/` or `vendor/` directories
-- Edit `yarn.lock` by hand or commit a lockfile produced with `--ignore-scripts` / a skipped `postinstall`
+- Edit `package-lock.json` by hand or commit a lockfile produced with `--ignore-scripts` / a skipped `postinstall`
 - Use fixed time waits in tests (use `waitFor` instead)
 - Use `!important` in styled-components
 - Import directly from `@redis-ui/*` (use internal wrappers from `uiSrc/components/ui`)

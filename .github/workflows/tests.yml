@@ -79,8 +79,8 @@ jobs:
             # Shared toolchain / CI config — when these change, run everything.
             infra:
               - 'package.json'
-              - 'yarn.lock'
-              - '.yarnrc'
+              - 'package-lock.json'
+              - '.npmrc'
               - '.nvmrc'
               - '.eslintrc*'
               - '.eslintignore'

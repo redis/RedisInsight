@@ -16,7 +16,7 @@ jobs:
       - name: Install plugins dependencies
         env:
           pluginsOnlyInstall: 1
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: Generate licenses csv files and send csv data to google sheet
         env:

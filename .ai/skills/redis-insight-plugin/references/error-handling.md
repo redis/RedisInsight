@@ -117,4 +117,4 @@ Validate persisted state before applying — fields can disappear or change shap
 | Values mapped to wrong field/axis | Response shape assumption wrong | Branch on the actual runtime shape, not the command name. |
 | Theme looks wrong | No `theme_DARK` handling | Read `document.body.classList` or `getTheme()` from SDK. |
 | Plugin disappears after Insight upgrade | Manifest field changed | Re-read official docs and update `package.json`. |
-| Large bundle, slow load | Missing minify, full lodash | Run `yarn minify:js`; switch to scoped imports. |
+| Large bundle, slow load | Missing minify, full lodash | Run `npm run minify:js`; switch to scoped imports. |

@@ -11,7 +11,7 @@
  *
  * Failures are logged but do not abort install: the missing client surfaces
  * as a build/type error instead, which is easier to diagnose than an aborted
- * `yarn install`.
+ * `npm install`.
  */
 
 const path = require('path');
@@ -25,7 +25,7 @@ if (process.env.SKIP_API_CLIENT_GEN === '1') {
 const apiDir = path.resolve(__dirname, '..');
 console.log('[postinstall] Generating OpenAPI client...');
 
-const result = spawnSync('yarn', ['generate:api-client'], {
+const result = spawnSync('npm', ['run', 'generate:api-client'], {
   cwd: apiDir,
   stdio: 'inherit',
   shell: process.platform === 'win32',
@@ -35,7 +35,7 @@ if (result.status !== 0) {
   console.warn(
     '[postinstall] API client generation failed (exit code: ' +
       result.status +
-      '). Run `yarn --cwd redisinsight/api generate:api-client` manually to retry.',
+      '). Run `npm run generate:api-client --prefix redisinsight/api` manually to retry.',
   );
 }
 

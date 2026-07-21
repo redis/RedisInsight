@@ -38,8 +38,8 @@ docker-compose -f rte.docker-compose.yml up -d
 
 | Project | Setup Command | Run Tests |
 |---------|---------------|-----------|
-| **Chromium** | `yarn dev:api` + `yarn dev:ui` (two terminals) | `npm run test:chromium` |
-| **Electron** | `yarn package:prod` | `npm run test:electron` |
+| **Chromium** | `npm run dev:api` + `npm run dev:ui` (two terminals) | `npm run test:chromium` |
+| **Electron** | `npm run package:prod` | `npm run test:electron` |
 
 > **Note:** Setup commands run from the repository root. Test commands run from `tests/e2e-playwright/`.
 

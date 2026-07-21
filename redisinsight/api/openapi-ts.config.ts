@@ -3,7 +3,7 @@ import { defineConfig } from '@hey-api/openapi-ts';
 /**
  * Generates the typed OpenAPI client consumed by the UI workspace.
  *
- * Input:  `redisinsight/api/openapi.json` (produced by `yarn generate:openapi-spec`).
+ * Input:  `redisinsight/api/openapi.json` (produced by `npm run generate:openapi-spec`).
  * Output: `redisinsight/api-client/`     (gitignored, regenerated on `postinstall`).
  *
  * `enums: 'typescript'` makes the typescript plugin emit named TS enums for any

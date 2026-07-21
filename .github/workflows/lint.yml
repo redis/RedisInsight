@@ -28,4 +28,4 @@ jobs:
             eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-
 
       - name: Run ESLint
-        run: yarn lint
+        run: npm run lint

@@ -62,15 +62,15 @@ jobs:
           cache-node-modules: '0'
 
       - name: Install plugins dependencies and build plugins
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: Build macos dmg (prod)
         if: vars.ENV == 'production' && inputs.target == vars.ALL
         run: |
           unset CSC_LINK
 
-          yarn package:prod
-          yarn package:mas
+          npm run package:prod
+          npm run package:mas
           rm -rf release/mac
           mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
 
@@ -82,7 +82,7 @@ jobs:
           echo $APP_BUNDLE_VERSION
           echo $CSC_KEYCHAIN
 
-          yarn package:stage && yarn package:mas
+          npm run package:stage && npm run package:mas
           rm -rf release/mac
 
           mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
@@ -95,9 +95,9 @@ jobs:
           target=$(echo "${{inputs.target}}" | grep -oE 'build_macos_[^ ]+' | sed 's/build_macos_/dmg:/' | paste -sd ' ' -)
 
           if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
-            yarn package:prod --mac $target
+            npm run package:prod -- --mac $target
           else
-            yarn package:stage --mac $target
+            npm run package:stage -- --mac $target
           fi
 
           rm -rf release/mac

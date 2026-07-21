@@ -25,7 +25,7 @@ jobs:
 
       - name: Unit tests API
         timeout-minutes: 20
-        run: yarn --cwd redisinsight/api/ test:cov --ci --silent
+        run: npm run test:cov --prefix redisinsight/api -- --ci --silent
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v7

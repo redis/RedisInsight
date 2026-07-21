@@ -2,11 +2,11 @@
 set -e
 
 # install deps
-yarn
-yarn --cwd redisinsight/api
+npm ci
+npm ci --prefix redisinsight/api
 
 # build
 
-yarn build:statics
-yarn build:ui
-yarn --cwd ./redisinsight/api build:prod
+npm run build:statics
+npm run build:ui
+npm run build:prod --prefix redisinsight/api

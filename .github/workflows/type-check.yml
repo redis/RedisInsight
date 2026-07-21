@@ -29,8 +29,8 @@ jobs:
         with:
           skip-system-deps: '1'
 
-      # yarn 1.x without workspaces does not share root binaries with sub-dirs.
-      # Workspace-level scripts (yarn --cwd redisinsight/<ws> ...) pipe through
+      # npm run --prefix exposes only the sub-dir's node_modules/.bin, not root's.
+      # Workspace-level scripts (npm run ... --prefix redisinsight/<ws>) pipe through
       # tsc / tsc-output-parser / tsx, which only live in the root node_modules.
       # Putting root's .bin on PATH lets nested invocations find them.
       - name: Expose root node_modules/.bin
@@ -46,30 +46,30 @@ jobs:
           path: |
             redisinsight/ui/src/packages/node_modules
             redisinsight/ui/src/packages/*/node_modules
-          key: ui-plugins-node-modules-${{ runner.os }}-${{ hashFiles('redisinsight/ui/src/packages/**/yarn.lock') }}
+          key: ui-plugins-node-modules-${{ runner.os }}-${{ hashFiles('redisinsight/ui/src/packages/**/package-lock.json') }}
 
       - name: Install UI plugin deps and build statics
         if: ${{ inputs.run-ui != false }}
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: UI
         if: ${{ inputs.run-ui != false }}
-        run: yarn --cwd redisinsight/ui type-check
+        run: npm run type-check --prefix redisinsight/ui
 
       - name: API
         if: ${{ inputs.run-api != false }}
-        run: yarn --cwd redisinsight/api type-check
+        run: npm run type-check --prefix redisinsight/api
 
       # Desktop sources import from redisinsight/api/dist/src/**, so the api
       # has to be built first or those imports show up as TS2307/TS2749 errors.
       # Use the default nest build (not build:prod) so `.d.ts` files are emitted.
       - name: Build API (for desktop type-check)
         if: ${{ inputs.run-desktop != false }}
-        run: yarn --cwd redisinsight/api build
+        run: npm run build --prefix redisinsight/api
 
       - name: Desktop
         if: ${{ inputs.run-desktop != false }}
-        run: yarn --cwd redisinsight/desktop type-check
+        run: npm run type-check --prefix redisinsight/desktop
 
       - name: Configs
-        run: yarn tsc --project configs/tsconfig.json --noEmit
+        run: npx tsc --project configs/tsconfig.json --noEmit

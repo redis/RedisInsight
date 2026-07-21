@@ -52,19 +52,19 @@ jobs:
           WIN_CSC_DIGICERT_KEYPAIR_ALIAS: ${{ secrets.WIN_CSC_DIGICERT_KEYPAIR_ALIAS }}
 
       - name: Install plugins dependencies and build plugins
-        run: yarn build:statics:win
+        run: npm run build:statics:win
 
       - name: Build windows exe (production)
         if: vars.ENV == 'production'
         run: |
-          yarn package:prod -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
+          npm run package:prod -- -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
           rm -rf release/win-unpacked
         shell: bash
 
       - name: Build windows exe (staging)
         if: (vars.ENV == 'staging' ||  vars.ENV == 'development')
         run: |
-          yarn package:stage -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
+          npm run package:stage -- -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
           rm -rf release/win-unpacked
         shell: bash
 

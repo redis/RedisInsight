@@ -5,7 +5,7 @@ RUN dbus-uuidgen > /var/lib/dbus/machine-id
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json .npmrc ./
 # patch-package (postinstall) reads these, so they must exist before install —
 # otherwise patches silently don't apply (e.g. the ioredis bigint parser).
 COPY patches ./patches
@@ -13,9 +13,9 @@ COPY stubs ./stubs
 COPY scripts ./scripts
 # Skip API client generation during install: integration tests don't need the
 # generated client, and the api source tree isn't COPYed in until after
-# `yarn install` (the generator reads it to produce the OpenAPI spec).
+# `npm ci` (the generator reads it to produce the OpenAPI spec).
 ENV SKIP_API_CLIENT_GEN=1
-RUN yarn install
+RUN npm ci
 COPY . .
 
 COPY ./test/test-runs/test-docker-entry.sh ./test/test-runs/wait-for-it.sh ./
@@ -26,4 +26,4 @@ ARG GNOME_KEYRING_PASS="somepass"
 ENV GNOME_KEYRING_PASS=${GNOME_KEYRING_PASS}
 
 ENTRYPOINT ["./test-docker-entry.sh"]
-CMD ["yarn", "test:api:ci:cov"]
+CMD ["npm", "run", "test:api:ci:cov"]
