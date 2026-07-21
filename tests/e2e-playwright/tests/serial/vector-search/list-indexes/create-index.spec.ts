@@ -10,8 +10,6 @@ const seedIndex = IndexConfigFactory.build();
 const SAMPLE_INDEX_NAMES = ['idx:bikes_vss', 'idx:movies_vss'];
 const SAMPLE_KEY_PREFIXES = ['bikes:*', 'movie:*'];
 
-test.use({ featureFlags: { vectorSearchV2: true } });
-
 /**
  * Vector Search > Create Index from List Page
  *
