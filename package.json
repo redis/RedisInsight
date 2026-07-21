@@ -27,7 +27,7 @@
     "i18n:extract": "i18next-cli extract",
     "i18n:check": "node ./scripts/check-i18n-locales.js",
     "build:statics": "npm run build:defaults && sh ./scripts/build-statics.sh",
-    "build:statics:win": "npm run build:defaults && ./scripts/build-statics.cmd",
+    "build:statics:win": "npm run build:defaults && .\\scripts\\build-statics.cmd",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir redisinsight",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache --cache-strategy content",
     "lint:ui": "eslint ./redisinsight/ui --ext .js,.jsx,.ts,.tsx --cache --cache-strategy content",
