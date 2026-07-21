@@ -58,17 +58,3 @@
     height: 20px;
   }
 }
-
-.backBtn:global(.euiButton.euiButton--fill.euiButton--secondary) {
-  background-color: var(--browserComponentActive) !important;
-  border-color: var(--browserComponentActive) !important;
-  color: var(--buttonSecondaryTextColor) !important;
-
-  position: absolute;
-  top: 22px;
-  right: 18px;
-
-  &:hover, &:focus {
-    color: var(--buttonSecondaryTextColor) !important;
-  }
-}

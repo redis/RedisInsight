@@ -29,10 +29,4 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  :global(.euiButtonIcon), :global(.euiToolTipAnchor) {
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
-  }
 }

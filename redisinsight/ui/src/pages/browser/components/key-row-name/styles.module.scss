@@ -8,8 +8,4 @@
   position: relative;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  :global(.euiTextColor) {
-    max-width: 100%;
-  }
 }

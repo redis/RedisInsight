@@ -1,48 +1,3 @@
-:global {
-  .browserPage {
-    .key-details-header {
-      .euiFieldText--compressed,
-      .euiFormControlLayout--compressed {
-        height: 29px !important;
-      }
-
-      .euiFormControlLayout {
-        width: 100%;
-        max-width: 100%;
-
-        &.euiFormControlLayout--readOnly {
-          border: 1px solid var(--controlsBorderColor);
-          cursor: auto;
-        }
-
-        input {
-          height: 29px !important;
-          cursor: pointer;
-          max-width: none;
-          font-family: "Graphik", sans-serif !important;
-        }
-      }
-    }
-  }
-}
-
-@include global.insights-open {
-  :global {
-    .key-details-header {
-      .euiText--small {
-        font-size: 12px;
-      }
-    }
-
-    .euiFlexGroup--gutterMedium {
-      margin: -4px;
-    }
-    .euiFlexGroup--gutterMedium > .euiFlexItem {
-      margin: 4px;
-    }
-  }
-}
-
 .container {
   padding: 18px 18px 12px 18px;
   border-bottom: 1px solid var(--euiColorLightShade);
@@ -84,11 +39,6 @@
       .auto-refresh-btn {
         width: 32px;
         height: 32px;
-
-        .euiButtonIcon__icon {
-          width: 16px;
-          height: 16px;
-        }
       }
     }
   }

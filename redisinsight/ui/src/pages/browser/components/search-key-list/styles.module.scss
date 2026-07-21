@@ -2,11 +2,6 @@
   flex-grow: 1;
   height: 36px;
   position: relative;
-
-  :global(.euiFormControlLayout) {
-    max-width: calc(100%) !important;
-    height: 36px !important;
-  }
 }
 
 .hiddenText {

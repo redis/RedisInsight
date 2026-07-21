@@ -1,9 +1,5 @@
 .container {
   max-width: 100%;
-
-  :global(.euiFormControlLayout) {
-    max-width: 100% !important;
-  }
 }
 
 .controls {
@@ -105,20 +101,6 @@
 .popoverWrapper .tooltip {
   width: 100% !important;
   height: 100% !important;
-}
-
-.popoverPanel:global(.euiPanel--paddingMedium) {
-  width: 296px !important;
-  padding: 24px 30px !important;
-  border: 1px solid var(--euiColorPrimary) !important;
-  background-color: var(--browserTableRowEven) !important;
-
-  :global(.euiPopover__panelArrow:after) {
-    border-left-color: var(--browserTableRowEven) !important;
-  }
-  :global(.euiPopover__panelArrow:before) {
-    border-left-color: var(--euiColorPrimary) !important;
-  }
 }
 
 .popover {

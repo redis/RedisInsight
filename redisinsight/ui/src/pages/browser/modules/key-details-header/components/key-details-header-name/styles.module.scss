@@ -25,12 +25,6 @@
   padding-right: 6px;
 }
 
-:global(.browserPage .key-details-header .euiFormControlLayout) {
-  .keyInputEditing {
-    height: 31px !important;
-  }
-}
-
 .keyHiddenText {
   display: inline-block;
   visibility: hidden;
