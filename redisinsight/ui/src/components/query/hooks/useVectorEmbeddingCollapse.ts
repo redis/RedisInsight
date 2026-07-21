@@ -95,6 +95,11 @@ export const useVectorEmbeddingCollapse = ({
           ),
         })),
       )
+      // Pasting a query scrolls the editor to the end of the blob; once it is
+      // collapsed there is nothing to scroll to, so return to the top.
+      const top = { lineNumber: 1, column: 1 }
+      editor.setPosition(top)
+      editor.revealPosition(top)
       return
     }
 
