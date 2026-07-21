@@ -72,9 +72,8 @@ function auditTree(dir, warnings) {
     prodAudit,
   });
   if (!prodAudit) {
-    // No prod/dev split available. analyzeTree counts every finding as prod so
-    // production exposure is never under-stated; flag the tree so the
-    // broken-audit alert fires and a human confirms the split.
+    // Split unavailable — flag the tree so the broken-audit alert fires and a
+    // human confirms the counts.
     const msg = `prod audit failed for ${dir}; findings counted as prod`;
     console.error(`WARN: ${msg}`);
     warnings.push(msg);
@@ -99,8 +98,7 @@ try {
   const trees = AUDIT_DIRS.map((dir) => auditTree(dir, warnings)).filter(
     Boolean,
   );
-  // The audit is broken if any tree was dropped (lockfile missing or `npm
-  // audit` failed) or came back incomplete (no prod/dev split). Alert on it
+  // A dropped or incomplete tree means the audit didn't fully run — alert on it
   // separately so a broken audit can't read as clean.
   const failed =
     trees.length < AUDIT_DIRS.length || trees.some((t) => t.incomplete);
