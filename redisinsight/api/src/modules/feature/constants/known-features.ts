@@ -66,11 +66,6 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
       flag: SERVER_CONFIG.customTutorials,
     }),
   },
-  [KnownFeatures.VectorSearchV2]: {
-    name: KnownFeatures.VectorSearchV2,
-    storage: FeatureStorage.Database,
-  },
-
   [KnownFeatures.AzureEntraId]: {
     name: KnownFeatures.AzureEntraId,
     storage: FeatureStorage.Database,

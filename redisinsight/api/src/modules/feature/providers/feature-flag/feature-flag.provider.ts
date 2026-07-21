@@ -85,13 +85,6 @@ export class FeatureFlagProvider {
       ),
     );
     this.strategies.set(
-      KnownFeatures.VectorSearchV2,
-      new SwitchableFlagStrategy(
-        this.featuresConfigService,
-        this.settingsService,
-      ),
-    );
-    this.strategies.set(
       KnownFeatures.AzureEntraId,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
