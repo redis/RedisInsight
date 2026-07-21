@@ -26,10 +26,6 @@
 .loading {
   height: 17px;
   max-width: 600px;
-
-  :global(.euiLoadingContent__singleLine) {
-    margin-bottom: 0 !important;
-  }
 }
 
 .container .alert {

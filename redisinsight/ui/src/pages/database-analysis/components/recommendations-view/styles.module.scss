@@ -20,18 +20,6 @@
       width: 20px;
       height: 20px;
     }
-
-    :global(.euiScreenReaderOnly) {
-      display: none;
-    }
-  }
-
-  :global(.euiAccordion__buttonReverse .euiAccordion__iconWrapper) {
-    margin-left: 0;
-  }
-
-  :global(.euiFlexGroup--gutterLarge) {
-    margin: 0;
   }
 }
 
@@ -79,23 +67,6 @@
     padding-top: 15px;
     margin-top: 15px !important;
     border-top: 1px solid var(--separatorColor);
-  }
-
-  :global(.euiAccordion__triggerWrapper) {
-    background-color: transparent;
-  }
-
-  :global(.euiPanel.euiPanel--subdued) {
-    background-color: transparent;
-  }
-
-  :global(.euiAccordion.euiAccordion-isOpen .euiAccordion__triggerWrapper) {
-    border-bottom: none;
-  }
-
-  :global(.euiIEFlexWrapFix) {
-    display: block;
-    width: 100%;
   }
 
   .accordionBtn {

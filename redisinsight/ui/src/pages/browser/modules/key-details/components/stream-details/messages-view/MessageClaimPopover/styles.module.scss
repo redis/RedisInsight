@@ -13,13 +13,8 @@
   white-space: nowrap;
 }
 
-.consumerOption :global(.euiContextMenu__itemLayout) .pendingCount {
+.consumerOption .pendingCount {
   padding-right: 13px;
-}
-
-.consumerOption :global(.euiContextMenu__itemLayout) {
-  margin-right: 20px;
-  height: 20px;
 }
 
 .consumerField {

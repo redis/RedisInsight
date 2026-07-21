@@ -7,10 +7,6 @@
   border-top: 1px solid var(--euiColorPrimary);
   padding: 12px 20px;
   scroll-padding-bottom: 72px;
-
-  :global(.euiFormControlLayout--group) {
-    height: 43px !important;
-  }
 }
 
 .popover {

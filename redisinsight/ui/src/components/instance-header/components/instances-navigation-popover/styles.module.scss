@@ -56,7 +56,6 @@
 }
 
 .listContainer {
-  :global(.euiListGroupItem-isActive), :global(.euiListGroupItem:hover),
   :global(.RI-list-group-item.isActive), :global(.RI-list-group-item:hover) {
     background-color: var(--hoverInListColorDarken) !important;
     color: var(--euiTextSubduedColorHover) !important;

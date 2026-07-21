@@ -20,7 +20,6 @@
   align-items: center;
   cursor: pointer;
 
-  :global(.euiButtonIcon),
   :global(svg) {
     color: var(--euiTooltipTextColor) !important;
   }
@@ -36,13 +35,6 @@
     &:hover {
       background: none !important;
       transform: translateY(-1px);
-    }
-
-    &:global(.euiLink) {
-      text-decoration: none !important;
-      &:focus {
-        animation: none !important;
-      }
     }
   }
 }

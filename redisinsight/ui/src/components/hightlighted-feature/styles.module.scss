@@ -40,9 +40,5 @@
 
     transition: transform 250ms ease-in-out;
     pointer-events: none;
-
-    :global(.euiBadge__content) {
-      min-height: 12px !important;
-    }
   }
 }

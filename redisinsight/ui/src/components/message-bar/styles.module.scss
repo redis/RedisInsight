@@ -1,21 +1,3 @@
-:global {
-  .euiPopoverTitle {
-    text-transform: none !important;
-  }
-
-  .euiButton {
-    min-width: 93px !important;
-
-    &--small {
-      min-width: 67px !important;
-    }
-
-    &:focus {
-      text-decoration: none !important;
-    }
-  }
-}
-
 .text {
   font-size: 13px;
   text-align: center;

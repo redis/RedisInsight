@@ -21,15 +21,6 @@
     &:not(:first-of-type) {
       margin-left: 8px;
     }
-
-    &:global(.euiLink) {
-      &:hover, &:focus {
-        color: var(--htmlColor);
-        text-decoration: underline !important;
-        outline: none !important;
-        animation: none !important;
-      }
-    }
   }
 }
 

@@ -14,10 +14,6 @@
   padding-bottom: 4px;
 }
 
-.modalBody :global(.euiModalBody__overflow) {
-  padding: 0 42px 30px !important;
-}
-
 .consentsWrapper {
   @include eui.scrollBar;
   overflow-x: hidden;

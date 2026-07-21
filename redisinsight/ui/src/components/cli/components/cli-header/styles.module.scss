@@ -34,12 +34,6 @@
 
 .title {
   align-items: center;
-  :global {
-    .euiIcon {
-      color: var(--euiColorPrimary);
-      margin-right: 8px;
-    }
-  }
 }
 
 .cliOnboardPanel {

@@ -18,10 +18,6 @@
       width: 100% !important;
       min-width: 100% !important;
       padding: 0;
-      :global(.euiResizablePanel__content) {
-        padding-right: 0;
-        padding-left: 0;
-      }
     }
   }
 }

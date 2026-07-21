@@ -8,10 +8,6 @@
         height: 22px !important;
       }
     }
-
-    .euiButton.btn-back {
-      float: left;
-    }
   }
 }
 
@@ -50,19 +46,6 @@
   padding-bottom: 5px;
   font-size: 13px;
   color: var(--euiTextColor);
-
-  :global(.euiLoadingContent) {
-    display: inline-block;
-    width: 100px;
-    position: relative;
-  }
-
-  :global(.euiLoadingContent__singleLine) {
-    margin-bottom: 0;
-    display: inline-block;
-    height: 12px;
-    vertical-align: middle;
-  }
 }
 
 .account_item_title {
@@ -80,10 +63,7 @@
   * {
     line-height: 1.19;
     font-size: 14px !important;
-
-    &:not(:global(.euiToolTip__title)) {
-      font-weight: 300 !important;
-    }
+    font-weight: 300 !important;
   }
 }
 
@@ -101,10 +81,6 @@
   padding-left: 15px !important;
   padding-top: 15px !important;
   font-size: 14px !important;
-
-  :global(.euiToolTip__title) {
-    padding: 5px 10px 0 !important;
-  }
 }
 
 .tooltipStatusList {

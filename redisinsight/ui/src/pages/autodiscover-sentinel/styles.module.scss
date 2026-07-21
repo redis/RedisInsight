@@ -24,13 +24,6 @@
   }
 }
 
-.tableEmpty :global(.euiTableRowCell) {
-  display: none !important;
-}
-.tableEmpty :global(.euiTableRow) {
-  height: 1px !important;
-}
-
 .notFoundMsg {
   margin: 50px auto;
   text-align: center;
@@ -54,10 +47,7 @@
   * {
     line-height: 1.19;
     font-size: 14px !important;
-
-    &:not(:global(.euiToolTip__title)) {
-      font-weight: 300 !important;
-    }
+    font-weight: 300 !important;
   }
 }
 

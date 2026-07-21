@@ -4,14 +4,6 @@
   height: 43px;
   margin: 0 auto;
   text-decoration: none !important;
-
-  &:global(.euiButton) {
-    min-width: 54px !important;
-  }
-
-  :global(.euiButton__text) {
-    font-weight: 500 !important;
-  }
 }
 
 .clearMarginFlexItem {

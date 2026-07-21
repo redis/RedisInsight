@@ -33,7 +33,7 @@
   margin-top: 14px;
 
   :global {
-    .RI-File-Picker__clearButton, .RI-File-Picker__clearButton .euiButtonEmpty__text {
+    .RI-File-Picker__clearButton {
       color: var(--externalLinkColor) !important;
       text-transform: lowercase;
     }

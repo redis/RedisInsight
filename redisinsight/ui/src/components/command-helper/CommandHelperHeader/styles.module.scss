@@ -17,12 +17,6 @@
   display: flex;
   flex-direction: row !important;
   align-items: center;
-  :global {
-    .euiIcon {
-      color: var(--euiColorPrimary);
-      margin-right: 8px;
-    }
-  }
 }
 
 .helperOnboardPanel {

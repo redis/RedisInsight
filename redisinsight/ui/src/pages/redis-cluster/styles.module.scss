@@ -42,10 +42,7 @@ $breakpoint-to-wrap-buttons: 660px;
   * {
     line-height: 1.19;
     font-size: 14px !important;
-
-    &:not(:global(.euiToolTip__title)) {
-      font-weight: 300 !important;
-    }
+    font-weight: 300 !important;
   }
 }
 

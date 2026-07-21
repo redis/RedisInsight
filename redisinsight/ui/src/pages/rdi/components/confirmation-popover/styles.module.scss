@@ -7,9 +7,6 @@
   width: 493px;
   padding: 16px 30px !important;
   border: 1px solid var(--euiColorPrimary) !important;
-  :global(.euiPopover__panelArrow:before) {
-    border-bottom-color: var(--euiColorPrimary) !important;
-  }
 }
 
 .alertIcon {

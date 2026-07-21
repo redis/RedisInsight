@@ -13,15 +13,6 @@
   max-width: 180px !important;
 }
 
-.changeReport :global(.euiSuperSelectControl) {
-  border: none !important;
-  padding-right: 34px !important;
-
-  & ~ :global(.euiFormControlLayoutIcons) svg {
-    width: 12px;
-  }
-}
-
 .infoIcon {
   color: var(--euiColorMediumShade);
   cursor: pointer;
