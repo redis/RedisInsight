@@ -67,3 +67,20 @@ jobs:
                   - title: "Dev High"
                     value: "${{ steps.report.outputs.dev_high }}"
                     short: true
+
+      # Separate alert: a lockfile could not be audited, so the report above is
+      # incomplete. Kept distinct from the vulnerability report so a broken
+      # audit can't quietly render as clean.
+      - name: Alert Slack when the audit could not run
+        if: steps.report.outputs.failed == 'true'
+        uses: slackapi/slack-github-action@v3.0.5
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "<!here> *Dependency audit could not run* — one or more lockfiles failed to audit; the vulnerability report is incomplete — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
+            attachments:
+              - color: "#cc0000"
+                title: "${{ github.workflow }} — see step summary for the affected trees"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

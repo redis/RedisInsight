@@ -44,12 +44,19 @@ function runJson(cmd, args, cwd) {
 function auditTree(dir, warnings) {
   const cwd = join(ROOT, dir);
   if (!existsSync(join(cwd, 'package-lock.json'))) {
-    console.error(`WARN: no lockfile in ${dir}, skipping`);
+    const msg = `no lockfile in ${dir}; tree not audited`;
+    console.error(`WARN: ${msg}`);
+    warnings.push(msg);
     return null;
   }
   const fullAudit = runJson('npm', ['audit', '--json'], cwd);
   const prodAudit = runJson('npm', ['audit', '--omit=dev', '--json'], cwd);
-  if (!fullAudit) return null;
+  if (!fullAudit) {
+    const msg = `audit failed for ${dir}; tree not audited`;
+    console.error(`WARN: ${msg}`);
+    warnings.push(msg);
+    return null;
+  }
   if (!prodAudit) {
     const msg = `prod audit failed for ${dir}; prod/dev split may under-report`;
     console.error(`WARN: ${msg}`);
@@ -78,6 +85,10 @@ try {
   const trees = AUDIT_DIRS.map((dir) => auditTree(dir, warnings)).filter(
     Boolean,
   );
+  // A dropped tree (missing lockfile or failed `npm audit`) means the audit
+  // itself is broken — distinct from "the audit ran and found nothing". This
+  // gates a separate Slack alert so a broken audit can't masquerade as clean.
+  const failed = trees.length < AUDIT_DIRS.length;
   const report = buildReport({ trees, warnings });
   const summary = buildStepSummary(report);
 
@@ -95,6 +106,7 @@ try {
       `post=${shouldPostSlack(report)}`,
       `color=${slackColor(report)}`,
       `total_hc=${prod.critical + prod.high + dev.critical + dev.high}`,
+      `failed=${failed}`,
       `prod_critical=${prod.critical}`,
       `prod_high=${prod.high}`,
       `dev_critical=${dev.critical}`,
