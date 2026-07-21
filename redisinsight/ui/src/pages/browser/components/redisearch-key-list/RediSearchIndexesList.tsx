@@ -29,8 +29,7 @@ import {
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
 import { localStorageService } from 'uiSrc/services'
-import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { BrowserStorageItem } from 'uiSrc/constants'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon, ResetIcon } from 'uiSrc/components/base/icons'
@@ -63,9 +62,6 @@ const RediSearchIndexesList = (props: Props) => {
   } = useAppSelector(connectedInstanceSelector)
 
   const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
-  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isVectorSearch =
-    featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
   const dispatch = useAppDispatch()
   const location = useLocation()
@@ -157,25 +153,23 @@ const RediSearchIndexesList = (props: Props) => {
     }
   })
 
-  if (isVectorSearch) {
-    options.push({
-      value: CREATE,
-      inputDisplay: <span>CREATE</span>,
-      dropdownDisplay: (
-        <Row align="center" justify="start" gap="xs">
-          <PlusIcon size="M" />
-          <Text
-            size="M"
-            variant="semiBold"
-            color="primary"
-            data-testid="create-index-btn"
-          >
-            Create Index
-          </Text>
-        </Row>
-      ),
-    })
-  }
+  options.push({
+    value: CREATE,
+    inputDisplay: <span>CREATE</span>,
+    dropdownDisplay: (
+      <Row align="center" justify="start" gap="xs">
+        <PlusIcon size="M" />
+        <Text
+          size="M"
+          variant="semiBold"
+          color="primary"
+          data-testid="create-index-btn"
+        >
+          Create Index
+        </Text>
+      </Row>
+    ),
+  })
 
   const onChangeIndex = (value: string) => {
     if (value === CREATE) {

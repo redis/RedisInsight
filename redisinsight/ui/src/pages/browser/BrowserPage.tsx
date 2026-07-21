@@ -92,8 +92,6 @@ const BrowserPage = () => {
   const overview = useAppSelector(connectedInstanceOverviewSelector)
   const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
-  const isVectorSearch =
-    featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
   const panelMinSize = isDevBrowser ? 20 : 45
   const panelDefaultSize = 50
 
@@ -232,12 +230,11 @@ const BrowserPage = () => {
 
   const handleCreateIndexPanel = useCallback(
     (value: boolean) => {
-      if (value && isVectorSearch) {
+      if (value) {
         history.push(Pages.vectorSearch(instanceId))
-        return
       }
     },
-    [isVectorSearch, instanceId],
+    [instanceId],
   )
 
   const closeRightPanels = useCallback(() => {

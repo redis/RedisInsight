@@ -29,7 +29,7 @@ import { localStorageService } from 'uiSrc/services'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
+import { BrowserStorageItem } from 'uiSrc/constants'
 import RediSearchIndexesList, { Props } from './RediSearchIndexesList'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { setStoreRef } from 'uiSrc/utils/test-store'
@@ -120,19 +120,6 @@ describe('RediSearchIndexesList', () => {
               connectedInstance: {
                 ...state.connections.instances.connectedInstance,
                 modules: [{ name: RedisDefaultModules.Search }],
-              },
-            },
-          },
-          app: {
-            ...state.app,
-            features: {
-              ...state.app.features,
-              featureFlags: {
-                ...state.app.features.featureFlags,
-                features: {
-                  ...state.app.features.featureFlags?.features,
-                  [FeatureFlags.vectorSearchV2]: { flag: true },
-                },
               },
             },
           },

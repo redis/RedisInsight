@@ -11,7 +11,6 @@ export const version341: WhatsNewVersion = {
       title: 'Dedicated Search workspace',
       body: 'A new Search workspace with full index lifecycle support: create indexes from sample or existing data, query indexed data with an assisted editor, and save queries to a Query Library for reuse.',
       location: 'Search workspace in the main database navigation',
-      featureFlag: FeatureFlags.vectorSearchV2,
     },
     {
       id: 'azure-integration-enhancements',
