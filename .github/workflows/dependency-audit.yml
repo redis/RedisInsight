@@ -98,9 +98,8 @@ jobs:
                 title: "${{ github.workflow }} — see step summary for the affected trees"
                 title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-      # The report step always exits 0, so the steps above cover a broken audit.
-      # This covers the other case: a step failing before the report runs (e.g.
-      # the core tests), which would otherwise stop the job with no alert.
+      # Covers a step failing before the report runs (e.g. the core tests),
+      # which would otherwise stop the job with no alert.
       - name: Alert Slack when the audit workflow failed
         if: failure()
         uses: slackapi/slack-github-action@v3.0.5
