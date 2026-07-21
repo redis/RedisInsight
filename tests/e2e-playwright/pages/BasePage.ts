@@ -7,6 +7,11 @@ import { Page, Locator, expect } from '@playwright/test';
  * Navigation is UI-based for cross-platform compatibility (browser + Electron)
  */
 export abstract class BasePage {
+  // Bounded wait for the databases list to render at least one row. Kept short
+  // so an empty/stale list falls through to a reload instead of blocking for
+  // the full test timeout.
+  private static readonly DATABASE_LIST_TIMEOUT_MS = 10_000;
+
   readonly page: Page;
 
   // Common UI elements
@@ -79,27 +84,41 @@ export abstract class BasePage {
     const firstPage = this.page.getByRole('button', { name: 'first page' });
     const nextPage = this.page.getByRole('button', { name: 'next page' });
 
-    await this.page
-      .getByTestId(/^instance-name-/)
-      .first()
-      .waitFor({ state: 'visible' });
+    // Empty list (e.g. a DB was just created via API and the cached home list
+    // is stale) — bail out so gotoDatabase() can reload and retry instead of
+    // blocking here for the full test timeout.
+    if (!(await this.waitForDatabaseList())) return;
 
     // Always start from page 1 so we scan every page.
     if ((await firstPage.isVisible()) && (await firstPage.isEnabled())) {
       await firstPage.click();
-      await this.page
-        .getByTestId(/^instance-name-/)
-        .first()
-        .waitFor({ state: 'visible' });
+      await this.waitForDatabaseList();
     }
 
     while (!(await row.isVisible())) {
       if (!(await nextPage.isVisible()) || !(await nextPage.isEnabled())) break;
       await nextPage.click();
+      await this.waitForDatabaseList();
+    }
+  }
+
+  /**
+   * Wait (briefly) for the databases list to render at least one row.
+   * Returns false instead of throwing when the list is empty, so callers can
+   * reload a stale list rather than blocking for the whole test timeout.
+   */
+  private async waitForDatabaseList(): Promise<boolean> {
+    try {
       await this.page
         .getByTestId(/^instance-name-/)
         .first()
-        .waitFor({ state: 'visible' });
+        .waitFor({
+          state: 'visible',
+          timeout: BasePage.DATABASE_LIST_TIMEOUT_MS,
+        });
+      return true;
+    } catch {
+      return false;
     }
   }
 
