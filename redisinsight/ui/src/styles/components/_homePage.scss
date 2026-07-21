@@ -1,30 +1,6 @@
 @use "../mixins/eui";
 
 .homePage {
-  .addInstanceBtn :global {
-    .euiButton {
-      padding-left: 10px;
-      padding-right: 10px;
-      height: 43px;
-      margin: 0 auto;
-      text-decoration: none !important;
-    }
-
-    .euiButton__text {
-      font-weight: 500 !important;
-    }
-  }
-
-  .importDatabasesBtn :global(.euiButton) {
-    height: 43px;
-    min-width: auto !important;
-
-    :global(.euiButton__text) {
-      display: flex;
-      align-items: center;
-    }
-  }
-
   .contentDL {
     @include eui.euiBreakpoint("xs", "s") {
       & > div:first-of-type {
