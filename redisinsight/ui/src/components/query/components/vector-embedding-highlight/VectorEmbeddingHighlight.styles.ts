@@ -26,11 +26,19 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   .monaco-vector-embedding-expand,
   .monaco-vector-embedding-copy {
     cursor: pointer;
+    /* Monaco renders injected text with pointer-events: none, which would
+       suppress the pointer cursor and hover (tooltip) on these chips. */
+    pointer-events: auto;
     background-color: ${({ theme }) =>
       theme.semantic.color.background.notice200};
     border-radius: ${({ theme }) => theme.core.space.space100};
     padding: 0 ${({ theme }) => theme.core.space.space100};
     font-size: 1.2rem;
+  }
+
+  .monaco-vector-embedding-copy:hover {
+    background-color: ${({ theme }) =>
+      theme.semantic.color.background.notice300};
   }
 
   /* Small gap between the toggle label and its copy button. */
