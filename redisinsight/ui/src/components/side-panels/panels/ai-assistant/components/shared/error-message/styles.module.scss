@@ -18,14 +18,3 @@
   margin-bottom: 4px;
 }
 
-.restartSessionBtn {
-  :global(.euiButton__text) {
-    font-size: 12px !important;
-    font-weight: 400 !important;
-  }
-
-  :global(.euiIcon) {
-    width: 12px;
-    height: 12px;
-  }
-}

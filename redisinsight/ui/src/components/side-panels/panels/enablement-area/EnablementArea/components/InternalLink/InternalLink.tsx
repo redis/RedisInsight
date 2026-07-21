@@ -6,7 +6,6 @@ import { Item as ListItem } from 'uiSrc/components/base/layout/list'
 import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
-import './styles.scss'
 
 export interface Props {
   testId: string

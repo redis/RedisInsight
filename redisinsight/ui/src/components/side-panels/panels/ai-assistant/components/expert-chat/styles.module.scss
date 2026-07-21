@@ -25,13 +25,6 @@
     &:disabled {
       opacity: 0.5;
     }
-
-    :global {
-      .euiButtonEmpty__text {
-        font-size: 12px;
-        line-height: 14px;
-      }
-    }
   }
 
   :global {

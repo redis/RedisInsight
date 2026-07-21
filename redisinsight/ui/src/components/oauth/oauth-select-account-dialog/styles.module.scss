@@ -44,16 +44,3 @@
 .button {
   margin-left: 8px;
 }
-
-:global {
-  .euiRadio {
-    padding-bottom: 4px;
-  }
-  .euiModal .euiModal__flex {
-    max-height: 100% !important;
-    border-radius: 8px;
-  }
-  .euiModalBody__overflow {
-    padding: 0 !important;
-  }
-}

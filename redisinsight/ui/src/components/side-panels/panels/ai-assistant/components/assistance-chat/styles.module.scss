@@ -33,12 +33,6 @@
   .headerBtn {
     width: 24px;
 
-    :global {
-      .euiButtonEmpty__text {
-        margin-inline-start: 0;
-      }
-    }
-
     &:disabled {
       opacity: 0.5;
     }
