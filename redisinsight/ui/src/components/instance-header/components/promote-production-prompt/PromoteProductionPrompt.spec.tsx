@@ -24,7 +24,6 @@ import {
   connectedInstanceSelector,
   instancesSelector,
 } from 'uiSrc/slices/instances/instances'
-import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import { PromoteProductionPrompt } from './PromoteProductionPrompt'
 
 const mockHistoryPush = jest.fn()
@@ -47,11 +46,6 @@ jest.mock('uiSrc/services', () => ({
   },
 }))
 
-jest.mock('uiSrc/slices/app/features', () => ({
-  ...jest.requireActual('uiSrc/slices/app/features'),
-  appFeatureFlagProdModeSelector: jest.fn(),
-}))
-
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn(),
@@ -62,7 +56,6 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 const mockSendEventTelemetry = jest.mocked(sendEventTelemetry)
 const mockLocalStorageGet = jest.mocked(localStorageService.get)
 const mockLocalStorageSet = jest.mocked(localStorageService.set)
-const mockProdModeSelector = jest.mocked(appFeatureFlagProdModeSelector)
 const mockConnectedInstanceSelector = jest.mocked(connectedInstanceSelector)
 const mockOverviewSelector = jest.mocked(connectedInstanceOverviewSelector)
 const mockInstancesSelector = jest.mocked(instancesSelector)
@@ -82,7 +75,6 @@ const buildProductionLikeInstance = () =>
 let store: typeof mockedStore
 
 interface MockOptions {
-  prodMode?: boolean
   connectedInstance?: Instance
   instances?: Instance[]
   totalKeys?: number
@@ -90,13 +82,11 @@ interface MockOptions {
 }
 
 const setMocks = ({
-  prodMode = true,
   connectedInstance = buildProductionLikeInstance(),
   instances,
   totalKeys = 50_000,
   actioned = false,
 }: MockOptions = {}) => {
-  mockProdModeSelector.mockReturnValue(prodMode)
   mockConnectedInstanceSelector.mockReturnValue(connectedInstance)
   mockOverviewSelector.mockReturnValue({ version: '', totalKeys })
   mockInstancesSelector.mockReturnValue({
@@ -137,15 +127,6 @@ describe('PromoteProductionPrompt', () => {
         }),
       }),
     )
-  })
-
-  it('does not render when the prodMode flag is disabled', () => {
-    setMocks({ prodMode: false })
-    renderComponent()
-
-    expect(
-      screen.queryByTestId('promote-production-prompt'),
-    ).not.toBeInTheDocument()
   })
 
   it('does not render when the prompt was already actioned', () => {

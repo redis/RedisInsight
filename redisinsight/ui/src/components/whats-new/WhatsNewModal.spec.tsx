@@ -39,11 +39,6 @@ const getOpenState = (flagsOn = false, version = latestVersion) => {
       `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
       { flag: true },
     )
-    state = set(
-      state,
-      `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
-      { flag: true },
-    )
   }
   return state
 }
@@ -122,9 +117,6 @@ describe('WhatsNewModal', () => {
     expect(screen.getByTestId('whats-new-card-vector-sets')).toBeInTheDocument()
     expect(
       screen.queryByTestId('whats-new-card-inactive-vector-sets'),
-    ).not.toBeInTheDocument()
-    expect(
-      screen.queryByTestId('whats-new-card-inactive-dev-vs-prod-mode'),
     ).not.toBeInTheDocument()
   })
 
