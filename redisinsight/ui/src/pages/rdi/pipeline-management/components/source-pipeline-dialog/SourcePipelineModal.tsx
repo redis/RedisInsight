@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { keys } from '@elastic/eui'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
@@ -14,6 +13,7 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { ContractsIcon, UploadIcon } from 'uiSrc/components/base/icons'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
+import { KeyboardKeys } from 'uiSrc/constants'
 import { Modal } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { useTranslation } from 'uiSrc/i18n'
@@ -80,7 +80,7 @@ const SourcePipelineDialog = () => {
     event: React.KeyboardEvent<HTMLDivElement>,
     callback: () => void,
   ) => {
-    if (event.key === keys.ENTER) callback()
+    if (event.key === KeyboardKeys.ENTER) callback()
   }
 
   if (isShowDownloadDialog) {

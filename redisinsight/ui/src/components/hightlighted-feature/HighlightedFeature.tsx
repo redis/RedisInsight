@@ -1,9 +1,8 @@
 import { isString } from 'lodash'
-import { ToolTipPositions } from '@elastic/eui/src/components/tool_tip/tool_tip'
 import cx from 'classnames'
 import React from 'react'
 import { FeaturesHighlightingType } from 'uiSrc/constants/featuresHighlighting'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import styles from './styles.module.scss'
@@ -18,7 +17,7 @@ export interface Props {
   onClick?: () => void
   wrapperClassName?: string
   dotClassName?: string
-  tooltipPosition?: ToolTipPositions
+  tooltipPosition?: RiTooltipProps['position']
   hideFirstChild?: boolean
   dataTestPostfix?: string
 }

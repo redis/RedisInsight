@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { EuiComboBoxOptionOption } from '@elastic/eui'
+import type { AutoTagOption } from 'uiSrc/components/base/forms/combo-box/AutoTag'
 import { RelativeWidthSizes } from 'uiSrc/components/virtual-table/interfaces'
 import {
   CapabilityStorageItem,
@@ -189,7 +189,7 @@ const appContextSlice = createSlice({
     },
     setBrowserTreeDelimiter: (
       state,
-      { payload }: { payload: EuiComboBoxOptionOption[] },
+      { payload }: { payload: AutoTagOption[] },
     ) => {
       state.dbConfig.treeViewDelimiter = payload as any
       setDBConfigStorageField(

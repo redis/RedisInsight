@@ -1,5 +1,5 @@
 import React from 'react'
-import { PopoverAnchorPosition } from '@elastic/eui'
+import type { TourStepProps } from 'uiSrc/components/base/display/tour/types'
 import { OnboardingTour } from 'uiSrc/components'
 import { OnboardingTourOptions } from 'uiSrc/components/onboarding-tour'
 import { Props as OnboardingTourProps } from 'uiSrc/components/onboarding-tour/OnboardingTourWrapper'
@@ -7,7 +7,7 @@ import { Maybe } from 'uiSrc/utils/types'
 
 interface Props extends Omit<OnboardingTourProps, 'children' | 'options'> {
   options: Maybe<OnboardingTourOptions>
-  anchorPosition?: PopoverAnchorPosition
+  anchorPosition?: TourStepProps['placement']
 }
 
 const renderOnboardingTourWithChild = (

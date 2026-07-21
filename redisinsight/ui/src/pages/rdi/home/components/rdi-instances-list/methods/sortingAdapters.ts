@@ -1,6 +1,5 @@
-import type { PropertySort } from '@elastic/eui'
 import type { SortingState } from 'uiSrc/components/base/layout/table'
-import { BrowserStorageItem, DEFAULT_SORT } from 'uiSrc/constants'
+import { BrowserStorageItem, DEFAULT_SORT, PropertySort } from 'uiSrc/constants'
 import { localStorageService } from 'uiSrc/services'
 
 // This is for backwards compatibility with the old sorting state format

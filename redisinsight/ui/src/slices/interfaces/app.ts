@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { EuiComboBoxOptionOption } from '@elastic/eui'
+import type { AutoTagOption } from 'uiSrc/components/base/forms/combo-box/AutoTag'
 import { RelativeWidthSizes } from 'uiSrc/components/virtual-table/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import {
@@ -84,7 +84,7 @@ export interface StateAppContext {
   contextRdiInstanceId: string
   lastPage: string
   dbConfig: {
-    treeViewDelimiter: EuiComboBoxOptionOption[]
+    treeViewDelimiter: AutoTagOption[]
     treeViewSort: SortOrder
     slowLogDurationUnit: DurationUnits
     showHiddenRecommendations: boolean

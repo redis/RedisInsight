@@ -1,15 +1,12 @@
-import { ToolTipPositions } from '@elastic/eui'
 import React from 'react'
 import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 
-export interface Props
-  extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {
+export interface Props extends Omit<RiTooltipProps, 'children' | 'delay'> {
   value: string | JSX.Element
   tooltipContent: string | JSX.Element
   expanded?: boolean
   title?: string
   truncateLength?: number
-  position?: ToolTipPositions
 }
 
 const FormattedValue = ({

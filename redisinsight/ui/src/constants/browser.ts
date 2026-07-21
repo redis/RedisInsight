@@ -1,7 +1,7 @@
-import { EuiComboBoxOptionOption } from '@elastic/eui'
+import type { AutoTagOption } from 'uiSrc/components/base/forms/combo-box/AutoTag'
 import { KeyValueFormat, SortOrder } from './keys'
 
-export const DEFAULT_DELIMITER: EuiComboBoxOptionOption = {
+export const DEFAULT_DELIMITER: AutoTagOption = {
   label: ':',
   value: ':',
 }

@@ -1,5 +1,5 @@
 import { orderBy } from 'lodash'
-import { PropertySort } from '@elastic/eui'
+import { PropertySort } from 'uiSrc/constants'
 import { Instance, RdiInstance } from 'uiSrc/slices/interfaces'
 import { getDbIndex } from '../longNames'
 

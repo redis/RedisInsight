@@ -1,6 +1,6 @@
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import React, { useEffect, useState } from 'react'
-import { PopoverAnchorPosition } from '@elastic/eui/src/components/popover/popover'
+import type { TourStepProps } from 'uiSrc/components/base/display/tour/types'
 import { appFeatureOnboardingSelector } from 'uiSrc/slices/app/features'
 
 import OnboardingTour from './OnboardingTour'
@@ -9,7 +9,7 @@ import { OnboardingTourOptions } from './interfaces'
 export interface Props {
   options: OnboardingTourOptions
   children: React.ReactElement
-  anchorPosition?: PopoverAnchorPosition
+  anchorPosition?: TourStepProps['placement']
   panelClassName?: string
   anchorWrapperClassName?: string
   preventPropagation?: boolean
