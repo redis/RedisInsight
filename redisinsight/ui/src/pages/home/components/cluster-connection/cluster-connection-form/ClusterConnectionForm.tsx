@@ -27,6 +27,7 @@ import {
   TextInput,
 } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import { HostInfoTooltipContent } from '../../host-info-tooltip-content/HostInfoTooltipContent'
 
 import { ScrollableWrapper } from '../../ManualConnection.styles'
@@ -63,12 +64,6 @@ const fieldDisplayNames: Values = {
   password: 'Admin Password',
 }
 
-const hostInfo: RiInfoIconProps = {
-  content: HostInfoTooltipContent({ includeAutofillInfo: true }),
-  placement: 'right',
-  maxWidth: '100%',
-}
-
 const ClusterConnectionForm = (props: Props) => {
   const {
     host,
@@ -81,6 +76,14 @@ const ClusterConnectionForm = (props: Props) => {
     onSubmit,
     loading,
   } = props
+
+  const { t } = useTranslation()
+
+  const hostInfo: RiInfoIconProps = {
+    content: HostInfoTooltipContent({ includeAutofillInfo: true, t }),
+    placement: 'right',
+    maxWidth: '100%',
+  }
 
   const [errors, setErrors] = useState<FormikErrors<Values>>(
     host || port || username || password ? {} : fieldDisplayNames,

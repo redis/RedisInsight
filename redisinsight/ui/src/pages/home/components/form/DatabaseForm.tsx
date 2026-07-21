@@ -25,6 +25,7 @@ import {
   TextInput,
 } from 'uiSrc/components/base/inputs'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { useTranslation } from 'uiSrc/i18n'
 import { HostInfoTooltipContent } from '../host-info-tooltip-content/HostInfoTooltipContent'
 
 interface IShowFields {
@@ -32,12 +33,6 @@ interface IShowFields {
   host: boolean
   port: boolean
   timeout: boolean
-}
-
-const hostInfo: RiInfoIconProps = {
-  content: HostInfoTooltipContent({ includeAutofillInfo: true }),
-  placement: 'right',
-  maxWidth: '100%',
 }
 
 const CONNECTION_FAMILY_OPTIONS = [
@@ -70,7 +65,15 @@ const DatabaseForm = (props: Props) => {
     readyOnlyFields = [],
   } = props
 
+  const { t } = useTranslation()
+
   const { server } = useAppSelector(appInfoSelector)
+
+  const hostInfo: RiInfoIconProps = {
+    content: HostInfoTooltipContent({ includeAutofillInfo: true, t }),
+    placement: 'right',
+    maxWidth: '100%',
+  }
 
   const isShowPort =
     server?.buildType !== BuildType.RedisStack && showFields.port
