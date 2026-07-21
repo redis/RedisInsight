@@ -18,33 +18,19 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     font-size: 0;
   }
 
-  /* Injected chips: the collapsed toggle label, the standalone expanded arrow
-     and the copy button beside the collapsed label. Each is its own rounded
-     tinted pill. Only horizontal padding — vertical padding would overflow
-     Monaco's fixed line height, the font size provides the vertical inset. */
+  /* Injected chips: the collapsed toggle label and the standalone expanded
+     arrow. Each is its own rounded tinted pill. Only horizontal padding —
+     vertical padding would overflow Monaco's fixed line height, the font size
+     provides the vertical inset instead. The copy button is not a chip: it is
+     the real CopyButton rendered into a floating content widget on hover. */
   .monaco-vector-embedding-toggle,
-  .monaco-vector-embedding-expand,
-  .monaco-vector-embedding-copy {
+  .monaco-vector-embedding-expand {
     cursor: pointer;
     background-color: ${({ theme }) =>
       theme.semantic.color.background.notice200};
     border-radius: ${({ theme }) => theme.core.space.space100};
     padding: 0 ${({ theme }) => theme.core.space.space100};
+    margin-right: ${({ theme }) => theme.core.space.space100};
     font-size: 1.2rem;
-  }
-
-  /* Small gap between the toggle label and its copy button. */
-  .monaco-vector-embedding-toggle {
-    margin-right: ${({ theme }) => theme.core.space.space050};
-  }
-
-  /* Copy button sits next to the collapsed toggle as a separate pill. */
-  .monaco-vector-embedding-copy {
-    color: ${({ theme }) => theme.semantic.color.text.informative400};
-    margin-right: ${({ theme }) => theme.core.space.space100};
-  }
-
-  .monaco-vector-embedding-expand {
-    margin-right: ${({ theme }) => theme.core.space.space100};
   }
 `
