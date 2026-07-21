@@ -112,26 +112,6 @@
   thead {
     display: none;
   }
-
-  :global {
-    .euiTableCellContent {
-      padding: 0;
-    }
-    .euiTableRow {
-      td:first-child,
-      td:last-child {
-        border: none;
-      }
-
-      &:hover {
-        background-color: inherit !important;
-      }
-    }
-
-    .euiTableRowCell {
-      border: none;
-    }
-  }
 }
 
 .startTitle {

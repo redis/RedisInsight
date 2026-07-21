@@ -12,17 +12,6 @@ $animation-duration: 300ms;
 .loading {
   display: block;
   width: 100%;
-
-  :global {
-    .euiLoadingContent__singleLine {
-      height: 46px;
-      margin-bottom: 10px;
-    }
-
-    .euiLoadingContent__singleLine:last-child:not(:only-child) {
-      width: 100%;
-    }
-  }
 }
 
 .header {
@@ -102,12 +91,6 @@ $animation-duration: 300ms;
 
 .tooltip {
   max-width: 314px !important;
-}
-
-.hideCheckbox {
-  > :global(.euiCheckbox__square + .euiCheckbox__input:not(:checked)) {
-    background: var(--recommendationBgColor) !important;
-  }
 }
 
 .hideBtn {
