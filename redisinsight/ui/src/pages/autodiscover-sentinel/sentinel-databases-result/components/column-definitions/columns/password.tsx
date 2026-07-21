@@ -5,10 +5,8 @@ import type {
   ModifiedSentinelMaster,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
-import {
-  SentinelDatabaseIds,
-  SentinelDatabaseTitles,
-} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
+import i18n from 'uiSrc/i18n'
+import { SentinelDatabaseIds } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 import { PasswordCell } from '../components'
 
 export const passwordColumn = (
@@ -20,7 +18,7 @@ export const passwordColumn = (
   ) => boolean,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: SentinelDatabaseTitles.Password,
+    header: i18n.t('autodiscover.sentinel.column.password'),
     id: SentinelDatabaseIds.Password,
     accessorKey: SentinelDatabaseIds.Password,
     cell: ({

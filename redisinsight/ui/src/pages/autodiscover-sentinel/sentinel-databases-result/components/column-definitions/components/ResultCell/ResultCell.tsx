@@ -8,6 +8,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { ColorText } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { AddErrorButton } from '../AddErrorButton/AddErrorButton'
 import type { ResultCellProps } from './ResultCell.types'
@@ -22,6 +23,8 @@ export const ResultCell = ({
   addActions,
   onAddInstance,
 }: ResultCellProps) => {
+  const { t } = useTranslation()
+
   return (
     <Row
       data-testid={`status_${name}_${status}`}
@@ -34,10 +37,14 @@ export const ResultCell = ({
         <CellText>{message}</CellText>
       )}
       {!loading && status !== AddRedisDatabaseStatus.Success && (
-        <RiTooltip position="right" title="Error" content={message}>
+        <RiTooltip
+          position="right"
+          title={t('autodiscover.sentinel.cell.error')}
+          content={message}
+        >
           <FlexItem direction="row" grow={false}>
             <ColorText size="S" color="danger" style={{ cursor: 'pointer' }}>
-              Error
+              {t('autodiscover.sentinel.cell.error')}
             </ColorText>
             <Spacer size="s" direction="horizontal" />
             <RiIcon size="M" type="ToastDangerIcon" color="danger600" />
