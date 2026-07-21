@@ -28,15 +28,6 @@
 }
 
 .accordionWithSubTitle {
-  :global(.euiAccordion__triggerWrapper) {
-    padding: 8px 16px !important;
-    height: 60px;
-    max-height: 60px;
-  }
-  :global(.euiCollapsibleNavGroup__title) {
-    height: auto;
-  }
-
   .subtitle {
     font-size: 12px !important;
     margin-top: -2px;
@@ -48,44 +39,6 @@
   position: relative;
   height: 100%;
   overflow: auto;
-
-  :global {
-    .euiAccordion {
-      &:not(:last-of-type) {
-        .euiAccordion__triggerWrapper {
-          border-bottom: 0;
-        }
-      }
-    }
-    .euiAccordion__triggerWrapper {
-      background-color: var(--euiColorEmptyShade);
-      margin-top: -2px;
-    }
-    .euiAccordion-isOpen {
-      .euiAccordion__triggerWrapper {
-        background-color: var(--tableRowSelectedColor) !important;
-        border-color: var(--euiColorPrimary);
-        border-bottom: 0 !important;
-      }
-      .euiAccordion__childWrapper {
-        border-color: var(--euiColorPrimary);
-        border-width: 2px !important;
-      }
-    }
-
-    .euiAccordion__childWrapper {
-      background-color: var(--browserTableRowEven) !important;
-      border: 1px solid var(--euiColorLightestShade);
-      border-top: 0 !important;
-
-      .euiFieldText,
-      .euiFieldNumber,
-      .euiSelect,
-      .euiSuperSelectControl {
-        background-color: var(--browserTableRowEven) !important;
-      }
-    }
-  }
 }
 
 .warning {

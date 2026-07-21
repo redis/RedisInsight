@@ -3,45 +3,6 @@
   height: 36px;
   flex-shrink: 0;
   position: relative;
-
-  :global {
-    .euiFormControlLayout {
-      .euiSuperSelectControl {
-        display: flex;
-        align-items: center;
-        height: 36px !important;
-        background-color: var(--euiColorEmptyShade) !important;
-        box-shadow: none !important;
-        border: 1px solid var(--controlsBorderColor) !important;
-        border-left: 0 !important;
-        border-right: 0 !important;
-        padding: 0 25px 0 6px !important;
-
-        &.euiSuperSelect--isOpen__button,
-        &:focus,
-        &:not(:disabled):hover {
-          background-color: var(--euiColorEmptyShade) !important;
-        }
-      }
-    }
-    .euiPopover:not(.euiSuperSelect) {
-      svg {
-        width: 18px !important;
-        height: 18px !important;
-      }
-    }
-    .euiPopover.euiPopover-isOpen {
-      .euiIcon {
-        color: var(--euiTextSubduedColorHover);
-      }
-    }
-    .euiFormControlLayoutIcons {
-      :global(.euiIcon) {
-        width: 16px;
-        height: 12px;
-      }
-    }
-  }
 }
 
 @include global.insights-open {
@@ -77,9 +38,6 @@
   margin-left: 6px;
   height: 16px !important;
   width: 16px !important;
-  &:global(.euiIcon) {
-    color: var(--inputTextColor) !important;
-  }
 }
 
 .unsupported {
@@ -89,10 +47,6 @@
   .allTypesIcon {
     cursor: not-allowed;
     color: var(--euiTextSubduedColor);
-  }
-
-  :global(.euiFormControlLayoutIcons) {
-    display: none;
   }
 }
 
