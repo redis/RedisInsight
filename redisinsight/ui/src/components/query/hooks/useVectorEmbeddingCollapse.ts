@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { useTranslation } from 'uiSrc/i18n'
@@ -9,26 +9,23 @@ import {
   findVectorEmbeddingPlaceholders,
   getEmbeddingKey,
   getVectorEmbeddingValue,
+  handleCopy,
   Nullable,
   VectorEmbeddingRange,
 } from 'uiSrc/utils'
 
-import {
-  UseVectorEmbeddingCollapseProps,
-  UseVectorEmbeddingCollapseReturn,
-} from './useVectorEmbeddingCollapse.types'
+import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.types'
 
 const EMBEDDING_HIDDEN_CLASS = 'monaco-vector-embedding-hidden'
-// Collapsed label (chip) and standalone expanded arrow.
+// Collapsed label, standalone expanded arrow, and the copy button beside the
+// collapsed label.
 const EMBEDDING_TOGGLE_CLASS = 'monaco-vector-embedding-toggle'
 const EMBEDDING_EXPAND_CLASS = 'monaco-vector-embedding-expand'
+const EMBEDDING_COPY_CLASS = 'monaco-vector-embedding-copy'
 const ARROW_COLLAPSED = '▸'
 const ARROW_EXPANDED = '▾'
+const COPY_ICON = '⧉'
 const EDIT_SOURCE = 'vector-embedding-collapse'
-const COPY_WIDGET_ID = 'vector-embedding-copy-widget'
-// Grace period so moving the pointer from the chip to the floating button
-// doesn't dismiss it.
-const HOVER_HIDE_DELAY = 150
 
 const toMonacoRange = (
   monaco: typeof monacoEditor,
@@ -52,11 +49,10 @@ const toMonacoRange = (
  * blob were gone — while the full value is kept in the placeholder store and
  * re-inserted at every exit path: expanding, copying and submitting/saving.
  *
- * Hovering a collapsed chip shows a floating copy button (a Monaco content
- * widget positioned above the chip) whose DOM node is returned so the host
- * component can portal the real CopyButton into it — a React component can't
- * be injected inline, but a content widget floats above the line and does not
- * disturb the query text.
+ * While collapsed, a copy button is shown next to the chip; clicking it copies
+ * the full embedding without expanding. The chip and copy button are injected
+ * text (a real React component can't be injected inline in Monaco); the copy
+ * button gets a native "Copy" tooltip set lazily on hover.
  *
  * All detection and slicing works off the live model text (not the React
  * `query` state, which lags the model by a render). Every detected embedding
@@ -66,30 +62,14 @@ const toMonacoRange = (
 export const useVectorEmbeddingCollapse = ({
   monacoObjects,
   query,
-}: UseVectorEmbeddingCollapseProps): UseVectorEmbeddingCollapseReturn => {
+}: UseVectorEmbeddingCollapseProps) => {
   const { t } = useTranslation()
-  // Value shown by the floating copy button; null while it is hidden.
-  const [copyValue, setCopyValue] = useState<Nullable<string>>(null)
-
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
   const mouseListener = useRef<Nullable<monacoEditor.IDisposable>>(null)
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   // Content keys the user explicitly expanded; everything else auto-collapses.
   const userExpandedKeys = useRef<Set<string>>(new Set())
-
-  // Floating copy-button widget: a portal target the host component renders
-  // CopyButton into, plus the position that drives its visibility.
-  const copyNode = useRef<Nullable<HTMLDivElement>>(null)
-  if (!copyNode.current && typeof document !== 'undefined') {
-    copyNode.current = document.createElement('div')
-  }
-  const copyWidget = useRef<Nullable<monacoEditor.editor.IContentWidget>>(null)
-  const copyPosition = useRef<Nullable<monacoEditor.IPosition>>(null)
-  const hideTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
-  const moveListener = useRef<Nullable<monacoEditor.IDisposable>>(null)
-  // Placeholder id the copy button is currently shown for (dedupes mousemove).
-  const shownPlaceholderId = useRef<Nullable<number>>(null)
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -134,8 +114,8 @@ export const useVectorEmbeddingCollapse = ({
 
     // Collapsed embeddings: hide the whole placeholder text (otherwise the
     // Redis tokenizer would syntax-colour it and split the chip background per
-    // token) and render the chip as a single injected span, which is not
-    // tokenised so it stays one clean pill.
+    // token), render the label chip as an injected span, and a copy button
+    // after it.
     findVectorEmbeddingPlaceholders(text).forEach((placeholder) => {
       decorations.push({
         range: toMonacoRange(monaco, model, placeholder.range),
@@ -147,6 +127,10 @@ export const useVectorEmbeddingCollapse = ({
               { dimensions: placeholder.dimensions },
             )}`,
             inlineClassName: EMBEDDING_TOGGLE_CLASS,
+          },
+          after: {
+            content: COPY_ICON,
+            inlineClassName: EMBEDDING_COPY_CLASS,
           },
         },
       })
@@ -173,118 +157,14 @@ export const useVectorEmbeddingCollapse = ({
 
     if (mouseListener.current) return
 
-    const cancelHide = () => {
-      if (hideTimer.current) {
-        clearTimeout(hideTimer.current)
-        hideTimer.current = null
-      }
-    }
-
-    const hideCopy = () => {
-      cancelHide()
-      hideTimer.current = setTimeout(() => {
-        copyPosition.current = null
-        shownPlaceholderId.current = null
-        setCopyValue(null)
-        if (copyWidget.current) editor.layoutContentWidget(copyWidget.current)
-      }, HOVER_HIDE_DELAY)
-    }
-
-    const showCopyAt = (offset: number) => {
-      const currentModel = editor.getModel()
-      if (!currentModel) return
-      const placeholder = findVectorEmbeddingPlaceholders(
-        currentModel.getValue(),
-      ).find((p) => offset >= p.range.start && offset <= p.range.end)
-      const value = placeholder
-        ? getVectorEmbeddingValue(placeholder.id)
-        : undefined
-      if (value === undefined || !placeholder) {
-        hideCopy()
-        return
-      }
-      cancelHide()
-      // Already showing this one — don't churn state on every mousemove.
-      if (shownPlaceholderId.current === placeholder.id) return
-      shownPlaceholderId.current = placeholder.id
-      copyPosition.current = currentModel.getPositionAt(placeholder.range.start)
-      setCopyValue(value)
-      if (copyWidget.current) editor.layoutContentWidget(copyWidget.current)
-    }
-
-    // Register the copy widget and portal-target node once.
-    if (!copyWidget.current && copyNode.current) {
-      const node = copyNode.current
-      node.addEventListener('mouseenter', cancelHide)
-      node.addEventListener('mouseleave', hideCopy)
-      copyWidget.current = {
-        getId: () => COPY_WIDGET_ID,
-        getDomNode: () => node,
-        getPosition: () =>
-          copyPosition.current
-            ? {
-                position: copyPosition.current,
-                preference: [
-                  monaco.editor.ContentWidgetPositionPreference.ABOVE,
-                  monaco.editor.ContentWidgetPositionPreference.BELOW,
-                ],
-              }
-            : null,
-      }
-      editor.addContentWidget(copyWidget.current)
-    }
-
-    // Show the copy button while hovering a collapsed chip; hide otherwise.
-    // Use Monaco's mouse event (same target resolution as onMouseDown) — a raw
-    // DOM mouseover can't resolve a model position for injected-text spans.
-    moveListener.current = editor.onMouseMove((e) => {
-      const element = e.target.element as HTMLElement | null
-      if (
-        element?.classList.contains(EMBEDDING_TOGGLE_CLASS) &&
-        e.target.position
-      ) {
-        const currentModel = editor.getModel()
-        if (currentModel) {
-          showCopyAt(currentModel.getOffsetAt(e.target.position))
-        }
-        return
-      }
-      hideCopy()
-    })
-
-    // Copying a selection that contains collapsed embeddings puts the full
-    // values on the clipboard instead of the placeholders.
-    const domNode = editor.getContainerDomNode()
-    const handleCopyEvent = (e: ClipboardEvent) => {
-      const selection = editor.getSelection()
-      const currentModel = editor.getModel()
-      if (!selection || !currentModel || !e.clipboardData) return
-
-      const selected = currentModel.getValueInRange(selection)
-      const expanded = expandVectorEmbeddings(selected)
-      if (expanded === selected) return
-
-      e.preventDefault()
-      e.stopPropagation()
-      e.clipboardData.setData('text/plain', expanded)
-    }
-
-    domNode.addEventListener('mouseleave', hideCopy)
-    domNode.addEventListener('copy', handleCopyEvent, true)
-    removeDomListeners.current = () => {
-      domNode.removeEventListener('mouseleave', hideCopy)
-      domNode.removeEventListener('copy', handleCopyEvent, true)
-    }
-
     mouseListener.current = editor.onMouseDown((e) => {
       const element = e.target.element as HTMLElement | null
       const classList = element?.classList
-      if (
-        !classList?.contains(EMBEDDING_TOGGLE_CLASS) &&
-        !classList?.contains(EMBEDDING_EXPAND_CLASS)
-      ) {
-        return
-      }
+      const isCopy = classList?.contains(EMBEDDING_COPY_CLASS)
+      const isToggle =
+        classList?.contains(EMBEDDING_TOGGLE_CLASS) ||
+        classList?.contains(EMBEDDING_EXPAND_CLASS)
+      if (!isCopy && !isToggle) return
 
       const { position } = e.target
       const currentModel = editor.getModel()
@@ -292,6 +172,18 @@ export const useVectorEmbeddingCollapse = ({
 
       const currentText = currentModel.getValue()
       const offset = currentModel.getOffsetAt(position)
+
+      // A click on the copy button copies the full embedding value.
+      if (isCopy) {
+        const target = findVectorEmbeddingPlaceholders(currentText).find(
+          (p) => offset >= p.range.start && offset <= p.range.end,
+        )
+        const value = target ? getVectorEmbeddingValue(target.id) : undefined
+        if (value === undefined) return
+        e.event.preventDefault()
+        handleCopy(value)
+        return
+      }
 
       // A click on a collapsed chip expands it back to the stored value.
       const placeholder = findVectorEmbeddingPlaceholders(currentText).find(
@@ -335,34 +227,51 @@ export const useVectorEmbeddingCollapse = ({
         },
       ])
     })
+
+    const domNode = editor.getContainerDomNode()
+
+    // Native "Copy" tooltip on the copy button. Set lazily on hover because
+    // Monaco re-renders the injected span (a one-off set would be lost).
+    const copyTitle = t('query.editor.vectorEmbedding.copy')
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target?.classList.contains(EMBEDDING_COPY_CLASS) && !target.title) {
+        target.title = copyTitle
+      }
+    }
+
+    // Copying a selection that contains collapsed embeddings puts the full
+    // values on the clipboard instead of the placeholders.
+    const handleCopyEvent = (e: ClipboardEvent) => {
+      const selection = editor.getSelection()
+      const currentModel = editor.getModel()
+      if (!selection || !currentModel || !e.clipboardData) return
+
+      const selected = currentModel.getValueInRange(selection)
+      const expanded = expandVectorEmbeddings(selected)
+      if (expanded === selected) return
+
+      e.preventDefault()
+      e.stopPropagation()
+      e.clipboardData.setData('text/plain', expanded)
+    }
+
+    domNode.addEventListener('mouseover', handleMouseOver)
+    domNode.addEventListener('copy', handleCopyEvent, true)
+    removeDomListeners.current = () => {
+      domNode.removeEventListener('mouseover', handleMouseOver)
+      domNode.removeEventListener('copy', handleCopyEvent, true)
+    }
   }, [query, t, monacoObjects])
 
-  // Re-layout the widget after the portal has rendered CopyButton into it, so
-  // Monaco positions it against the real button size (not the empty node).
-  useEffect(() => {
-    const editor = monacoObjects.current?.editor
-    if (editor && copyWidget.current) {
-      editor.layoutContentWidget(copyWidget.current)
-    }
-  }, [copyValue, monacoObjects])
-
-  // Detach the editor listeners and widget on unmount.
+  // Detach the editor listeners on unmount.
   useEffect(
     () => () => {
-      if (hideTimer.current) clearTimeout(hideTimer.current)
       mouseListener.current?.dispose()
       mouseListener.current = null
-      moveListener.current?.dispose()
-      moveListener.current = null
       removeDomListeners.current?.()
       removeDomListeners.current = null
-      const editor = monacoObjects.current?.editor
-      if (editor && copyWidget.current) {
-        editor.removeContentWidget(copyWidget.current)
-      }
     },
-    [monacoObjects],
+    [],
   )
-
-  return { copyWidgetNode: copyNode.current, copyValue }
 }
