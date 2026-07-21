@@ -57,7 +57,7 @@ jobs:
       docker: ${{ steps.filter.outputs.docker }}
       infra: ${{ steps.filter.outputs.infra }}
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - uses: dorny/paths-filter@v4.0.2
         id: filter
         with:
@@ -254,6 +254,6 @@ jobs:
     needs: [frontend-tests, backend-tests, integration-tests]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts

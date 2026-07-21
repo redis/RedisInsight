@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Frontend tests
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs

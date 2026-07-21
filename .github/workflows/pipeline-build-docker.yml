@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       # SSH Debug
       - name: Enable SSH

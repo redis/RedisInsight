@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     name: tsc baselines
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Install dependencies
         uses: ./.github/actions/install-all-build-libs
