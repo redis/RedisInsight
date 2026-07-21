@@ -26,6 +26,20 @@ jobs:
         with:
           ref: ${{ inputs.branch || github.ref }}
 
+      # Label Slack with the tree actually audited. A manual run can check out a
+      # different ref via inputs.branch, so github.ref_name/github.sha (the
+      # trigger ref) would misname it.
+      - name: Resolve audited ref
+        id: audited
+        env:
+          INPUT_BRANCH: ${{ inputs.branch }}
+          TRIGGER_REF: ${{ github.ref_name }}
+        run: |
+          {
+            echo "ref=${INPUT_BRANCH:-$TRIGGER_REF}"
+            echo "sha=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
       # `npm audit` reads the committed lockfiles and the core tests are plain
       # `node --test` — neither needs `node_modules`, so we only set up Node.
       - name: Setup Node
@@ -49,7 +63,7 @@ jobs:
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
           payload: |
             channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
-            text: "<!here> *Dependency audit — ${{ steps.report.outputs.total_hc }} high/critical* — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
+            text: "<!here> *Dependency audit — ${{ steps.report.outputs.total_hc }} high/critical* — `${{ github.repository }}` on `${{ steps.audited.outputs.ref }}` @ `${{ steps.audited.outputs.sha }}`"
             attachments:
               - color: "${{ steps.report.outputs.color }}"
                 title: "${{ github.workflow }}"
@@ -78,7 +92,7 @@ jobs:
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
           payload: |
             channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
-            text: "<!here> *Dependency audit could not run* — one or more lockfiles failed to audit; the vulnerability report is incomplete — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
+            text: "<!here> *Dependency audit could not run* — one or more lockfiles failed to audit; the vulnerability report is incomplete — `${{ github.repository }}` on `${{ steps.audited.outputs.ref }}` @ `${{ steps.audited.outputs.sha }}`"
             attachments:
               - color: "#cc0000"
                 title: "${{ github.workflow }} — see step summary for the affected trees"
