@@ -1,28 +1,8 @@
+// EUI button/popover/icon overrides removed (Redis UI no longer renders
+// .euiButton*/.euiPopover*/.euiIcon). Live custom classes kept.
 .wrapper {
   width: 100%;
   max-width: 480px;
-
-  :global(.euiPopover) {
-    width: 100%;
-  }
-
-  .button {
-    &[class*='euiButton--secondary']:not([class*='isDisabled']) {
-      &:hover {
-        background-color: var(--euiColorSecondary) !important;
-        border-color: var(--euiColorSecondary) !important;
-        color: var(--euiColorPrimaryText) !important;
-      }
-    }
-    &:global(.euiButton.euiButton-isDisabled) {
-      color: var(--buttonSecondaryDisabledTextColor) !important;
-    }
-
-    :global(.euiIcon) {
-      width: 14px;
-      height: 14px;
-    }
-  }
 }
 
 .popover {
@@ -31,13 +11,6 @@
 
 .panelPopover {
   border-color: var(--euiColorPrimary) !important;
-  :global(.euiPopover__panelArrow--bottom:before) {
-    border-bottom-color: var(--euiColorPrimary) !important;
-  }
-
-  :global(.euiPopover__panelArrow--top:before) {
-    border-top-color: var(--euiColorPrimary) !important;
-  }
 }
 
 .popoverAnchor {

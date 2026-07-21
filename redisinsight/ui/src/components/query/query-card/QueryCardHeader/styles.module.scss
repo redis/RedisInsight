@@ -28,16 +28,6 @@ $marginIcon: 12px;
   font: normal normal normal 13px/17px Graphik, sans-serif !important;
   letter-spacing: -0.13px;
   overflow: hidden;
-
-  :global(.euiToolTipAnchor) {
-    display: inline-block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-    max-width: 100%;
-    vertical-align: middle;
-  }
 }
 
 .time {
@@ -73,23 +63,10 @@ $marginIcon: 12px;
 
 .dropdownProfileIcon {
   padding: inherit !important;
-  :global {
-    .euiSuperSelectControl.euiFormControlLayoutIcons {
-      display: none !important;
-    }
-  }
 }
 
 .dropdownProfileOption {
   display: inherit !important;
-}
-
-.dropdownProfileItem {
-  :global {
-    .euiContextMenu__icon {
-      display: none !important;
-    }
-  }
 }
 
 .executionTime {
@@ -159,44 +136,8 @@ $marginIcon: 12px;
   }
 }
 
-.changeView:global(.euiSuperSelectControl) {
-  border: none !important;
-  background-color: inherit !important;
-  color: var(--iconsDefaultColor) !important;
-  width: 46px;
-  padding-right: 0;
-
-  & ~ div {
-    right: 0px;
-    svg {
-      width: 10px !important;
-      height: 10px !important;
-    }
-  }
-}
-
 .changeViewItem {
   overflow-wrap: break-word;
-  :global {
-    .euiContextMenuItem__text {
-      overflow: visible;
-    }
-    .euiContextMenu__icon {
-      margin-right: 0;
-    }
-  }
-  &:global(.euiContextMenuItem-isDisabled) {
-    padding-top: 0;
-    padding-bottom: 0;
-    min-height: 12px !important;
-    cursor: auto !important;
-    &:hover {
-      background: transparent !important;
-    }
-    :global(.euiContextMenu__icon) {
-      height: 0;
-    }
-  }
 }
 
 .separator {

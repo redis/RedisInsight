@@ -1,39 +1,7 @@
+// EUI overrides (.euiTitle/.euiFormControlLayout/.euiRadioGroup*/.euiFormHelpText/
+// .euiCheckbox*/.euiButton.btn-back and the .euiTable* result-table rules) removed
+// — Redis UI no longer renders those classes. Live layout/custom rules kept.
 .homePage {
-  .euiTitle {
-    padding-bottom: 15px;
-    font-size: 18px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .euiFormControlLayout {
-    max-width: 100% !important;
-
-    input,
-    select,
-    textarea {
-      max-width: 100% !important;
-      font-size: 14px;
-      line-height: 24px;
-    }
-  }
-
-  .euiRadioGroup__item {
-    display: inline-block;
-    vertical-align: top !important;
-    margin-top: 1px !important;
-    margin-bottom: 3px !important;
-    margin-right: 30px !important;
-  }
-
-  .euiFormHelpText {
-    color: var(--euiColorMediumShade);
-  }
-
-  .euiCheckbox__label {
-    font-size: 14px !important;
-  }
-
   textarea {
     resize: none;
     max-height: 85px;
@@ -84,34 +52,6 @@
 
     .column_status * {
       text-transform: capitalize !important;
-    }
-
-    .euiButton.btn-back {
-      float: left;
-    }
-  }
-
-
-  .clusterDatabaseListResult .euiTableRowCell:first-child,
-  .clusterDatabaseListResult .euiTableHeaderCell:first-child,
-  .sentinelDatabaseListResult .euiTableRowCell:first-child,
-  .sentinelDatabaseListResult .euiTableHeaderCell:first-child,
-  .cloudDatabaseListResult .euiTableRowCell:first-child,
-  .cloudDatabaseListResult .euiTableHeaderCell:first-child {
-    padding-left: 10px;
-  }
-}
-
-.theme_DARK {
-  .homePage {
-    .databaseList {
-      .euiTableCellContent {
-        color: var(--textColorShade) !important;
-      }
-
-      .euiTableHeaderCell .euiTableCellContent {
-        color: #fff !important;
-      }
     }
   }
 }

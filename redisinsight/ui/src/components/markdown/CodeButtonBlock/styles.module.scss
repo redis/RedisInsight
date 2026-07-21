@@ -1,3 +1,6 @@
+// EUI button/spinner/checkbox overrides removed (the .actionBtn/.copyBtn/.runBtn
+// styling was all :global(.euiButton)-qualified — dead under Redis UI). Live
+// custom classes kept.
 .wrapper {
   margin-top: 8px;
 }
@@ -31,65 +34,6 @@
   display: inline-flex !important;
 }
 
-.actionBtn {
-  &:global(.euiButton) {
-    height: 20px !important;
-    min-width: auto !important;
-    margin-left: 4px;
-    background: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-
-    :global {
-      .euiButton__content {
-        padding: 0 4px !important;
-      }
-
-      .euiButton__text {
-        font-size: 11px !important;
-        line-height: 12px !important;
-        font-weight: 400 !important;
-      }
-
-      .euiButtonContent__icon {
-        width: 12px;
-        height: 12px;
-      }
-    }
-  }
-}
-
-.copyBtn {
-  &:global(.euiButton) {
-    color: var(--euiTextSubduedColor) !important;
-
-    :global(.euiButton__text) {
-      margin-inline-start: 4px !important;
-      color: var(--euiTextSubduedColor) !important;
-    }
-  }
-}
-
-.runBtn {
-  &:global(.euiButton) {
-    color: var(--buttonSuccessColor) !important;
-
-    :global(.euiButton__text) {
-      color: var(--buttonSuccessColor) !important;
-      margin-inline-end: 4px !important;
-    }
-  }
-
-  :global {
-    .euiLoadingSpinner {
-      width: 12px;
-      height: 12px;
-      border-width: 2px;
-      border-top-color: transparent !important;
-    }
-  }
-}
-
 .popover {
   min-width: 372px !important;
 }
@@ -105,18 +49,8 @@
   align-items: center;
   justify-content: flex-end;
 
-  .showAgainCheckBox {
-    :global(.euiCheckbox__label) {
-      font-size: 12px !important;
-    }
-  }
-
   .popoverBtn {
     margin-left: 8px;
     min-width: auto !important;
-
-    :global(.euiButton__text) {
-      font-size: 12px !important;
-    }
   }
 }
