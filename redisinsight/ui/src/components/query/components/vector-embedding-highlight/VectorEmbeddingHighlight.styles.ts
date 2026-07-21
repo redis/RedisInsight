@@ -36,6 +36,8 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     font-size: 1.2rem;
   }
 
+  .monaco-vector-embedding-toggle:hover,
+  .monaco-vector-embedding-expand:hover,
   .monaco-vector-embedding-copy:hover {
     background-color: ${({ theme }) =>
       theme.semantic.color.background.notice300};
