@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useRef } from 'react'
+import React, { createContext, useCallback, useContext, useRef } from 'react'
 
-import { Nullable } from 'uiSrc/utils'
+import { expandVectorEmbeddings, Nullable } from 'uiSrc/utils'
 import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 
 import {
@@ -27,8 +27,19 @@ export const QueryEditorContextProvider = ({
 }: QueryEditorContextProviderProps) => {
   const monacoObjects = useRef<Nullable<IEditorMount>>(null)
 
+  const { onSubmit, query } = value
+  // The editor may show collapsed vector embedding placeholders instead of
+  // the full values, so every submitted query is expanded back first.
+  const handleSubmit = useCallback(
+    (submittedQuery?: string) =>
+      onSubmit(expandVectorEmbeddings(submittedQuery ?? query)),
+    [onSubmit, query],
+  )
+
   return (
-    <QueryEditorContext.Provider value={{ ...value, monacoObjects }}>
+    <QueryEditorContext.Provider
+      value={{ ...value, monacoObjects, onSubmit: handleSubmit }}
+    >
       {children}
     </QueryEditorContext.Provider>
   )

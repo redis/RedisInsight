@@ -8,6 +8,7 @@ import { LoadingContent } from 'uiSrc/components/base/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { expandVectorEmbeddings } from 'uiSrc/utils'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import {
@@ -89,7 +90,9 @@ export const QueryEditorWrapper = ({
         const result = await queryLibraryService.create(instanceId, {
           indexName: decodedIndexName,
           name,
-          query,
+          // Collapsed embedding placeholders only resolve within this
+          // session, so persist the full query text.
+          query: expandVectorEmbeddings(query),
         })
 
         if (result) {
