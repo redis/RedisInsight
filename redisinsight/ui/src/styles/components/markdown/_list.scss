@@ -5,21 +5,19 @@ b + ul, strong + ul, b + ol, strong + ol {
 }
 
 ul, ol {
-  &:not(.euiPagination__list) {
-    margin-top: ($margin-size-pace * 3 + px);
-    margin-bottom: ($margin-size-pace * 3 + px);
-    margin-left: 16px;
+  margin-top: ($margin-size-pace * 3 + px);
+  margin-bottom: ($margin-size-pace * 3 + px);
+  margin-left: 16px;
+  li {
+    &:not(:last-of-type) {
+      margin-bottom: ($margin-size-pace + px);
+    }
+  }
+  @media only screen and (max-width: ($l-breakpoint + px)) {
     li {
+      line-height: 18px;
       &:not(:last-of-type) {
         margin-bottom: ($margin-size-pace + px);
-      }
-    }
-    @media only screen and (max-width: ($l-breakpoint + px)) {
-      li {
-        line-height: 18px;
-        &:not(:last-of-type) {
-          margin-bottom: ($margin-size-pace + px);
-        }
       }
     }
   }
@@ -31,7 +29,7 @@ ul, ol {
   }
 }
 
-ul:not(.euiPagination__list) {
+ul {
   list-style-type: disc;
   list-style-position: outside;
   ul, ol {
