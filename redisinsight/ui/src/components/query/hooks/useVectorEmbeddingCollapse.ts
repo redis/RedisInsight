@@ -9,6 +9,7 @@ import {
   findVectorEmbeddingPlaceholders,
   getEmbeddingKey,
   getVectorEmbeddingValue,
+  handleCopy,
   Nullable,
   VectorEmbeddingRange,
 } from 'uiSrc/utils'
@@ -17,8 +18,10 @@ import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.ty
 
 const EMBEDDING_HIDDEN_CLASS = 'monaco-vector-embedding-hidden'
 const EMBEDDING_TOGGLE_CLASS = 'monaco-vector-embedding-toggle'
+const EMBEDDING_COPY_CLASS = 'monaco-vector-embedding-copy'
 const ARROW_COLLAPSED = '▸'
 const ARROW_EXPANDED = '▾'
+const COPY_ICON = '⧉'
 const EDIT_SOURCE = 'vector-embedding-collapse'
 
 const toMonacoRange = (
@@ -121,6 +124,11 @@ export const useVectorEmbeddingCollapse = ({
             )}`,
             inlineClassName: EMBEDDING_TOGGLE_CLASS,
           },
+          // Copy button to the right of the chip: copies the full embedding.
+          after: {
+            content: COPY_ICON,
+            inlineClassName: EMBEDDING_COPY_CLASS,
+          },
         },
       })
     })
@@ -149,7 +157,9 @@ export const useVectorEmbeddingCollapse = ({
     if (!mouseListener.current) {
       mouseListener.current = editor.onMouseDown((e) => {
         const element = e.target.element as HTMLElement | null
-        if (!element?.classList.contains(EMBEDDING_TOGGLE_CLASS)) return
+        const classList = element?.classList
+        const isCopy = classList?.contains(EMBEDDING_COPY_CLASS)
+        if (!isCopy && !classList?.contains(EMBEDDING_TOGGLE_CLASS)) return
 
         const { position } = e.target
         const currentModel = editor.getModel()
@@ -157,6 +167,18 @@ export const useVectorEmbeddingCollapse = ({
 
         const currentText = currentModel.getValue()
         const offset = currentModel.getOffsetAt(position)
+
+        // A click on the copy button copies the full embedding value.
+        if (isCopy) {
+          const target = findVectorEmbeddingPlaceholders(currentText).find(
+            (p) => offset >= p.range.start && offset <= p.range.end,
+          )
+          const value = target ? getVectorEmbeddingValue(target.id) : undefined
+          if (value === undefined) return
+          e.event.preventDefault()
+          handleCopy(value)
+          return
+        }
 
         // A click on a collapsed chip expands it back to the stored value.
         const placeholder = findVectorEmbeddingPlaceholders(currentText).find(

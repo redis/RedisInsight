@@ -25,12 +25,18 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
      height, the reduced font size provides the vertical inset instead. */
   .monaco-vector-embedding-toggle {
     cursor: pointer;
-    color: ${({ theme }) => theme.semantic.color.text.informative400};
     background-color: ${({ theme }) =>
-      theme.semantic.color.background.neutral400};
+      theme.semantic.color.background.notice200};
     border-radius: ${({ theme }) => theme.core.space.space100};
     padding: 0 ${({ theme }) => theme.core.space.space100};
     margin-right: ${({ theme }) => theme.core.space.space100};
     font-size: 1.2rem;
+  }
+
+  /* Copy button injected to the right of a collapsed embedding chip. */
+  .monaco-vector-embedding-copy {
+    cursor: pointer;
+    color: ${({ theme }) => theme.semantic.color.text.informative400};
+    padding: 0 ${({ theme }) => theme.core.space.space050};
   }
 `
