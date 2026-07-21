@@ -99,6 +99,7 @@ export const useVectorEmbeddingCollapse = ({
           text: collapseVectorEmbeddingValue(
             text.slice(mark.range.start, mark.range.end),
             mark.dimensions,
+            mark.byteSize,
           ),
         })),
       )
@@ -117,10 +118,23 @@ export const useVectorEmbeddingCollapse = ({
     // token), render the label chip as an injected span, and a copy button
     // after it.
     findVectorEmbeddingPlaceholders(text).forEach((placeholder) => {
+      // Same metadata hover as the expanded embedding content. It sits on the
+      // placeholder's real (hidden) text, so it triggers reliably when
+      // hovering the chip — unlike a native title on injected text.
+      const hoverMessage =
+        placeholder.byteSize !== undefined
+          ? {
+              value: t('query.editor.vectorEmbedding.hover', {
+                dimensions: placeholder.dimensions,
+                byteSize: placeholder.byteSize,
+              }),
+            }
+          : undefined
       decorations.push({
         range: toMonacoRange(monaco, model, placeholder.range),
         options: {
           inlineClassName: EMBEDDING_HIDDEN_CLASS,
+          hoverMessage,
           before: {
             content: `${ARROW_COLLAPSED} ${t(
               'query.editor.vectorEmbedding.label',
@@ -223,31 +237,15 @@ export const useVectorEmbeddingCollapse = ({
           text: collapseVectorEmbeddingValue(
             currentText.slice(mark.range.start, mark.range.end),
             mark.dimensions,
+            mark.byteSize,
           ),
         },
       ])
     })
 
-    const domNode = editor.getContainerDomNode()
-
-    // Native "Copy" tooltip on the copy button. It must be set on the span
-    // before the pointer arrives (setting it during hover only shows on the
-    // next hover), and Monaco re-creates the injected span on every re-render,
-    // so a MutationObserver stamps the title as soon as each span appears.
-    const copyTitle = t('query.editor.vectorEmbedding.copy')
-    const applyCopyTitles = () => {
-      domNode
-        .querySelectorAll<HTMLElement>(`.${EMBEDDING_COPY_CLASS}:not([title])`)
-        .forEach((el) => {
-          el.title = copyTitle
-        })
-    }
-    applyCopyTitles()
-    const titleObserver = new MutationObserver(applyCopyTitles)
-    titleObserver.observe(domNode, { childList: true, subtree: true })
-
     // Copying a selection that contains collapsed embeddings puts the full
     // values on the clipboard instead of the placeholders.
+    const domNode = editor.getContainerDomNode()
     const handleCopyEvent = (e: ClipboardEvent) => {
       const selection = editor.getSelection()
       const currentModel = editor.getModel()
@@ -264,7 +262,6 @@ export const useVectorEmbeddingCollapse = ({
 
     domNode.addEventListener('copy', handleCopyEvent, true)
     removeDomListeners.current = () => {
-      titleObserver.disconnect()
       domNode.removeEventListener('copy', handleCopyEvent, true)
     }
   }, [query, t, monacoObjects])

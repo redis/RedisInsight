@@ -14,22 +14,22 @@ describe('vector embedding placeholders', () => {
   })
 
   it('collapsing stores the value and returns an id-carrying placeholder', () => {
-    const placeholder = collapseVectorEmbeddingValue(BLOB, 3)
+    const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
 
     expect(placeholder).toBe('[▸ vector · 3 dims #1]')
     expect(expandVectorEmbeddings(placeholder)).toBe(BLOB)
   })
 
   it('gives every collapsed value a distinct id, even with equal dimensions', () => {
-    const first = collapseVectorEmbeddingValue('"one"', 3)
-    const second = collapseVectorEmbeddingValue('"two"', 3)
+    const first = collapseVectorEmbeddingValue('"one"', 3, 12)
+    const second = collapseVectorEmbeddingValue('"two"', 3, 12)
 
     expect(first).not.toBe(second)
     expect(expandVectorEmbeddings(`${first} ${second}`)).toBe('"one" "two"')
   })
 
   it('expands placeholders embedded in query text', () => {
-    const placeholder = collapseVectorEmbeddingValue(BLOB, 3)
+    const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
     const query = `FT.SEARCH idx "q" PARAMS 2 vec ${placeholder} DIALECT 2`
 
     expect(expandVectorEmbeddings(query)).toBe(
@@ -44,7 +44,7 @@ describe('vector embedding placeholders', () => {
 
   describe('findVectorEmbeddingPlaceholders', () => {
     it('returns ranges, visible ranges and value availability', () => {
-      const placeholder = collapseVectorEmbeddingValue(BLOB, 768)
+      const placeholder = collapseVectorEmbeddingValue(BLOB, 768, 3072)
       const query = `PARAMS 2 vec ${placeholder}`
       const start = query.indexOf('[')
 
@@ -54,6 +54,7 @@ describe('vector embedding placeholders', () => {
       expect(found[0]).toMatchObject({
         id: 1,
         dimensions: 768,
+        byteSize: 3072,
         hasValue: true,
         range: { start, end: query.length },
       })
@@ -63,8 +64,8 @@ describe('vector embedding placeholders', () => {
     })
 
     it('finds multiple placeholders ordered by position', () => {
-      const first = collapseVectorEmbeddingValue('"a"', 3)
-      const second = collapseVectorEmbeddingValue('"b"', 5)
+      const first = collapseVectorEmbeddingValue('"a"', 3, 12)
+      const second = collapseVectorEmbeddingValue('"b"', 5, 20)
       const query = `${first} and ${second}`
 
       const found = findVectorEmbeddingPlaceholders(query)

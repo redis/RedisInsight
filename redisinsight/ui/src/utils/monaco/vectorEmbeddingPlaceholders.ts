@@ -17,12 +17,19 @@ const PLACEHOLDER_REGEX = /\[▸ vector · (\d+) dims #(\d+)\]/g
 
 const PLACEHOLDER_PREFIX_LENGTH = '['.length
 
+interface StoredEmbedding {
+  value: string
+  byteSize: number
+}
+
 let nextPlaceholderId = 1
-const collapsedValues = new Map<number, string>()
+const collapsedValues = new Map<number, StoredEmbedding>()
 
 export interface VectorEmbeddingPlaceholder {
   id: number
   dimensions: number
+  /** Byte size of the stored value; undefined when the value is unknown. */
+  byteSize?: number
   /** Character range of the whole placeholder within the scanned text. */
   range: VectorEmbeddingRange
   /** Range of the visible "▸ vector · N dims" part (brackets/id are hidden). */
@@ -40,15 +47,16 @@ export const buildVectorEmbeddingPlaceholder = (
 export const collapseVectorEmbeddingValue = (
   value: string,
   dimensions: number,
+  byteSize: number,
 ): string => {
   const id = nextPlaceholderId
   nextPlaceholderId += 1
-  collapsedValues.set(id, value)
+  collapsedValues.set(id, { value, byteSize })
   return buildVectorEmbeddingPlaceholder(id, dimensions)
 }
 
 export const getVectorEmbeddingValue = (id: number): string | undefined =>
-  collapsedValues.get(id)
+  collapsedValues.get(id)?.value
 
 /** Finds every embedding placeholder in the text, ordered by position. */
 export const findVectorEmbeddingPlaceholders = (
@@ -68,6 +76,7 @@ export const findVectorEmbeddingPlaceholders = (
     placeholders.push({
       id,
       dimensions: Number(match[1]),
+      byteSize: collapsedValues.get(id)?.byteSize,
       range: { start, end },
       visibleRange: {
         start: start + PLACEHOLDER_PREFIX_LENGTH,
@@ -88,7 +97,7 @@ export const expandVectorEmbeddings = (text: string): string =>
   text.replace(
     new RegExp(PLACEHOLDER_REGEX),
     (placeholder, _dimensions: string, id: string) =>
-      collapsedValues.get(Number(id)) ?? placeholder,
+      collapsedValues.get(Number(id))?.value ?? placeholder,
   )
 
 /** Test helper: clears stored values and restarts id numbering. */
