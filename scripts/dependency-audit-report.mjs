@@ -85,9 +85,8 @@ try {
   const trees = AUDIT_DIRS.map((dir) => auditTree(dir, warnings)).filter(
     Boolean,
   );
-  // A dropped tree (missing lockfile or failed `npm audit`) means the audit
-  // itself is broken — distinct from "the audit ran and found nothing". This
-  // gates a separate Slack alert so a broken audit can't masquerade as clean.
+  // A dropped tree means a lockfile couldn't be audited — a broken audit, not
+  // a clean one. Alert on it separately so it can't read as clean.
   const failed = trees.length < AUDIT_DIRS.length;
   const report = buildReport({ trees, warnings });
   const summary = buildStepSummary(report);

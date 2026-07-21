@@ -68,9 +68,8 @@ jobs:
                     value: "${{ steps.report.outputs.dev_high }}"
                     short: true
 
-      # Separate alert: a lockfile could not be audited, so the report above is
-      # incomplete. Kept distinct from the vulnerability report so a broken
-      # audit can't quietly render as clean.
+      # Kept separate from the vulnerability report so a broken audit can't
+      # quietly render as clean.
       - name: Alert Slack when the audit could not run
         if: steps.report.outputs.failed == 'true'
         uses: slackapi/slack-github-action@v3.0.5
