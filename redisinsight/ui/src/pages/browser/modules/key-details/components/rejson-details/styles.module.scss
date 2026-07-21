@@ -15,28 +15,6 @@
   input {
     font-family: 'Graphik', sans-serif !important;
   }
-
-  :global {
-    .euiFieldText {
-      font-size: 13px !important;
-      max-width: initial !important;
-      height: 26px !important;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      &.withoutBorder {
-        &:not(:focus) {
-          background-color: inherit;
-          box-shadow: none !important;
-        }
-      }
-    }
-
-    .euiFormControlLayout {
-      height: 24px !important;
-    }
-  }
 }
 
 .fullWidthContainer {
@@ -102,11 +80,6 @@
   &.controls {
     width: 80px;
     border-radius: 0 10px 10px 0;
-
-    :global(.euiButtonIcon) {
-      width: 50% !important;
-      height: 100% !important;
-    }
   }
 
   &.controlsBottom {

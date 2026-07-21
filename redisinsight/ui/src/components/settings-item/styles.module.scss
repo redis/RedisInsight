@@ -19,11 +19,6 @@
 
 .container {
   height: 40px;
-
-  :global(.euiFormControlLayout--group.euiFormControlLayout--readOnly) {
-    border: 1px solid var(--controlsBorderColor);
-    cursor: auto;
-  }
 }
 
 .inputLabel {

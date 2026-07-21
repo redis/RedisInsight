@@ -61,11 +61,4 @@
     font-size: 12px !important;
     height: 25px !important;
   }
-
-  :global(.euiFormControlLayout--compressed > .euiFormControlLayout__append) {
-    &.iconPencil {
-      width: 24px !important;
-      padding: 0 6px !important;
-    }
-  }
 }

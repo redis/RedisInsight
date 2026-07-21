@@ -40,16 +40,3 @@ $outer-height-mobile: 340px;
   max-height: 100%;
   width: 100%;
 }
-
-.stringFooterBtn {
-  &:global(.euiButton) {
-    color: var(--euiTextSubduedColor) !important;
-    font-size: 13px;
-    height: auto !important;
-    padding: 4px 8px;
-
-    :global(.euiButton__text) {
-      font-weight: 400 !important;
-    }
-  }
-}
