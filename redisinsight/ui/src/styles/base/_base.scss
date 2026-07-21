@@ -1,5 +1,4 @@
 @use "../mixins/_eui";
-$sideBarSize: 60px;
 
 :root {
   --base: 16px;
@@ -55,49 +54,6 @@ body {
   box-sizing: border-box;
 }
 
-.euiPage.main {
-  color: var(--htmlColor);
-}
-
-.euiPage .euiPage {
-  padding-bottom: 0;
-}
-
-.euiPage {
-  background-color: var(--euiPageBackgroundColor) !important;
-}
-
-main.euiPageBody {
-  height: calc(100vh - 60px);
-  @media only screen and (min-width: 768px) {
-    height: 100vh;
-  }
-}
-
-.euiPageSideBar {
-  margin-right: 0 !important;
-  width: $sideBarSize;
-  min-width: $sideBarSize !important;
-  overflow: hidden !important;
-  height: $sideBarSize !important;
-  max-height: $sideBarSize !important;
-  min-height: $sideBarSize !important;
-  padding: 0;
-  flex: 1 1 $sideBarSize !important;
-
-  @media only screen and (min-width: 768px) {
-    display: block;
-    height: 100% !important;
-    max-height: 100% !important;
-    flex: 0 1 0 !important;
-    overflow: auto !important;
-  }
-}
-
-.euiLoadingSpinner {
-  border-top-color: transparent;
-}
-
 .link-underline {
   color: currentColor;
   text-decoration: underline;
@@ -109,45 +65,6 @@ main.euiPageBody {
 
 .color-shade {
   color: var(--textColorShade) !important;
-}
-
-.euiHealth .euiIcon {
-  width: 18px !important;
-  height: 18px !important;
-}
-
-.euiSpacer--m {
-  height: 12px !important;
-}
-
-.euiSpacer--xl {
-  height: 36px !important;
-}
-
-.euiProgress {
-  background-color: var(--euiColorLightShade);
-}
-.euiProgress--primary.euiProgress--indeterminate:before,
-.euiProgress--success.euiProgress--indeterminate:before {
-  background-color: var(--euiColorPrimary);
-}
-
-.euiLoadingContent__singleLineBackground {
-  background: linear-gradient(
-    137deg,
-    var(--loadingContentColor) 45%,
-    var(--euiColorLightestShade) 50%,
-    var(--loadingContentColor) 55%
-  );
-}
-
-.euiListGroupItem--subdued .euiListGroupItem__text:not(:disabled),
-.euiListGroupItem--subdued .euiListGroupItem__button:not(:disabled) {
-  color: var(--euiTextSubduedColor);
-}
-
-.euiText pre {
-  color: var(--euiTextColor);
 }
 
 // overrides
