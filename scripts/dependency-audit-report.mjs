@@ -17,28 +17,37 @@ import {
 const ROOT = process.cwd();
 
 function runJson(cmd, args, cwd) {
+  const label = `${cmd} ${args.join(' ')} in ${cwd}`;
+  let raw;
   try {
-    const out = execFileSync(cmd, args, {
+    raw = execFileSync(cmd, args, {
       cwd,
       encoding: 'utf8',
       maxBuffer: 1 << 28,
       stdio: ['ignore', 'pipe', 'ignore'],
     });
-    return JSON.parse(out);
   } catch (err) {
     // npm audit exits non-zero when vulnerabilities exist but still prints JSON.
-    if (err.stdout) {
-      try {
-        return JSON.parse(err.stdout);
-      } catch {
-        /* fall through */
-      }
+    raw = err.stdout;
+    if (!raw) {
+      console.error(`WARN: ${label} failed: ${err.message}`);
+      return null;
     }
-    console.error(
-      `WARN: ${cmd} ${args.join(' ')} in ${cwd} failed: ${err.message}`,
-    );
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    console.error(`WARN: ${label} produced unparsable output`);
     return null;
   }
+  // npm serializes hard failures (bad lockfile, registry down) as {"error":…}
+  // even under --json. Treat that as a failed audit, not an empty clean one.
+  if (parsed && parsed.error) {
+    console.error(`WARN: ${label} reported: ${parsed.error.code || 'error'}`);
+    return null;
+  }
+  return parsed;
 }
 
 function auditTree(dir, warnings) {
@@ -57,16 +66,21 @@ function auditTree(dir, warnings) {
     warnings.push(msg);
     return null;
   }
-  if (!prodAudit) {
-    const msg = `prod audit failed for ${dir}; prod/dev split may under-report`;
-    console.error(`WARN: ${msg}`);
-    warnings.push(msg);
-  }
-  return analyzeTree({
+  const result = analyzeTree({
     tree: dir === '.' ? 'root' : dir,
     fullAudit,
-    prodAudit: prodAudit || { vulnerabilities: {} },
+    prodAudit,
   });
+  if (!prodAudit) {
+    // No prod/dev split available. analyzeTree counts every finding as prod so
+    // production exposure is never under-stated; flag the tree so the
+    // broken-audit alert fires and a human confirms the split.
+    const msg = `prod audit failed for ${dir}; findings counted as prod`;
+    console.error(`WARN: ${msg}`);
+    warnings.push(msg);
+    result.incomplete = true;
+  }
+  return result;
 }
 
 function parseArgs(argv) {
@@ -85,9 +99,11 @@ try {
   const trees = AUDIT_DIRS.map((dir) => auditTree(dir, warnings)).filter(
     Boolean,
   );
-  // A dropped tree means a lockfile couldn't be audited — a broken audit, not
-  // a clean one. Alert on it separately so it can't read as clean.
-  const failed = trees.length < AUDIT_DIRS.length;
+  // The audit is broken if any tree was dropped (lockfile missing or `npm
+  // audit` failed) or came back incomplete (no prod/dev split). Alert on it
+  // separately so a broken audit can't read as clean.
+  const failed =
+    trees.length < AUDIT_DIRS.length || trees.some((t) => t.incomplete);
   const report = buildReport({ trees, warnings });
   const summary = buildStepSummary(report);
 
@@ -117,6 +133,11 @@ try {
   console.error(
     `ERROR: dependency-audit-report failed unexpectedly: ${err.stack || err.message}`,
   );
+  // A crash mid-report is itself a broken audit — signal it so the alert fires
+  // rather than the run looking like a quiet success.
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, 'post=false\nfailed=true\n');
+  }
 }
 
 process.exit(0);

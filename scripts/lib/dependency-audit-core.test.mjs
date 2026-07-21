@@ -109,6 +109,13 @@ test('analyzeTree tags prod vs dev via the prod audit', () => {
   assert.equal(byName.protobufjs.url, 'https://ghsa/xq3m');
 });
 
+test('analyzeTree counts findings as prod when the prod audit is absent', () => {
+  // A failed prod-only audit must not downgrade real prod vulns to dev.
+  const r = analyzeTree({ tree: 'root', fullAudit: FULL, prodAudit: null });
+  assert.equal(r.findings.length, 2);
+  assert.ok(r.findings.every((f) => f.scope === 'prod'));
+});
+
 test('analyzeTree tolerates empty audit', () => {
   const empty = {
     vulnerabilities: {},

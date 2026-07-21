@@ -31,6 +31,9 @@ export function analyzeTree({ tree, fullAudit, prodAudit }) {
     moderate: meta.moderate || 0,
     low: meta.low || 0,
   };
+  // Without a prod-only audit we can't tell prod from dev; count every finding
+  // as prod so production exposure is never under-stated.
+  const prodUnknown = !prodAudit;
   const prodVulns = (prodAudit && prodAudit.vulnerabilities) || {};
   const findings = [];
   for (const [name, vuln] of Object.entries(fullAudit.vulnerabilities || {})) {
@@ -40,7 +43,7 @@ export function analyzeTree({ tree, fullAudit, prodAudit }) {
       name,
       severity: vuln.severity,
       tree,
-      scope: prodVulns[name] ? 'prod' : 'dev',
+      scope: prodUnknown || prodVulns[name] ? 'prod' : 'dev',
       title: adv.title,
       url: adv.url,
     });
