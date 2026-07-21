@@ -87,6 +87,9 @@ export const useVectorEmbeddingCollapse = ({
   const copyWidget = useRef<Nullable<monacoEditor.editor.IContentWidget>>(null)
   const copyPosition = useRef<Nullable<monacoEditor.IPosition>>(null)
   const hideTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
+  const moveListener = useRef<Nullable<monacoEditor.IDisposable>>(null)
+  // Placeholder id the copy button is currently shown for (dedupes mousemove).
+  const shownPlaceholderId = useRef<Nullable<number>>(null)
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -181,6 +184,7 @@ export const useVectorEmbeddingCollapse = ({
       cancelHide()
       hideTimer.current = setTimeout(() => {
         copyPosition.current = null
+        shownPlaceholderId.current = null
         setCopyValue(null)
         if (copyWidget.current) editor.layoutContentWidget(copyWidget.current)
       }, HOVER_HIDE_DELAY)
@@ -200,6 +204,9 @@ export const useVectorEmbeddingCollapse = ({
         return
       }
       cancelHide()
+      // Already showing this one — don't churn state on every mousemove.
+      if (shownPlaceholderId.current === placeholder.id) return
+      shownPlaceholderId.current = placeholder.id
       copyPosition.current = currentModel.getPositionAt(placeholder.range.start)
       setCopyValue(value)
       if (copyWidget.current) editor.layoutContentWidget(copyWidget.current)
@@ -228,26 +235,26 @@ export const useVectorEmbeddingCollapse = ({
     }
 
     // Show the copy button while hovering a collapsed chip; hide otherwise.
-    const domNode = editor.getContainerDomNode()
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null
-      if (copyNode.current?.contains(target)) {
-        cancelHide()
-        return
-      }
-      if (target?.classList.contains(EMBEDDING_TOGGLE_CLASS)) {
-        const mouseTarget = editor.getTargetAtClientPoint(e.clientX, e.clientY)
+    // Use Monaco's mouse event (same target resolution as onMouseDown) — a raw
+    // DOM mouseover can't resolve a model position for injected-text spans.
+    moveListener.current = editor.onMouseMove((e) => {
+      const element = e.target.element as HTMLElement | null
+      if (
+        element?.classList.contains(EMBEDDING_TOGGLE_CLASS) &&
+        e.target.position
+      ) {
         const currentModel = editor.getModel()
-        if (mouseTarget?.position && currentModel) {
-          showCopyAt(currentModel.getOffsetAt(mouseTarget.position))
+        if (currentModel) {
+          showCopyAt(currentModel.getOffsetAt(e.target.position))
         }
         return
       }
       hideCopy()
-    }
+    })
 
     // Copying a selection that contains collapsed embeddings puts the full
     // values on the clipboard instead of the placeholders.
+    const domNode = editor.getContainerDomNode()
     const handleCopyEvent = (e: ClipboardEvent) => {
       const selection = editor.getSelection()
       const currentModel = editor.getModel()
@@ -262,11 +269,9 @@ export const useVectorEmbeddingCollapse = ({
       e.clipboardData.setData('text/plain', expanded)
     }
 
-    domNode.addEventListener('mouseover', handleMouseOver)
     domNode.addEventListener('mouseleave', hideCopy)
     domNode.addEventListener('copy', handleCopyEvent, true)
     removeDomListeners.current = () => {
-      domNode.removeEventListener('mouseover', handleMouseOver)
       domNode.removeEventListener('mouseleave', hideCopy)
       domNode.removeEventListener('copy', handleCopyEvent, true)
     }
@@ -332,12 +337,23 @@ export const useVectorEmbeddingCollapse = ({
     })
   }, [query, t, monacoObjects])
 
+  // Re-layout the widget after the portal has rendered CopyButton into it, so
+  // Monaco positions it against the real button size (not the empty node).
+  useEffect(() => {
+    const editor = monacoObjects.current?.editor
+    if (editor && copyWidget.current) {
+      editor.layoutContentWidget(copyWidget.current)
+    }
+  }, [copyValue, monacoObjects])
+
   // Detach the editor listeners and widget on unmount.
   useEffect(
     () => () => {
       if (hideTimer.current) clearTimeout(hideTimer.current)
       mouseListener.current?.dispose()
       mouseListener.current = null
+      moveListener.current?.dispose()
+      moveListener.current = null
       removeDomListeners.current?.()
       removeDomListeners.current = null
       const editor = monacoObjects.current?.editor
