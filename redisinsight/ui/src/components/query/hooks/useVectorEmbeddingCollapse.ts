@@ -47,9 +47,10 @@ const toMonacoRange = (
  *
  * All detection and slicing works off the live model text (not the React
  * `query` state, which lags the model by a render) so an in-flight collapse or
- * expand never bails on stale offsets; `query` is only a change trigger. Each
- * embedding auto-collapses once (tracked by content key), so undo and an
- * explicit expand are not fought by the next render.
+ * expand never bails on stale offsets; `query` is only a change trigger. Every
+ * detected embedding is collapsed unless the user explicitly expanded it, so a
+ * freshly pasted embedding always starts collapsed while an expanded one is
+ * left alone until re-collapsed.
  */
 export const useVectorEmbeddingCollapse = ({
   monacoObjects,
@@ -60,8 +61,8 @@ export const useVectorEmbeddingCollapse = ({
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
   const mouseListener = useRef<Nullable<monacoEditor.IDisposable>>(null)
   const removeCopyListener = useRef<Nullable<() => void>>(null)
-  // Content keys of embeddings that have been auto-collapsed already.
-  const autoCollapsedKeys = useRef<Set<string>>(new Set())
+  // Content keys the user explicitly expanded; everything else auto-collapses.
+  const userExpandedKeys = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -77,19 +78,16 @@ export const useVectorEmbeddingCollapse = ({
     const text = model.getValue()
     const detected = detectVectorEmbeddings(text)
 
-    // Auto-collapse newly detected embeddings in one atomic edit. The edit
-    // updates the model (and, via onChange, `query`), so the effect re-runs
-    // and renders the chips on the placeholders it just wrote.
-    const newMarks = detected.filter(
-      (mark) => !autoCollapsedKeys.current.has(getEmbeddingKey(mark)),
+    // Collapse every detected embedding except the ones the user expanded, in
+    // one atomic edit. The edit updates the model (and, via onChange, `query`),
+    // so the effect re-runs and renders the chips on the placeholders it wrote.
+    const marksToCollapse = detected.filter(
+      (mark) => !userExpandedKeys.current.has(getEmbeddingKey(mark)),
     )
-    if (newMarks.length > 0) {
-      newMarks.forEach((mark) =>
-        autoCollapsedKeys.current.add(getEmbeddingKey(mark)),
-      )
+    if (marksToCollapse.length > 0) {
       editor.executeEdits(
         EDIT_SOURCE,
-        newMarks.map((mark) => ({
+        marksToCollapse.map((mark) => ({
           range: toMonacoRange(monaco, model, mark.range),
           text: collapseVectorEmbeddingValue(
             text.slice(mark.range.start, mark.range.end),
@@ -169,6 +167,14 @@ export const useVectorEmbeddingCollapse = ({
               text: value,
             },
           ])
+          // Remember this embedding as user-expanded so it is not
+          // auto-collapsed again on the next render.
+          const expandedMark = detectVectorEmbeddings(
+            currentModel.getValue(),
+          ).find((m) => m.range.start === placeholder.range.start)
+          if (expandedMark) {
+            userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
+          }
           return
         }
 
@@ -178,6 +184,7 @@ export const useVectorEmbeddingCollapse = ({
         )
         if (!mark) return
         e.event.preventDefault()
+        userExpandedKeys.current.delete(getEmbeddingKey(mark))
         editor.executeEdits(EDIT_SOURCE, [
           {
             range: toMonacoRange(monaco, currentModel, mark.range),
