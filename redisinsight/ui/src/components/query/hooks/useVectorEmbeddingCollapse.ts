@@ -17,7 +17,9 @@ import {
 import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.types'
 
 const EMBEDDING_HIDDEN_CLASS = 'monaco-vector-embedding-hidden'
+// Collapsed label (left half of the chip) and standalone expanded arrow.
 const EMBEDDING_TOGGLE_CLASS = 'monaco-vector-embedding-toggle'
+const EMBEDDING_EXPAND_CLASS = 'monaco-vector-embedding-expand'
 const EMBEDDING_COPY_CLASS = 'monaco-vector-embedding-copy'
 const ARROW_COLLAPSED = '▸'
 const ARROW_EXPANDED = '▾'
@@ -146,7 +148,7 @@ export const useVectorEmbeddingCollapse = ({
         options: {
           before: {
             content: ARROW_EXPANDED,
-            inlineClassName: EMBEDDING_TOGGLE_CLASS,
+            inlineClassName: EMBEDDING_EXPAND_CLASS,
           },
         },
       })
@@ -159,7 +161,10 @@ export const useVectorEmbeddingCollapse = ({
         const element = e.target.element as HTMLElement | null
         const classList = element?.classList
         const isCopy = classList?.contains(EMBEDDING_COPY_CLASS)
-        if (!isCopy && !classList?.contains(EMBEDDING_TOGGLE_CLASS)) return
+        const isToggle =
+          classList?.contains(EMBEDDING_TOGGLE_CLASS) ||
+          classList?.contains(EMBEDDING_EXPAND_CLASS)
+        if (!isCopy && !isToggle) return
 
         const { position } = e.target
         const currentModel = editor.getModel()
