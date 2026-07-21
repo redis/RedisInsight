@@ -95,7 +95,7 @@
   "overrides": {
     "trim": "0.0.3",
     "word-wrap": "1.2.4",
-    "semver": "7.7.2",
+    "semver": "7.7.4",
     "rawproto": {
       "protobufjs": "^7.6.5"
     },
@@ -329,7 +329,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "semver": "7.7.2",
+    "semver": "7.7.4",
     "socket.io-client": "^4.8.3",
     "styled-components": "^5.0.0",
     "unified": "^11.0.5",
