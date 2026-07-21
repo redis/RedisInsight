@@ -6,6 +6,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { MessageResultCellProps } from './MessageResultCell.types'
 
@@ -13,6 +14,8 @@ export const MessageResultCell = ({
   statusAdded,
   messageAdded = '',
 }: MessageResultCellProps) => {
+  const { t } = useTranslation()
+
   if (!statusAdded) {
     return <CellText>-</CellText>
   }
@@ -24,7 +27,7 @@ export const MessageResultCell = ({
   return (
     <RiTooltip
       position="left"
-      title="Error"
+      title={t('autodiscover.cloud.cell.error')}
       content={messageAdded}
       anchorClassName="truncateText"
     >
@@ -35,7 +38,7 @@ export const MessageResultCell = ({
 
         <FlexItem>
           <ColorText color="danger" className="flex-row" size="S">
-            Error
+            {t('autodiscover.cloud.cell.error')}
           </ColorText>
         </FlexItem>
       </Row>
