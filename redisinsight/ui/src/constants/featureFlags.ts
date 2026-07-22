@@ -17,6 +17,5 @@ export enum FeatureFlags {
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
   devLanguage = 'dev-language',
-  whatsNew = 'whatsNew',
   valueDecoder = 'valueDecoder',
 }

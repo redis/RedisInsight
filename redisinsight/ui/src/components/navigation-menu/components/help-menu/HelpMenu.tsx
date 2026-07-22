@@ -178,19 +178,17 @@ const HelpMenu = () => {
               </Link>
             </Row>
 
-            <FeatureFlagComponent name={FeatureFlags.whatsNew}>
-              <Row className={styles.helpMenuItemLink} align="center" gap="xs">
-                <RiIcon type="StarsIcon" size="l" />
-                <Text
-                  size="xs"
-                  className={styles.helpMenuTextLink}
-                  onClick={onWhatsNewClick}
-                  data-testid="whats-new-btn"
-                >
-                  {t('whatsNew.menuItem')}
-                </Text>
-              </Row>
-            </FeatureFlagComponent>
+            <Row className={styles.helpMenuItemLink} align="center" gap="xs">
+              <RiIcon type="StarsIcon" size="l" />
+              <Text
+                size="xs"
+                className={styles.helpMenuTextLink}
+                onClick={onWhatsNewClick}
+                data-testid="whats-new-btn"
+              >
+                {t('whatsNew.menuItem')}
+              </Text>
+            </Row>
 
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <Row className={styles.helpMenuItemLink} align="center" gap="xs">

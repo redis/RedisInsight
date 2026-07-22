@@ -39,7 +39,6 @@ export enum KnownFeatures {
   VectorSet = 'vectorSet',
   Array = 'array',
   DevLanguage = 'dev-language',
-  WhatsNew = 'whatsNew',
   ValueDecoder = 'valueDecoder',
 }
 
