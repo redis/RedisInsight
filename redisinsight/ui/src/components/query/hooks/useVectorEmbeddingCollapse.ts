@@ -246,6 +246,10 @@ export const useVectorEmbeddingCollapse = ({
         if (expandedMark) {
           userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
         }
+        // Keep the caret where it was rather than on the chip.
+        if (preClickSelection.current) {
+          editor.setSelection(preClickSelection.current)
+        }
         return
       }
 
@@ -266,6 +270,10 @@ export const useVectorEmbeddingCollapse = ({
           ),
         },
       ])
+      // Keep the caret where it was rather than on the chip.
+      if (preClickSelection.current) {
+        editor.setSelection(preClickSelection.current)
+      }
     })
 
     const domNode = editor.getContainerDomNode()
