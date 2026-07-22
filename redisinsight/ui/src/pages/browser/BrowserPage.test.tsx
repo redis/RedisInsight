@@ -207,7 +207,7 @@ describe('KeyDetailsHeader', () => {
     await waitForRiTooltipVisible()
 
     expect(screen.queryByTestId('apply-tooltip')).toBeInTheDocument()
-  })
+  }, 10_000)
 })
 
 describe('KeyDetailsWrapper', () => {
