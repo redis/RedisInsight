@@ -24,10 +24,16 @@ const editor = {
   createDecorationsCollection: jest.fn().mockReturnValue({ set: jest.fn(), clear: jest.fn() }),
   getValue: jest.fn().mockReturnValue(''),
   getModel: jest.fn().mockReturnValue({
+    getValue: jest.fn().mockReturnValue(''),
     getOffsetAt: jest.fn().mockReturnValue(0),
+    getPositionAt: jest.fn().mockReturnValue({ lineNumber: 1, column: 1 }),
+    getValueInRange: jest.fn().mockReturnValue(''),
     getWordUntilPosition: jest.fn().mockReturnValue(''),
   }),
   getPosition: jest.fn().mockReturnValue({}),
+  getContainerDomNode: jest.fn(() => document.createElement('div')),
+  getTargetAtClientPoint: jest.fn().mockReturnValue(null),
+  getSelection: jest.fn().mockReturnValue(null),
   trigger: jest.fn(),
 };
 
