@@ -96,6 +96,9 @@
     "trim": "0.0.3",
     "word-wrap": "1.2.4",
     "semver": "7.7.4",
+    "eslint-plugin-sonarjs": {
+      "semver": "^7.8.5"
+    },
     "rawproto": {
       "protobufjs": "^7.6.5"
     },
