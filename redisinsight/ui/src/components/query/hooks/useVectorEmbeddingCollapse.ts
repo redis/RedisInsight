@@ -11,41 +11,27 @@ import {
   getVectorEmbeddingValue,
   handleCopy,
   Nullable,
-  VectorEmbeddingRange,
 } from 'uiSrc/utils'
 
 import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.types'
-
-const EMBEDDING_HIDDEN_CLASS = 'monaco-vector-embedding-hidden'
-const EMBEDDING_TOGGLE_CLASS = 'monaco-vector-embedding-toggle'
-const EMBEDDING_EXPAND_CLASS = 'monaco-vector-embedding-expand'
-const EMBEDDING_COPY_CLASS = 'monaco-vector-embedding-copy'
-const ARROW_COLLAPSED = '▸'
-const ARROW_EXPANDED = '▾'
-const COPY_ICON = '⧉'
-const EDIT_SOURCE = 'vector-embedding-collapse'
-
-const toMonacoRange = (
-  monaco: typeof monacoEditor,
-  model: monacoEditor.editor.ITextModel,
-  range: VectorEmbeddingRange,
-): monacoEditor.Range => {
-  const start = model.getPositionAt(range.start)
-  const end = model.getPositionAt(range.end)
-  return new monaco.Range(
-    start.lineNumber,
-    start.column,
-    end.lineNumber,
-    end.column,
-  )
-}
+import {
+  ARROW_COLLAPSED,
+  ARROW_EXPANDED,
+  COLLAPSE_EDIT_SOURCE,
+  COPY_ICON,
+  EMBEDDING_COPY_CLASS,
+  EMBEDDING_EXPAND_CLASS,
+  EMBEDDING_HIDDEN_CLASS,
+  EMBEDDING_TOGGLE_CLASS,
+} from './useVectorEmbeddingCollapse.constants'
+import { findAtOffset, toMonacoRange } from './useVectorEmbeddingCollapse.utils'
 
 /**
- * Collapses every detected embedding by replacing its text with a short
- * placeholder in the model and expands it back on click. The full value is
- * kept in the placeholder store and re-inserted at every exit path (expand,
- * copy, submit, save), so nothing is lost. Detection runs off the live model
- * text; embeddings start collapsed unless the user explicitly expanded them.
+ * Collapses every detected embedding to a placeholder chip in the model and
+ * expands it back on click. The full value lives in the placeholder store and
+ * is restored at every exit path (expand, copy, submit, save). Detection runs
+ * off the live model text; embeddings start collapsed unless explicitly
+ * expanded.
  */
 export const useVectorEmbeddingCollapse = ({
   monacoObjects,
@@ -71,13 +57,12 @@ export const useVectorEmbeddingCollapse = ({
     const text = model.getValue()
     const detected = detectVectorEmbeddings(text)
 
-    // Collapse in one edit; it triggers a re-run that renders the chips.
     const marksToCollapse = detected.filter(
       (mark) => !userExpandedKeys.current.has(getEmbeddingKey(mark)),
     )
     if (marksToCollapse.length > 0) {
       editor.executeEdits(
-        EDIT_SOURCE,
+        COLLAPSE_EDIT_SOURCE,
         marksToCollapse.map((mark) => ({
           range: toMonacoRange(monaco, model, mark.range),
           text: collapseVectorEmbeddingValue(
@@ -108,10 +93,9 @@ export const useVectorEmbeddingCollapse = ({
             }
           : undefined
 
+      // Hide the placeholder text (else the tokenizer colours it) and draw the
+      // chip as injected spans; label and copy button hover independently.
       decorations.push(
-        // Hide the placeholder text (else the tokenizer colours it) and draw
-        // the chip as injected spans. Label and copy button carry their own
-        // hoverMessage so each hovers independently.
         {
           range: toMonacoRange(monaco, model, { start, end }),
           options: { inlineClassName: EMBEDDING_HIDDEN_CLASS },
@@ -142,7 +126,6 @@ export const useVectorEmbeddingCollapse = ({
       )
     })
 
-    // A collapse arrow before every still-expanded blob.
     detected.forEach((mark) => {
       decorations.push({
         range: toMonacoRange(monaco, model, {
@@ -164,26 +147,6 @@ export const useVectorEmbeddingCollapse = ({
 
     const domNode = editor.getContainerDomNode()
 
-    const findPlaceholderAt = (modelText: string, offset: number | null) => {
-      const placeholders = findVectorEmbeddingPlaceholders(modelText)
-      if (offset !== null) {
-        return placeholders.find(
-          (p) => offset >= p.range.start && offset <= p.range.end,
-        )
-      }
-      return placeholders.length === 1 ? placeholders[0] : undefined
-    }
-
-    const findMarkAt = (modelText: string, offset: number | null) => {
-      const marks = detectVectorEmbeddings(modelText)
-      if (offset !== null) {
-        return marks.find(
-          (m) => offset >= m.range.start && offset <= m.range.end,
-        )
-      }
-      return marks.length === 1 ? marks[0] : undefined
-    }
-
     // Handle chip clicks in the capture phase and stop the event before Monaco
     // sees it, so the caret never lands on the zero-width chip (even on hold).
     const handleChipMouseDown = (e: MouseEvent) => {
@@ -198,22 +161,22 @@ export const useVectorEmbeddingCollapse = ({
 
       const currentModel = editor.getModel()
       if (!currentModel) return
-      const text = currentModel.getValue()
+      const currentText = currentModel.getValue()
       const mouseTarget = editor.getTargetAtClientPoint(e.clientX, e.clientY)
       const offset = mouseTarget?.position
         ? currentModel.getOffsetAt(mouseTarget.position)
         : null
 
       if (isExpandArrow) {
-        const mark = findMarkAt(text, offset)
+        const mark = findAtOffset(detectVectorEmbeddings(currentText), offset)
         if (!mark) return
         const selection = editor.getSelection()
         userExpandedKeys.current.delete(getEmbeddingKey(mark))
-        editor.executeEdits(EDIT_SOURCE, [
+        editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
           {
             range: toMonacoRange(monaco, currentModel, mark.range),
             text: collapseVectorEmbeddingValue(
-              text.slice(mark.range.start, mark.range.end),
+              currentText.slice(mark.range.start, mark.range.end),
               mark.dimensions,
               mark.byteSize,
             ),
@@ -223,7 +186,10 @@ export const useVectorEmbeddingCollapse = ({
         return
       }
 
-      const placeholder = findPlaceholderAt(text, offset)
+      const placeholder = findAtOffset(
+        findVectorEmbeddingPlaceholders(currentText),
+        offset,
+      )
       if (!placeholder) return
       const value = getVectorEmbeddingValue(placeholder.id)
       if (value === undefined) return
@@ -234,23 +200,20 @@ export const useVectorEmbeddingCollapse = ({
       }
 
       const selection = editor.getSelection()
-      editor.executeEdits(EDIT_SOURCE, [
+      editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
         {
           range: toMonacoRange(monaco, currentModel, placeholder.range),
           text: value,
         },
       ])
-      // Keep it expanded across re-renders.
       const expandedMark = detectVectorEmbeddings(currentModel.getValue()).find(
         (m) => m.range.start === placeholder.range.start,
       )
-      if (expandedMark) {
+      if (expandedMark)
         userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
-      }
       if (selection) editor.setSelection(selection)
     }
 
-    // Copy a selection with full values instead of the placeholders.
     const handleCopyEvent = (e: ClipboardEvent) => {
       const selection = editor.getSelection()
       const currentModel = editor.getModel()

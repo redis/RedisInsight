@@ -7,11 +7,8 @@ import { VectorEmbeddingHighlightProps } from './VectorEmbeddingHighlight.types'
 import { VectorEmbeddingHighlightStyles } from './VectorEmbeddingHighlight.styles'
 
 /**
- * Detects large vector embeddings in the query, highlights them and collapses
- * each into a compact placeholder chip with a copy button the user can toggle
- * to hide/show the full value. Self-contained so the embedding logic can grow
- * independently of the shared CodeEditor; render it alongside a CodeEditor
- * that shares the same monaco instance.
+ * Highlights and collapses detected vector embeddings. Render alongside a
+ * CodeEditor that shares the same monaco instance.
  */
 export const VectorEmbeddingHighlight = ({
   monacoObjects,

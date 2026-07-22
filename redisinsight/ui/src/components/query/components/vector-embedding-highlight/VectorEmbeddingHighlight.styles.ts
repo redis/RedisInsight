@@ -1,6 +1,13 @@
 import { createGlobalStyle } from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
 
+import {
+  EMBEDDING_COPY_CLASS,
+  EMBEDDING_EXPAND_CLASS,
+  EMBEDDING_HIDDEN_CLASS,
+  EMBEDDING_TOGGLE_CLASS,
+} from '../../hooks/useVectorEmbeddingCollapse.constants'
+
 export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   theme: Theme
 }>`
@@ -9,20 +16,15 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     border-radius: ${({ theme }) => theme.core.space.space050};
   }
 
-  /* font-size: 0 (not display: none) keeps the hidden placeholder in the
-     layout at zero width, so Monaco can still place the caret inside it. */
-  .monaco-vector-embedding-hidden {
+  /* font-size: 0 (not display: none) keeps the caret measurable inside it. */
+  .${EMBEDDING_HIDDEN_CLASS} {
     font-size: 0;
   }
 
-  /* Monaco ignores CSS colour on injected text, so the chip label keeps the
-     editor's default foreground; primary200 stays readable against it in both
-     themes. Only horizontal padding — vertical padding overflows the line. */
-  .monaco-vector-embedding-toggle,
-  .monaco-vector-embedding-expand,
-  .monaco-vector-embedding-copy {
+  .${EMBEDDING_TOGGLE_CLASS},
+  .${EMBEDDING_EXPAND_CLASS},
+  .${EMBEDDING_COPY_CLASS} {
     cursor: pointer;
-    /* Injected text is pointer-events: none by default; re-enable for hover. */
     pointer-events: auto;
     background-color: ${({ theme }) =>
       theme.semantic.color.background.primary200};
@@ -31,22 +33,19 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     font-size: 1.2rem;
   }
 
-  .monaco-vector-embedding-toggle:hover,
-  .monaco-vector-embedding-expand:hover,
-  .monaco-vector-embedding-copy:hover {
+  .${EMBEDDING_TOGGLE_CLASS}:hover,
+  .${EMBEDDING_EXPAND_CLASS}:hover,
+  .${EMBEDDING_COPY_CLASS}:hover {
     background-color: ${({ theme }) =>
       theme.semantic.color.background.primary300};
   }
 
-  .monaco-vector-embedding-toggle {
+  .${EMBEDDING_TOGGLE_CLASS} {
     margin-right: ${({ theme }) => theme.core.space.space050};
   }
 
-  .monaco-vector-embedding-copy {
-    margin-right: ${({ theme }) => theme.core.space.space100};
-  }
-
-  .monaco-vector-embedding-expand {
+  .${EMBEDDING_COPY_CLASS},
+  .${EMBEDDING_EXPAND_CLASS} {
     margin-right: ${({ theme }) => theme.core.space.space100};
   }
 `

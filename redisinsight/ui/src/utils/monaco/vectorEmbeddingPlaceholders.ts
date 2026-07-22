@@ -1,11 +1,8 @@
 import { VectorEmbeddingRange } from './vectorEmbeddingUtils.types'
 
-/**
- * Session-scoped store behind collapsed vector embeddings: collapsing swaps the
- * embedding text for a placeholder carrying an id, and the full value is kept
- * here. Placeholders only resolve within the session, so every exit path
- * (submit, copy, save) must expand before persisting.
- */
+// Session-scoped store for collapsed embeddings: the placeholder text carries
+// an id and the full value is kept here, so every exit path (submit, copy,
+// save) must expand before the query is persisted.
 
 // Matches e.g. "[▸ vector · 1536 dims #3]".
 const PLACEHOLDER_REGEX = /\[▸ vector · (\d+) dims #(\d+)\]/g
@@ -21,9 +18,8 @@ const collapsedValues = new Map<number, StoredEmbedding>()
 export interface VectorEmbeddingPlaceholder {
   id: number
   dimensions: number
-  /** Byte size of the stored value; undefined when the value is unknown. */
+  /** Undefined when the value is unknown (e.g. a query from another session). */
   byteSize?: number
-  /** Character range of the whole placeholder within the scanned text. */
   range: VectorEmbeddingRange
 }
 
@@ -32,7 +28,6 @@ export const buildVectorEmbeddingPlaceholder = (
   dimensions: number,
 ): string => `[▸ vector · ${dimensions} dims #${id}]`
 
-/** Stores the full embedding text and returns the placeholder replacing it. */
 export const collapseVectorEmbeddingValue = (
   value: string,
   dimensions: number,
@@ -47,7 +42,6 @@ export const collapseVectorEmbeddingValue = (
 export const getVectorEmbeddingValue = (id: number): string | undefined =>
   collapsedValues.get(id)?.value
 
-/** Finds every embedding placeholder in the text, ordered by position. */
 export const findVectorEmbeddingPlaceholders = (
   text: string,
 ): VectorEmbeddingPlaceholder[] => {
@@ -71,10 +65,7 @@ export const findVectorEmbeddingPlaceholders = (
   return placeholders
 }
 
-/**
- * Replaces every known placeholder with its stored full value. Placeholders
- * whose value is unknown are left untouched so the problem stays visible.
- */
+// Unknown placeholders are left untouched so the problem stays visible.
 export const expandVectorEmbeddings = (text: string): string =>
   text.replace(
     new RegExp(PLACEHOLDER_REGEX),
@@ -82,7 +73,6 @@ export const expandVectorEmbeddings = (text: string): string =>
       collapsedValues.get(Number(id))?.value ?? placeholder,
   )
 
-/** Test helper: clears stored values and restarts id numbering. */
 export const resetVectorEmbeddingPlaceholders = (): void => {
   nextPlaceholderId = 1
   collapsedValues.clear()
