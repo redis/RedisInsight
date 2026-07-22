@@ -9,29 +9,20 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     border-radius: ${({ theme }) => theme.core.space.space050};
   }
 
-  /* Bracket/id delimiters of a collapsed embedding placeholder: present in
-     the text (they make the placeholder identifiable) but not shown.
-     font-size: 0 rather than display: none — the spans must stay in the
-     layout (at zero width) so Monaco can still measure cursor positions
-     inside them; with display: none the cursor becomes invisible there. */
+  /* font-size: 0 (not display: none) keeps the hidden placeholder in the
+     layout at zero width, so Monaco can still place the caret inside it. */
   .monaco-vector-embedding-hidden {
     font-size: 0;
   }
 
-  /* Injected chips: the collapsed toggle label, the standalone expanded arrow
-     and the copy button beside the collapsed label. Each is a rounded primary
-     pill. Monaco ignores the CSS colour on injected text, so the label keeps
-     the editor's default foreground (light in dark theme, dark in light
-     theme); primary200 is a dark-blue chip in dark mode and a light-blue chip
-     in light mode, so that default text stays readable in both. Only
-     horizontal padding — vertical padding would overflow Monaco's fixed line
-     height, the font size provides the vertical inset. */
+  /* Monaco ignores CSS colour on injected text, so the chip label keeps the
+     editor's default foreground; primary200 stays readable against it in both
+     themes. Only horizontal padding — vertical padding overflows the line. */
   .monaco-vector-embedding-toggle,
   .monaco-vector-embedding-expand,
   .monaco-vector-embedding-copy {
     cursor: pointer;
-    /* Monaco renders injected text with pointer-events: none, which would
-       suppress the pointer cursor and hover (tooltip) on these chips. */
+    /* Injected text is pointer-events: none by default; re-enable for hover. */
     pointer-events: auto;
     background-color: ${({ theme }) =>
       theme.semantic.color.background.primary200};
@@ -47,7 +38,6 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
       theme.semantic.color.background.primary300};
   }
 
-  /* Small gap between the toggle label and its copy button. */
   .monaco-vector-embedding-toggle {
     margin-right: ${({ theme }) => theme.core.space.space050};
   }

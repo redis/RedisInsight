@@ -43,7 +43,7 @@ describe('vector embedding placeholders', () => {
   })
 
   describe('findVectorEmbeddingPlaceholders', () => {
-    it('returns ranges, visible ranges and value availability', () => {
+    it('returns the id, dimensions, byte size and range', () => {
       const placeholder = collapseVectorEmbeddingValue(BLOB, 768, 3072)
       const query = `PARAMS 2 vec ${placeholder}`
       const start = query.indexOf('[')
@@ -55,12 +55,8 @@ describe('vector embedding placeholders', () => {
         id: 1,
         dimensions: 768,
         byteSize: 3072,
-        hasValue: true,
         range: { start, end: query.length },
       })
-      expect(
-        query.slice(found[0].visibleRange.start, found[0].visibleRange.end),
-      ).toBe('▸ vector · 768 dims')
     })
 
     it('finds multiple placeholders ordered by position', () => {
@@ -74,11 +70,11 @@ describe('vector embedding placeholders', () => {
       expect(found[0].range.start).toBeLessThan(found[1].range.start)
     })
 
-    it('flags a placeholder from another session as valueless', () => {
+    it('leaves byteSize undefined for a placeholder from another session', () => {
       const found = findVectorEmbeddingPlaceholders(
         buildVectorEmbeddingPlaceholder(42, 3),
       )
-      expect(found[0].hasValue).toBe(false)
+      expect(found[0].byteSize).toBeUndefined()
     })
 
     it('returns nothing for plain query text', () => {
