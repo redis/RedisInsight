@@ -41,7 +41,7 @@ removed (worked example at the bottom).
 ```bash
 PKG=jsonpath   # the dependency to check
 grep -rn "$PKG" \
-  redisinsight configs scripts .storybook \
+  redisinsight configs scripts tests .storybook \
   --include=*.ts --include=*.tsx --include=*.js --include=*.jsx \
   --include=*.mjs --include=*.cjs --include=*.json \
   2>/dev/null | grep -v node_modules
@@ -113,7 +113,7 @@ grep each for an import, then apply steps 2–5 to the ones with zero hits:
 node -e "const p=require('./package.json');console.log([...Object.keys(p.dependencies||{}),...Object.keys(p.devDependencies||{})].join('\n'))" \
 | while read PKG; do
     hits=$(grep -rl --include=*.ts --include=*.tsx --include=*.js --include=*.jsx --include=*.mjs \
-      -e "from ['\"]$PKG" -e "require(['\"]$PKG" redisinsight configs scripts 2>/dev/null | grep -vc node_modules)
+      -e "from ['\"]$PKG" -e "require(['\"]$PKG" redisinsight configs scripts tests 2>/dev/null | grep -vc node_modules)
     [ "$hits" = "0" ] && echo "candidate: $PKG"
   done
 ```
