@@ -31,7 +31,9 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     /* Monaco renders injected text with pointer-events: none, which would
        suppress the pointer cursor and hover (tooltip) on these chips. */
     pointer-events: auto;
-    color: ${({ theme }) => theme.semantic.color.text.primary50};
+    /* neutral100 is near-black in dark mode and white in light mode, so the
+       label reads clearly on the primary chip in both themes. */
+    color: ${({ theme }) => theme.semantic.color.text.neutral100};
     background-color: ${({ theme }) =>
       theme.semantic.color.background.primary400};
     border-radius: ${({ theme }) => theme.core.space.space100};
