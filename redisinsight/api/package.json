@@ -72,7 +72,8 @@
     "lodash": "^4.18.1",
     "path-to-regexp": "^8.4.2",
     "multer": "^2.0.2",
-    "ws": "^8.21.1"
+    "ws": "^8.21.1",
+    "picomatch@4": "^4.0.5"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.2",
