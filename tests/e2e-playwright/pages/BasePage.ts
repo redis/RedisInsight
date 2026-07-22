@@ -89,16 +89,19 @@ export abstract class BasePage {
     // blocking here for the full test timeout.
     if (!(await this.waitForDatabaseList())) return;
 
-    // Always start from page 1 so we scan every page.
+    // Always start from page 1 so we scan every page. Bail if page 1 doesn't
+    // render so gotoDatabase() can reload and retry.
     if ((await firstPage.isVisible()) && (await firstPage.isEnabled())) {
       await firstPage.click();
-      await this.waitForDatabaseList();
+      if (!(await this.waitForDatabaseList())) return;
     }
 
     while (!(await row.isVisible())) {
       if (!(await nextPage.isVisible()) || !(await nextPage.isEnabled())) break;
       await nextPage.click();
-      await this.waitForDatabaseList();
+      // Stop paginating if the next page fails to render rows, rather than
+      // blindly advancing past a page that may hold the target row.
+      if (!(await this.waitForDatabaseList())) break;
     }
   }
 
