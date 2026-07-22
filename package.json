@@ -95,30 +95,23 @@
   "overrides": {
     "trim": "0.0.3",
     "word-wrap": "1.2.4",
-    "semver": "7.7.2",
+    "semver": "7.7.4",
+    "eslint-plugin-sonarjs": {
+      "semver": "^7.8.5"
+    },
     "rawproto": {
-      "protobufjs": "^7.2.5"
+      "protobufjs": "^7.6.5"
     },
     "@electron/notarize": "2.3.2",
-    "webpack-bundle-analyzer": {
-      "ws": "^7.5.10"
-    },
-    "msw": {
-      "path-to-regexp": "^6.3.0"
-    },
-    "cross-spawn": "^7.0.5",
     "@elastic/eui": {
       "prismjs": "~1.30.0"
-    },
-    "vite": {
-      "esbuild": "^0.25.0"
     },
     "react-router-dom": {
       "react-router": {
         "path-to-regexp": "^1.9.0"
       }
     },
-    "form-data": "^4.0.4",
+    "form-data": "^4.0.6",
     "@types/react": "18.2.1",
     "@types/react-dom": "18.2.1"
   },
@@ -157,7 +150,6 @@
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/json-bigint": "^1.0.1",
-    "@types/jsonpath": "^0.2.0",
     "@types/lodash": "^4.14.171",
     "@types/node": "14.14.10",
     "@types/pako": "^2.0.4",
@@ -208,7 +200,7 @@
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-sonarjs": "^2.0.4",
+    "eslint-plugin-sonarjs": "^4.2.0",
     "eslint-plugin-storybook": "^9.1.11",
     "file-loader": "^6.0.0",
     "fishery": "^2.3.1",
@@ -306,7 +298,6 @@
     "js-yaml": "^4.2.0",
     "json-bigint": "^1.0.0",
     "json-dup-key-validator": "^1.0.3",
-    "jsonpath": "^1.2.1",
     "jszip": "^3.10.1",
     "lodash": "^4.18.1",
     "lz4js": "^0.2.0",
@@ -341,7 +332,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "semver": "7.7.2",
+    "semver": "7.7.4",
     "socket.io-client": "^4.8.3",
     "styled-components": "^5.0.0",
     "unified": "^11.0.5",
