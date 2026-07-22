@@ -12,6 +12,8 @@ export {
   QueryResults,
 }
 
+export { VectorEmbeddingHighlight } from './components/vector-embedding-highlight'
+
 export {
   QueryEditorContextProvider,
   useQueryEditorContext,
@@ -22,6 +24,7 @@ export {
   useMonacoRedisEditor,
   useRedisCompletions,
   useQueryDecorations,
+  useVectorEmbeddingMarks,
   useCommandHistory,
   useDslSyntax,
   useQueryEditor,
