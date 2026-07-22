@@ -22,7 +22,7 @@ jobs:
     name: Audit dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.branch || github.ref }}
 
@@ -43,7 +43,7 @@ jobs:
       # `npm audit` reads the committed lockfiles and the core tests are plain
       # `node --test` — neither needs `node_modules`, so we only set up Node.
       - name: Setup Node
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v7.0.0
         with:
           node-version-file: '.nvmrc'
 
@@ -57,7 +57,7 @@ jobs:
       # Inline payload mirrors the E2E nightly Slack step.
       - name: Post to Slack
         if: steps.report.outputs.post == 'true'
-        uses: slackapi/slack-github-action@v3.0.5
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
@@ -86,7 +86,7 @@ jobs:
       # quietly render as clean.
       - name: Alert Slack when the audit could not run
         if: steps.report.outputs.failed == 'true'
-        uses: slackapi/slack-github-action@v3.0.5
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
@@ -103,7 +103,7 @@ jobs:
       # Slack failures.
       - name: Alert Slack when the audit workflow failed
         if: failure() && steps.report.outcome != 'success'
-        uses: slackapi/slack-github-action@v3.0.5
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
