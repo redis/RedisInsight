@@ -19,9 +19,11 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   }
 
   /* Injected chips: the collapsed toggle label, the standalone expanded arrow
-     and the copy button beside the collapsed label. Each is its own rounded
-     pill styled like the selected "Query editor" tab (primary brand colour),
-     which adapts to light/dark automatically via semantic tokens. Only
+     and the copy button beside the collapsed label. Each is a rounded primary
+     pill. Monaco ignores the CSS colour on injected text, so the label keeps
+     the editor's default foreground (light in dark theme, dark in light
+     theme); primary200 is a dark-blue chip in dark mode and a light-blue chip
+     in light mode, so that default text stays readable in both. Only
      horizontal padding — vertical padding would overflow Monaco's fixed line
      height, the font size provides the vertical inset. */
   .monaco-vector-embedding-toggle,
@@ -31,11 +33,8 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     /* Monaco renders injected text with pointer-events: none, which would
        suppress the pointer cursor and hover (tooltip) on these chips. */
     pointer-events: auto;
-    /* neutral100 is near-black in dark mode and white in light mode, so the
-       label reads clearly on the primary chip in both themes. */
-    color: ${({ theme }) => theme.semantic.color.text.neutral100};
     background-color: ${({ theme }) =>
-      theme.semantic.color.background.primary400};
+      theme.semantic.color.background.primary200};
     border-radius: ${({ theme }) => theme.core.space.space100};
     padding: 0 ${({ theme }) => theme.core.space.space100};
     font-size: 1.2rem;
@@ -45,9 +44,7 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   .monaco-vector-embedding-expand:hover,
   .monaco-vector-embedding-copy:hover {
     background-color: ${({ theme }) =>
-      theme.name === 'dark'
-        ? theme.semantic.color.background.primary500
-        : theme.semantic.color.background.primary300};
+      theme.semantic.color.background.primary300};
   }
 
   /* Small gap between the toggle label and its copy button. */
