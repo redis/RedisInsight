@@ -70,6 +70,9 @@ export const useVectorEmbeddingCollapse = ({
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   // Content keys the user explicitly expanded; everything else auto-collapses.
   const userExpandedKeys = useRef<Set<string>>(new Set())
+  // Selection captured just before a chip click, restored after copying so the
+  // caret does not land on the (zero-width) chip.
+  const preClickSelection = useRef<Nullable<monacoEditor.Selection>>(null)
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -214,6 +217,10 @@ export const useVectorEmbeddingCollapse = ({
         if (value === undefined) return
         e.event.preventDefault()
         handleCopy(value)
+        // Copying should not move the caret onto the (zero-width) chip.
+        if (preClickSelection.current) {
+          editor.setSelection(preClickSelection.current)
+        }
         return
       }
 
@@ -261,9 +268,25 @@ export const useVectorEmbeddingCollapse = ({
       ])
     })
 
+    const domNode = editor.getContainerDomNode()
+
+    // Capture the caret position before Monaco moves it on a chip click, so
+    // the copy handler can put it back (capture phase runs before Monaco's
+    // own mousedown handling).
+    const handleMouseDownCapture = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      const classList = target?.classList
+      if (
+        classList?.contains(EMBEDDING_COPY_CLASS) ||
+        classList?.contains(EMBEDDING_TOGGLE_CLASS) ||
+        classList?.contains(EMBEDDING_EXPAND_CLASS)
+      ) {
+        preClickSelection.current = editor.getSelection()
+      }
+    }
+
     // Copying a selection that contains collapsed embeddings puts the full
     // values on the clipboard instead of the placeholders.
-    const domNode = editor.getContainerDomNode()
     const handleCopyEvent = (e: ClipboardEvent) => {
       const selection = editor.getSelection()
       const currentModel = editor.getModel()
@@ -278,8 +301,10 @@ export const useVectorEmbeddingCollapse = ({
       e.clipboardData.setData('text/plain', expanded)
     }
 
+    domNode.addEventListener('mousedown', handleMouseDownCapture, true)
     domNode.addEventListener('copy', handleCopyEvent, true)
     removeDomListeners.current = () => {
+      domNode.removeEventListener('mousedown', handleMouseDownCapture, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
     }
   }, [query, t, monacoObjects])
