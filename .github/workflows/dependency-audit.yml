@@ -85,10 +85,10 @@ jobs:
                     value: "${{ steps.report.outputs.dev_high }}"
                     short: true
 
-      # Kept separate from the vulnerability report so a broken audit can't
-      # quietly render as clean.
+      # Separate from the vulnerability report so a broken audit can't read as
+      # clean, and still fires if the post above errored out.
       - name: Alert Slack when the audit could not run
-        if: steps.report.outputs.failed == 'true'
+        if: ${{ !cancelled() && steps.report.outputs.failed == 'true' }}
         uses: slackapi/slack-github-action@v4.0.0
         with:
           # Fail the step on a Slack API error; v4 stays green otherwise,
