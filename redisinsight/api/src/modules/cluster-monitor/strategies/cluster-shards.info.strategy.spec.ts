@@ -235,6 +235,38 @@ describe('ClusterShardsInfoStrategy', () => {
       expect(result[0].host).toBe('203.0.113.10');
     });
 
+    it('should prefer the node ip over fallbackHost when endpoint is null (unknown endpoint)', () => {
+      // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3632382937:
+      // getClusterNodesFromRedis always passes the connection host as
+      // fallbackHost, so every node with a null/empty endpoint must still be
+      // labeled with its own ip - falling straight to fallbackHost would
+      // mislabel every such node with the same shared connection host.
+      const ip = '10.0.0.42';
+      const shardNodes = [
+        [
+          'id',
+          'n1',
+          'port',
+          6379,
+          'ip',
+          ip,
+          'endpoint',
+          null,
+          'role',
+          'master',
+          'health',
+          'online',
+        ],
+      ];
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        shardNodes,
+        slots,
+        '203.0.113.10',
+      );
+      expect(result[0].host).toBe(ip);
+    });
+
     it('should fall back to ip when endpoint is the "?" misconfigured marker', () => {
       const raw = clusterShardNodeRawFactory.build({ endpoint: '?' });
 
