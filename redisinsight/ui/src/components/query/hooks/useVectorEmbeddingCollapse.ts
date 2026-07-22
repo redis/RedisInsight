@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { useTranslation } from 'uiSrc/i18n'
@@ -18,6 +18,8 @@ import {
   ARROW_COLLAPSED,
   ARROW_EXPANDED,
   COLLAPSE_EDIT_SOURCE,
+  COPIED_ICON,
+  COPIED_RESET_MS,
   COPY_ICON,
   EMBEDDING_COPY_CLASS,
   EMBEDDING_EXPAND_CLASS,
@@ -38,10 +40,13 @@ export const useVectorEmbeddingCollapse = ({
   query,
 }: UseVectorEmbeddingCollapseProps) => {
   const { t } = useTranslation()
+  // Placeholder id whose copy button currently shows the "copied" tick.
+  const [copiedId, setCopiedId] = useState<Nullable<number>>(null)
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   const userExpandedKeys = useRef<Set<string>>(new Set())
+  const copiedTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -118,7 +123,7 @@ export const useVectorEmbeddingCollapse = ({
           options: {
             hoverMessage: { value: t('query.editor.vectorEmbedding.copy') },
             after: {
-              content: COPY_ICON,
+              content: placeholder.id === copiedId ? COPIED_ICON : COPY_ICON,
               inlineClassName: EMBEDDING_COPY_CLASS,
             },
           },
@@ -196,6 +201,12 @@ export const useVectorEmbeddingCollapse = ({
 
       if (isCopy) {
         handleCopy(value)
+        setCopiedId(placeholder.id)
+        if (copiedTimer.current) clearTimeout(copiedTimer.current)
+        copiedTimer.current = setTimeout(
+          () => setCopiedId(null),
+          COPIED_RESET_MS,
+        )
         return
       }
 
@@ -234,12 +245,13 @@ export const useVectorEmbeddingCollapse = ({
       domNode.removeEventListener('mousedown', handleChipMouseDown, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
     }
-  }, [query, t, monacoObjects])
+  }, [query, t, copiedId, monacoObjects])
 
   useEffect(
     () => () => {
       removeDomListeners.current?.()
       removeDomListeners.current = null
+      if (copiedTimer.current) clearTimeout(copiedTimer.current)
     },
     [],
   )
