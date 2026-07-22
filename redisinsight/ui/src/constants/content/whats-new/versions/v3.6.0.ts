@@ -18,7 +18,6 @@ export const version360: WhatsNewVersion = {
       title: 'Dev vs Production database mode',
       body: 'Tag connections as dev or production. Production shows a PROD badge and requires type-to-confirm before destructive actions. Makes it harder to run destructive actions against the wrong database.',
       location: "Database list — edit a database's connection settings",
-      featureFlag: FeatureFlags.prodMode,
     },
     {
       id: 'geodata-workbench',

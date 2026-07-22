@@ -80,9 +80,6 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devBrowser]: {
         flag: false,
       },
-      [FeatureFlags.prodMode]: {
-        flag: false,
-      },
       [FeatureFlags.devLanguage]: {
         flag: false,
       },
@@ -222,8 +219,6 @@ export const appFeatureFlagsSelector = (state: RootState) =>
   state.app.features.featureFlags
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
-export const appFeatureFlagProdModeSelector = (state: RootState): boolean =>
-  state.app.features.featureFlags.features[FeatureFlags.prodMode]?.flag ?? false
 
 export const isValueDecoderEnabledSelector = (state: RootState): boolean =>
   state.app.features.featureFlags.features[FeatureFlags.valueDecoder]?.flag ??
