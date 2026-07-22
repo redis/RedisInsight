@@ -141,4 +141,22 @@ describe('discoverClusterNodes', () => {
       { host: 'node-2.redis.example.com', port: 6380 },
     ]);
   });
+
+  it('should fall back to the connection entrypoint when every node is the "?" misconfigured marker', async () => {
+    // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3629962716:
+    // CLUSTER SLOTS omits unassigned-slot / '?' nodes entirely, so a
+    // partially-configured cluster can resolve to an empty node list; keep
+    // the discovery entrypoint as a seed instead of returning no root nodes.
+    const client = generateMockRedisClient(
+      { databaseId: 'all-misconfigured-test' },
+      undefined,
+      { host: '203.0.113.10', port: 6379 },
+    );
+    const slots: RedisClusterSlotsReply = [[0, 16383, ['?', 6379, 'node-1']]];
+    client.sendCommand = jest.fn().mockResolvedValue(slots);
+
+    expect(await discoverClusterNodes(client)).toEqual([
+      { host: '203.0.113.10', port: 6379 },
+    ]);
+  });
 });

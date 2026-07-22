@@ -48,5 +48,11 @@ export const discoverClusterNodes = async (
     replyEncoding: 'utf8',
   })) as RedisClusterSlotsReply;
 
-  return parseNodesFromClusterSlotsReply(slots, client.options?.host);
+  const nodes = parseNodesFromClusterSlotsReply(slots, client.options?.host);
+  if (!nodes.length && client.options?.host) {
+    // CLUSTER SLOTS omits unassigned-slot / '?' nodes; keep the discovery
+    // entrypoint as a seed so a partially-configured cluster still connects.
+    return [{ host: client.options.host, port: client.options.port }];
+  }
+  return nodes;
 };

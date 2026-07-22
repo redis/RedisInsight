@@ -119,6 +119,20 @@ describe('parseNodesFromClusterSlotsReply', () => {
     ]);
   });
 
+  it('should use an IPv6 preferred endpoint as-is', () => {
+    // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3629961342:
+    // the removed CLUSTER NODES parser had explicit IPv6 coverage; the
+    // preferred endpoint is used verbatim regardless of address family, so
+    // an IPv6 literal must pass through unchanged, same as an IPv4 one.
+    const slots: RedisClusterSlotsReply = [
+      [0, 16383, ['2001:db8::1', 7001, 'node-1']],
+    ];
+
+    expect(parseNodesFromClusterSlotsReply(slots)).toEqual([
+      { host: '2001:db8::1', port: 7001 },
+    ]);
+  });
+
   it('should fall back to the command host for an unknown (null) endpoint', () => {
     const slots: RedisClusterSlotsReply = [[0, 16383, [null, 6379, 'node-1']]];
 
