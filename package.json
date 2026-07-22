@@ -58,7 +58,9 @@
     "tscheck": "npm run tscheck --prefix redisinsight/ui && npm run tscheck --prefix redisinsight/api && npm run tscheck --prefix redisinsight/desktop",
     "tscheck:force": "npm run tscheck:force --prefix redisinsight/ui && npm run tscheck:force --prefix redisinsight/api && npm run tscheck:force --prefix redisinsight/desktop",
     "sb": "storybook dev -p 6006",
-    "build-sb": "storybook build"
+    "build-sb": "storybook build",
+    "deps:audit": "node scripts/dependency-audit-report.mjs",
+    "test:scripts": "node --test scripts/lib/*.test.mjs"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

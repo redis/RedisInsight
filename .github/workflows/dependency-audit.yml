@@ -1,0 +1,125 @@
+name: Dependency Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch/ref to audit (blank = current ref)'
+        type: string
+        default: ''
+  schedule:
+    - cron: '0 7 * * 1' # weekly, Monday 07:00 UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.branch || github.ref }}
+
+      # Label Slack with the tree actually audited. A manual run can check out a
+      # different ref via inputs.branch, so github.ref_name/github.sha (the
+      # trigger ref) would misname it.
+      - name: Resolve audited ref
+        id: audited
+        env:
+          INPUT_BRANCH: ${{ inputs.branch }}
+          TRIGGER_REF: ${{ github.ref_name }}
+        run: |
+          {
+            echo "ref=${INPUT_BRANCH:-$TRIGGER_REF}"
+            echo "sha=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
+      # `npm audit` reads the committed lockfiles and the core tests are plain
+      # `node --test` — neither needs `node_modules`, so we only set up Node.
+      - name: Setup Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Run dependency-audit core tests
+        run: npm run test:scripts
+
+      - name: Run dependency audit report
+        id: report
+        run: node scripts/dependency-audit-report.mjs --github
+
+      # Inline payload mirrors the E2E nightly Slack step.
+      - name: Post to Slack
+        if: steps.report.outputs.post == 'true'
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          # Fail the step on a Slack API error; v4 stays green otherwise,
+          # hiding an alert that never got delivered.
+          errors: true
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "<!here> *Dependency audit — ${{ steps.report.outputs.total_hc }} high/critical* — `${{ github.repository }}` on `${{ steps.audited.outputs.ref }}` @ `${{ steps.audited.outputs.sha }}`"
+            attachments:
+              - color: "${{ steps.report.outputs.color }}"
+                title: "${{ github.workflow }}"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                fields:
+                  - title: "Prod Critical"
+                    value: "${{ steps.report.outputs.prod_critical }}"
+                    short: true
+                  - title: "Prod High"
+                    value: "${{ steps.report.outputs.prod_high }}"
+                    short: true
+                  - title: "Dev Critical"
+                    value: "${{ steps.report.outputs.dev_critical }}"
+                    short: true
+                  - title: "Dev High"
+                    value: "${{ steps.report.outputs.dev_high }}"
+                    short: true
+
+      # Separate from the vulnerability report so a broken audit can't read as
+      # clean, and still fires if the post above errored out.
+      - name: Alert Slack when the audit could not run
+        if: ${{ !cancelled() && steps.report.outputs.failed == 'true' }}
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          # Fail the step on a Slack API error; v4 stays green otherwise,
+          # hiding an alert that never got delivered.
+          errors: true
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "<!here> *Dependency audit could not run* — one or more lockfiles failed to audit; the vulnerability report is incomplete — `${{ github.repository }}` on `${{ steps.audited.outputs.ref }}` @ `${{ steps.audited.outputs.sha }}`"
+            attachments:
+              - color: "#cc0000"
+                title: "${{ github.workflow }} — see step summary for the affected trees"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      # A failure at or before the report (e.g. the core tests) would otherwise
+      # stop the job with no alert. The report-outcome gate skips post-report
+      # Slack failures.
+      - name: Alert Slack when the audit workflow failed
+        if: failure() && steps.report.outcome != 'success'
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          # Fail the step on a Slack API error; v4 stays green otherwise,
+          # hiding an alert that never got delivered.
+          errors: true
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "<!here> *Dependency audit workflow failed* — a step errored before the report completed — `${{ github.repository }}` on `${{ steps.audited.outputs.ref || github.ref_name }}`"
+            attachments:
+              - color: "#cc0000"
+                title: "${{ github.workflow }} — check the failed step"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
