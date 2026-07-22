@@ -66,13 +66,9 @@ export const useVectorEmbeddingCollapse = ({
   const { t } = useTranslation()
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
-  const mouseListener = useRef<Nullable<monacoEditor.IDisposable>>(null)
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   // Content keys the user explicitly expanded; everything else auto-collapses.
   const userExpandedKeys = useRef<Set<string>>(new Set())
-  // Selection captured just before a chip click, restored after copying so the
-  // caret does not land on the (zero-width) chip.
-  const preClickSelection = useRef<Nullable<monacoEditor.Selection>>(null)
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -190,107 +186,98 @@ export const useVectorEmbeddingCollapse = ({
 
     decorationCollection.current.set(decorations)
 
-    if (mouseListener.current) return
-
-    mouseListener.current = editor.onMouseDown((e) => {
-      const element = e.target.element as HTMLElement | null
-      const classList = element?.classList
-      const isCopy = classList?.contains(EMBEDDING_COPY_CLASS)
-      const isToggle =
-        classList?.contains(EMBEDDING_TOGGLE_CLASS) ||
-        classList?.contains(EMBEDDING_EXPAND_CLASS)
-      if (!isCopy && !isToggle) return
-
-      const { position } = e.target
-      const currentModel = editor.getModel()
-      if (!position || !currentModel) return
-
-      const currentText = currentModel.getValue()
-      const offset = currentModel.getOffsetAt(position)
-
-      // A click on the copy button copies the full embedding value.
-      if (isCopy) {
-        const target = findVectorEmbeddingPlaceholders(currentText).find(
-          (p) => offset >= p.range.start && offset <= p.range.end,
-        )
-        const value = target ? getVectorEmbeddingValue(target.id) : undefined
-        if (value === undefined) return
-        e.event.preventDefault()
-        handleCopy(value)
-        // Copying should not move the caret onto the (zero-width) chip.
-        if (preClickSelection.current) {
-          editor.setSelection(preClickSelection.current)
-        }
-        return
-      }
-
-      // A click on a collapsed chip expands it back to the stored value.
-      const placeholder = findVectorEmbeddingPlaceholders(currentText).find(
-        (p) => offset >= p.range.start && offset <= p.range.end,
-      )
-      if (placeholder) {
-        const value = getVectorEmbeddingValue(placeholder.id)
-        if (value === undefined) return
-        e.event.preventDefault()
-        editor.executeEdits(EDIT_SOURCE, [
-          {
-            range: toMonacoRange(monaco, currentModel, placeholder.range),
-            text: value,
-          },
-        ])
-        // Remember this embedding as user-expanded so it is not
-        // auto-collapsed again on the next render.
-        const expandedMark = detectVectorEmbeddings(
-          currentModel.getValue(),
-        ).find((m) => m.range.start === placeholder.range.start)
-        if (expandedMark) {
-          userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
-        }
-        // Keep the caret where it was rather than on the chip.
-        if (preClickSelection.current) {
-          editor.setSelection(preClickSelection.current)
-        }
-        return
-      }
-
-      // A click on the arrow of an expanded embedding collapses it again.
-      const mark = detectVectorEmbeddings(currentText).find(
-        (m) => offset >= m.range.start && offset <= m.range.end,
-      )
-      if (!mark) return
-      e.event.preventDefault()
-      userExpandedKeys.current.delete(getEmbeddingKey(mark))
-      editor.executeEdits(EDIT_SOURCE, [
-        {
-          range: toMonacoRange(monaco, currentModel, mark.range),
-          text: collapseVectorEmbeddingValue(
-            currentText.slice(mark.range.start, mark.range.end),
-            mark.dimensions,
-            mark.byteSize,
-          ),
-        },
-      ])
-      // Keep the caret where it was rather than on the chip.
-      if (preClickSelection.current) {
-        editor.setSelection(preClickSelection.current)
-      }
-    })
+    if (removeDomListeners.current) return
 
     const domNode = editor.getContainerDomNode()
 
-    // Capture the caret position before Monaco moves it on a chip click, so
-    // the copy handler can put it back (capture phase runs before Monaco's
-    // own mousedown handling).
-    const handleMouseDownCapture = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null
-      const classList = target?.classList
-      if (
-        classList?.contains(EMBEDDING_COPY_CLASS) ||
-        classList?.contains(EMBEDDING_TOGGLE_CLASS) ||
-        classList?.contains(EMBEDDING_EXPAND_CLASS)
-      ) {
-        preClickSelection.current = editor.getSelection()
+    const findPlaceholderAt = (text: string, offset: number | null) => {
+      const placeholders = findVectorEmbeddingPlaceholders(text)
+      if (offset !== null) {
+        return placeholders.find(
+          (p) => offset >= p.range.start && offset <= p.range.end,
+        )
       }
+      return placeholders.length === 1 ? placeholders[0] : undefined
+    }
+
+    const findMarkAt = (text: string, offset: number | null) => {
+      const marks = detectVectorEmbeddings(text)
+      if (offset !== null) {
+        return marks.find(
+          (m) => offset >= m.range.start && offset <= m.range.end,
+        )
+      }
+      return marks.length === 1 ? marks[0] : undefined
+    }
+
+    // Handle chip clicks in the capture phase and stop the event before Monaco
+    // sees it, so it never moves the caret onto the (zero-width) chip — not
+    // even while the mouse button is held. Copy/expand/collapse are performed
+    // here; edits restore the prior selection so the caret stays put.
+    const handleChipMouseDown = (e: MouseEvent) => {
+      const classList = (e.target as HTMLElement | null)?.classList
+      const isCopy = classList?.contains(EMBEDDING_COPY_CLASS)
+      const isCollapsedToggle = classList?.contains(EMBEDDING_TOGGLE_CLASS)
+      const isExpandArrow = classList?.contains(EMBEDDING_EXPAND_CLASS)
+      if (!isCopy && !isCollapsedToggle && !isExpandArrow) return
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      const currentModel = editor.getModel()
+      if (!currentModel) return
+      const text = currentModel.getValue()
+      const mouseTarget = editor.getTargetAtClientPoint(e.clientX, e.clientY)
+      const offset = mouseTarget?.position
+        ? currentModel.getOffsetAt(mouseTarget.position)
+        : null
+
+      // Collapse an expanded embedding.
+      if (isExpandArrow) {
+        const mark = findMarkAt(text, offset)
+        if (!mark) return
+        const selection = editor.getSelection()
+        userExpandedKeys.current.delete(getEmbeddingKey(mark))
+        editor.executeEdits(EDIT_SOURCE, [
+          {
+            range: toMonacoRange(monaco, currentModel, mark.range),
+            text: collapseVectorEmbeddingValue(
+              text.slice(mark.range.start, mark.range.end),
+              mark.dimensions,
+              mark.byteSize,
+            ),
+          },
+        ])
+        if (selection) editor.setSelection(selection)
+        return
+      }
+
+      // Copy or expand a collapsed embedding.
+      const placeholder = findPlaceholderAt(text, offset)
+      if (!placeholder) return
+      const value = getVectorEmbeddingValue(placeholder.id)
+      if (value === undefined) return
+
+      if (isCopy) {
+        handleCopy(value)
+        return
+      }
+
+      // Expand.
+      const selection = editor.getSelection()
+      editor.executeEdits(EDIT_SOURCE, [
+        {
+          range: toMonacoRange(monaco, currentModel, placeholder.range),
+          text: value,
+        },
+      ])
+      const expandedMark = detectVectorEmbeddings(currentModel.getValue()).find(
+        (m) => m.range.start === placeholder.range.start,
+      )
+      if (expandedMark) {
+        userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
+      }
+      if (selection) editor.setSelection(selection)
     }
 
     // Copying a selection that contains collapsed embeddings puts the full
@@ -309,10 +296,10 @@ export const useVectorEmbeddingCollapse = ({
       e.clipboardData.setData('text/plain', expanded)
     }
 
-    domNode.addEventListener('mousedown', handleMouseDownCapture, true)
+    domNode.addEventListener('mousedown', handleChipMouseDown, true)
     domNode.addEventListener('copy', handleCopyEvent, true)
     removeDomListeners.current = () => {
-      domNode.removeEventListener('mousedown', handleMouseDownCapture, true)
+      domNode.removeEventListener('mousedown', handleChipMouseDown, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
     }
   }, [query, t, monacoObjects])
@@ -320,8 +307,6 @@ export const useVectorEmbeddingCollapse = ({
   // Detach the editor listeners on unmount.
   useEffect(
     () => () => {
-      mouseListener.current?.dispose()
-      mouseListener.current = null
       removeDomListeners.current?.()
       removeDomListeners.current = null
     },
