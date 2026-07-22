@@ -20,8 +20,10 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
 
   /* Injected chips: the collapsed toggle label, the standalone expanded arrow
      and the copy button beside the collapsed label. Each is its own rounded
-     tinted pill. Only horizontal padding — vertical padding would overflow
-     Monaco's fixed line height, the font size provides the vertical inset. */
+     pill styled like the selected "Query editor" tab (primary brand colour),
+     which adapts to light/dark automatically via semantic tokens. Only
+     horizontal padding — vertical padding would overflow Monaco's fixed line
+     height, the font size provides the vertical inset. */
   .monaco-vector-embedding-toggle,
   .monaco-vector-embedding-expand,
   .monaco-vector-embedding-copy {
@@ -29,8 +31,9 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
     /* Monaco renders injected text with pointer-events: none, which would
        suppress the pointer cursor and hover (tooltip) on these chips. */
     pointer-events: auto;
+    color: ${({ theme }) => theme.semantic.color.text.primary50};
     background-color: ${({ theme }) =>
-      theme.semantic.color.background.notice200};
+      theme.semantic.color.background.primary400};
     border-radius: ${({ theme }) => theme.core.space.space100};
     padding: 0 ${({ theme }) => theme.core.space.space100};
     font-size: 1.2rem;
@@ -40,7 +43,9 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   .monaco-vector-embedding-expand:hover,
   .monaco-vector-embedding-copy:hover {
     background-color: ${({ theme }) =>
-      theme.semantic.color.background.notice300};
+      theme.name === 'dark'
+        ? theme.semantic.color.background.primary500
+        : theme.semantic.color.background.primary300};
   }
 
   /* Small gap between the toggle label and its copy button. */
@@ -49,7 +54,6 @@ export const VectorEmbeddingHighlightStyles = createGlobalStyle<{
   }
 
   .monaco-vector-embedding-copy {
-    color: ${({ theme }) => theme.semantic.color.text.informative400};
     margin-right: ${({ theme }) => theme.core.space.space100};
   }
 
