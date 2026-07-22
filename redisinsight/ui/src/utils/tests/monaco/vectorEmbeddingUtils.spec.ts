@@ -154,11 +154,13 @@ describe('getEmbeddingKey', () => {
     ...overrides,
   })
 
-  it('prefers the PARAMS argument name when present', () => {
-    expect(getEmbeddingKey(buildMark({ paramName: 'my_blob' }))).toBe('my_blob')
+  it('keys by content, ignoring the PARAMS argument name', () => {
+    expect(getEmbeddingKey(buildMark({ paramName: 'my_blob' }))).toBe(
+      'floatArray:12:0,1,2:10,11',
+    )
   })
 
-  it('falls back to a content signature when there is no param name', () => {
+  it('builds the signature from format, dimensions and preview values', () => {
     expect(getEmbeddingKey(buildMark())).toBe('floatArray:12:0,1,2:10,11')
   })
 

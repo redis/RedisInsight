@@ -11,6 +11,7 @@ import {
   getVectorEmbeddingValue,
   handleCopy,
   Nullable,
+  releaseVectorEmbeddingValue,
 } from 'uiSrc/utils'
 
 import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.types'
@@ -61,6 +62,13 @@ export const useVectorEmbeddingCollapse = ({
 
     const text = model.getValue()
     const detected = detectVectorEmbeddings(text)
+
+    // Drop expanded keys whose embedding is no longer in the editor (cleared,
+    // replaced, deleted) so a later paste always starts collapsed.
+    const detectedKeys = new Set(detected.map(getEmbeddingKey))
+    userExpandedKeys.current = new Set(
+      [...userExpandedKeys.current].filter((key) => detectedKeys.has(key)),
+    )
 
     const marksToCollapse = detected.filter(
       (mark) => !userExpandedKeys.current.has(getEmbeddingKey(mark)),
@@ -217,6 +225,8 @@ export const useVectorEmbeddingCollapse = ({
           text: value,
         },
       ])
+      // The value is back in the editor; the placeholder id is now dead.
+      releaseVectorEmbeddingValue(placeholder.id)
       const expandedMark = detectVectorEmbeddings(currentModel.getValue()).find(
         (m) => m.range.start === placeholder.range.start,
       )
@@ -225,7 +235,9 @@ export const useVectorEmbeddingCollapse = ({
       if (selection) editor.setSelection(selection)
     }
 
-    const handleCopyEvent = (e: ClipboardEvent) => {
+    // Copy/cut a selection with full values instead of placeholders; cut also
+    // removes the selection since we take over the clipboard write.
+    const writeExpandedClipboard = (e: ClipboardEvent, isCut: boolean) => {
       const selection = editor.getSelection()
       const currentModel = editor.getModel()
       if (!selection || !currentModel || !e.clipboardData) return
@@ -237,13 +249,24 @@ export const useVectorEmbeddingCollapse = ({
       e.preventDefault()
       e.stopPropagation()
       e.clipboardData.setData('text/plain', expanded)
+      if (isCut) {
+        editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
+          { range: selection, text: '' },
+        ])
+      }
     }
+    const handleCopyEvent = (e: ClipboardEvent) =>
+      writeExpandedClipboard(e, false)
+    const handleCutEvent = (e: ClipboardEvent) =>
+      writeExpandedClipboard(e, true)
 
     domNode.addEventListener('mousedown', handleChipMouseDown, true)
     domNode.addEventListener('copy', handleCopyEvent, true)
+    domNode.addEventListener('cut', handleCutEvent, true)
     removeDomListeners.current = () => {
       domNode.removeEventListener('mousedown', handleChipMouseDown, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
+      domNode.removeEventListener('cut', handleCutEvent, true)
     }
   }, [query, t, copiedId, monacoObjects])
 

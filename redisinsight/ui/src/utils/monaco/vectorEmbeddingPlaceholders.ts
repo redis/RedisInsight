@@ -42,6 +42,11 @@ export const collapseVectorEmbeddingValue = (
 export const getVectorEmbeddingValue = (id: number): string | undefined =>
   collapsedValues.get(id)?.value
 
+// Frees the stored value once its placeholder is gone (e.g. after expanding).
+export const releaseVectorEmbeddingValue = (id: number): void => {
+  collapsedValues.delete(id)
+}
+
 export const findVectorEmbeddingPlaceholders = (
   text: string,
 ): VectorEmbeddingPlaceholder[] => {

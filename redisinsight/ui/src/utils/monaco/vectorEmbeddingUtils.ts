@@ -68,11 +68,11 @@ const buildParamNameLookup = (query: string): Map<string, string> => {
 }
 
 /**
- * Stable identity for an embedding across edits (offsets shift as the user
- * types). Prefers the PARAMS argument name, else a content signature.
+ * Content identity for an embedding, stable across edits elsewhere in the
+ * query. Keyed by value (not the PARAMS name) so two different embeddings that
+ * share a name are still distinct.
  */
 export const getEmbeddingKey = (mark: VectorEmbeddingMark): string =>
-  mark.paramName ??
   `${mark.format}:${mark.dimensions}:${mark.firstValues.join(',')}:${mark.lastValues.join(',')}`
 
 /**
