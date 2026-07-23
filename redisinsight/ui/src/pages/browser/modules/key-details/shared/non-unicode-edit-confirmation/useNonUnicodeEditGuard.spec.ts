@@ -102,6 +102,29 @@ describe('useNonUnicodeEditGuard', () => {
     jest.useRealTimers()
   })
 
+  it('switches to Unicode without re-entering when reenterAfterUnicode is false', () => {
+    jest.useFakeTimers()
+    const store = makeStore(KeyValueFormat.JSON)
+    const proceed = jest.fn()
+
+    const { result } = renderHook(
+      () => useNonUnicodeEditGuard({ reenterAfterUnicode: false }),
+      { store },
+    )
+
+    act(() => result.current.requestEdit(proceed))
+    act(() => result.current.changeToUnicode())
+
+    expect(store.getActions()).toContainEqual(
+      setViewFormat(KeyValueFormat.Unicode),
+    )
+
+    act(() => jest.runAllTimers())
+
+    expect(proceed).not.toHaveBeenCalled()
+    jest.useRealTimers()
+  })
+
   it('discards the edit and closes on Cancel', () => {
     const store = makeStore(KeyValueFormat.JSON)
     const proceed = jest.fn()

@@ -14,11 +14,21 @@ import { KeyValueFormat } from 'uiSrc/constants'
 const needsEditWarning = (format: KeyValueFormat) =>
   format !== KeyValueFormat.Unicode && isFormatEditable(format)
 
+interface Options {
+  /**
+   * Re-run the pending edit after switching to Unicode. Disable where the
+   * editor snapshots its value under the opening format (e.g. the array drawer).
+   */
+  reenterAfterUnicode?: boolean
+}
+
 /**
  * Guards entering edit mode: for a non-Unicode format it opens the
  * confirmation and defers the edit; otherwise it proceeds immediately.
  */
-export const useNonUnicodeEditGuard = () => {
+export const useNonUnicodeEditGuard = ({
+  reenterAfterUnicode = true,
+}: Options = {}) => {
   const { viewFormat } = useAppSelector(selectedKeySelector)
   const dispatch = useAppDispatch()
 
@@ -59,10 +69,10 @@ export const useNonUnicodeEditGuard = () => {
     setPendingEdit(null)
     // Defer past the table's format-change reset (which clears edit state)
     // so the row reopens in place on its raw Unicode value.
-    if (proceed) {
+    if (reenterAfterUnicode && proceed) {
       setTimeout(proceed, 0)
     }
-  }, [pendingEdit, dispatch])
+  }, [pendingEdit, dispatch, reenterAfterUnicode])
 
   return {
     format,

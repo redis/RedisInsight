@@ -29,7 +29,8 @@ export const RowActionsCell = ({
 }: RowActionsCellProps) => {
   const { t } = useTranslation()
   const editGuard = useNonUnicodeEditGuard()
-  const expandGuard = useNonUnicodeEditGuard()
+  // Drawer snapshots its seed on open, so a Unicode switch must not reopen it.
+  const expandGuard = useNonUnicodeEditGuard({ reenterAfterUnicode: false })
 
   const { index, value } = element
 
