@@ -104,14 +104,12 @@ export const useVectorEmbeddingCollapse = ({
         userExpandedKeys.current.add(getEmbeddingKey(mark)),
       )
     } else if (marksToCollapse.length > 0) {
-      // Preserve the caret so a collapse triggered mid-edit (e.g. finishing a
-      // large array) doesn't yank the cursor elsewhere; Monaco maps it across
-      // the edit like the manual expand/collapse handlers do.
-      const selection = editor.getSelection()
       // Undo stops keep the collapse a separate undo entry from the paste/type
       // that produced the vector, so Ctrl+Z first lands on the raw value (where
       // the isUndoing guard keeps it expanded) instead of skipping past it.
       editor.pushUndoStop()
+      // executeEdits remaps the caret next to the placeholder — don't restore a
+      // pre-edit selection, whose columns are stale once the long blob is gone.
       editor.executeEdits(
         COLLAPSE_EDIT_SOURCE,
         marksToCollapse.map((mark) => ({
@@ -124,7 +122,11 @@ export const useVectorEmbeddingCollapse = ({
         })),
       )
       editor.pushUndoStop()
-      if (selection) editor.setSelection(selection)
+      // A paste scrolls the view to the end of the long blob; once it collapses,
+      // bring the view back to the caret (now beside the placeholder) so it
+      // doesn't stay parked at the bottom.
+      const position = editor.getPosition()
+      if (position) editor.revealPositionInCenterIfOutsideViewport(position)
       return
     }
 

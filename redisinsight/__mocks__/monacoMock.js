@@ -22,6 +22,7 @@ const editor = {
   updateOptions: jest.fn(),
   setSelection: jest.fn(),
   setPosition: jest.fn(),
+  revealPositionInCenterIfOutsideViewport: jest.fn(),
   createDecorationsCollection: jest.fn().mockReturnValue({ set: jest.fn(), clear: jest.fn() }),
   getValue: jest.fn().mockReturnValue(''),
   getModel: jest.fn().mockReturnValue({

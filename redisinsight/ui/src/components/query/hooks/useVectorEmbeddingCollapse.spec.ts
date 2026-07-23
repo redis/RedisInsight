@@ -38,6 +38,8 @@ const createEditor = (value: string) => {
     getSelection: jest.fn(() => null),
     getSelections: jest.fn(() => null),
     setSelection: jest.fn(),
+    getPosition: jest.fn(() => ({ lineNumber: 1, column: 1 })),
+    revealPositionInCenterIfOutsideViewport: jest.fn(),
     getContainerDomNode: jest.fn(() => document.createElement('div')),
     getTargetAtClientPoint: jest.fn(() => null),
     onDidChangeModelContent: jest.fn(() => ({ dispose })),
@@ -69,6 +71,9 @@ describe('useVectorEmbeddingCollapse', () => {
     expect(edits[0].text).toMatch(/^\[▸vector·\d+dims#.+\]$/)
     // Wrapped in undo stops so Ctrl+Z lands on the raw value first.
     expect(editor.pushUndoStop).toHaveBeenCalled()
+    // View is brought back to the caret so a pasted blob doesn't leave the
+    // editor scrolled to the bottom.
+    expect(editor.revealPositionInCenterIfOutsideViewport).toHaveBeenCalled()
   })
 
   it('draws hidden, toggle and copy chips for a known placeholder', () => {
