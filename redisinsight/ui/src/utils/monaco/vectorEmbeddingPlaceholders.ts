@@ -1,39 +1,17 @@
-import { VectorEmbeddingRange } from './vectorEmbeddingUtils.types'
+import { PLACEHOLDER_REGEX } from './vectorEmbeddingPlaceholders.constants'
+import {
+  StoredEmbedding,
+  VectorEmbeddingPlaceholder,
+} from './vectorEmbeddingPlaceholders.types'
+import { newSessionId } from './vectorEmbeddingPlaceholders.utils'
 
 // Session-scoped store for collapsed embeddings: the placeholder text carries
 // an id and the full value is kept here, so every exit path (submit, copy,
 // save) must expand before the query is persisted.
 
-// Matches e.g. "[▸vector·1536dims#k3f9a1-3]". Ids are "<session>-<n>" so a
-// literal placeholder-shaped token in the query can't collide with ours. The
-// text is space-free so the FT.SEARCH arg tokenizer treats a collapsed value as
-// a single PARAMS argument, keeping later params' name mapping intact. The
-// visible chip label (with spaces) is drawn separately as an injected decoration.
-const PLACEHOLDER_REGEX = /\[▸vector·(\d+)dims#([a-z0-9]+-\d+)\]/g
-
-interface StoredEmbedding {
-  value: string
-  byteSize: number
-}
-
-// A CSPRNG-derived prefix (not Math.random) keeps the session id unguessable so
-// a placeholder-shaped token from elsewhere can't be forged to match ours.
-const newSessionId = (): string => {
-  const [seed] = crypto.getRandomValues(new Uint32Array(1))
-  return seed.toString(36)
-}
-
 let sessionId = newSessionId()
 let nextPlaceholderId = 1
 const collapsedValues = new Map<string, StoredEmbedding>()
-
-export interface VectorEmbeddingPlaceholder {
-  id: string
-  dimensions: number
-  /** Undefined when the value is unknown (e.g. a query from another session). */
-  byteSize?: number
-  range: VectorEmbeddingRange
-}
 
 export const buildVectorEmbeddingPlaceholder = (
   id: string,
