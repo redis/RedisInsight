@@ -6,6 +6,10 @@ import { RiTooltip } from 'uiSrc/components'
 import { EditIcon, ExtendIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import {
+  NonUnicodeEditConfirmation,
+  useNonUnicodeEditGuard,
+} from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
 
 import { getArrayElementEditState } from '../../getArrayElementEditState'
 import { RowActionsCellProps } from './RowActionsCell.types'
@@ -24,6 +28,8 @@ export const RowActionsCell = ({
   deleteConfig,
 }: RowActionsCellProps) => {
   const { t } = useTranslation()
+  const editGuard = useNonUnicodeEditGuard()
+  const expandGuard = useNonUnicodeEditGuard()
 
   const { index, value } = element
 
@@ -71,32 +77,54 @@ export const RowActionsCell = ({
     >
       {showEditActions && (
         <>
-          <RiTooltip content={editState?.editDisabledReason ?? null}>
-            <IconButton
-              icon={EditIcon}
-              aria-label="Edit field"
-              disabled={isEditActionDisabled}
-              onClick={(e: React.MouseEvent) => {
-                // Search renders this table with expandRowOnClick — don't let
-                // the action click also toggle the neighbour band.
-                e.stopPropagation()
-                editConfig?.onEditElement(index, true)
-              }}
-              data-testid={`array-edit-btn-${index}`}
-            />
-          </RiTooltip>
-          <RiTooltip content={editState?.editDisabledReason ?? null}>
-            <IconButton
-              icon={ExtendIcon}
-              aria-label="Expand value editor"
-              disabled={isEditActionDisabled}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation()
-                editConfig?.onOpenValueEditor(index)
-              }}
-              data-testid={`array-expand-btn-${index}`}
-            />
-          </RiTooltip>
+          <NonUnicodeEditConfirmation
+            isOpen={editGuard.isOpen}
+            format={editGuard.format}
+            onCancel={editGuard.cancel}
+            onChangeToUnicode={editGuard.changeToUnicode}
+            onEditAnyway={editGuard.editAnyway}
+            button={
+              <RiTooltip content={editState?.editDisabledReason ?? null}>
+                <IconButton
+                  icon={EditIcon}
+                  aria-label="Edit field"
+                  disabled={isEditActionDisabled}
+                  onClick={(e: React.MouseEvent) => {
+                    // Search renders this table with expandRowOnClick — don't
+                    // let the action click also toggle the neighbour band.
+                    e.stopPropagation()
+                    editGuard.requestEdit(() =>
+                      editConfig?.onEditElement(index, true),
+                    )
+                  }}
+                  data-testid={`array-edit-btn-${index}`}
+                />
+              </RiTooltip>
+            }
+          />
+          <NonUnicodeEditConfirmation
+            isOpen={expandGuard.isOpen}
+            format={expandGuard.format}
+            onCancel={expandGuard.cancel}
+            onChangeToUnicode={expandGuard.changeToUnicode}
+            onEditAnyway={expandGuard.editAnyway}
+            button={
+              <RiTooltip content={editState?.editDisabledReason ?? null}>
+                <IconButton
+                  icon={ExtendIcon}
+                  aria-label="Expand value editor"
+                  disabled={isEditActionDisabled}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation()
+                    expandGuard.requestEdit(() =>
+                      editConfig?.onOpenValueEditor(index),
+                    )
+                  }}
+                  data-testid={`array-expand-btn-${index}`}
+                />
+              </RiTooltip>
+            }
+          />
         </>
       )}
 
