@@ -95,7 +95,7 @@
     "adm-zip": "^0.6.0",
     "axios": "^1.16.0",
     "better-sqlite3": "^12.10.1",
-    "body-parser": "^1.20.3",
+    "body-parser": "^1.20.6",
     "busboy": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
