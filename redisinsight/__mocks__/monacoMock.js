@@ -18,6 +18,7 @@ const editor = {
   getLayoutInfo: jest.fn().mockReturnValue({ contentLeft: 0 }),
   onDidAttemptReadOnlyEdit: jest.fn(),
   executeEdits: jest.fn(),
+  pushUndoStop: jest.fn(),
   updateOptions: jest.fn(),
   setSelection: jest.fn(),
   setPosition: jest.fn(),

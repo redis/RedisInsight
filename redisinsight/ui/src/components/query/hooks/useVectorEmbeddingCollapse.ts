@@ -103,6 +103,10 @@ export const useVectorEmbeddingCollapse = ({
         userExpandedKeys.current.add(getEmbeddingKey(mark)),
       )
     } else if (marksToCollapse.length > 0) {
+      // Undo stops keep the collapse a separate undo entry from the paste/type
+      // that produced the vector, so Ctrl+Z first lands on the raw value (where
+      // the isUndoing guard keeps it expanded) instead of skipping past it.
+      editor.pushUndoStop()
       editor.executeEdits(
         COLLAPSE_EDIT_SOURCE,
         marksToCollapse.map((mark) => ({
@@ -114,6 +118,7 @@ export const useVectorEmbeddingCollapse = ({
           ),
         })),
       )
+      editor.pushUndoStop()
       // Pasting scrolls to the end of the blob; once collapsed, go back to top.
       const top = { lineNumber: 1, column: 1 }
       editor.setPosition(top)
