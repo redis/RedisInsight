@@ -10,7 +10,6 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   isArrayEnabledSelector,
   isValueDecoderEnabledSelector,
-  isVectorSetEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { isTruncatedString } from 'uiSrc/utils'
 import { ValueDecoderProvider } from 'uiSrc/pages/browser/components/value-decoder'
@@ -36,7 +35,6 @@ export interface Props extends KeyDetailsHeaderProps {
 
 const DynamicTypeDetails = (props: Props) => {
   const { keyType: selectedKeyType, keyProp } = props
-  const isVectorSet = useAppSelector(isVectorSetEnabledSelector)
   const isArray = useAppSelector(isArrayEnabledSelector)
   const isValueDecoderEnabled = useAppSelector(isValueDecoderEnabledSelector)
 
@@ -56,9 +54,7 @@ const DynamicTypeDetails = (props: Props) => {
     [KeyTypes.List]: <ListDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,
-    ...(isVectorSet && {
-      [KeyTypes.VectorSet]: <VectorSetDetails {...props} />,
-    }),
+    [KeyTypes.VectorSet]: <VectorSetDetails {...props} />,
     ...(isArray && {
       [KeyTypes.Array]: <ArrayDetails {...props} />,
     }),

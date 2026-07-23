@@ -78,10 +78,6 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevBrowser,
     storage: FeatureStorage.Database,
   },
-  [KnownFeatures.VectorSet]: {
-    name: KnownFeatures.VectorSet,
-    storage: FeatureStorage.Database,
-  },
   [KnownFeatures.Array]: {
     name: KnownFeatures.Array,
     storage: FeatureStorage.Database,

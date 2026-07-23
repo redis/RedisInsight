@@ -93,10 +93,6 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.VectorSet,
-      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
-    );
-    this.strategies.set(
       KnownFeatures.Array,
       new SwitchableFlagStrategy(
         this.featuresConfigService,

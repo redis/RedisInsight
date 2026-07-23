@@ -62,9 +62,6 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.cloudAds]: {
         flag: riConfig.features.cloudAds.defaultFlag,
       },
-      [FeatureFlags.vectorSet]: {
-        flag: false,
-      },
       [FeatureFlags.array]: {
         flag: false,
       },
@@ -230,15 +227,6 @@ export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
   const envDependentEnabled = features[FeatureFlags.envDependent]?.flag ?? false
 
   return azureEntraIdEnabled && envDependentEnabled
-}
-
-export const isVectorSetEnabledSelector = (state: RootState): boolean => {
-  if (isDevelopment) {
-    return true
-  }
-
-  const features = state.app.features.featureFlags.features
-  return features[FeatureFlags.vectorSet]?.flag ?? false
 }
 
 export const isArrayEnabledSelector = (state: RootState): boolean => {

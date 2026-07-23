@@ -35,7 +35,6 @@ export enum KnownFeatures {
   AzureEntraId = 'azureEntraId',
   DevAzureEntraId = 'dev-azureEntraId',
   DevBrowser = 'dev-browser',
-  VectorSet = 'vectorSet',
   Array = 'array',
   DevLanguage = 'dev-language',
   ValueDecoder = 'valueDecoder',
