@@ -58,8 +58,8 @@ test('escapes JSX expressions in plain markdown text', async () => {
 
 test('preserves JSX props on formatter-generated code components', async () => {
   const html = await render(['```redis', 'GET user:1', '```'].join('\n'))
-  // remarkCode emits `path={path}` and `{"<code>"}` for JsxParser to evaluate;
-  // neutralizing raw HTML must not corrupt these.
+  // remarkCode emits `path={path}` and the code value as a `{...}` expression
+  // for JsxParser to evaluate; neutralizing raw HTML must not corrupt these.
   assert.match(html, /path=\{path\}/)
   assert.match(html, /\{"GET user:1"\}/)
 })
