@@ -4,19 +4,23 @@ import { VectorEmbeddingRange } from './vectorEmbeddingUtils.types'
 // an id and the full value is kept here, so every exit path (submit, copy,
 // save) must expand before the query is persisted.
 
-// Matches e.g. "[▸ vector · 1536 dims #3]".
-const PLACEHOLDER_REGEX = /\[▸ vector · (\d+) dims #(\d+)\]/g
+// Matches e.g. "[▸ vector · 1536 dims #k3f9a1-3]". Ids are "<session>-<n>" so a
+// literal placeholder-shaped token in the query can't collide with ours.
+const PLACEHOLDER_REGEX = /\[▸ vector · (\d+) dims #([a-z0-9]+-\d+)\]/g
 
 interface StoredEmbedding {
   value: string
   byteSize: number
 }
 
+const newSessionId = (): string => Math.random().toString(36).slice(2, 8)
+
+let sessionId = newSessionId()
 let nextPlaceholderId = 1
-const collapsedValues = new Map<number, StoredEmbedding>()
+const collapsedValues = new Map<string, StoredEmbedding>()
 
 export interface VectorEmbeddingPlaceholder {
-  id: number
+  id: string
   dimensions: number
   /** Undefined when the value is unknown (e.g. a query from another session). */
   byteSize?: number
@@ -24,7 +28,7 @@ export interface VectorEmbeddingPlaceholder {
 }
 
 export const buildVectorEmbeddingPlaceholder = (
-  id: number,
+  id: string,
   dimensions: number,
 ): string => `[▸ vector · ${dimensions} dims #${id}]`
 
@@ -33,17 +37,17 @@ export const collapseVectorEmbeddingValue = (
   dimensions: number,
   byteSize: number,
 ): string => {
-  const id = nextPlaceholderId
+  const id = `${sessionId}-${nextPlaceholderId}`
   nextPlaceholderId += 1
   collapsedValues.set(id, { value, byteSize })
   return buildVectorEmbeddingPlaceholder(id, dimensions)
 }
 
-export const getVectorEmbeddingValue = (id: number): string | undefined =>
+export const getVectorEmbeddingValue = (id: string): string | undefined =>
   collapsedValues.get(id)?.value
 
 // Frees the stored value once its placeholder is gone (e.g. after expanding).
-export const releaseVectorEmbeddingValue = (id: number): void => {
+export const releaseVectorEmbeddingValue = (id: string): void => {
   collapsedValues.delete(id)
 }
 
@@ -56,7 +60,7 @@ export const findVectorEmbeddingPlaceholders = (
   let match: RegExpExecArray | null
   // eslint-disable-next-line no-cond-assign
   while ((match = regex.exec(text)) !== null) {
-    const id = Number(match[2])
+    const id = match[2]
     const start = match.index
 
     placeholders.push({
@@ -75,10 +79,11 @@ export const expandVectorEmbeddings = (text: string): string =>
   text.replace(
     new RegExp(PLACEHOLDER_REGEX),
     (placeholder, _dimensions: string, id: string) =>
-      collapsedValues.get(Number(id))?.value ?? placeholder,
+      collapsedValues.get(id)?.value ?? placeholder,
   )
 
 export const resetVectorEmbeddingPlaceholders = (): void => {
+  sessionId = 'sess'
   nextPlaceholderId = 1
   collapsedValues.clear()
 }

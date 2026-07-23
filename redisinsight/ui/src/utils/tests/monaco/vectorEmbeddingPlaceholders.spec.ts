@@ -16,8 +16,23 @@ describe('vector embedding placeholders', () => {
   it('collapsing stores the value and returns an id-carrying placeholder', () => {
     const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
 
-    expect(placeholder).toBe('[▸ vector · 3 dims #1]')
+    expect(placeholder).toBe('[▸ vector · 3 dims #sess-1]')
     expect(expandVectorEmbeddings(placeholder)).toBe(BLOB)
+  })
+
+  it('ignores a placeholder-shaped token without a session id', () => {
+    const literal = '[▸ vector · 3 dims #1]'
+    expect(findVectorEmbeddingPlaceholders(literal)).toEqual([])
+    expect(expandVectorEmbeddings(literal)).toBe(literal)
+  })
+
+  it('does not reuse an id already present as a foreign placeholder', () => {
+    const foreign = buildVectorEmbeddingPlaceholder('abc-1', 768)
+    const ours = collapseVectorEmbeddingValue(BLOB, 3, 16)
+    const query = `${foreign} ${ours}`
+
+    // Only our placeholder expands; the foreign token is left intact.
+    expect(expandVectorEmbeddings(query)).toBe(`${foreign} ${BLOB}`)
   })
 
   it('gives every collapsed value a distinct id, even with equal dimensions', () => {
@@ -38,7 +53,7 @@ describe('vector embedding placeholders', () => {
   })
 
   it('leaves a placeholder with an unknown value untouched', () => {
-    const stale = buildVectorEmbeddingPlaceholder(99, 1536)
+    const stale = buildVectorEmbeddingPlaceholder('other-99', 1536)
     expect(expandVectorEmbeddings(stale)).toBe(stale)
   })
 
@@ -52,7 +67,7 @@ describe('vector embedding placeholders', () => {
 
       expect(found).toHaveLength(1)
       expect(found[0]).toMatchObject({
-        id: 1,
+        id: 'sess-1',
         dimensions: 768,
         byteSize: 3072,
         range: { start, end: query.length },
@@ -66,13 +81,13 @@ describe('vector embedding placeholders', () => {
 
       const found = findVectorEmbeddingPlaceholders(query)
 
-      expect(found.map((p) => p.id)).toEqual([1, 2])
+      expect(found.map((p) => p.id)).toEqual(['sess-1', 'sess-2'])
       expect(found[0].range.start).toBeLessThan(found[1].range.start)
     })
 
     it('leaves byteSize undefined for a placeholder from another session', () => {
       const found = findVectorEmbeddingPlaceholders(
-        buildVectorEmbeddingPlaceholder(42, 3),
+        buildVectorEmbeddingPlaceholder('other-42', 3),
       )
       expect(found[0].byteSize).toBeUndefined()
     })

@@ -42,7 +42,7 @@ export const useVectorEmbeddingCollapse = ({
 }: UseVectorEmbeddingCollapseProps) => {
   const { t } = useTranslation()
   // Placeholder id whose copy button currently shows the "copied" tick.
-  const [copiedId, setCopiedId] = useState<Nullable<number>>(null)
+  const [copiedId, setCopiedId] = useState<Nullable<string>>(null)
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
   const removeDomListeners = useRef<Nullable<() => void>>(null)
