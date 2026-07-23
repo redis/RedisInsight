@@ -42,11 +42,29 @@ export const useVectorEmbeddingCollapse = ({
   const { t } = useTranslation()
   // Placeholder id whose copy button currently shows the "copied" tick.
   const [copiedId, setCopiedId] = useState<Nullable<string>>(null)
+  // monacoObjects is a ref, so a late editorDidMount doesn't retrigger the
+  // collapse effect. This flag flips once the editor is attached, guaranteeing
+  // the first collapse pass runs even if `query` never changes afterwards.
+  const [isEditorReady, setIsEditorReady] = useState(false)
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   const userExpandedKeys = useRef<Set<string>>(new Set())
   const copiedTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
+
+  useEffect(() => {
+    if (isEditorReady) return undefined
+    let frame = 0
+    const waitForEditor = () => {
+      if (monacoObjects.current) {
+        setIsEditorReady(true)
+        return
+      }
+      frame = requestAnimationFrame(waitForEditor)
+    }
+    waitForEditor()
+    return () => cancelAnimationFrame(frame)
+  }, [isEditorReady, monacoObjects])
 
   useEffect(() => {
     if (!monacoObjects.current) return
@@ -267,7 +285,7 @@ export const useVectorEmbeddingCollapse = ({
       domNode.removeEventListener('copy', handleCopyEvent, true)
       domNode.removeEventListener('cut', handleCutEvent, true)
     }
-  }, [query, t, copiedId, monacoObjects])
+  }, [query, t, copiedId, monacoObjects, isEditorReady])
 
   useEffect(
     () => () => {
