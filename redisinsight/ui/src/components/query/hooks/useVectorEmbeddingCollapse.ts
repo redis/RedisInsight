@@ -43,12 +43,11 @@ export const useVectorEmbeddingCollapse = ({
   // Placeholder id whose copy button currently shows the "copied" tick.
   const [copiedId, setCopiedId] = useState<Nullable<string>>(null)
   // monacoObjects is a ref, so a late editorDidMount doesn't retrigger the
-  // collapse effect. This flag flips once the editor is attached, guaranteeing
-  // the first collapse pass runs even if `query` never changes afterwards.
+  // effects below. This flag flips once the editor is attached, guaranteeing
+  // the first collapse/listener pass runs even if `query` never changes.
   const [isEditorReady, setIsEditorReady] = useState(false)
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
-  const removeDomListeners = useRef<Nullable<() => void>>(null)
   const userExpandedKeys = useRef<Set<string>>(new Set())
   const copiedTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
   // Set when the last model change was an undo/redo, so the next pass does not
@@ -69,6 +68,8 @@ export const useVectorEmbeddingCollapse = ({
     return () => cancelAnimationFrame(frame)
   }, [isEditorReady, monacoObjects])
 
+  // Auto-collapse detected embeddings and (re)draw the placeholder chips. Runs
+  // whenever the query text or the copied-tick state changes.
   useEffect(() => {
     if (!monacoObjects.current) return
     const { editor, monaco } = monacoObjects.current
@@ -161,7 +162,12 @@ export const useVectorEmbeddingCollapse = ({
             },
           },
         },
-        {
+      )
+
+      // Only offer copy when the value is retrievable this session; a stale or
+      // foreign placeholder can't be copied, so don't draw a dead button.
+      if (getVectorEmbeddingValue(placeholder.id) !== undefined) {
+        decorations.push({
           range: toMonacoRange(monaco, model, { start: end - 1, end }),
           options: {
             hoverMessage: { value: t('query.editor.vectorEmbedding.copy') },
@@ -170,8 +176,8 @@ export const useVectorEmbeddingCollapse = ({
               inlineClassName: EMBEDDING_COPY_CLASS,
             },
           },
-        },
-      )
+        })
+      }
     })
 
     detected.forEach((mark) => {
@@ -190,9 +196,14 @@ export const useVectorEmbeddingCollapse = ({
     })
 
     decorationCollection.current.set(decorations)
+  }, [query, t, copiedId, monacoObjects, isEditorReady])
 
-    if (removeDomListeners.current) return
-
+  // Wire the editor-level listeners once the editor is attached. Kept separate
+  // from the decoration pass so the handlers aren't rebuilt on every query or
+  // copied-tick change; they read live model state, so they never go stale.
+  useEffect(() => {
+    if (!isEditorReady || !monacoObjects.current) return undefined
+    const { editor, monaco } = monacoObjects.current
     const domNode = editor.getContainerDomNode()
 
     // Handle chip clicks in the capture phase and stop the event before Monaco
@@ -311,20 +322,13 @@ export const useVectorEmbeddingCollapse = ({
     domNode.addEventListener('mousedown', handleChipMouseDown, true)
     domNode.addEventListener('copy', handleCopyEvent, true)
     domNode.addEventListener('cut', handleCutEvent, true)
-    removeDomListeners.current = () => {
+
+    return () => {
       domNode.removeEventListener('mousedown', handleChipMouseDown, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
       domNode.removeEventListener('cut', handleCutEvent, true)
       contentChangeSub.dispose()
-    }
-  }, [query, t, copiedId, monacoObjects, isEditorReady])
-
-  useEffect(
-    () => () => {
-      removeDomListeners.current?.()
-      removeDomListeners.current = null
       if (copiedTimer.current) clearTimeout(copiedTimer.current)
-    },
-    [],
-  )
+    }
+  }, [monacoObjects, isEditorReady])
 }
