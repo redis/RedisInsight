@@ -94,19 +94,40 @@ describe('useIndexInfo.utils', () => {
       expect(result.attributes[0].weight).toBeUndefined()
     })
 
-    it('should map WITHSUFFIXTRIE attribute flag', () => {
+    it('should map boolean attribute flags dynamically', () => {
       const apiResponse = indexInfoFactory.build({
         attributes: [
           indexInfoAttributeFactory.build({
             type: 'TEXT',
             WITHSUFFIXTRIE: true,
+            NOSTEM: true,
+            SORTABLE: true,
           }),
         ],
       })
 
       const result = transformIndexInfo(apiResponse)
 
-      expect(result.attributes[0].withSuffixTrie).toBe(true)
+      expect(result.attributes[0].flags).toEqual({
+        SORTABLE: true,
+        NOSTEM: true,
+        WITHSUFFIXTRIE: true,
+      })
+    })
+
+    it('should omit flags when none are set', () => {
+      const apiResponse = indexInfoFactory.build({
+        attributes: [
+          indexInfoAttributeFactory.build(
+            { type: 'TAG' },
+            { transient: { includeNoIndex: false } },
+          ),
+        ],
+      })
+
+      const result = transformIndexInfo(apiResponse)
+
+      expect(result.attributes[0].flags).toBeUndefined()
     })
 
     it('should normalize all field types to lowercase', () => {

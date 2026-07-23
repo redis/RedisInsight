@@ -1,13 +1,35 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { IndexInfoDto } from 'apiClient'
+import { IndexAttibuteDto, IndexInfoDto } from 'apiClient'
 
-import { IndexInfo } from './useIndexInfo.types'
+import {
+  INDEX_ATTRIBUTE_BOOLEAN_FLAGS,
+  IndexAttributeBooleanFlag,
+} from './useIndexInfo.constants'
+import { IndexAttribute, IndexInfo } from './useIndexInfo.types'
 
 /**
  * Converts API field type (uppercase) to FieldTypes enum (lowercase).
  */
 export const normalizeFieldType = (type: string): FieldTypes =>
   type.toLowerCase() as FieldTypes
+
+/**
+ * Collect boolean FT.INFO flags that are set on an API attribute.
+ * Only truthy flags are kept — Redis emits these as presence tokens.
+ */
+export const collectAttributeFlags = (
+  attr: IndexAttibuteDto,
+): IndexAttribute['flags'] => {
+  const flags: Partial<Record<IndexAttributeBooleanFlag, true>> = {}
+
+  INDEX_ATTRIBUTE_BOOLEAN_FLAGS.forEach((flag) => {
+    if (attr[flag]) {
+      flags[flag] = true
+    }
+  })
+
+  return Object.keys(flags).length ? flags : undefined
+}
 
 /**
  * Transforms API response (DTO) to frontend model (IndexInfo).
@@ -29,7 +51,7 @@ export const transformIndexInfo = (data: IndexInfoDto): IndexInfo => ({
     attribute: attr.attribute,
     type: normalizeFieldType(attr.type),
     weight: attr.WEIGHT,
-    withSuffixTrie: attr.WITHSUFFIXTRIE,
+    flags: collectAttributeFlags(attr),
   })),
   numDocs: Number(data.num_docs) || 0,
   maxDocId: Number(data.max_doc_id) || 0,

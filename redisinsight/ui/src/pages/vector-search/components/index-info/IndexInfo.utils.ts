@@ -9,6 +9,7 @@ import { IndexInfoTableData } from './IndexInfo.types'
 /**
  * Parses index attributes to table-friendly format.
  * Expects field types to already be normalized (lowercase).
+ * Flattens present boolean flags onto the row for dynamic columns.
  */
 export const parseIndexAttributes = (
   indexInfo: IndexInfo,
@@ -18,7 +19,7 @@ export const parseIndexAttributes = (
     attribute: field.attribute,
     type: field.type,
     weight: field.weight,
-    withSuffixTrie: field.withSuffixTrie,
+    ...field.flags,
   }))
 
 /**

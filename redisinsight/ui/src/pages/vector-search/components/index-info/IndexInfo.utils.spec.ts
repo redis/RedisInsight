@@ -9,6 +9,7 @@ import {
   formatOptions,
   hasIndexOptions,
 } from './IndexInfo.utils'
+import { getPresentBooleanFlags } from './IndexInfo.constants'
 
 describe('IndexInfo.utils', () => {
   describe('parseIndexAttributes', () => {
@@ -46,19 +47,50 @@ describe('IndexInfo.utils', () => {
       expect(result[0].weight).toBeUndefined()
     })
 
-    it('should pass through withSuffixTrie attribute', () => {
+    it('should flatten boolean flags onto table rows', () => {
       const indexInfo = indexInfoFactory.build({
         attributes: [
           indexAttributeFactory.build({
             type: FieldTypes.TEXT,
-            withSuffixTrie: true,
+            flags: { WITHSUFFIXTRIE: true, NOSTEM: true },
           }),
         ],
       })
 
       const result = parseIndexAttributes(indexInfo)
 
-      expect(result[0].withSuffixTrie).toBe(true)
+      expect(result[0].WITHSUFFIXTRIE).toBe(true)
+      expect(result[0].NOSTEM).toBe(true)
+      expect(result[0].SORTABLE).toBeUndefined()
+    })
+  })
+
+  describe('getPresentBooleanFlags', () => {
+    it('should return flags present on any row in canonical order', () => {
+      const rows = parseIndexAttributes(
+        indexInfoFactory.build({
+          attributes: [
+            indexAttributeFactory.build({
+              flags: { WITHSUFFIXTRIE: true, INDEXMISSING: true },
+            }),
+            indexAttributeFactory.build({
+              flags: { SORTABLE: true },
+            }),
+          ],
+        }),
+      )
+
+      expect(getPresentBooleanFlags(rows)).toEqual([
+        'SORTABLE',
+        'WITHSUFFIXTRIE',
+        'INDEXMISSING',
+      ])
+    })
+
+    it('should return empty list when no boolean flags are present', () => {
+      const rows = parseIndexAttributes(indexInfoFactory.build())
+
+      expect(getPresentBooleanFlags(rows)).toEqual([])
     })
   })
 
