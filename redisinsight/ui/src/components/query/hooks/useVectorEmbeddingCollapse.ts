@@ -51,6 +51,9 @@ export const useVectorEmbeddingCollapse = ({
   const removeDomListeners = useRef<Nullable<() => void>>(null)
   const userExpandedKeys = useRef<Set<string>>(new Set())
   const copiedTimer = useRef<Nullable<ReturnType<typeof setTimeout>>>(null)
+  // Set when the last model change was an undo/redo, so the next pass does not
+  // re-collapse embedding text that the user is trying to step back to.
+  const skipAutoCollapseOnce = useRef(false)
 
   useEffect(() => {
     if (isEditorReady) return undefined
@@ -90,7 +93,12 @@ export const useVectorEmbeddingCollapse = ({
     const marksToCollapse = detected.filter(
       (mark) => !userExpandedKeys.current.has(getEmbeddingKey(mark)),
     )
-    if (marksToCollapse.length > 0) {
+    // An undo/redo restored raw embedding text; don't re-collapse it this pass,
+    // or Ctrl+Z could never step back past a collapse. Consume the flag so the
+    // next genuine edit collapses as usual.
+    const isUndoRestore = skipAutoCollapseOnce.current
+    skipAutoCollapseOnce.current = false
+    if (marksToCollapse.length > 0 && !isUndoRestore) {
       editor.executeEdits(
         COLLAPSE_EDIT_SOURCE,
         marksToCollapse.map((mark) => ({
@@ -277,6 +285,10 @@ export const useVectorEmbeddingCollapse = ({
     const handleCutEvent = (e: ClipboardEvent) =>
       writeExpandedClipboard(e, true)
 
+    const contentChangeSub = editor.onDidChangeModelContent((e) => {
+      if (e.isUndoing || e.isRedoing) skipAutoCollapseOnce.current = true
+    })
+
     domNode.addEventListener('mousedown', handleChipMouseDown, true)
     domNode.addEventListener('copy', handleCopyEvent, true)
     domNode.addEventListener('cut', handleCutEvent, true)
@@ -284,6 +296,7 @@ export const useVectorEmbeddingCollapse = ({
       domNode.removeEventListener('mousedown', handleChipMouseDown, true)
       domNode.removeEventListener('copy', handleCopyEvent, true)
       domNode.removeEventListener('cut', handleCutEvent, true)
+      contentChangeSub.dispose()
     }
   }, [query, t, copiedId, monacoObjects, isEditorReady])
 

@@ -13,7 +13,7 @@ const editor = {
   onDidChangeCursorPosition: jest.fn(),
   onDidFocusEditorWidget: jest.fn(),
   onDidBlurEditorWidget: jest.fn(),
-  onDidChangeModelContent: jest.fn(),
+  onDidChangeModelContent: jest.fn(() => ({ dispose: jest.fn() })),
   onDidLayoutChange: jest.fn(),
   getLayoutInfo: jest.fn().mockReturnValue({ contentLeft: 0 }),
   onDidAttemptReadOnlyEdit: jest.fn(),
