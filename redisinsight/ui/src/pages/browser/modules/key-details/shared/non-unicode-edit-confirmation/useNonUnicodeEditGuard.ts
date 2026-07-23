@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
@@ -27,28 +27,33 @@ export const useNonUnicodeEditGuard = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [pendingEdit, setPendingEdit] = useState<(() => void) | null>(null)
 
-  const requestEdit = (proceed: () => void) => {
-    if (!needsEditWarning(format)) {
-      proceed()
-      return
-    }
-    // Store the callback (wrapped so setState does not invoke it).
-    setPendingEdit(() => proceed)
-    setIsOpen(true)
-  }
+  // Stable callbacks so consumers can memoize the surrounding UI without the
+  // popover remounting (and losing focus) on unrelated re-renders.
+  const requestEdit = useCallback(
+    (proceed: () => void) => {
+      if (!needsEditWarning(format)) {
+        proceed()
+        return
+      }
+      // Store the callback (wrapped so setState does not invoke it).
+      setPendingEdit(() => proceed)
+      setIsOpen(true)
+    },
+    [format],
+  )
 
-  const cancel = () => {
+  const cancel = useCallback(() => {
     setIsOpen(false)
     setPendingEdit(null)
-  }
+  }, [])
 
-  const editAnyway = () => {
+  const editAnyway = useCallback(() => {
     setIsOpen(false)
     pendingEdit?.()
     setPendingEdit(null)
-  }
+  }, [pendingEdit])
 
-  const changeToUnicode = () => {
+  const changeToUnicode = useCallback(() => {
     const proceed = pendingEdit
     dispatch(setViewFormat(KeyValueFormat.Unicode))
     setIsOpen(false)
@@ -58,7 +63,7 @@ export const useNonUnicodeEditGuard = () => {
     if (proceed) {
       setTimeout(proceed, 0)
     }
-  }
+  }, [pendingEdit, dispatch])
 
   return {
     format,

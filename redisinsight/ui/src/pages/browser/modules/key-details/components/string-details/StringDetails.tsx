@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
@@ -92,28 +92,33 @@ const StringDetails = (props: Props) => {
   const [editItem, setEditItem] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
-  const editGuard = useNonUnicodeEditGuard()
+  const {
+    isOpen: isEditConfirmOpen,
+    format: editConfirmFormat,
+    requestEdit,
+    cancel: cancelEditConfirm,
+    changeToUnicode: changeEditToUnicode,
+    editAnyway,
+  } = useNonUnicodeEditGuard()
 
-  const enterEdit = () => {
-    dispatch(setSelectedKeyRefreshDisabled(true))
-    setEditItem(true)
-  }
-
-  const handleHeaderEdit = () => {
+  const handleHeaderEdit = useCallback(() => {
     if (editItem) {
       dispatch(setSelectedKeyRefreshDisabled(false))
       setEditItem(false)
       return
     }
-    editGuard.requestEdit(enterEdit)
-  }
+    requestEdit(() => {
+      dispatch(setSelectedKeyRefreshDisabled(true))
+      setEditItem(true)
+    })
+  }, [editItem, requestEdit, dispatch])
 
-  const handleCopyValue = () => {
+  const handleCopyValue = useCallback(() => {
     sendEventTelemetry({
       event: TelemetryEvent.STRING_VALUE_COPIED,
       eventData: { databaseId: instanceId },
     })
-  }
+  }, [instanceId])
 
   const handleRefreshKey = (
     key: RedisResponseBuffer,
@@ -128,34 +133,54 @@ const StringDetails = (props: Props) => {
     onRemoveKey()
   }
 
-  const Actions = () => (
-    <Row align="center" gap="s" grow={false}>
-      {/* Hidden while editing: copyValue comes from the saved Redis value, not
-          the unsaved textarea the user is currently editing. */}
-      {keyValue && isFullyAvailable && !editItem && (
-        <CopyButton
-          copy={copyValue}
-          aria-label="Copy value"
-          onCopy={handleCopyValue}
-          data-testid="copy-string-value"
-        />
-      )}
-      <NonUnicodeEditConfirmation
-        isOpen={editGuard.isOpen}
-        format={editGuard.format}
-        onCancel={editGuard.cancel}
-        onChangeToUnicode={editGuard.changeToUnicode}
-        onEditAnyway={editGuard.editAnyway}
-        button={
-          <EditItemAction
-            title="Edit Value"
-            tooltipContent={editToolTip}
-            isEditable={isStringEditable && isEditable}
-            onEditItem={handleHeaderEdit}
+  // Hidden while editing: copyValue comes from the saved Redis value, not the
+  // unsaved textarea the user is currently editing.
+  const showCopyButton = !!keyValue && isFullyAvailable && !editItem
+
+  // Memoized so an unrelated re-render (e.g. a background refresh) doesn't
+  // recreate this component type and remount the open confirmation popover.
+  const Actions = useCallback(
+    () => (
+      <Row align="center" gap="s" grow={false}>
+        {showCopyButton && (
+          <CopyButton
+            copy={copyValue}
+            aria-label="Copy value"
+            onCopy={handleCopyValue}
+            data-testid="copy-string-value"
           />
-        }
-      />
-    </Row>
+        )}
+        <NonUnicodeEditConfirmation
+          isOpen={isEditConfirmOpen}
+          format={editConfirmFormat}
+          onCancel={cancelEditConfirm}
+          onChangeToUnicode={changeEditToUnicode}
+          onEditAnyway={editAnyway}
+          button={
+            <EditItemAction
+              title="Edit Value"
+              tooltipContent={editToolTip}
+              isEditable={isStringEditable && isEditable}
+              onEditItem={handleHeaderEdit}
+            />
+          }
+        />
+      </Row>
+    ),
+    [
+      showCopyButton,
+      copyValue,
+      handleCopyValue,
+      isEditConfirmOpen,
+      editConfirmFormat,
+      cancelEditConfirm,
+      changeEditToUnicode,
+      editAnyway,
+      editToolTip,
+      isStringEditable,
+      isEditable,
+      handleHeaderEdit,
+    ],
   )
 
   return (
