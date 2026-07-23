@@ -83,7 +83,7 @@ export const expandVectorEmbeddings = (text: string): string =>
   )
 
 export const resetVectorEmbeddingPlaceholders = (): void => {
-  sessionId = 'sess'
+  sessionId = newSessionId()
   nextPlaceholderId = 1
   collapsedValues.clear()
 }

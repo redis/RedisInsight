@@ -16,7 +16,7 @@ describe('vector embedding placeholders', () => {
   it('collapsing stores the value and returns an id-carrying placeholder', () => {
     const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
 
-    expect(placeholder).toBe('[▸ vector · 3 dims #sess-1]')
+    expect(placeholder).toMatch(/^\[▸ vector · 3 dims #[a-z0-9]+-1\]$/)
     expect(expandVectorEmbeddings(placeholder)).toBe(BLOB)
   })
 
@@ -67,11 +67,11 @@ describe('vector embedding placeholders', () => {
 
       expect(found).toHaveLength(1)
       expect(found[0]).toMatchObject({
-        id: 'sess-1',
         dimensions: 768,
         byteSize: 3072,
         range: { start, end: query.length },
       })
+      expect(found[0].id).toMatch(/^[a-z0-9]+-1$/)
     })
 
     it('finds multiple placeholders ordered by position', () => {
@@ -81,7 +81,10 @@ describe('vector embedding placeholders', () => {
 
       const found = findVectorEmbeddingPlaceholders(query)
 
-      expect(found.map((p) => p.id)).toEqual(['sess-1', 'sess-2'])
+      expect(found.map((p) => p.id)).toEqual([
+        expect.stringMatching(/^[a-z0-9]+-1$/),
+        expect.stringMatching(/^[a-z0-9]+-2$/),
+      ])
       expect(found[0].range.start).toBeLessThan(found[1].range.start)
     })
 
