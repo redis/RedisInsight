@@ -5,6 +5,7 @@ import {
   deepLinkHandler,
   deepLinkWindowHandler,
 } from 'desktopSrc/lib/app/deep-link.handlers'
+import { isTrustedCertHost } from 'desktopSrc/lib/app/trustedCertHost'
 import { showOrCreateWindow } from 'desktopSrc/utils'
 
 export const initAppHandlers = () => {
@@ -16,10 +17,17 @@ export const initAppHandlers = () => {
 
   app.on(
     'certificate-error',
-    (event, _webContents, _url, _error, _certificate, callback) => {
-      // Skip error due to self-signed certificate
-      event.preventDefault()
-      callback(true)
+    (event, _webContents, url, _error, _certificate, callback) => {
+      // Trust self-signed certificates only from the local backend; reject
+      // certificate errors from any remote host to prevent interception.
+      if (isTrustedCertHost(url)) {
+        event.preventDefault()
+        callback(true)
+        return
+      }
+
+      log.warn(`Rejected certificate error for untrusted host: ${url}`)
+      callback(false)
     },
   )
 

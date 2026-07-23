@@ -1,4 +1,5 @@
-import { BrowserWindow, app, shell, ipcMain } from 'electron'
+import { BrowserWindow, app, ipcMain } from 'electron'
+import { openExternalSafe } from 'desktopSrc/lib/window/safeOpenExternal'
 import {
   MenuBuilder,
   getDisplayAppInTrayValue,
@@ -94,11 +95,11 @@ export const initWindowHandlers = (
   // Open urls in the user's browser
   newWindow.webContents.on('new-window', (event, url) => {
     event.preventDefault()
-    shell.openExternal(url)
+    openExternalSafe(url)
   })
 
   newWindow.webContents.setWindowOpenHandler((edata: any) => {
-    shell.openExternal(edata.url)
+    openExternalSafe(edata.url)
     return { action: 'deny' }
   })
 }

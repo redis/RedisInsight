@@ -60,7 +60,8 @@
     "sb": "storybook dev -p 6006",
     "build-sb": "storybook build",
     "deps:audit": "node scripts/dependency-audit-report.mjs",
-    "test:scripts": "node --test scripts/lib/*.test.mjs"
+    "test:scripts": "node --test scripts/lib/*.test.mjs",
+    "test:security": "node --import tsx --test tests/security/*.test.mts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
