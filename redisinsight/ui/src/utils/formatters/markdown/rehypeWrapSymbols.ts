@@ -10,9 +10,10 @@ const FORMATTER_COMPONENT_TAG =
 // Wraps `{`/`}` in the text between tags as {"$&"} string expressions. Braces
 // inside a tag are attribute syntax (DOMPurify has already quoted them, so
 // JsxParser reads them as literal text) and must stay intact for the tag to
-// parse, so only text content is wrapped.
+// parse, so only text content is wrapped. The tag pattern skips over quoted
+// attribute values so a `>` inside them does not end the tag early.
 const wrapRawBraces = (value: string): string =>
-  value.replace(/<[^>]*>|[{}]/g, (match) =>
+  value.replace(/<(?:"[^"]*"|'[^']*'|[^"'>])*>|[{}]/g, (match) =>
     match.length === 1 ? `{"${match}"}` : match,
   )
 

@@ -74,6 +74,15 @@ describe('rehypeWrapSymbols', () => {
     expect(node.value).toBe('<a href="x/{id}">t{"{"}e{"}"}</a>')
   })
 
+  it('should not treat a > inside a quoted attribute as the end of the tag', () => {
+    const node = { value: '<a title="see > {id}">t{e}</a>' }
+    mockVisitWith({ raw: node })
+
+    rehypeWrapSymbols()({} as Node)
+
+    expect(node.value).toBe('<a title="see > {id}">t{"{"}e{"}"}</a>')
+  })
+
   it('should leave formatter-generated components untouched', () => {
     const node = {
       value: '<Code path={path} lang="redis">{"GET user:1"}</Code>',
