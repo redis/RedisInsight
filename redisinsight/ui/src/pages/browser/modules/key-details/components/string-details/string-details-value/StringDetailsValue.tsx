@@ -64,6 +64,10 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import {
+  NonUnicodeEditConfirmation,
+  useNonUnicodeEditGuard,
+} from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -113,6 +117,7 @@ const StringDetailsValue = (props: Props) => {
 
   const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
+  const editGuard = useNonUnicodeEditGuard()
 
   useEffect(
     () => () => {
@@ -260,7 +265,9 @@ const StringDetailsValue = (props: Props) => {
         component="div"
         color="secondary"
         className={styles.stringValue}
-        onClick={() => isEditable && setIsEdit(true)}
+        onClick={() =>
+          isEditable && editGuard.requestEdit(() => setIsEdit(true))
+        }
         style={{ whiteSpace: 'break-spaces' }}
         data-testid="string-value"
       >
@@ -271,15 +278,24 @@ const StringDetailsValue = (props: Props) => {
     )
 
     return (
-      <RiTooltip
-        title={!isValid ? noEditableText : undefined}
-        anchorClassName={styles.tooltipAnchor}
-        className={styles.tooltip}
-        position="left"
-        data-testid="string-value-tooltip"
-      >
-        {textEl}
-      </RiTooltip>
+      <NonUnicodeEditConfirmation
+        isOpen={editGuard.isOpen}
+        format={editGuard.format}
+        onCancel={editGuard.cancel}
+        onChangeToUnicode={editGuard.changeToUnicode}
+        onEditAnyway={editGuard.editAnyway}
+        button={
+          <RiTooltip
+            title={!isValid ? noEditableText : undefined}
+            anchorClassName={styles.tooltipAnchor}
+            className={styles.tooltip}
+            position="left"
+            data-testid="string-value-tooltip"
+          >
+            {textEl}
+          </RiTooltip>
+        }
+      />
     )
   }
 
