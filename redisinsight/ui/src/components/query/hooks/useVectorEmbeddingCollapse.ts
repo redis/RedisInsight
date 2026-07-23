@@ -270,24 +270,33 @@ export const useVectorEmbeddingCollapse = ({
       if (selection) editor.setSelection(selection)
     }
 
-    // Copy/cut a selection with full values instead of placeholders; cut also
-    // removes the selection since we take over the clipboard write.
+    // Copy/cut with full values instead of placeholders; cut also removes the
+    // selection since we take over the clipboard write. Every cursor/selection
+    // is handled (not just the primary), ordered top-to-bottom, so a
+    // multi-selection copy/cut never drops ranges or leaves raw placeholders.
     const writeExpandedClipboard = (e: ClipboardEvent, isCut: boolean) => {
-      const selection = editor.getSelection()
       const currentModel = editor.getModel()
-      if (!selection || !currentModel || !e.clipboardData) return
+      const selections = editor.getSelections()
+      if (!currentModel || !selections?.length || !e.clipboardData) return
 
-      const selected = currentModel.getValueInRange(selection)
-      const expanded = expandVectorEmbeddings(selected)
+      const ordered = [...selections].sort(
+        (a, b) =>
+          currentModel.getOffsetAt(a.getStartPosition()) -
+          currentModel.getOffsetAt(b.getStartPosition()),
+      )
+      const parts = ordered.map((range) => currentModel.getValueInRange(range))
+      const selected = parts.join('\n')
+      const expanded = parts.map(expandVectorEmbeddings).join('\n')
       if (expanded === selected) return
 
       e.preventDefault()
       e.stopPropagation()
       e.clipboardData.setData('text/plain', expanded)
       if (isCut) {
-        editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
-          { range: selection, text: '' },
-        ])
+        editor.executeEdits(
+          COLLAPSE_EDIT_SOURCE,
+          ordered.map((range) => ({ range, text: '' })),
+        )
       }
     }
     const handleCopyEvent = (e: ClipboardEvent) =>

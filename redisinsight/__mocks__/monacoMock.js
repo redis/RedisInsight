@@ -35,6 +35,7 @@ const editor = {
   getContainerDomNode: jest.fn(() => document.createElement('div')),
   getTargetAtClientPoint: jest.fn().mockReturnValue(null),
   getSelection: jest.fn().mockReturnValue(null),
+  getSelections: jest.fn().mockReturnValue(null),
   trigger: jest.fn(),
 };
 
