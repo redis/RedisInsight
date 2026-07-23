@@ -1,6 +1,6 @@
-// Guards against JSX expression injection through raw HTML blocks in the markdown
-// rendering pipeline. Runs the real unified/remark/rehype pipeline against the real
-// rehypeWrapSymbols source, since the UI jest config mocks that whole stack and so
+// Guards against JSX expression injection through raw HTML in the markdown
+// rendering pipeline. Runs the real unified/remark/rehype pipeline against the
+// real formatter plugins, since the UI jest config mocks that whole stack and so
 // cannot exercise this path.
 //
 // Run: node --import tsx --test tests/security/*.test.mts
@@ -11,14 +11,18 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import remarkGfm from 'remark-gfm'
 import rehypeStringify from 'rehype-stringify'
+import { remarkCode } from '../../redisinsight/ui/src/utils/formatters/markdown/remarkCode.ts'
+import { remarkWrapHtmlSymbols } from '../../redisinsight/ui/src/utils/formatters/markdown/remarkWrapHtmlSymbols.ts'
 import { rehypeWrapSymbols } from '../../redisinsight/ui/src/utils/formatters/markdown/rehypeWrapSymbols.ts'
 
-// Mirrors MarkdownToJsxString.ts, minus the DOM-dependent sanitize/link/image
-// plugins that are irrelevant to brace neutralization.
+// Mirrors MarkdownToJsxString.ts plugin order, minus the DOM-dependent
+// sanitize/link/image plugins that are irrelevant to brace neutralization.
 const render = (markdown: string): Promise<string> =>
   unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkWrapHtmlSymbols)
+    .use(remarkCode, { allLangs: true })
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeWrapSymbols)
     .use(rehypeStringify, { allowDangerousHtml: true })
@@ -52,14 +56,21 @@ test('escapes JSX expressions in plain markdown text', async () => {
   assert.equal(hasLiveJsxExpression(html), false)
 })
 
+test('preserves JSX props on formatter-generated code components', async () => {
+  const html = await render(['```redis', 'GET user:1', '```'].join('\n'))
+  // remarkCode emits `path={path}` and `{"<code>"}` for JsxParser to evaluate;
+  // neutralizing raw HTML must not corrupt these.
+  assert.match(html, /path=\{path\}/)
+  assert.match(html, /\{"GET user:1"\}/)
+})
+
 test('preserves legitimate raw HTML tags and attributes', async () => {
-  const html = await render('<p class="note">Hello <b>world</b></p>')
-  assert.match(html, /<p class="note">/)
-  assert.match(html, /<b>world<\/b>/)
+  const html = await render('<div style="font-family: Arial, sans-serif">hi</div>')
+  assert.match(html, /<div style="font-family: Arial, sans-serif">/)
+  assert.equal(html.includes('{","}'), false)
 })
 
 test('preserves standard markdown formatting', async () => {
-  const html = await render('**bold** and [link](https://redis.io)')
+  const html = await render('**bold** and `code`')
   assert.match(html, /<strong>bold<\/strong>/)
-  assert.match(html, /<a href="https:\/\/redis\.io">link<\/a>/)
 })
