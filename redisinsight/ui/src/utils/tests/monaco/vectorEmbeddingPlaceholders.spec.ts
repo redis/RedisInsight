@@ -3,8 +3,6 @@ import {
   collapseVectorEmbeddingValue,
   expandVectorEmbeddings,
   findVectorEmbeddingPlaceholders,
-  getVectorEmbeddingValue,
-  MAX_STORED_EMBEDDINGS,
   resetVectorEmbeddingPlaceholders,
 } from 'uiSrc/utils'
 
@@ -96,30 +94,6 @@ describe('vector embedding placeholders', () => {
 
     it('returns nothing for plain query text', () => {
       expect(findVectorEmbeddingPlaceholders('FT.SEARCH idx "q"')).toEqual([])
-    })
-  })
-
-  describe('store memory cap', () => {
-    it('evicts the least-recently-used value beyond the cap', () => {
-      const first = collapseVectorEmbeddingValue('"first"', 3, 12)
-      for (let i = 0; i < MAX_STORED_EMBEDDINGS; i++) {
-        collapseVectorEmbeddingValue(`"v${i}"`, 3, 12)
-      }
-
-      // `first` is never re-read, so it ages out and no longer expands.
-      expect(expandVectorEmbeddings(first)).toBe(first)
-    })
-
-    it('keeps a value alive while it is still read', () => {
-      const kept = collapseVectorEmbeddingValue('"kept"', 3, 12)
-      const [{ id }] = findVectorEmbeddingPlaceholders(kept)
-
-      for (let i = 0; i < MAX_STORED_EMBEDDINGS; i++) {
-        collapseVectorEmbeddingValue(`"v${i}"`, 3, 12)
-        getVectorEmbeddingValue(id) // touch to keep it most-recently-used
-      }
-
-      expect(expandVectorEmbeddings(kept)).toBe('"kept"')
     })
   })
 })

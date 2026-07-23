@@ -20,25 +20,9 @@ const newSessionId = (): string => {
   return seed.toString(36)
 }
 
-// Cap retained embeddings so a long session that repeatedly pastes and clears
-// vectors can't grow the store without bound. Eviction is least-recently-used:
-// placeholders still present in a model are read on every render, so only stale
-// (removed/cleared) entries age out — active values stay available.
-export const MAX_STORED_EMBEDDINGS = 100
-
 let sessionId = newSessionId()
 let nextPlaceholderId = 1
 const collapsedValues = new Map<string, StoredEmbedding>()
-
-// Reading an entry marks it most-recently-used (Map preserves insertion order).
-const readEntry = (id: string): StoredEmbedding | undefined => {
-  const entry = collapsedValues.get(id)
-  if (entry) {
-    collapsedValues.delete(id)
-    collapsedValues.set(id, entry)
-  }
-  return entry
-}
 
 export interface VectorEmbeddingPlaceholder {
   id: string
@@ -61,15 +45,11 @@ export const collapseVectorEmbeddingValue = (
   const id = `${sessionId}-${nextPlaceholderId}`
   nextPlaceholderId += 1
   collapsedValues.set(id, { value, byteSize })
-  if (collapsedValues.size > MAX_STORED_EMBEDDINGS) {
-    const oldest = collapsedValues.keys().next().value
-    if (oldest !== undefined) collapsedValues.delete(oldest)
-  }
   return buildVectorEmbeddingPlaceholder(id, dimensions)
 }
 
 export const getVectorEmbeddingValue = (id: string): string | undefined =>
-  readEntry(id)?.value
+  collapsedValues.get(id)?.value
 
 export const findVectorEmbeddingPlaceholders = (
   text: string,
@@ -86,7 +66,7 @@ export const findVectorEmbeddingPlaceholders = (
     placeholders.push({
       id,
       dimensions: Number(match[1]),
-      byteSize: readEntry(id)?.byteSize,
+      byteSize: collapsedValues.get(id)?.byteSize,
       range: { start, end: start + match[0].length },
     })
   }
@@ -99,7 +79,7 @@ export const expandVectorEmbeddings = (text: string): string =>
   text.replace(
     new RegExp(PLACEHOLDER_REGEX),
     (placeholder, _dimensions: string, id: string) =>
-      readEntry(id)?.value ?? placeholder,
+      collapsedValues.get(id)?.value ?? placeholder,
   )
 
 export const resetVectorEmbeddingPlaceholders = (): void => {
