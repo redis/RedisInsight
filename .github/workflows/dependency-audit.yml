@@ -7,6 +7,10 @@ on:
         description: 'Branch/ref to audit (blank = current ref)'
         type: string
         default: ''
+      post_to_slack:
+        description: 'Post results to Slack'
+        type: boolean
+        default: true
   schedule:
     - cron: '0 7 * * 1' # weekly, Monday 07:00 UTC
 
@@ -21,6 +25,9 @@ jobs:
   audit:
     name: Audit dependencies
     runs-on: ubuntu-latest
+    # Gates every Slack step so a manual run with post_to_slack off stays silent.
+    env:
+      POST_TO_SLACK: ${{ github.event_name != 'workflow_dispatch' || inputs.post_to_slack }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -56,7 +63,7 @@ jobs:
 
       # Inline payload mirrors the E2E nightly Slack step.
       - name: Post to Slack
-        if: steps.report.outputs.post == 'true'
+        if: env.POST_TO_SLACK == 'true' && steps.report.outputs.post == 'true'
         uses: slackapi/slack-github-action@v4.0.0
         with:
           # Fail the step on a Slack API error; v4 stays green otherwise,
@@ -88,7 +95,7 @@ jobs:
       # Separate from the vulnerability report so a broken audit can't read as
       # clean, and still fires if the post above errored out.
       - name: Alert Slack when the audit could not run
-        if: ${{ !cancelled() && steps.report.outputs.failed == 'true' }}
+        if: ${{ !cancelled() && env.POST_TO_SLACK == 'true' && steps.report.outputs.failed == 'true' }}
         uses: slackapi/slack-github-action@v4.0.0
         with:
           # Fail the step on a Slack API error; v4 stays green otherwise,
@@ -108,7 +115,7 @@ jobs:
       # stop the job with no alert. The report-outcome gate skips post-report
       # Slack failures.
       - name: Alert Slack when the audit workflow failed
-        if: failure() && steps.report.outcome != 'success'
+        if: failure() && env.POST_TO_SLACK == 'true' && steps.report.outcome != 'success'
         uses: slackapi/slack-github-action@v4.0.0
         with:
           # Fail the step on a Slack API error; v4 stays green otherwise,
