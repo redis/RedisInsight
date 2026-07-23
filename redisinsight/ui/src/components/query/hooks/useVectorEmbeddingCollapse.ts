@@ -93,12 +93,16 @@ export const useVectorEmbeddingCollapse = ({
     const marksToCollapse = detected.filter(
       (mark) => !userExpandedKeys.current.has(getEmbeddingKey(mark)),
     )
-    // An undo/redo restored raw embedding text; don't re-collapse it this pass,
-    // or Ctrl+Z could never step back past a collapse. Consume the flag so the
-    // next genuine edit collapses as usual.
+    // An undo/redo restored raw embedding text. Mark it user-expanded rather
+    // than just skipping this one pass, so an unrelated later re-render (e.g.
+    // the copied-tick timer) does not re-collapse it and defeat the undo.
     const isUndoRestore = skipAutoCollapseOnce.current
     skipAutoCollapseOnce.current = false
-    if (marksToCollapse.length > 0 && !isUndoRestore) {
+    if (marksToCollapse.length > 0 && isUndoRestore) {
+      marksToCollapse.forEach((mark) =>
+        userExpandedKeys.current.add(getEmbeddingKey(mark)),
+      )
+    } else if (marksToCollapse.length > 0) {
       editor.executeEdits(
         COLLAPSE_EDIT_SOURCE,
         marksToCollapse.map((mark) => ({
