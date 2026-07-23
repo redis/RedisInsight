@@ -231,6 +231,9 @@ export const useVectorEmbeddingCollapse = ({
         if (!mark) return
         const selection = editor.getSelection()
         userExpandedKeys.current.delete(getEmbeddingKey(mark))
+        // Undo stops keep this manual collapse its own undo entry, so Ctrl+Z
+        // undoes only the collapse and not a preceding edit to the vector.
+        editor.pushUndoStop()
         editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
           {
             range: toMonacoRange(monaco, currentModel, mark.range),
@@ -241,6 +244,7 @@ export const useVectorEmbeddingCollapse = ({
             ),
           },
         ])
+        editor.pushUndoStop()
         if (selection) editor.setSelection(selection)
         return
       }
@@ -265,12 +269,16 @@ export const useVectorEmbeddingCollapse = ({
       }
 
       const selection = editor.getSelection()
+      // Undo stops keep this manual expand its own undo entry, symmetric with
+      // the collapse paths, so Ctrl+Z steps through it cleanly.
+      editor.pushUndoStop()
       editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
         {
           range: toMonacoRange(monaco, currentModel, placeholder.range),
           text: value,
         },
       ])
+      editor.pushUndoStop()
       // Keep the stored value: an undo can restore the placeholder text, and it
       // must still resolve on expand/copy/submit. The store is session-scoped.
       const expandedMark = detectVectorEmbeddings(currentModel.getValue()).find(
