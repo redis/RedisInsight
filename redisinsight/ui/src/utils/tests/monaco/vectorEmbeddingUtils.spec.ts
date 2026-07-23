@@ -1,4 +1,5 @@
 import {
+  buildVectorEmbeddingPlaceholder,
   detectVectorEmbeddings,
   getEmbeddingKey,
   MIN_VECTOR_ARRAY_ELEMENTS,
@@ -137,6 +138,18 @@ describe('detectVectorEmbeddings', () => {
       const marks = detectVectorEmbeddings(query)
       expect(marks).toHaveLength(1)
       expect(marks[0].paramName).toBe('blob')
+    })
+
+    it('maps a later param name when an earlier value is a collapsed placeholder', () => {
+      // A collapsed placeholder is space-free, so it stays one PARAMS argument
+      // and does not shift the name/value pairing for later embeddings.
+      const placeholder = buildVectorEmbeddingPlaceholder('sess-1', 3)
+      const query = `FT.SEARCH idx "q" PARAMS 4 vec1 ${placeholder} vec2 "${FP32_ESCAPED}" DIALECT 2`
+
+      const marks = detectVectorEmbeddings(query)
+
+      expect(marks).toHaveLength(1)
+      expect(marks[0].paramName).toBe('vec2')
     })
   })
 })

@@ -4,9 +4,12 @@ import { VectorEmbeddingRange } from './vectorEmbeddingUtils.types'
 // an id and the full value is kept here, so every exit path (submit, copy,
 // save) must expand before the query is persisted.
 
-// Matches e.g. "[▸ vector · 1536 dims #k3f9a1-3]". Ids are "<session>-<n>" so a
-// literal placeholder-shaped token in the query can't collide with ours.
-const PLACEHOLDER_REGEX = /\[▸ vector · (\d+) dims #([a-z0-9]+-\d+)\]/g
+// Matches e.g. "[▸vector·1536dims#k3f9a1-3]". Ids are "<session>-<n>" so a
+// literal placeholder-shaped token in the query can't collide with ours. The
+// text is space-free so the FT.SEARCH arg tokenizer treats a collapsed value as
+// a single PARAMS argument, keeping later params' name mapping intact. The
+// visible chip label (with spaces) is drawn separately as an injected decoration.
+const PLACEHOLDER_REGEX = /\[▸vector·(\d+)dims#([a-z0-9]+-\d+)\]/g
 
 interface StoredEmbedding {
   value: string
@@ -35,7 +38,7 @@ export interface VectorEmbeddingPlaceholder {
 export const buildVectorEmbeddingPlaceholder = (
   id: string,
   dimensions: number,
-): string => `[▸ vector · ${dimensions} dims #${id}]`
+): string => `[▸vector·${dimensions}dims#${id}]`
 
 export const collapseVectorEmbeddingValue = (
   value: string,

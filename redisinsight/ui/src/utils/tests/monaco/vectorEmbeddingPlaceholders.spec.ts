@@ -16,12 +16,12 @@ describe('vector embedding placeholders', () => {
   it('collapsing stores the value and returns an id-carrying placeholder', () => {
     const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
 
-    expect(placeholder).toMatch(/^\[▸ vector · 3 dims #[a-z0-9]+-1\]$/)
+    expect(placeholder).toMatch(/^\[▸vector·3dims#[a-z0-9]+-1\]$/)
     expect(expandVectorEmbeddings(placeholder)).toBe(BLOB)
   })
 
   it('ignores a placeholder-shaped token without a session id', () => {
-    const literal = '[▸ vector · 3 dims #1]'
+    const literal = '[▸vector·3dims#1]'
     expect(findVectorEmbeddingPlaceholders(literal)).toEqual([])
     expect(expandVectorEmbeddings(literal)).toBe(literal)
   })
