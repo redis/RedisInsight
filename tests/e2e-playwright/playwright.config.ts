@@ -13,6 +13,9 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
   forbidOnly: !!process.env.CI,
   // Retry failed tests to handle transient failures
   retries: process.env.CI ? 2 : 1,
+  // Bail on CI after enough failures to catch a systemic breakage without
+  // running the whole suite.
+  maxFailures: process.env.CI ? 20 : undefined,
   reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/results.json' }]],
 
   use: {
