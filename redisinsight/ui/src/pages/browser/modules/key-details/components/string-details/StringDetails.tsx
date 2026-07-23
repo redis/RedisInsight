@@ -39,6 +39,10 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import {
+  NonUnicodeEditConfirmation,
+  useNonUnicodeEditGuard,
+} from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
 import { StringDetailsValue } from './string-details-value'
 import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
@@ -88,6 +92,21 @@ const StringDetails = (props: Props) => {
   const [editItem, setEditItem] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
+  const editGuard = useNonUnicodeEditGuard()
+
+  const enterEdit = () => {
+    dispatch(setSelectedKeyRefreshDisabled(true))
+    setEditItem(true)
+  }
+
+  const handleHeaderEdit = () => {
+    if (editItem) {
+      dispatch(setSelectedKeyRefreshDisabled(false))
+      setEditItem(false)
+      return
+    }
+    editGuard.requestEdit(enterEdit)
+  }
 
   const handleCopyValue = () => {
     sendEventTelemetry({
@@ -121,14 +140,20 @@ const StringDetails = (props: Props) => {
           data-testid="copy-string-value"
         />
       )}
-      <EditItemAction
-        title="Edit Value"
-        tooltipContent={editToolTip}
-        isEditable={isStringEditable && isEditable}
-        onEditItem={() => {
-          dispatch(setSelectedKeyRefreshDisabled(!editItem))
-          setEditItem(!editItem)
-        }}
+      <NonUnicodeEditConfirmation
+        isOpen={editGuard.isOpen}
+        format={editGuard.format}
+        onCancel={editGuard.cancel}
+        onChangeToUnicode={editGuard.changeToUnicode}
+        onEditAnyway={editGuard.editAnyway}
+        button={
+          <EditItemAction
+            title="Edit Value"
+            tooltipContent={editToolTip}
+            isEditable={isStringEditable && isEditable}
+            onEditItem={handleHeaderEdit}
+          />
+        }
       />
     </Row>
   )
