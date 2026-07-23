@@ -8,7 +8,11 @@ import { isSafeExternalUrl } from 'desktopSrc/lib/window/isSafeExternalUrl'
 // code execution.
 export const openExternalSafe = (url: unknown): void => {
   if (isSafeExternalUrl(url)) {
-    shell.openExternal(url)
+    // Catch the rejection (e.g. no registered handler for the scheme) so a
+    // failed open cannot become an unhandled rejection in the main process.
+    shell.openExternal(url).catch((error) => {
+      log.warn(`Failed to open external URL: ${String(url)}`, error)
+    })
     return
   }
 
