@@ -154,23 +154,29 @@ describe('getEmbeddingKey', () => {
     ...overrides,
   })
 
-  it('keys by content, ignoring the PARAMS argument name', () => {
-    expect(getEmbeddingKey(buildMark({ paramName: 'my_blob' }))).toBe(
-      'floatArray:12:0,1,2:10,11',
-    )
+  it('prefers the PARAMS argument name when present', () => {
+    expect(getEmbeddingKey(buildMark({ paramName: 'my_blob' }))).toBe('my_blob')
   })
 
-  it('builds the signature from format, dimensions and preview values', () => {
-    expect(getEmbeddingKey(buildMark())).toBe('floatArray:12:0,1,2:10,11')
-  })
-
-  it('is stable when only the range shifts (same content)', () => {
-    const a = buildMark({ range: { start: 5, end: 15 } })
-    const b = buildMark({ range: { start: 40, end: 50 } })
+  it('stays stable when the blob value changes under the same name', () => {
+    // An expanded embedding the user is editing keeps its identity, so it is
+    // not re-collapsed on the next keystroke.
+    const a = buildMark({ paramName: 'vec', firstValues: [0, 1, 2] })
+    const b = buildMark({ paramName: 'vec', firstValues: [9, 8, 7] })
     expect(getEmbeddingKey(a)).toBe(getEmbeddingKey(b))
   })
 
-  it('distinguishes embeddings with different content', () => {
+  it('distinguishes embeddings with different PARAMS names', () => {
+    const a = buildMark({ paramName: 'vec_a' })
+    const b = buildMark({ paramName: 'vec_b' })
+    expect(getEmbeddingKey(a)).not.toBe(getEmbeddingKey(b))
+  })
+
+  it('falls back to a content signature without a PARAMS name', () => {
+    expect(getEmbeddingKey(buildMark())).toBe('floatArray:12:0,1,2:10,11')
+  })
+
+  it('distinguishes unnamed embeddings by content', () => {
     const a = buildMark({ firstValues: [0, 1, 2] })
     const b = buildMark({ firstValues: [9, 8, 7] })
     expect(getEmbeddingKey(a)).not.toBe(getEmbeddingKey(b))
