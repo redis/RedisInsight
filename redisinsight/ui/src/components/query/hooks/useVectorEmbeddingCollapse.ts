@@ -231,8 +231,10 @@ export const useVectorEmbeddingCollapse = ({
       if (isExpandArrow) {
         const mark = findAtOffset(detectVectorEmbeddings(currentText), offset)
         if (!mark) return
-        const selection = editor.getSelection()
         userExpandedKeys.current.delete(getEmbeddingKey(mark))
+        // The click is prevented from moving the caret, and executeEdits remaps
+        // the existing selection across the edit, so we don't restore it (its
+        // pre-edit columns would be stale once the text length changes).
         // Undo stops keep this manual collapse its own undo entry, so Ctrl+Z
         // undoes only the collapse and not a preceding edit to the vector.
         editor.pushUndoStop()
@@ -247,7 +249,6 @@ export const useVectorEmbeddingCollapse = ({
           },
         ])
         editor.pushUndoStop()
-        if (selection) editor.setSelection(selection)
         return
       }
 
@@ -270,7 +271,9 @@ export const useVectorEmbeddingCollapse = ({
         return
       }
 
-      const selection = editor.getSelection()
+      // The click is prevented from moving the caret, and executeEdits remaps
+      // the existing selection across the edit, so we don't restore it: the
+      // saved columns would point inside the now-longer vector.
       // Undo stops keep this manual expand its own undo entry, symmetric with
       // the collapse paths, so Ctrl+Z steps through it cleanly.
       editor.pushUndoStop()
@@ -288,7 +291,6 @@ export const useVectorEmbeddingCollapse = ({
       )
       if (expandedMark)
         userExpandedKeys.current.add(getEmbeddingKey(expandedMark))
-      if (selection) editor.setSelection(selection)
     }
 
     // Copy/cut with full values instead of placeholders; cut also removes the
