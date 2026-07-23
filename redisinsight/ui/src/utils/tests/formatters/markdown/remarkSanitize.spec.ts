@@ -20,6 +20,12 @@ const testCases = [
   },
   { input: '<script>', output: '' },
   { input: '<script>alert(1)</script>', output: '' },
+  { input: '<p>{alert(1)}</p>', output: '<p>{"{"}alert(1){"}"}</p>' },
+  {
+    input: '<p>{({}).constructor.constructor("return 1")()}</p>',
+    output:
+      '<p>{"{"}({"{"}{"}"}).constructor.constructor("return 1")(){"}"}</p>',
+  },
 ]
 
 describe('remarkSanitize', () => {

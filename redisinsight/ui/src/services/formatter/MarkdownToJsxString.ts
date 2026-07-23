@@ -12,7 +12,6 @@ import {
   remarkImage,
   remarkCode,
   remarkSanitize,
-  remarkWrapHtmlSymbols,
 } from 'uiSrc/utils/formatters/markdown'
 import { IFormatter, IFormatterConfig } from './formatter.interfaces'
 
@@ -24,7 +23,6 @@ class MarkdownToJsxString implements IFormatter {
         .use(remarkParse)
         .use(remarkSanitize)
         .use(remarkGfm) // support GitHub Flavored Markdown
-        .use(remarkWrapHtmlSymbols) // Neutralize JSX braces in raw HTML before custom components are emitted
         .use(remarkRedisUpload, path) // Add custom component for redis-upload code block
         .use(remarkCode, codeOptions) // Add custom component for Redis code block
         .use(remarkImage, path) // Add custom component for Redis code block

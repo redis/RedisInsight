@@ -1,6 +1,7 @@
 import { visit } from 'unist-util-visit'
 import DOMPurify from 'dompurify'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
+import { wrapJsxBraces } from './wrapJsxBraces'
 
 const isOpeningTag = (value: string) =>
   value.startsWith('<') && !value.startsWith('</') && value.endsWith('>')
@@ -36,5 +37,11 @@ export const remarkSanitize = (): ((tree: Node) => void) => (tree: any) => {
         ? sanitized
         : removeClosingTag(sanitized)
     }
+
+    // Neutralize JSX braces so JsxParser renders them literally. DOMPurify keeps
+    // `{expression}` as harmless text, but JsxParser evaluates it as JavaScript.
+    // This runs before the custom-component plugins emit their own JSX, whose
+    // intentional {expr} props must stay evaluable.
+    node.value = wrapJsxBraces(node.value)
   })
 }
