@@ -5,27 +5,33 @@ import { rehypeWrapSymbols } from 'uiSrc/utils/formatters/markdown'
 // would shadow that shared instance with a per-spec automock the production
 // import never sees.
 
-const mockVisitWith = (node: { value?: string }) => {
+// Dispatch the mocked visit by node type, so text and raw callbacks each only
+// receive the node registered for their type.
+const mockVisitWith = (nodesByType: Record<string, { value?: string }>) => {
   ;(visit as jest.Mock).mockImplementation(
-    (_tree: any, _name: string, callback: (node: any) => void) => {
-      callback(node)
+    (_tree: any, type: string, callback: (node: any) => void) => {
+      const node = nodesByType[type]
+      if (node) {
+        callback(node)
+      }
     },
   )
 }
 
 describe('rehypeWrapSymbols', () => {
-  it('should visit text nodes', () => {
-    mockVisitWith({ value: '' })
+  it('should visit text and raw nodes', () => {
+    mockVisitWith({})
 
     const tree = {} as Node
     rehypeWrapSymbols()(tree)
 
     expect(visit).toBeCalledWith(tree, 'text', expect.any(Function))
+    expect(visit).toBeCalledWith(tree, 'raw', expect.any(Function))
   })
 
-  it('should wrap {, } and > as JSX string expressions', () => {
+  it('should wrap {, } and > in text nodes as JSX string expressions', () => {
     const node = { value: 'values {a: 1} > threshold' }
-    mockVisitWith(node)
+    mockVisitWith({ text: node })
 
     rehypeWrapSymbols()({} as Node)
 
@@ -34,25 +40,65 @@ describe('rehypeWrapSymbols', () => {
 
   it('should leave text without special symbols unchanged', () => {
     const node = { value: 'plain text without specials' }
-    mockVisitWith(node)
+    mockVisitWith({ text: node })
 
     rehypeWrapSymbols()({} as Node)
 
     expect(node.value).toBe('plain text without specials')
   })
 
-  it('should leave empty values untouched', () => {
-    const node = { value: '' }
-    mockVisitWith(node)
+  it('should wrap braces in raw HTML text content', () => {
+    const node = { value: '<p>{alert(1)}</p>' }
+    mockVisitWith({ raw: node })
 
     rehypeWrapSymbols()({} as Node)
 
-    expect(node.value).toBe('')
+    expect(node.value).toBe('<p>{"{"}alert(1){"}"}</p>')
   })
 
-  it('should wrap only the given symbols when a custom list is passed', () => {
+  it('should leave braces inside raw HTML attributes intact', () => {
+    const node = { value: '<a href="https://redis.io/{id}">link</a>' }
+    mockVisitWith({ raw: node })
+
+    rehypeWrapSymbols()({} as Node)
+
+    expect(node.value).toBe('<a href="https://redis.io/{id}">link</a>')
+  })
+
+  it('should wrap text braces but keep attribute braces in the same raw node', () => {
+    const node = { value: '<a href="x/{id}">t{e}</a>' }
+    mockVisitWith({ raw: node })
+
+    rehypeWrapSymbols()({} as Node)
+
+    expect(node.value).toBe('<a href="x/{id}">t{"{"}e{"}"}</a>')
+  })
+
+  it('should leave formatter-generated components untouched', () => {
+    const node = {
+      value: '<Code path={path} lang="redis">{"GET user:1"}</Code>',
+    }
+    mockVisitWith({ raw: node })
+
+    rehypeWrapSymbols()({} as Node)
+
+    expect(node.value).toBe(
+      '<Code path={path} lang="redis">{"GET user:1"}</Code>',
+    )
+  })
+
+  it('should escape a lowercase look-alike of a component tag', () => {
+    const node = { value: '<code>{evil}</code>' }
+    mockVisitWith({ raw: node })
+
+    rehypeWrapSymbols()({} as Node)
+
+    expect(node.value).toBe('<code>{"{"}evil{"}"}</code>')
+  })
+
+  it('should wrap only the given symbols in text nodes when a custom list is passed', () => {
     const node = { value: 'a > b < c' }
-    mockVisitWith(node)
+    mockVisitWith({ text: node })
 
     rehypeWrapSymbols(['<'])({} as Node)
 
