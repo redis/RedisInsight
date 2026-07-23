@@ -13,7 +13,12 @@ interface StoredEmbedding {
   byteSize: number
 }
 
-const newSessionId = (): string => Math.random().toString(36).slice(2, 8)
+// A CSPRNG-derived prefix (not Math.random) keeps the session id unguessable so
+// a placeholder-shaped token from elsewhere can't be forged to match ours.
+const newSessionId = (): string => {
+  const [seed] = crypto.getRandomValues(new Uint32Array(1))
+  return seed.toString(36)
+}
 
 let sessionId = newSessionId()
 let nextPlaceholderId = 1
@@ -45,11 +50,6 @@ export const collapseVectorEmbeddingValue = (
 
 export const getVectorEmbeddingValue = (id: string): string | undefined =>
   collapsedValues.get(id)?.value
-
-// Frees the stored value once its placeholder is gone (e.g. after expanding).
-export const releaseVectorEmbeddingValue = (id: string): void => {
-  collapsedValues.delete(id)
-}
 
 export const findVectorEmbeddingPlaceholders = (
   text: string,

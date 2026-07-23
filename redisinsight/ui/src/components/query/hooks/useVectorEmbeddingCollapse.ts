@@ -11,7 +11,6 @@ import {
   getVectorEmbeddingValue,
   handleCopy,
   Nullable,
-  releaseVectorEmbeddingValue,
 } from 'uiSrc/utils'
 
 import { UseVectorEmbeddingCollapseProps } from './useVectorEmbeddingCollapse.types'
@@ -225,8 +224,8 @@ export const useVectorEmbeddingCollapse = ({
           text: value,
         },
       ])
-      // The value is back in the editor; the placeholder id is now dead.
-      releaseVectorEmbeddingValue(placeholder.id)
+      // Keep the stored value: an undo can restore the placeholder text, and it
+      // must still resolve on expand/copy/submit. The store is session-scoped.
       const expandedMark = detectVectorEmbeddings(currentModel.getValue()).find(
         (m) => m.range.start === placeholder.range.start,
       )
