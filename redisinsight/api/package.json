@@ -49,9 +49,6 @@
     "jest": {
       "micromatch": "^4.0.8"
     },
-    "mocha": {
-      "minimatch": "^3.0.5"
-    },
     "semver": "^7.5.2",
     "cpu-features": "file:./stubs/cpu-features",
     "cross-spawn": "^7.0.5",
@@ -73,7 +70,12 @@
     "path-to-regexp": "^8.4.2",
     "multer": "^2.0.2",
     "ws": "^8.21.1",
-    "picomatch@4": "^4.0.5"
+    "picomatch@4": "^4.0.5",
+    "js-yaml@3": "3.15.0",
+    "js-yaml@4": "^4.3.0",
+    "minimatch@9": "^9.0.7",
+    "serialize-javascript": "^7.0.5",
+    "tmp": "^0.2.6"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.2",

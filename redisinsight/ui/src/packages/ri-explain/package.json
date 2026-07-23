@@ -59,6 +59,8 @@
   "overrides": {
     "trim": "0.0.3",
     "@elastic/eui": { "prismjs": "~1.30.0" },
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1"
   }
 }
