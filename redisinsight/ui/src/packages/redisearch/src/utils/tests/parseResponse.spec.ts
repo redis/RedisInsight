@@ -114,7 +114,7 @@ describe('parseAggregateRawResponse', () => {
 
 describe('parseInfoRawResponse', () => {
   it('should set WITHSUFFIXTRIE only for the attribute that enables it', () => {
-    const result = parseInfoRawResponse([
+    const result: any = parseInfoRawResponse([
       'index_name',
       'idx:trie',
       'attributes',

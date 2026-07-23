@@ -42,6 +42,9 @@ export enum ResultInfoField {
   Options = 'index_options',
 }
 
+/**
+ * @deprecated Not used anywhere — kept temporarily. Safe to remove in a follow-up cleanup.
+ */
 export const ResultInfoAttributes: string[] = [
   'Name',
   'Type',
@@ -49,11 +52,6 @@ export const ResultInfoAttributes: string[] = [
   'NOSTEM',
   'NOINDEX',
   'SORTABLE',
-  'WITHSUFFIXTRIE',
-  'CASESENSITIVE',
-  'UNF',
-  'INDEXEMPTY',
-  'INDEXMISSING',
   'SEPARATOR',
   'PHONETIC',
 ]

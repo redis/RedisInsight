@@ -142,8 +142,7 @@ export class IndexAttibuteDto {
   WITHSUFFIXTRIE?: boolean;
 
   @ApiPropertyOptional({
-    description:
-      'Indicates that empty values are indexed for this attribute.',
+    description: 'Indicates that empty values are indexed for this attribute.',
     type: Boolean,
   })
   @Expose()

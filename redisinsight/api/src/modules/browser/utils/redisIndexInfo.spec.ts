@@ -114,14 +114,7 @@ describe('redisIndexInfo', () => {
             'TEXT',
             'WITHSUFFIXTRIE',
           ],
-          [
-            'identifier',
-            '$.b',
-            'attribute',
-            'WITHSUFFIXTRIE',
-            'type',
-            'TEXT',
-          ],
+          ['identifier', '$.b', 'attribute', 'WITHSUFFIXTRIE', 'type', 'TEXT'],
         ],
       ] as any) as any;
 

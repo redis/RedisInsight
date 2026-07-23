@@ -1,3 +1,4 @@
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import {
   indexInfoFactory,
   indexAttributeFactory,
@@ -34,7 +35,7 @@ describe('IndexInfo.utils', () => {
       const indexInfo = indexInfoFactory.build({
         attributes: [
           indexAttributeFactory.build(
-            { type: 'tag' },
+            { type: FieldTypes.TAG },
             { transient: { includeWeight: false } },
           ),
         ],
@@ -48,7 +49,10 @@ describe('IndexInfo.utils', () => {
     it('should pass through withSuffixTrie attribute', () => {
       const indexInfo = indexInfoFactory.build({
         attributes: [
-          indexAttributeFactory.build({ type: 'text', withSuffixTrie: true }),
+          indexAttributeFactory.build({
+            type: FieldTypes.TEXT,
+            withSuffixTrie: true,
+          }),
         ],
       })
 
