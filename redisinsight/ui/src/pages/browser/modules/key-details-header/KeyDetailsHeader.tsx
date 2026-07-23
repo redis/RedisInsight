@@ -169,24 +169,22 @@ const KeyDetailsHeader = ({
                 <FlexItem grow />
                 {isSearchableType &&
                   keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
-                    <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
-                      <FlexItem>
-                        {indexes.length > 0 ? (
-                          <ViewIndexDataButton
-                            indexes={indexes}
-                            instanceId={instanceId}
+                    <FlexItem>
+                      {indexes.length > 0 ? (
+                        <ViewIndexDataButton
+                          indexes={indexes}
+                          instanceId={instanceId}
+                        />
+                      ) : (
+                        <S.MakeSearchableWrapper>
+                          <MakeSearchableButton
+                            keyName={keyBuffer!}
+                            keyNameString={keyName ?? ''}
+                            keyType={type as KeyTypes}
                           />
-                        ) : (
-                          <S.MakeSearchableWrapper>
-                            <MakeSearchableButton
-                              keyName={keyBuffer!}
-                              keyNameString={keyName ?? ''}
-                              keyType={type as KeyTypes}
-                            />
-                          </S.MakeSearchableWrapper>
-                        )}
-                      </FlexItem>
-                    </FeatureFlagComponent>
+                        </S.MakeSearchableWrapper>
+                      )}
+                    </FlexItem>
                   )}
                 {type === KeyTypes.Hash && (
                   <FeatureFlagComponent name={FeatureFlags.valueDecoder}>

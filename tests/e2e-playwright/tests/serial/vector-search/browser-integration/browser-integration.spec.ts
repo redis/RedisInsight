@@ -10,8 +10,6 @@ const TEST_INDEX_PREFIX = `test-vs-browser-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-browser-${uniqueId}-idx`;
 const TEST_INDEX_NAME_2 = `test-vs-browser-${uniqueId}-idx2`;
 
-test.use({ featureFlags: { vectorSearchV2: true } });
-
 /**
  * Vector Search > Browser Page Integration
  *

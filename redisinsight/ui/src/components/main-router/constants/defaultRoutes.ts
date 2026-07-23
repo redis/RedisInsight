@@ -74,13 +74,11 @@ const INSTANCE_ROUTES: IRoute[] = [
     path: Pages.browser(':instanceId'),
     component: LAZY_LOAD ? LazyBrowserPage : BrowserPage,
   },
-  // Vector search route - behind feature flag
   {
     pageName: PageNames.vectorSearch,
     path: Pages.vectorSearch(':instanceId'),
     component: LAZY_LOAD ? LazyVectorSearchPageRouter : VectorSearchPageRouter,
     routes: VECTOR_SEARCH_ROUTES,
-    featureFlag: FeatureFlags.vectorSearchV2,
   },
   {
     pageName: PageNames.workbench,

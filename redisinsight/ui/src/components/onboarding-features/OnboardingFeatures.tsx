@@ -268,8 +268,6 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
       )
-      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
-        useAppSelector(appFeatureFlagsFeaturesSelector)
 
       const dispatch = useAppDispatch()
       const history = useHistory()
@@ -301,12 +299,7 @@ const ONBOARDING_FEATURES = {
           dispatch(resetCliHelperSettings())
           dispatch(setMonitorInitialState())
 
-          if (vectorSearchFeature?.flag) {
-            history.push(Pages.vectorSearch(connectedInstanceId))
-          } else {
-            dispatch(setOnboardNextStep())
-            history.push(Pages.workbench(connectedInstanceId))
-          }
+          history.push(Pages.vectorSearch(connectedInstanceId))
 
           sendNextTelemetryEvent(...telemetryArgs)
         },
@@ -359,8 +352,6 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
       )
-      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
-        useAppSelector(appFeatureFlagsFeaturesSelector)
       const [firstIndex, setFirstIndex] = useState<Nullable<string>>(null)
 
       const dispatch = useAppDispatch()
@@ -445,13 +436,7 @@ const ONBOARDING_FEATURES = {
         ),
         onSkip: () => sendClosedTelemetryEvent(...telemetryArgs),
         onBack: () => {
-          if (vectorSearchFeature?.flag) {
-            history.push(Pages.vectorSearch(connectedInstanceId))
-          } else {
-            history.push(Pages.browser(connectedInstanceId))
-            dispatch(setOnboardPrevStep())
-            dispatch(showMonitor())
-          }
+          history.push(Pages.vectorSearch(connectedInstanceId))
 
           sendBackTelemetryEvent(...telemetryArgs)
         },

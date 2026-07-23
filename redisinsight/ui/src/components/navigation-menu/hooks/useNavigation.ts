@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import { Props as HighlightedFeatureProps } from 'uiSrc/components/hightlighted-feature/HighlightedFeature'
 import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-routes'
 import {
-  appFeatureFlagsFeaturesSelector,
   appFeaturePagesHighlightingSelector,
   removeFeatureFromHighlighting,
 } from 'uiSrc/slices/app/features'
@@ -48,9 +47,6 @@ export function useNavigation() {
     connectedRdiInstanceSelector,
   )
   const highlightedPages = useAppSelector(appFeaturePagesHighlightingSelector)
-  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useAppSelector(
-    appFeatureFlagsFeaturesSelector,
-  )
 
   const isRdiWorkspace = workspace === AppWorkspace.RDI
 
@@ -99,7 +95,7 @@ export function useNavigation() {
       iconType: BrowserIcon,
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
     },
-    vectorSearchFeature?.flag && {
+    {
       tooltipText: 'Search',
       pageName: PageNames.vectorSearch,
       ariaLabel: 'Search',
