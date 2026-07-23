@@ -27,8 +27,7 @@ export const useNonUnicodeEditGuard = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [pendingEdit, setPendingEdit] = useState<(() => void) | null>(null)
 
-  // Stable callbacks so consumers can memoize the surrounding UI without the
-  // popover remounting (and losing focus) on unrelated re-renders.
+  // Stable identities so consumers can memoize the UI around the popover.
   const requestEdit = useCallback(
     (proceed: () => void) => {
       if (!needsEditWarning(format)) {

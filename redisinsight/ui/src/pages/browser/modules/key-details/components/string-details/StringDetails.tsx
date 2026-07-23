@@ -137,8 +137,7 @@ const StringDetails = (props: Props) => {
   // unsaved textarea the user is currently editing.
   const showCopyButton = !!keyValue && isFullyAvailable && !editItem
 
-  // Memoized so an unrelated re-render (e.g. a background refresh) doesn't
-  // recreate this component type and remount the open confirmation popover.
+  // Stable identity so a re-render doesn't remount (and close) the popover.
   const Actions = useCallback(
     () => (
       <Row align="center" gap="s" grow={false}>
