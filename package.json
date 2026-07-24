@@ -271,7 +271,7 @@
     "@redis-ui/styles": "^15.0.0",
     "@redis-ui/table": "^3.7.0",
     "@reduxjs/toolkit": "^2.12.0",
-    "@sentry/electron": "^7.8.0",
+    "@sentry/electron": "^7.15.0",
     "@sentry/react": "^10.39.0",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
