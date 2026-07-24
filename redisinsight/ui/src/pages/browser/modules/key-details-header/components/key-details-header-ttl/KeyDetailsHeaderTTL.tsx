@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 
 import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
@@ -26,6 +27,7 @@ export interface Props {
 }
 
 const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
+  const { t } = useTranslation()
   const { loading } = useAppSelector(selectedKeySelector)
   const {
     ttl: ttlProp,
@@ -66,15 +68,22 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
 
     if (`${ttlProp}` !== ttlValue && keyBuffer) {
       requestConfirmation({
-        title: 'Change TTL on production database?',
+        title: t('browser.keyDetails.ttl.changeConfirm.title'),
         actionDescription: (
-          <>
-            You are about to change the TTL of <strong>{keyProp}</strong> to{' '}
-            <strong>{ttlValue === '-1' ? 'No limit' : `${ttlValue} s`}</strong>{' '}
-            on a production database.
-          </>
+          <Trans
+            i18nKey="browser.keyDetails.ttl.changeConfirm.description"
+            values={{
+              name: escapeTrans(`${keyProp}`),
+              ttl: escapeTrans(
+                ttlValue === '-1'
+                  ? t('browser.keyDetails.ttl.noLimit')
+                  : `${ttlValue} s`,
+              ),
+            }}
+            components={{ bold: <strong /> }}
+          />
         ),
-        confirmButtonText: 'Change TTL',
+        confirmButtonText: t('browser.keyDetails.ttl.changeConfirm.button'),
         commandId: BrowserConfirmationCommandId.ChangeTtl,
         disableConfirmationInput: true,
         onConfirm: () => onEditTTL(keyBuffer, +ttlValue),
@@ -143,7 +152,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                     ttlIsEditing && styles.editing,
                   )}
                   maxLength={200}
-                  placeholder="No limit"
+                  placeholder={t('browser.keyDetails.ttl.placeholder')}
                   value={ttl === '-1' ? '' : ttl}
                   fullWidth={false}
                   compressed
