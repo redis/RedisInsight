@@ -104,4 +104,21 @@ describe('CreateIndexMenu', () => {
     )
     expect(existingDataItem).toHaveAttribute('aria-disabled', 'true')
   })
+
+  it('should keep "Use existing data" enabled when the flag is off but the keys probe failed', async () => {
+    mockEnhancementsEnabled.mockReturnValue(false)
+    renderComponent({
+      hasExistingKeys: false,
+      hasExistingKeysLoading: false,
+      hasExistingKeysError: true,
+    })
+
+    const btn = screen.getByTestId('vector-search--list--create-index-btn')
+    await userEvent.click(btn)
+
+    const existingDataItem = screen.getByTestId(
+      'vector-search--list--create-index--existing-data',
+    )
+    expect(existingDataItem).not.toHaveAttribute('aria-disabled', 'true')
+  })
 })

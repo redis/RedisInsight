@@ -36,7 +36,9 @@ export const useHasExistingKeys = (
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
-  const probe = enabled ? `${instanceId ?? ''}:${pathname}` : null
+  // Include every input the check depends on (instance, route, encoding) so a
+  // change to any of them marks the result pending and surfaces `loading`.
+  const probe = enabled ? `${instanceId ?? ''}:${pathname}:${encoding}` : null
   const loading = probe !== null && checkedProbe !== probe
 
   const checkForKeys = useCallback(

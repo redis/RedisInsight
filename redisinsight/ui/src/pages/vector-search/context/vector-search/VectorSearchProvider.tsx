@@ -40,8 +40,11 @@ export const VectorSearchProvider = ({
   const enhancementsEnabled = useAppSelector(
     isVectorSearchEnhancementsEnabledSelector,
   )
-  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
-    useHasExistingKeys(!enhancementsEnabled)
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys(!enhancementsEnabled)
 
   const openPickSampleDataModal = useCallback(
     (source: SearchTelemetrySource) => {
@@ -177,12 +180,14 @@ export const VectorSearchProvider = ({
       navigateToExistingDataFlow,
       hasExistingKeys,
       hasExistingKeysLoading,
+      hasExistingKeysError,
     }),
     [
       openPickSampleDataModal,
       navigateToExistingDataFlow,
       hasExistingKeys,
       hasExistingKeysLoading,
+      hasExistingKeysError,
     ],
   )
 

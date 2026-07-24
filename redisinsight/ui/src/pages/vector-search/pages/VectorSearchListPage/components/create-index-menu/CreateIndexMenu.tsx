@@ -23,6 +23,7 @@ export const CreateIndexMenu = () => {
     navigateToExistingDataFlow,
     hasExistingKeys,
     hasExistingKeysLoading,
+    hasExistingKeysError,
   } = useVectorSearch()
   const enhancementsEnabled = useAppSelector(
     isVectorSearchEnhancementsEnabledSelector,
@@ -40,8 +41,10 @@ export const CreateIndexMenu = () => {
 
   // With the flag off, restore the legacy behavior: gate the "existing data"
   // entry on the presence of indexable keys, with an explanatory tooltip.
+  // A failed/inconclusive probe keeps the entry available.
   const isExistingDataDisabled =
-    !enhancementsEnabled && (hasExistingKeysLoading || !hasExistingKeys)
+    !enhancementsEnabled &&
+    (hasExistingKeysLoading || (!hasExistingKeys && !hasExistingKeysError))
 
   const existingDataTooltip = useMemo(() => {
     if (enhancementsEnabled) {
@@ -52,12 +55,18 @@ export const CreateIndexMenu = () => {
       return t('vectorSearch.list.createMenu.checkingKeys')
     }
 
-    if (!hasExistingKeys) {
+    if (!hasExistingKeys && !hasExistingKeysError) {
       return t('vectorSearch.list.createMenu.noKeys')
     }
 
     return null
-  }, [enhancementsEnabled, hasExistingKeysLoading, hasExistingKeys, t])
+  }, [
+    enhancementsEnabled,
+    hasExistingKeysLoading,
+    hasExistingKeys,
+    hasExistingKeysError,
+    t,
+  ])
 
   return (
     <Menu>

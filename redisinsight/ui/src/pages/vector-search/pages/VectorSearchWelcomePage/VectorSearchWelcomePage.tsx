@@ -20,6 +20,7 @@ export const VectorSearchWelcomePage = () => {
     navigateToExistingDataFlow,
     hasExistingKeys,
     hasExistingKeysLoading,
+    hasExistingKeysError,
   } = useVectorSearch()
   const enhancementsEnabled = useAppSelector(
     isVectorSearchEnhancementsEnabledSelector,
@@ -37,11 +38,13 @@ export const VectorSearchWelcomePage = () => {
 
   // With the flag off, restore the legacy behavior: gate the button on the
   // presence of indexable keys and use the original "use my database" label.
+  // A failed/inconclusive probe keeps the button available rather than
+  // wrongly reporting "no keys".
   const useMyDatabaseDisabled = enhancementsEnabled
     ? undefined
     : hasExistingKeysLoading
       ? { tooltip: t('vectorSearch.welcome.checkingKeys') }
-      : !hasExistingKeys
+      : !hasExistingKeys && !hasExistingKeysError
         ? { tooltip: t('vectorSearch.welcome.noKeysFound') }
         : undefined
 
