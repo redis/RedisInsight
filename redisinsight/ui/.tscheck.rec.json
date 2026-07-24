@@ -752,13 +752,6 @@
     "TS2339": 5,
     "TS2345": 4
   },
-  "src/services/formatter/FormatSelector.spec.ts": {
-    "TS18046": 1
-  },
-  "src/services/formatter/MarkdownToJsxString.ts": {
-    "TS2345": 4,
-    "TS2769": 2
-  },
   "src/services/query-library/QueryLibraryService.spec.ts": {
     "TS2322": 1
   },
