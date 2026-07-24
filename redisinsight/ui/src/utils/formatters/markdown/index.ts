@@ -5,6 +5,7 @@ import { remarkLink } from './remarkLink'
 import { remarkCode } from './remarkCode'
 import { remarkSanitize } from './remarkSanitize'
 import { remarkRedisUpload } from './remarkRedisUpload'
+import { remarkRedisCodeBlock } from './remarkRedisCodeBlock'
 import { escapeJsxAttribute } from './escapeJsxAttribute'
 
 export {
@@ -14,6 +15,7 @@ export {
   remarkLink,
   remarkCode,
   remarkRedisUpload,
+  remarkRedisCodeBlock,
   remarkSanitize,
   escapeJsxAttribute,
 }
