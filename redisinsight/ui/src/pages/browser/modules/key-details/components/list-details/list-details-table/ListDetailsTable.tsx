@@ -72,6 +72,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { SetListElementDto, SetListElementResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
@@ -89,6 +90,7 @@ const cellCache = new CellMeasurerCache({
 interface IListElement extends SetListElementResponse {}
 
 const ListDetailsTable = () => {
+  const { t } = useTranslation()
   const { loading } = useAppSelector(listSelector)
   const { loading: updateLoading } = useAppSelector(
     updateListValueStateSelector,
@@ -245,13 +247,13 @@ const ListDetailsTable = () => {
   const columns: ITableColumn[] = [
     {
       id: 'index',
-      label: 'Index',
+      label: t('browser.list.column.index'),
       minWidth: 120,
       relativeWidth: listSizes?.index || 30,
       truncateText: true,
       isSearchable: true,
       isResizable: true,
-      prependSearchName: 'Index:',
+      prependSearchName: t('browser.list.searchIndexPrefix'),
       initialSearchValue: '',
       searchValidation: validateListIndex,
       className: 'value-table-separate-border',
@@ -268,7 +270,7 @@ const ListDetailsTable = () => {
               data-testid={`list-index-value-${index}`}
             >
               <RiTooltip
-                title="Index"
+                title={t('browser.list.column.index')}
                 className={styles.tooltip}
                 anchorClassName="truncateText"
                 position="bottom"
@@ -283,7 +285,7 @@ const ListDetailsTable = () => {
     },
     {
       id: 'element',
-      label: 'Element',
+      label: t('browser.list.column.element'),
       minWidth: 150,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -353,7 +355,7 @@ const ListDetailsTable = () => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Element'
+                    ? t('browser.list.column.element')
                     : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
                 }
                 tooltipContent={tooltipContent}
