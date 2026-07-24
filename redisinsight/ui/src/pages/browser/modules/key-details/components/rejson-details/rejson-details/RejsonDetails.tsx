@@ -13,6 +13,7 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   getBrackets,
   isRealArray,
@@ -42,6 +43,7 @@ const RejsonDetails = (props: BaseProps) => {
 
   const [addRootKVPair, setAddRootKVPair] = useState<boolean>(false)
 
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const handleFetchVisualisationResults = (
@@ -154,7 +156,7 @@ const RejsonDetails = (props: BaseProps) => {
                 size="S"
                 className={styles.buttonStyle}
                 onClick={onClickSetRootKVPair}
-                aria-label="Add field"
+                aria-label={t('browser.rejson.addFieldAria')}
                 data-testid={isObject ? 'add-object-btn' : 'add-array-btn'}
               />
             )}
