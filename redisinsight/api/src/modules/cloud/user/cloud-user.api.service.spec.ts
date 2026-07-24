@@ -599,6 +599,27 @@ describe('CloudUserApiService', () => {
         },
       );
     });
+    it('should still submit the code when an apiSessionId is already set (no silent skip)', async () => {
+      sessionService.getSession.mockReset();
+      sessionService.getSession.mockResolvedValue({
+        ...mockCloudSession,
+        apiSessionId: 'stale-session-id',
+      });
+
+      expect(
+        await service.verifyMfaCode(mockSessionMetadata, '123456'),
+      ).toEqual(undefined);
+      // the /login must still fire with the code, not be short-circuited
+      expect(mockedAxios.post).toHaveBeenNthCalledWith(
+        1,
+        'login',
+        expect.objectContaining({
+          mfa_code: '123456',
+          mfa_type: 'Totp',
+        }),
+        expect.anything(),
+      );
+    });
     it('should send the challenge cookie and keep its session id when no new cookie is returned', async () => {
       sessionService.getSession.mockReset();
       sessionService.getSession.mockResolvedValueOnce({

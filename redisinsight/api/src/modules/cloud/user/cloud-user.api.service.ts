@@ -118,7 +118,9 @@ export class CloudUserApiService {
         sessionMetadata.sessionId,
       );
 
-      if (!session?.apiSessionId) {
+      // an mfa code must always be submitted via /login: a stale apiSessionId
+      // must not short-circuit the verification into a false success
+      if (!session?.apiSessionId || mfaCode) {
         this.logger.debug('Trying to login user', sessionMetadata);
 
         const preparedUtm = utm && { ...utm };
