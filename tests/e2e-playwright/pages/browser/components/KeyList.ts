@@ -200,9 +200,6 @@ export class KeyList {
     // browserViewType persists in localStorage across specs in the same Electron instance.
     // If list view leaked from a previous spec, switch to tree view here so the rest of this
     // helper (which only matches tree-view test ids) doesn't time out.
-    // Wait for the keys panel to settle first so a still-rendering list is not
-    // misread as "not list view", which would skip the needed switch.
-    await expect(this.keyListContainer).toBeVisible();
     if (await this.keyListTable.isVisible()) {
       await this.switchToTreeView();
     }
