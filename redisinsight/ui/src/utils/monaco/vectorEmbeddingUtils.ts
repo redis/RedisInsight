@@ -68,6 +68,17 @@ const buildParamNameLookup = (query: string): Map<string, string> => {
 }
 
 /**
+ * Stable identity for an embedding across query edits. Prefer the PARAMS name:
+ * it survives edits to the blob's own value (so an expanded embedding is not
+ * re-collapsed while the user types) and is distinct per PARAMS entry (so a
+ * pasted duplicate still collapses). Falls back to content when the embedding
+ * is not a named PARAMS value (raw array, non-FT query).
+ */
+export const getEmbeddingKey = (mark: VectorEmbeddingMark): string =>
+  mark.paramName ??
+  `${mark.format}:${mark.dimensions}:${mark.firstValues.join(',')}:${mark.lastValues.join(',')}`
+
+/**
  * Scans query text and returns a mark for every large vector embedding:
  * binary FLOAT32 `\x` blobs (validated by `isBinaryVector`) and numeric
  * arrays with at least `MIN_VECTOR_ARRAY_ELEMENTS` elements. Pure and

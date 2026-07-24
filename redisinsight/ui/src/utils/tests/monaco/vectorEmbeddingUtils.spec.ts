@@ -1,7 +1,10 @@
 import {
+  buildVectorEmbeddingPlaceholder,
   detectVectorEmbeddings,
+  getEmbeddingKey,
   MIN_VECTOR_ARRAY_ELEMENTS,
   VectorEmbeddingFormat,
+  VectorEmbeddingMark,
 } from 'uiSrc/utils'
 import {
   FP32_INVALID_BYTE_LENGTH_INPUT,
@@ -136,5 +139,59 @@ describe('detectVectorEmbeddings', () => {
       expect(marks).toHaveLength(1)
       expect(marks[0].paramName).toBe('blob')
     })
+
+    it('maps a later param name when an earlier value is a collapsed placeholder', () => {
+      // A collapsed placeholder is space-free, so it stays one PARAMS argument
+      // and does not shift the name/value pairing for later embeddings.
+      const placeholder = buildVectorEmbeddingPlaceholder('sess-1', 3)
+      const query = `FT.SEARCH idx "q" PARAMS 4 vec1 ${placeholder} vec2 "${FP32_ESCAPED}" DIALECT 2`
+
+      const marks = detectVectorEmbeddings(query)
+
+      expect(marks).toHaveLength(1)
+      expect(marks[0].paramName).toBe('vec2')
+    })
+  })
+})
+
+describe('getEmbeddingKey', () => {
+  const buildMark = (
+    overrides: Partial<VectorEmbeddingMark> = {},
+  ): VectorEmbeddingMark => ({
+    range: { start: 0, end: 10 },
+    format: VectorEmbeddingFormat.FloatArray,
+    byteSize: 48,
+    dimensions: 12,
+    firstValues: [0, 1, 2],
+    lastValues: [10, 11],
+    ...overrides,
+  })
+
+  it('prefers the PARAMS argument name when present', () => {
+    expect(getEmbeddingKey(buildMark({ paramName: 'my_blob' }))).toBe('my_blob')
+  })
+
+  it('stays stable when the blob value changes under the same name', () => {
+    // An expanded embedding the user is editing keeps its identity, so it is
+    // not re-collapsed on the next keystroke.
+    const a = buildMark({ paramName: 'vec', firstValues: [0, 1, 2] })
+    const b = buildMark({ paramName: 'vec', firstValues: [9, 8, 7] })
+    expect(getEmbeddingKey(a)).toBe(getEmbeddingKey(b))
+  })
+
+  it('distinguishes embeddings with different PARAMS names', () => {
+    const a = buildMark({ paramName: 'vec_a' })
+    const b = buildMark({ paramName: 'vec_b' })
+    expect(getEmbeddingKey(a)).not.toBe(getEmbeddingKey(b))
+  })
+
+  it('falls back to a content signature without a PARAMS name', () => {
+    expect(getEmbeddingKey(buildMark())).toBe('floatArray:12:0,1,2:10,11')
+  })
+
+  it('distinguishes unnamed embeddings by content', () => {
+    const a = buildMark({ firstValues: [0, 1, 2] })
+    const b = buildMark({ firstValues: [9, 8, 7] })
+    expect(getEmbeddingKey(a)).not.toBe(getEmbeddingKey(b))
   })
 })

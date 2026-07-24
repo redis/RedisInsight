@@ -25,6 +25,7 @@ export {
   useRedisCompletions,
   useQueryDecorations,
   useVectorEmbeddingMarks,
+  useVectorEmbeddingCollapse,
   useCommandHistory,
   useDslSyntax,
   useQueryEditor,

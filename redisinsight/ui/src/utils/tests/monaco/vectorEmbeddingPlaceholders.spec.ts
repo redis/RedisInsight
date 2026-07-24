@@ -1,0 +1,102 @@
+import {
+  buildVectorEmbeddingPlaceholder,
+  collapseVectorEmbeddingValue,
+  expandVectorEmbeddings,
+  findVectorEmbeddingPlaceholders,
+  resetVectorEmbeddingPlaceholders,
+} from 'uiSrc/utils'
+
+const BLOB = '"\\x01\\x02\\x03\\x04"'
+
+describe('vector embedding placeholders', () => {
+  beforeEach(() => {
+    resetVectorEmbeddingPlaceholders()
+  })
+
+  it('collapsing stores the value and returns an id-carrying placeholder', () => {
+    const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
+
+    expect(placeholder).toMatch(/^\[▸vector·3dims#[a-z0-9]+-1\]$/)
+    expect(expandVectorEmbeddings(placeholder)).toBe(BLOB)
+  })
+
+  it('ignores a placeholder-shaped token without a session id', () => {
+    const literal = '[▸vector·3dims#1]'
+    expect(findVectorEmbeddingPlaceholders(literal)).toEqual([])
+    expect(expandVectorEmbeddings(literal)).toBe(literal)
+  })
+
+  it('does not reuse an id already present as a foreign placeholder', () => {
+    const foreign = buildVectorEmbeddingPlaceholder('abc-1', 768)
+    const ours = collapseVectorEmbeddingValue(BLOB, 3, 16)
+    const query = `${foreign} ${ours}`
+
+    // Only our placeholder expands; the foreign token is left intact.
+    expect(expandVectorEmbeddings(query)).toBe(`${foreign} ${BLOB}`)
+  })
+
+  it('gives every collapsed value a distinct id, even with equal dimensions', () => {
+    const first = collapseVectorEmbeddingValue('"one"', 3, 12)
+    const second = collapseVectorEmbeddingValue('"two"', 3, 12)
+
+    expect(first).not.toBe(second)
+    expect(expandVectorEmbeddings(`${first} ${second}`)).toBe('"one" "two"')
+  })
+
+  it('expands placeholders embedded in query text', () => {
+    const placeholder = collapseVectorEmbeddingValue(BLOB, 3, 16)
+    const query = `FT.SEARCH idx "q" PARAMS 2 vec ${placeholder} DIALECT 2`
+
+    expect(expandVectorEmbeddings(query)).toBe(
+      `FT.SEARCH idx "q" PARAMS 2 vec ${BLOB} DIALECT 2`,
+    )
+  })
+
+  it('leaves a placeholder with an unknown value untouched', () => {
+    const stale = buildVectorEmbeddingPlaceholder('other-99', 1536)
+    expect(expandVectorEmbeddings(stale)).toBe(stale)
+  })
+
+  describe('findVectorEmbeddingPlaceholders', () => {
+    it('returns the id, dimensions, byte size and range', () => {
+      const placeholder = collapseVectorEmbeddingValue(BLOB, 768, 3072)
+      const query = `PARAMS 2 vec ${placeholder}`
+      const start = query.indexOf('[')
+
+      const found = findVectorEmbeddingPlaceholders(query)
+
+      expect(found).toHaveLength(1)
+      expect(found[0]).toMatchObject({
+        dimensions: 768,
+        byteSize: 3072,
+        range: { start, end: query.length },
+      })
+      expect(found[0].id).toMatch(/^[a-z0-9]+-1$/)
+    })
+
+    it('finds multiple placeholders ordered by position', () => {
+      const first = collapseVectorEmbeddingValue('"a"', 3, 12)
+      const second = collapseVectorEmbeddingValue('"b"', 5, 20)
+      const query = `${first} and ${second}`
+
+      const found = findVectorEmbeddingPlaceholders(query)
+
+      expect(found.map((p) => p.id)).toEqual([
+        expect.stringMatching(/^[a-z0-9]+-1$/),
+        expect.stringMatching(/^[a-z0-9]+-2$/),
+      ])
+      expect(found[0].range.start).toBeLessThan(found[1].range.start)
+    })
+
+    it('leaves byteSize undefined for a placeholder from another session', () => {
+      const found = findVectorEmbeddingPlaceholders(
+        buildVectorEmbeddingPlaceholder('other-42', 3),
+      )
+      expect(found[0].byteSize).toBeUndefined()
+    })
+
+    it('returns nothing for plain query text', () => {
+      expect(findVectorEmbeddingPlaceholders('FT.SEARCH idx "q"')).toEqual([])
+    })
+  })
+})
