@@ -178,7 +178,7 @@ const MessageClaimPopover = (props: Props) => {
           ?.viewValue,
       })
     }
-  }, [consumers, currentConsumerName])
+  }, [consumers, currentConsumerName, t])
 
   const button = (
     <SecondaryButton

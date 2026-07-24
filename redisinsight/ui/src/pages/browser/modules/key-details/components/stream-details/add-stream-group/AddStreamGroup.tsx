@@ -62,7 +62,7 @@ const AddStreamGroup = (props: Props) => {
       return
     }
     setIdError('')
-  }, [id])
+  }, [id, t])
 
   const onSuccessAdded = () => {
     closePanel()
