@@ -26,6 +26,7 @@ import {
   PreviewToggle,
   useResponsivePreviewLabel,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ARRAY_COMMAND_PREVIEW_TEST_ID, DEFAULT_LIMIT } from '../constants'
 import { quoteRedisArgument } from '../utils'
@@ -87,6 +88,7 @@ export const ArraySearchForm = ({
   onReset,
   disabled = false,
 }: ArraySearchFormProps) => {
+  const { t } = useTranslation()
   const [previewVisible, setPreviewVisible] = useState(false)
   const [optionsOpen, setOptionsOpen] = useState(false)
   const { containerRef, isWide } = useResponsivePreviewLabel()
@@ -126,10 +128,10 @@ export const ArraySearchForm = ({
     <S.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
       <Row align="center" gap="xs" grow={false}>
         <FlexItem grow={false}>
-          <Text size="s">{MATCH_BY_LABEL}</Text>
+          <Text size="s">{t(MATCH_BY_LABEL)}</Text>
         </FlexItem>
         <FlexItem grow={false}>
-          <InfoHint content={MATCH_BY_HINT} />
+          <InfoHint content={t(MATCH_BY_HINT)} />
         </FlexItem>
       </Row>
 
@@ -158,7 +160,7 @@ export const ArraySearchForm = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !runDisabled) onRun()
                   }}
-                  placeholder={VALUE_PLACEHOLDER}
+                  placeholder={t(VALUE_PLACEHOLDER)}
                   disabled={disabled}
                   data-testid={`${TEST_ID}-value-${index}`}
                 />
@@ -166,10 +168,10 @@ export const ArraySearchForm = ({
               {/* No delete on a single row — there's nothing to remove. */}
               {multiPredicate && (
                 <FlexItem grow={false}>
-                  <RiTooltip content={REMOVE_PREDICATE_ARIA} position="left">
+                  <RiTooltip content={t(REMOVE_PREDICATE_ARIA)} position="left">
                     <IconButton
                       icon={DeleteIcon}
-                      aria-label={REMOVE_PREDICATE_ARIA}
+                      aria-label={t(REMOVE_PREDICATE_ARIA)}
                       onClick={() => onRemovePredicate(index)}
                       disabled={disabled}
                       data-testid={`${TEST_ID}-remove-${index}`}
@@ -186,7 +188,7 @@ export const ArraySearchForm = ({
               <S.ConnectiveRow align="center" gap="s" grow={false}>
                 <FlexItem grow={false}>
                   <ButtonGroup
-                    aria-label={COMBINATOR_ARIA}
+                    aria-label={t(COMBINATOR_ARIA)}
                     data-testid={`${TEST_ID}-combinator-${index}`}
                   >
                     <ButtonGroup.Button
@@ -195,7 +197,7 @@ export const ArraySearchForm = ({
                       disabled={disabled}
                       data-testid={`${TEST_ID}-combinator-${index}-and`}
                     >
-                      AND
+                      {t('browser.array.search.and')}
                     </ButtonGroup.Button>
                     <ButtonGroup.Button
                       isSelected={combinator === ArrayCombinator.Or}
@@ -203,14 +205,14 @@ export const ArraySearchForm = ({
                       disabled={disabled}
                       data-testid={`${TEST_ID}-combinator-${index}-or`}
                     >
-                      OR
+                      {t('browser.array.search.or')}
                     </ButtonGroup.Button>
                   </ButtonGroup>
                 </FlexItem>
                 {index === 0 && (
                   <FlexItem grow={false}>
                     <Text size="s" color="subdued">
-                      {APPLIES_TO_ALL_LABEL}
+                      {t(APPLIES_TO_ALL_LABEL)}
                     </Text>
                   </FlexItem>
                 )}
@@ -238,21 +240,21 @@ export const ArraySearchForm = ({
                   />
                 </FlexItem>
                 <FlexItem grow={false}>
-                  <Text size="s">{OPTIONS_LABEL}</Text>
+                  <Text size="s">{t(OPTIONS_LABEL)}</Text>
                 </FlexItem>
               </Row>
             </EmptyButton>
           </FlexItem>
           <FlexItem grow={false}>
-            <InfoHint content={OPTIONS_HINT} />
+            <InfoHint content={t(OPTIONS_HINT)} />
           </FlexItem>
           <FlexItem grow />
           <FlexItem grow={false}>
-            <RiTooltip content={ADD_PREDICATE_ARIA} position="left">
+            <RiTooltip content={t(ADD_PREDICATE_ARIA)} position="left">
               <ActionIconButton
                 variant="secondary"
                 icon={PlusIcon}
-                aria-label={ADD_PREDICATE_ARIA}
+                aria-label={t(ADD_PREDICATE_ARIA)}
                 onClick={onAddPredicate}
                 disabled={disabled}
                 data-testid={`${TEST_ID}-add-predicate`}
@@ -269,10 +271,10 @@ export const ArraySearchForm = ({
                   <FlexItem grow={false}>
                     <Row align="center" gap="xs" grow={false}>
                       <FlexItem grow={false}>
-                        <Text size="s">{RANGE_LABEL}</Text>
+                        <Text size="s">{t(RANGE_LABEL)}</Text>
                       </FlexItem>
                       <FlexItem grow={false}>
-                        <InfoHint content={RANGE_HINT} />
+                        <InfoHint content={t(RANGE_HINT)} />
                       </FlexItem>
                     </Row>
                   </FlexItem>
@@ -282,14 +284,16 @@ export const ArraySearchForm = ({
                         value={options.start}
                         onChange={(start) => onChangeOptions({ start })}
                         placeholder={START_PLACEHOLDER}
-                        error={startInvalid ? INVALID_INDEX_MESSAGE : undefined}
+                        error={
+                          startInvalid ? t(INVALID_INDEX_MESSAGE) : undefined
+                        }
                         disabled={disabled}
                         data-testid={`${TEST_ID}-start`}
                       />
                     </S.NarrowInputBox>
                   </FlexItem>
                   <FlexItem grow={false}>
-                    <Text size="s">{RANGE_TO_LABEL}</Text>
+                    <Text size="s">{t(RANGE_TO_LABEL)}</Text>
                   </FlexItem>
                   <FlexItem grow={false}>
                     <S.NarrowInputBox>
@@ -297,7 +301,9 @@ export const ArraySearchForm = ({
                         value={options.end}
                         onChange={(end) => onChangeOptions({ end })}
                         placeholder={END_PLACEHOLDER}
-                        error={endInvalid ? INVALID_INDEX_MESSAGE : undefined}
+                        error={
+                          endInvalid ? t(INVALID_INDEX_MESSAGE) : undefined
+                        }
                         disabled={disabled}
                         data-testid={`${TEST_ID}-end`}
                       />
@@ -327,7 +333,7 @@ export const ArraySearchForm = ({
                     />
                   </FlexItem>
                   <FlexItem grow={false}>
-                    <InfoHint content={NOCASE_HINT} />
+                    <InfoHint content={t(NOCASE_HINT)} />
                   </FlexItem>
                 </Row>
               </FlexItem>
@@ -347,7 +353,7 @@ export const ArraySearchForm = ({
                     />
                   </FlexItem>
                   <FlexItem grow={false}>
-                    <InfoHint content={WITHVALUES_HINT} />
+                    <InfoHint content={t(WITHVALUES_HINT)} />
                   </FlexItem>
                 </Row>
               </FlexItem>
@@ -367,7 +373,7 @@ export const ArraySearchForm = ({
                     />
                   </FlexItem>
                   <FlexItem grow={false}>
-                    <InfoHint content={LIMIT_HINT} />
+                    <InfoHint content={t(LIMIT_HINT)} />
                   </FlexItem>
                 </Row>
               </FlexItem>
@@ -379,7 +385,7 @@ export const ArraySearchForm = ({
                     value={options.limit}
                     onChange={(limit) => onChangeOptions({ limit })}
                     placeholder={DEFAULT_LIMIT}
-                    error={limitInvalid ? INVALID_LIMIT_MESSAGE : undefined}
+                    error={limitInvalid ? t(INVALID_LIMIT_MESSAGE) : undefined}
                     disabled={disabled || !options.limitEnabled}
                     data-testid={`${TEST_ID}-limit`}
                   />
@@ -409,13 +415,13 @@ export const ArraySearchForm = ({
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>
-            <RiTooltip content={RESET_TOOLTIP} position="top">
+            <RiTooltip content={t(RESET_TOOLTIP)} position="top">
               <IconButton
                 size="M"
                 icon={ResetIcon}
                 onClick={onReset}
                 disabled={loading || disabled}
-                aria-label={RESET_ARIA_LABEL}
+                aria-label={t(RESET_ARIA_LABEL)}
                 data-testid={`${TEST_ID}-reset`}
               />
             </RiTooltip>
@@ -427,7 +433,7 @@ export const ArraySearchForm = ({
             disabled={runDisabled}
             data-testid={`${TEST_ID}-run`}
           >
-            {RUN_BUTTON_LABEL}
+            {t(RUN_BUTTON_LABEL)}
           </PrimaryButton>
         </FlexItem>
       </S.ActionRow>

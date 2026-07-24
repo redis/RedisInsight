@@ -29,6 +29,8 @@ import {
 } from 'uiSrc/components/production-write-confirmation'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
+import { ParseKeys } from 'i18next'
 
 import {
   ARRAY_TABLE_EMPTY_MESSAGE,
@@ -70,6 +72,7 @@ const ArrayDetailsTable = memo(
     selectionConfig,
     bulkDeleteConfig,
   }: ArrayDetailsTableProps) => {
+    const { t } = useTranslation()
     const dispatch = useAppDispatch()
     const { compressor = null, id: connectedInstanceId } = useAppSelector(
       connectedInstanceSelector,
@@ -285,10 +288,9 @@ const ArrayDetailsTable = memo(
         const savedInstanceId = drawerEditInstanceIdRef.current
         if (savedIndex === null) return
         requestConfirmation({
-          title: 'Edit value on production database?',
-          actionDescription:
-            'You are about to modify a value on a production database.',
-          confirmButtonText: 'Save',
+          title: t('browser.keyDetails.editable.confirmTitle'),
+          actionDescription: t('browser.keyDetails.editable.confirmMessage'),
+          confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
           commandId: BrowserConfirmationCommandId.EditValue,
           disableConfirmationInput: true,
           onConfirm: () => {
@@ -383,20 +385,27 @@ const ArrayDetailsTable = memo(
     // is always present.
     const hasActionsColumn = true
     const columns = useMemo(() => {
+      // Column defs are static (module-level); translate their string headers
+      // at render so the header cells read the locale, not the raw key.
+      const localized = arrayColumns.map((col) =>
+        typeof col.header === 'string'
+          ? { ...col, header: t(col.header as ParseKeys) }
+          : col,
+      )
       const cols = hasSelectionColumn
-        ? [selectionColumn, ...arrayColumns]
-        : [...arrayColumns]
+        ? [selectionColumn, ...localized]
+        : [...localized]
       if (hasActionsColumn) cols.push(actionsColumn)
       return cols
-    }, [hasSelectionColumn, hasActionsColumn, selectionColumn])
+    }, [hasSelectionColumn, hasActionsColumn, selectionColumn, t])
 
     // Use `||` rather than `??` here: the array slice clears `error` to `''`
     // after a successful request, and `''` is not nullish, so `??` would
     // surface the empty string and the table would render with no text on
     // an empty-but-successful range/scan.
     const emptyState = loading
-      ? ARRAY_TABLE_LOADING_MESSAGE
-      : error || ARRAY_TABLE_EMPTY_MESSAGE
+      ? t(ARRAY_TABLE_LOADING_MESSAGE)
+      : error || t(ARRAY_TABLE_EMPTY_MESSAGE)
 
     // Multi-select is opt-in. Selection keys are element indexes (`getRowId`),
     // and gaps/non-deletable rows have their checkbox disabled.

@@ -3,6 +3,7 @@
  * strings, never numbers, to preserve the full u64 range.
  */
 
+import { ParseKeys } from 'i18next'
 import {
   ArrayCombinator,
   ArrayGrepCriteria,
@@ -55,10 +56,10 @@ export enum ArrayDetailsTab {
 
 export const DEFAULT_ARRAY_DETAILS_TAB = ArrayDetailsTab.View
 
-export const ARRAY_DETAILS_TAB_LABELS: Record<ArrayDetailsTab, string> = {
-  [ArrayDetailsTab.View]: 'View',
-  [ArrayDetailsTab.Search]: 'Search',
-  [ArrayDetailsTab.Aggregate]: 'Aggregate',
+export const ARRAY_DETAILS_TAB_LABELS: Record<ArrayDetailsTab, ParseKeys> = {
+  [ArrayDetailsTab.View]: 'browser.array.tab.view',
+  [ArrayDetailsTab.Search]: 'browser.array.tab.search',
+  [ArrayDetailsTab.Aggregate]: 'browser.array.tab.aggregate',
 }
 
 /**

@@ -7,6 +7,7 @@ import { KeyTypes } from 'uiSrc/constants'
 import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayRangeForm } from '../array-range-form'
@@ -18,14 +19,13 @@ import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
-const ADD_ELEMENTS_TITLE = 'Add Elements'
-
 const ViewTab = ({
   keyProp,
   isActive,
   onOpenAddItemPanel,
   onCloseAddItemPanel,
 }: ViewTabProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { loading, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
@@ -132,7 +132,7 @@ const ViewTab = ({
           onDeleteRange={latestRef.current.handleDeleteRange}
         />
         <AddItemsAction
-          title={ADD_ELEMENTS_TITLE}
+          title={t('browser.array.addElements')}
           width={width}
           openAddItemPanel={latestRef.current.openAddPanel}
         />

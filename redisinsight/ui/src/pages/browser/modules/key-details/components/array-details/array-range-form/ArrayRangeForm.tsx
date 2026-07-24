@@ -15,6 +15,8 @@ import {
   useResponsivePreviewLabel,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { quoteRedisArgument } from '../utils'
 import { ARRAY_COMMAND_PREVIEW_TEST_ID } from '../constants'
 import {
@@ -53,6 +55,7 @@ export const ArrayRangeForm = ({
   onReset,
   disabled = false,
 }: ArrayRangeFormProps) => {
+  const { t } = useTranslation()
   const [previewVisible, setPreviewVisible] = useState(false)
   const { containerRef, isWide } = useResponsivePreviewLabel()
 
@@ -82,11 +85,11 @@ export const ArrayRangeForm = ({
       ARRAY_RANGE_MAX_SPAN
   const rangeInvalid = startInvalid || endInvalid || spanInvalid
 
-  const startError = startInvalid ? INVALID_INDEX_MESSAGE : undefined
+  const startError = startInvalid ? t(INVALID_INDEX_MESSAGE) : undefined
   const endError = endInvalid
-    ? INVALID_INDEX_MESSAGE
+    ? t(INVALID_INDEX_MESSAGE)
     : spanInvalid
-      ? INVALID_RANGE_TOO_LARGE_MESSAGE
+      ? t(INVALID_RANGE_TOO_LARGE_MESSAGE)
       : undefined
 
   const command = useMemo(() => {
@@ -108,7 +111,7 @@ export const ArrayRangeForm = ({
     <S.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
       <Row align="end" gap="m">
         <FlexItem>
-          <FormField label="Start index">
+          <FormField label={t('browser.array.form.startIndex')}>
             <TextInput
               value={start}
               onChange={onChangeStart}
@@ -120,7 +123,7 @@ export const ArrayRangeForm = ({
           </FormField>
         </FlexItem>
         <FlexItem>
-          <FormField label="End index">
+          <FormField label={t('browser.array.form.endIndex')}>
             <TextInput
               value={end}
               onChange={onChangeEnd}
@@ -136,7 +139,7 @@ export const ArrayRangeForm = ({
             <Checkbox
               id={`${TEST_ID}-show-empty`}
               name="show-empty-indexes"
-              label="Show empty indexes"
+              label={t('browser.array.range.showEmpty')}
               checked={showEmpty}
               onChange={(e) => onToggleShowEmpty(e.target.checked)}
               data-testid={`${TEST_ID}-show-empty`}
@@ -165,13 +168,13 @@ export const ArrayRangeForm = ({
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>
-            <RiTooltip content={RESET_TOOLTIP} position="top">
+            <RiTooltip content={t(RESET_TOOLTIP)} position="top">
               <IconButton
                 size="M"
                 icon={ResetIcon}
                 onClick={onReset}
                 disabled={loading || disabled}
-                aria-label="Reset array range form"
+                aria-label={t('browser.array.range.resetAria')}
                 data-testid={`${TEST_ID}-reset`}
               />
             </RiTooltip>
@@ -183,7 +186,7 @@ export const ArrayRangeForm = ({
             disabled={rangeInvalid || loading || disabled}
             data-testid={`${TEST_ID}-run`}
           >
-            {RUN_BUTTON_LABEL}
+            {t(RUN_BUTTON_LABEL)}
           </PrimaryButton>
         </FlexItem>
       </S.ActionRow>

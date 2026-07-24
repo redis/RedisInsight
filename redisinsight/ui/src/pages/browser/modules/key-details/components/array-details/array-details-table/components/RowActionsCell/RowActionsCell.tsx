@@ -74,7 +74,7 @@ export const RowActionsCell = ({
           <RiTooltip content={editState?.editDisabledReason ?? null}>
             <IconButton
               icon={EditIcon}
-              aria-label="Edit field"
+              aria-label={t('browser.array.editFieldAria')}
               disabled={isEditActionDisabled}
               onClick={(e: React.MouseEvent) => {
                 // Search renders this table with expandRowOnClick — don't let
@@ -88,7 +88,7 @@ export const RowActionsCell = ({
           <RiTooltip content={editState?.editDisabledReason ?? null}>
             <IconButton
               icon={ExtendIcon}
-              aria-label="Expand value editor"
+              aria-label={t('browser.array.expandEditorAria')}
               disabled={isEditActionDisabled}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation()

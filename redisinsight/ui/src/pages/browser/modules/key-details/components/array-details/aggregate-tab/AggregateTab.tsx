@@ -7,6 +7,7 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { bufferToString } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ArrayAggregateForm } from '../array-aggregate-form'
 import { useArrayAggregateQuery } from '../hooks'
@@ -18,6 +19,7 @@ const AGGREGATE_TAB_TEST_ID = 'array-aggregate-tab'
 const NIL_RESULT_LABEL = '(nil)'
 
 const AggregateTab = ({ keyProp }: AggregateTabProps) => {
+  const { t } = useTranslation()
   const keyName = keyProp ? bufferToString(keyProp) : ''
   // Same lock the View range form uses: while an inline edit is open or its
   // ARSET is in flight, block a new AROP. Otherwise a user-initiated aggregate
@@ -92,7 +94,7 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
             </L.ErrorText>
           )}
           {showResult && (
-            <L.ResultField label="Result">
+            <L.ResultField label={t('browser.array.aggregate.resultLabel')}>
               <L.ResultInput
                 value={isNilResult ? NIL_RESULT_LABEL : resultValue}
                 onChange={noop}
