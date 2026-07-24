@@ -68,6 +68,7 @@ import {
   NonUnicodeEditConfirmation,
   useNonUnicodeEditGuard,
 } from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -88,6 +89,7 @@ export interface Props {
 
 const StringDetailsValue = (props: Props) => {
   const { isEditItem, setIsEdit, onRefresh } = props
+  const { t } = useTranslation()
 
   const { compressor = null } = useAppSelector(connectedInstanceSelector)
   const { loading } = useAppSelector(stringSelector)
@@ -204,10 +206,9 @@ const StringDetailsValue = (props: Props) => {
 
   const onApplyChanges = () => {
     requestConfirmation({
-      title: 'Edit value on production database?',
-      actionDescription:
-        'You are about to modify a value on a production database.',
-      confirmButtonText: 'Save',
+      title: t('browser.keyDetails.editable.confirmTitle'),
+      actionDescription: t('browser.keyDetails.editable.confirmMessage'),
+      confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
       commandId: BrowserConfirmationCommandId.EditValue,
       disableConfirmationInput: true,
       onConfirm: () => {
@@ -273,7 +274,11 @@ const StringDetailsValue = (props: Props) => {
       >
         {areaValue !== ''
           ? value
-          : !isLoading && <span style={{ fontStyle: 'italic' }}>Empty</span>}
+          : !isLoading && (
+              <span style={{ fontStyle: 'italic' }}>
+                {t('browser.string.empty')}
+              </span>
+            )}
       </Text>
     )
 
@@ -316,7 +321,7 @@ const StringDetailsValue = (props: Props) => {
         {isEditItem && (
           <InlineItemEditor
             controlsPosition="bottom"
-            placeholder="Enter Value"
+            placeholder={t('browser.keyDetails.editable.valuePlaceholder')}
             fieldName="value"
             expandable
             isLoading={false}
@@ -360,7 +365,7 @@ const StringDetailsValue = (props: Props) => {
                   data-testid="load-all-value-btn"
                   onClick={() => handleLoadAll(key, keyType)}
                 >
-                  Load all
+                  {t('browser.string.loadAll')}
                 </SecondaryButton>
               )}
             </FlexItem>
@@ -375,7 +380,7 @@ const StringDetailsValue = (props: Props) => {
                   onClick={handleDownloadString}
                   disabled={isTruncatedValue}
                 >
-                  Download
+                  {t('browser.string.download')}
                 </SecondaryButton>
               </FlexItem>
             )}

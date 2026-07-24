@@ -43,6 +43,7 @@ import {
   NonUnicodeEditConfirmation,
   useNonUnicodeEditGuard,
 } from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import { StringDetailsValue } from './string-details-value'
 import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
@@ -53,6 +54,7 @@ export interface Props extends KeyDetailsHeaderProps {}
 const StringDetails = (props: Props) => {
   const { onRemoveKey } = props
   const keyType = KeyTypes.String
+  const { t } = useTranslation()
 
   const { loading, viewFormat: viewFormatProp } =
     useAppSelector(selectedKeySelector)
@@ -144,7 +146,7 @@ const StringDetails = (props: Props) => {
         {showCopyButton && (
           <CopyButton
             copy={copyValue}
-            aria-label="Copy value"
+            aria-label={t('browser.string.copyValueAria')}
             onCopy={handleCopyValue}
             data-testid="copy-string-value"
           />
@@ -157,7 +159,7 @@ const StringDetails = (props: Props) => {
           onEditAnyway={editAnyway}
           button={
             <EditItemAction
-              title="Edit Value"
+              title={t('browser.string.editValue')}
               tooltipContent={editToolTip}
               isEditable={isStringEditable && isEditable}
               onEditItem={handleHeaderEdit}
@@ -167,6 +169,7 @@ const StringDetails = (props: Props) => {
       </Row>
     ),
     [
+      t,
       showCopyButton,
       copyValue,
       handleCopyValue,
