@@ -5,9 +5,10 @@ import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import {
-  optionsDestinations,
+  getPushDestinations,
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
+import { useTranslation } from 'uiSrc/i18n'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Spacer } from 'uiSrc/components/base/layout'
@@ -24,6 +25,8 @@ export interface Props {
 
 const AddKeyList = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const optionsDestinations = getPushDestinations(t)
   const [elements, setElements] = useState<string[]>([''])
   const [destination, setDestination] =
     useState<ListElementDestination>(TAIL_DESTINATION)

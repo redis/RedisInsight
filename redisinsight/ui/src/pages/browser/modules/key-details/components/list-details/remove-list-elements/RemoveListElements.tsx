@@ -48,6 +48,7 @@ import {
   ListElementDestination,
 } from 'apiClient'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 
 import {
   HEAD_DESTINATION,
@@ -63,19 +64,20 @@ export interface Props {
   onRemoveKey: () => void
 }
 
-const optionsDestinations = [
-  {
-    value: TAIL_DESTINATION,
-    label: 'Remove from tail',
-  },
-  {
-    value: HEAD_DESTINATION,
-    label: 'Remove from head',
-  },
-]
-
 const RemoveListElements = (props: Props) => {
   const { closePanel, onRemoveKey } = props
+  const { t } = useTranslation()
+
+  const optionsDestinations = [
+    {
+      value: TAIL_DESTINATION,
+      label: t('browser.list.remove.fromTail'),
+    },
+    {
+      value: HEAD_DESTINATION,
+      label: t('browser.list.remove.fromHead'),
+    },
+  ]
 
   const [count, setCount] = useState<string>('')
   const [destination, setDestination] =
@@ -190,18 +192,34 @@ const RemoveListElements = (props: Props) => {
           disabled={!isFormValid}
           data-testid="remove-elements-btn"
         >
-          Remove
+          {t('browser.list.remove.button')}
         </PrimaryButton>
       }
     >
       <div className={styles.popover}>
         <Text size="m" component="div">
           <h4 style={{ marginTop: 0 }}>
-            <b>{count}</b> Element(s)
+            <Trans
+              i18nKey="browser.list.remove.elementsCount"
+              count={toNumber(count)}
+              values={{ count }}
+              components={{ bold: <b /> }}
+            />
           </h4>
           <Text size="s">
-            will be removed from the {destination.toLowerCase()} of{' '}
-            <b>{formatNameShort(bufferToString(selectedKey))}</b>
+            <Trans
+              i18nKey="browser.list.remove.willBeRemoved"
+              values={{
+                destination:
+                  destination === TAIL_DESTINATION
+                    ? t('browser.list.remove.directionTail')
+                    : t('browser.list.remove.directionHead'),
+                keyName: escapeTrans(
+                  formatNameShort(bufferToString(selectedKey)),
+                ),
+              }}
+              components={{ bold: <b /> }}
+            />
           </Text>
           {(!length || length <= +count) && (
             <div className={styles.appendInfo}>
@@ -209,9 +227,7 @@ const RemoveListElements = (props: Props) => {
                 type="ToastDangerIcon"
                 style={{ marginRight: '1rem', marginTop: '4px' }}
               />
-              <Text size="s">
-                If you remove all Elements, the whole Key will be deleted.
-              </Text>
+              <Text size="s">{t('browser.list.remove.deleteWarning')}</Text>
             </div>
           )}
         </Text>
@@ -223,7 +239,7 @@ const RemoveListElements = (props: Props) => {
             icon={DeleteIcon}
             data-testid="remove-submit"
           >
-            Remove
+            {t('browser.list.remove.button')}
           </DestructiveButton>
         </Row>
       </div>
@@ -296,7 +312,7 @@ const RemoveListElements = (props: Props) => {
               onClick={() => closePanel(true)}
               data-testid="cancel-elements-btn"
             >
-              Cancel
+              {t('browser.list.remove.cancel')}
             </SecondaryButton>
           </div>
         </FlexItem>
