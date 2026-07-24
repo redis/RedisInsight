@@ -124,6 +124,9 @@ test.describe('Vector Search > Create Index from List Page', () => {
 });
 
 test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', () => {
+  // Manual index creation with no data is a vector search enhancement.
+  test.use({ featureFlags: { 'dev-vs-enhancements': true } });
+
   let database: DatabaseInstance;
   const emptyIndex = IndexConfigFactory.build();
 
