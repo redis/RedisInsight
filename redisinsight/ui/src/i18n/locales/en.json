@@ -1068,6 +1068,7 @@
   "vectorSearch.indexInfo.column.identifier": "Identifier",
   "vectorSearch.indexInfo.column.type": "Type",
   "vectorSearch.indexInfo.column.weight": "Weight",
+  "vectorSearch.indexInfo.column.withSuffixTrie": "WITHSUFFIXTRIE",
   "vectorSearch.indexInfo.documents": "documents.",
   "vectorSearch.indexInfo.documentsPrefixed": "documents prefixed by {{prefixes}}.",
   "vectorSearch.indexInfo.indexing": "Indexing",

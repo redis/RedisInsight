@@ -18,6 +18,7 @@ export const parseIndexAttributes = (
     attribute: field.attribute,
     type: field.type,
     weight: field.weight,
+    withSuffixTrie: field.withSuffixTrie,
   }))
 
 /**

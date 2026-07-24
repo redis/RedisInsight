@@ -10,6 +10,7 @@ export interface IndexAttribute {
   attribute: string
   type: FieldTypes
   weight?: string
+  withSuffixTrie?: boolean
 }
 
 export interface IndexDefinition {

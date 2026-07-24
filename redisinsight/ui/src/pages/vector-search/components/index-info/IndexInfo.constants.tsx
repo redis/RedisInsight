@@ -2,6 +2,7 @@ import React from 'react'
 
 import i18n from 'uiSrc/i18n'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
+import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { FieldTag } from 'uiSrc/pages/vector-search/components/field-tag/FieldTag'
 
 import { IndexInfoTableData } from './IndexInfo.types'
@@ -11,6 +12,7 @@ export enum IndexInfoTableColumn {
   Attribute = 'attribute',
   Type = 'type',
   Weight = 'weight',
+  WithSuffixTrie = 'withSuffixTrie',
 }
 
 /**
@@ -41,5 +43,22 @@ export const getTableColumns = (): ColumnDef<IndexInfoTableData>[] => [
     accessorKey: IndexInfoTableColumn.Weight,
     header: i18n.t('vectorSearch.indexInfo.column.weight'),
     enableSorting: false,
+  },
+  {
+    id: IndexInfoTableColumn.WithSuffixTrie,
+    accessorKey: IndexInfoTableColumn.WithSuffixTrie,
+    header: i18n.t('vectorSearch.indexInfo.column.withSuffixTrie'),
+    enableSorting: false,
+    cell: ({ row }) => {
+      const enabled = Boolean(row.original.withSuffixTrie)
+      return (
+        <div data-testid="index-info--with-suffix-trie">
+          <RiIcon
+            type={enabled ? 'CheckThinIcon' : 'CancelSlimIcon'}
+            color={enabled ? 'primary500' : 'danger600'}
+          />
+        </div>
+      )
+    },
   },
 ]

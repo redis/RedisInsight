@@ -29,6 +29,7 @@ export const transformIndexInfo = (data: IndexInfoDto): IndexInfo => ({
     attribute: attr.attribute,
     type: normalizeFieldType(attr.type),
     weight: attr.WEIGHT,
+    withSuffixTrie: attr.WITHSUFFIXTRIE,
   })),
   numDocs: Number(data.num_docs) || 0,
   maxDocId: Number(data.max_doc_id) || 0,

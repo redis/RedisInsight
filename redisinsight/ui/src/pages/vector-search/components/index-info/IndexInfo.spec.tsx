@@ -47,11 +47,13 @@ describe('IndexInfo', () => {
     const attributeCol = screen.getByText('Attribute')
     const typeCol = screen.getByText('Type')
     const weightCol = screen.getByText('Weight')
+    const withSuffixTrieCol = screen.getByText('WITHSUFFIXTRIE')
 
     expect(identifierCol).toBeInTheDocument()
     expect(attributeCol).toBeInTheDocument()
     expect(typeCol).toBeInTheDocument()
     expect(weightCol).toBeInTheDocument()
+    expect(withSuffixTrieCol).toBeInTheDocument()
 
     // First row data
     const firstAttr = mockIndexInfo.attributes[0]
@@ -60,6 +62,11 @@ describe('IndexInfo', () => {
 
     expect(identifierValue).toBeInTheDocument()
     expect(attributeValue).toBeInTheDocument()
+
+    // Boolean WITHSUFFIXTRIE cells must render icons (React omits raw booleans)
+    expect(screen.getAllByTestId('index-info--with-suffix-trie').length).toBe(
+      mockIndexInfo.attributes.length,
+    )
   })
 
   it('should use custom dataTestId', () => {

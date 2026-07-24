@@ -1068,6 +1068,7 @@
   "vectorSearch.indexInfo.column.identifier": "Идентификатор",
   "vectorSearch.indexInfo.column.type": "Тип",
   "vectorSearch.indexInfo.column.weight": "Тегло",
+  "vectorSearch.indexInfo.column.withSuffixTrie": "WITHSUFFIXTRIE",
   "vectorSearch.indexInfo.documents": "документи.",
   "vectorSearch.indexInfo.documentsPrefixed": "документи с префикс {{prefixes}}.",
   "vectorSearch.indexInfo.indexing": "Индексиране",
