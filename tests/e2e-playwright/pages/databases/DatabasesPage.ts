@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { AddDatabaseDialog } from './components/AddDatabaseDialog';
 import { CloneDatabaseDialog } from './components/CloneDatabaseDialog';
@@ -45,26 +45,20 @@ export class DatabasesPage extends BasePage {
    */
   async goto(): Promise<void> {
     await this.gotoHome();
-    await this.ensureDatabaseListFresh();
+    await this.refreshDatabaseList();
   }
 
   /**
-   * The home list is fetched once on app load; a database created via API
-   * afterwards won't appear because clicking the logo doesn't refetch. Wait for
-   * the list to settle into either rendered rows or the empty state; if neither
-   * appears the cached list is still loading/stale, so reload once to refetch.
+   * Clicking the logo shows the home list fetched at app load, which is stale
+   * when a database was created via API afterwards. A visible row or empty
+   * state cannot be trusted as current, so reload to force a refetch, then wait
+   * for the list (or the empty state) to render.
    */
-  private async ensureDatabaseListFresh(): Promise<void> {
+  private async refreshDatabaseList(): Promise<void> {
+    await this.reload();
     const firstRow = this.page.getByTestId(/^instance-name-/).first();
     const emptyState = this.page.getByTestId('empty-database-instance-list');
-    const settled = await firstRow
-      .or(emptyState)
-      .waitFor({ state: 'visible', timeout: 5000 })
-      .then(() => true)
-      .catch(() => false);
-    if (!settled) {
-      await this.reload();
-    }
+    await expect(firstRow.or(emptyState)).toBeVisible();
   }
 
   /**
