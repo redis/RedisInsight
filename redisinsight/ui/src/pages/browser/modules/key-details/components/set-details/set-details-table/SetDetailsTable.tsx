@@ -49,6 +49,7 @@ import {
 } from 'uiSrc/components/virtual-table/interfaces'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
+import { useTranslation } from 'uiSrc/i18n'
 import { GetSetMembersResponse } from 'apiClient'
 import styles from './styles.module.scss'
 
@@ -69,6 +70,7 @@ export interface Props {
 
 const SetDetailsTable = (props: Props) => {
   const { onRemoveKey } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(setSelector)
   const {
@@ -215,7 +217,7 @@ const SetDetailsTable = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Member',
+      label: t('browser.set.column.member'),
       isSearchable: true,
       staySearchAlwaysOpen: true,
       initialSearchValue: '',
@@ -256,7 +258,7 @@ const SetDetailsTable = (props: Props) => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Member'
+                    ? t('browser.set.column.member')
                     : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
                 }
                 tooltipContent={tooltipContent}

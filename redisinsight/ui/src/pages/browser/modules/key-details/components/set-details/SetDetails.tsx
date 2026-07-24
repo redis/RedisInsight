@@ -13,6 +13,7 @@ import { AddSetMembers } from './add-set-members'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import { AddKeysContainer } from 'uiSrc/pages/browser/modules/key-details/components/common/AddKeysContainer.styled'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -23,6 +24,7 @@ export interface Props extends KeyDetailsHeaderProps {
 const SetDetails = (props: Props) => {
   const keyType = KeyTypes.Set
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(selectedKeySelector)
 
@@ -42,7 +44,7 @@ const SetDetails = (props: Props) => {
 
   const Actions = ({ width }: { width: number }) => (
     <AddItemsAction
-      title="Add Members"
+      title={t('browser.set.addMembers')}
       width={width}
       openAddItemPanel={openAddItemPanel}
     />
