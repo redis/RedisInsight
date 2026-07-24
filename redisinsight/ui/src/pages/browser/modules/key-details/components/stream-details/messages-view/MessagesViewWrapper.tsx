@@ -22,6 +22,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
   AckPendingEntriesResponse,
@@ -44,6 +45,7 @@ const ackPrefix = '-ack'
 export interface Props {}
 
 const MessagesViewWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const {
     lastRefreshTime,
     data: loadedMessages = [],
@@ -116,7 +118,7 @@ const MessagesViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'id',
-      label: 'Entry ID',
+      label: t('browser.stream.column.entryId'),
       absoluteWidth: minColumnWidth,
       minWidth: minColumnWidth,
       className: styles.cell,
@@ -148,7 +150,7 @@ const MessagesViewWrapper = (props: Props) => {
     },
     {
       id: 'idle',
-      label: 'Last Message Delivered',
+      label: t('browser.stream.messages.lastDeliveredColumn'),
       minWidth: 256,
       absoluteWidth: 106,
       truncateText: true,
@@ -171,7 +173,7 @@ const MessagesViewWrapper = (props: Props) => {
     },
     {
       id: 'delivered',
-      label: 'Times Message Delivered',
+      label: t('browser.stream.messages.timesDeliveredColumn'),
       minWidth: 106,
       truncateText: true,
       headerClassName: cx('streamItemHeader', styles.deliveredHeaderCell),

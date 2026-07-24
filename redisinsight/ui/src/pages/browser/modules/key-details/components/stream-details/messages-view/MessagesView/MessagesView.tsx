@@ -1,5 +1,6 @@
 import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
+import { useTranslation } from 'uiSrc/i18n'
 import cx from 'classnames'
 
 import { streamGroupsSelector } from 'uiSrc/slices/browser/stream'
@@ -29,8 +30,9 @@ const MessagesView = (props: Props) => {
     total,
     onClosePopover,
     loadMoreItems,
-    noItemsMessageString = 'Your Consumer has no pending messages.',
+    noItemsMessageString,
   } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(streamGroupsSelector)
   const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {}
@@ -60,7 +62,9 @@ const MessagesView = (props: Props) => {
           tableWidth={columns.reduce((a, b) => a + (b.minWidth ?? 0), 0)}
           onWheel={onClosePopover}
           loadMoreItems={loadMoreItems}
-          noItemsMessage={noItemsMessageString}
+          noItemsMessage={
+            noItemsMessageString ?? t('browser.stream.messages.empty')
+          }
         />
       </div>
     </>

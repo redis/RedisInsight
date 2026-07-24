@@ -20,6 +20,7 @@ import AddStreamGroup from './add-stream-group'
 import { StreamItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -30,6 +31,7 @@ export interface Props extends KeyDetailsHeaderProps {
 const StreamDetails = (props: Props) => {
   const keyType = KeyTypes.Stream
   const { onOpenAddItemPanel, onCloseAddItemPanel } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(selectedKeySelector)
   const { viewType: streamViewType } = useAppSelector(streamSelector)
@@ -58,7 +60,7 @@ const StreamDetails = (props: Props) => {
   const Actions = ({ width }: { width: number }) => (
     <StreamItemsAction
       width={width}
-      title={STREAM_ADD_ACTION[streamViewType].name}
+      title={t(STREAM_ADD_ACTION[streamViewType].name)}
       openAddItemPanel={openAddItemPanel}
     />
   )
