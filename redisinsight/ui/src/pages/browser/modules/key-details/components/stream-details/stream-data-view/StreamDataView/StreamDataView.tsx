@@ -22,6 +22,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
 import { StreamEntryDto } from 'apiClient'
 
 import styles from './styles.module.scss'
@@ -29,8 +30,6 @@ import styles from './styles.module.scss'
 const headerHeight = 60
 const rowHeight = 60
 const minColumnWidth = 190
-const noItemsMessageInEmptyStream = 'There are no Entries in the Stream.'
-const noItemsMessageInRange = 'No results found.'
 
 export interface Props {
   data: StreamEntryDto[]
@@ -46,6 +45,7 @@ const StreamDataView = (props: Props) => {
     onClosePopover,
     loadMoreItems,
   } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -116,8 +116,8 @@ const StreamDataView = (props: Props) => {
           onChangeSorting={onChangeSorting}
           noItemsMessage={
             isNull(firstEntry) && isNull(lastEntry)
-              ? noItemsMessageInEmptyStream
-              : noItemsMessageInRange
+              ? t('browser.stream.data.emptyStream')
+              : t('browser.stream.data.noResults')
           }
           onRowToggleViewClick={handleRowToggleViewClick}
           maxTableWidth={columns.reduce(

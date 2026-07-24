@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 
 import { AttributeEditor } from './AttributeEditor'
 import { AttributeEditorProps } from './AttributeEditor.types'
@@ -8,7 +9,8 @@ import {
   JSON_VALIDATION_DEBOUNCE_MS,
 } from './constants'
 
-const queryWarning = () => screen.queryByText(ATTRIBUTES_WARNING_MESSAGE)
+const queryWarning = () =>
+  screen.queryByText(i18n.t(ATTRIBUTES_WARNING_MESSAGE))
 
 const defaultProps: AttributeEditorProps = {
   value: '',

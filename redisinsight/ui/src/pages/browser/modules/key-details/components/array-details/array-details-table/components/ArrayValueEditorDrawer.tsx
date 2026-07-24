@@ -13,6 +13,8 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { ArrayValueEditorDrawerProps } from './ArrayValueEditorDrawer.types'
 
 // Fill the drawer height minus its header and footer.
@@ -28,11 +30,12 @@ export const ArrayValueEditorDrawer = ({
   isOpen,
   index,
   initialValue,
-  title = 'Edit value',
+  title,
   isSaveDisabled = false,
   onSave,
   onClose,
 }: ArrayValueEditorDrawerProps) => {
+  const { t } = useTranslation()
   const [value, setValue] = useState(initialValue)
 
   // Re-seed on open so reopening after a cancel discards the previous edit.
@@ -51,7 +54,7 @@ export const ArrayValueEditorDrawer = ({
       }}
       data-testid="array-value-editor-drawer"
     >
-      <DrawerHeader title={title} />
+      <DrawerHeader title={title ?? t('browser.array.drawer.title')} />
       <DrawerBody>
         <CodeEditor
           language="plaintext"
@@ -76,16 +79,16 @@ export const ArrayValueEditorDrawer = ({
             onClick={onClose}
             data-testid="array-value-editor-cancel-btn"
           >
-            Cancel
+            {t('browser.array.drawer.cancel')}
           </SecondaryButton>
           <PrimaryButton
             size="l"
             disabled={isSaveDisabled}
             onClick={() => onSave(value)}
             data-testid="array-value-editor-save-btn"
-            aria-label={`Save value for index ${index}`}
+            aria-label={t('browser.array.drawer.saveAria', { index })}
           >
-            Save
+            {t('browser.array.drawer.save')}
           </PrimaryButton>
         </Row>
       </DrawerFooter.Compose>

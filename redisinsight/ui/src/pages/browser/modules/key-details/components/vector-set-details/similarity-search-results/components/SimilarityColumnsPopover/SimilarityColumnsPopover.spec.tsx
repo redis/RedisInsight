@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
@@ -40,7 +41,7 @@ describe('SimilarityColumnsPopover', () => {
 
       const btn = screen.getByTestId(COLUMNS_BUTTON_TEST_ID)
       expect(btn).toBeInTheDocument()
-      expect(btn).toHaveTextContent(DEFAULT_TITLE)
+      expect(btn).toHaveTextContent(i18n.t(DEFAULT_TITLE))
     })
 
     it('renders icon-only trigger on narrow screens', () => {
@@ -48,8 +49,8 @@ describe('SimilarityColumnsPopover', () => {
 
       const btn = screen.getByTestId(COLUMNS_BUTTON_TEST_ID)
       expect(btn).toBeInTheDocument()
-      expect(btn).not.toHaveTextContent(DEFAULT_TITLE)
-      expect(btn).toHaveAttribute('aria-label', DEFAULT_TITLE)
+      expect(btn).not.toHaveTextContent(i18n.t(DEFAULT_TITLE))
+      expect(btn).toHaveAttribute('aria-label', i18n.t(DEFAULT_TITLE))
     })
   })
 

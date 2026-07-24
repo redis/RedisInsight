@@ -1,3 +1,4 @@
+import { ParseKeys, TFunction } from 'i18next'
 import {
   DEFAULT_VECTOR_HELP_TEXT,
   FP32_ESCAPE_PREFIX_REGEX,
@@ -7,6 +8,12 @@ import {
   INVALID_NUMERIC_FORMAT_ERROR,
   VECTOR_SEPARATOR,
 } from './constants'
+
+// Truthy marker stored on a validation result for a dimension mismatch. The
+// displayed text is built with interpolation in `getVectorFieldInfo`; callers
+// only test `error` for truthiness, so any non-empty value works here.
+const DIMENSION_MISMATCH_ERROR: ParseKeys =
+  'browser.vectorSet.form.dimensionMismatch'
 import {
   IVectorSetElementState,
   SubmitElement,
@@ -75,7 +82,7 @@ export function validateVector(
         kind: 'fp32',
         fp32Bytes: bytes,
         dim,
-        error: `Dimension mismatch. Expected ${vectorDim} values, but received ${dim}`,
+        error: DIMENSION_MISMATCH_ERROR,
       }
     }
     return { kind: 'fp32', fp32Bytes: bytes, dim }
@@ -89,7 +96,7 @@ export function validateVector(
       kind: 'numeric',
       numeric: parsed,
       dim: parsed.length,
-      error: `Dimension mismatch. Expected ${vectorDim} values, but received ${parsed.length}`,
+      error: DIMENSION_MISMATCH_ERROR,
     }
   }
 
@@ -149,26 +156,36 @@ export function toSubmitElement(
 
 export function getVectorFieldInfo(
   raw: string,
-  vectorDim?: number,
+  vectorDim: number | undefined,
+  t: TFunction,
 ): VectorFieldInfo {
   if (!raw.trim()) {
-    return { text: DEFAULT_VECTOR_HELP_TEXT, isError: false }
+    return { text: t(DEFAULT_VECTOR_HELP_TEXT), isError: false }
   }
 
   const result = validateVector(raw, vectorDim)
   if (result.error) {
-    return { text: result.error, isError: true }
+    // A dimension mismatch carries a detected `kind`; static format errors
+    // don't. The mismatch text is interpolated; static errors are plain keys.
+    const text =
+      result.kind !== undefined
+        ? t('browser.vectorSet.form.dimensionMismatch', {
+            expected: vectorDim,
+            received: result.dim,
+          })
+        : t(result.error as ParseKeys)
+    return { text, isError: true }
   }
 
   if (result.kind === 'fp32') {
     return {
-      text: `Detected FP32 vector (${result.dim} dimensions).`,
+      text: t('browser.vectorSet.form.detectedFp32', { dim: result.dim }),
       isError: false,
     }
   }
 
   return {
-    text: `Detected numeric vector (${result.dim} dimensions).`,
+    text: t('browser.vectorSet.form.detectedNumeric', { dim: result.dim }),
     isError: false,
   }
 }

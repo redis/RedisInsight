@@ -3,6 +3,7 @@ import { instance, mock } from 'ts-mockito'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { ArrayDetails, Props } from './ArrayDetails'
+import i18n from 'uiSrc/i18n'
 import { ARRAY_DETAILS_TAB_LABELS, ArrayDetailsTab } from './constants'
 
 // Stub out the child components so this spec covers only the composition
@@ -125,7 +126,9 @@ describe('ArrayDetails', () => {
     expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
-      screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Search]),
+      screen.getByText(
+        i18n.t(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Search]),
+      ),
     )
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
@@ -133,7 +136,9 @@ describe('ArrayDetails', () => {
     expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
-      screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Aggregate]),
+      screen.getByText(
+        i18n.t(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Aggregate]),
+      ),
     )
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
