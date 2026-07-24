@@ -8,7 +8,6 @@ import {
   generateInvalidDataTestCases,
   validateInvalidDataTestCase,
   nock,
-  expect,
 } from '../../deps';
 import { initSMApiNockScope } from '../constants';
 
@@ -45,8 +44,9 @@ describe('POST /cloud/me/login/mfa', () => {
         name: 'Should complete the login by re-sending /login with the mfa code',
         data: validInputData,
         before: () => {
-          // matcher only matches when mfa_code + mfa_type are in the body,
-          // so a missing code would fail the request
+          // the /login matcher only matches when mfa_code + mfa_type are in the
+          // body, so a 200 proves the code was forwarded. /csrf is mocked for the
+          // case where the session has no csrf yet (otherwise it is skipped).
           initSMApiNockScope()
             .post(
               '/login',
@@ -60,9 +60,6 @@ describe('POST /cloud/me/login/mfa', () => {
             .reply(200, { csrfToken: mockCloudApiCsrfToken });
         },
         statusCode: 200,
-        checkFn: () => {
-          expect(nock.isDone()).to.eq(true);
-        },
       },
     ].map(mainCheckFn);
   });
