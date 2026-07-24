@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { PaginationState } from 'uiSrc/components/base/layout/table'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -31,6 +32,7 @@ import {
 export const useVectorSetElementListData = ({
   actionsConfig,
 }: UseVectorSetElementListDataParams): UseVectorSetElementListDataResult => {
+  const { t } = useTranslation()
   const { loading } = useAppSelector(vectorSetSelector)
   const { elements, nextCursor, total, isPaginationSupported } = useAppSelector(
     vectorSetDataSelector,
@@ -73,8 +75,8 @@ export const useVectorSetElementListData = ({
   }, [elements, pagination, isPaginationSupported])
 
   const emptyMessage = loading
-    ? ELEMENT_LIST_LOADING_MESSAGE
-    : ELEMENT_LIST_EMPTY_MESSAGE
+    ? t(ELEMENT_LIST_LOADING_MESSAGE)
+    : t(ELEMENT_LIST_EMPTY_MESSAGE)
 
   useEffect(() => {
     const { pageIndex, pageSize } = pagination
