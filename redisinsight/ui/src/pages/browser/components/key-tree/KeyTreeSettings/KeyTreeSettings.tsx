@@ -17,6 +17,7 @@ import {
   setBrowserTreeSort,
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -47,16 +48,17 @@ const TreeViewSettingsButton = styled(IconButton)<{
 export interface Props {
   loading: boolean
 }
-const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
-  value,
-  inputDisplay: (
-    <span data-testid={`tree-view-sorting-item-${value}`}>
-      Key name {value}
-    </span>
-  ),
-}))
 
 const KeyTreeSettings = ({ loading }: Props) => {
+  const { t } = useTranslation()
+  const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
+    value,
+    inputDisplay: (
+      <span data-testid={`tree-view-sorting-item-${value}`}>
+        {t('browser.tree.settings.sortOption', { order: value })}
+      </span>
+    ),
+  }))
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const {
     treeViewDelimiter = [DEFAULT_DELIMITER],
@@ -100,7 +102,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
-      aria-label="open tree view settings"
+      aria-label={t('browser.tree.settings.aria')}
       data-testid="tree-view-settings-btn"
     />
   )
@@ -162,7 +164,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
         <FlexItem>
           <AutoTag
             layout="horizontal"
-            label="Delimiter"
+            label={t('browser.tree.settings.delimiter')}
             placeholder=":"
             delimiter=" "
             selectedOptions={delimiters}
@@ -175,7 +177,10 @@ const KeyTreeSettings = ({ loading }: Props) => {
           />
         </FlexItem>
         <FlexItem>
-          <FormField layout="horizontal" label="Sort by">
+          <FormField
+            layout="horizontal"
+            label={t('browser.tree.settings.sortBy')}
+          >
             <RiSelect
               options={sortOptions}
               valueRender={({ option }) => option.inputDisplay ?? option.value}
@@ -192,13 +197,13 @@ const KeyTreeSettings = ({ loading }: Props) => {
               data-testid="tree-view-cancel-btn"
               onClick={closePopover}
             >
-              Cancel
+              {t('browser.tree.settings.button.cancel')}
             </SecondaryButton>
             <PrimaryButton
               data-testid="tree-view-apply-btn"
               onClick={handleApply}
             >
-              Apply
+              {t('browser.tree.settings.button.apply')}
             </PrimaryButton>
           </Row>
         </FlexItem>

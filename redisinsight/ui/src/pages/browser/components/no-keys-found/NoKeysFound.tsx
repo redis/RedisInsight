@@ -22,6 +22,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { PlusIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import LoadSampleData from '../load-sample-data'
 import { AddKeysManuallyButton, StyledImage } from './NoKeysFound.styles'
@@ -32,6 +33,7 @@ export interface Props {
 
 const NoKeysFound = (props: Props) => {
   const { onAddKeyPanel } = props
+  const { t } = useTranslation()
   const { openedPanel } = useAppSelector(sidePanelsSelector)
   const { viewType } = useAppSelector(keysSelector)
 
@@ -61,10 +63,10 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <Col align="center" data-testid="no-result-found-msg">
-      <StyledImage src={NoDataImg} alt="no results" />
+      <StyledImage src={NoDataImg} alt={t('browser.noKeysFound.imageAlt')} />
       <Spacer />
       <Title color="primary" size="XL">
-        Let&apos;s start working
+        {t('browser.noKeysFound.title')}
       </Title>
       <Spacer />
       <Row gap="m" align="center">
@@ -74,7 +76,7 @@ const NoKeysFound = (props: Props) => {
           onClick={() => onAddKeyPanel(true)}
           data-testid="add-key-msg-btn"
         >
-          Add key manually
+          {t('browser.noKeysFound.addKeyManually')}
         </AddKeysManuallyButton>
       </Row>
     </Col>

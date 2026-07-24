@@ -10,6 +10,8 @@ import {
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
+
 import MakeSearchableImg from 'uiSrc/assets/img/vector-search/make-searchable-modal-img.svg?react'
 import MakeSearchableImgDark from 'uiSrc/assets/img/vector-search/make-searchable-modal-img-dark.svg?react'
 
@@ -24,6 +26,7 @@ export const MakeSearchableModal = ({
   onConfirm,
   onCancel,
 }: MakeSearchableModalProps) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const Illustration =
     theme.name === 'dark' ? MakeSearchableImgDark : MakeSearchableImg
@@ -49,23 +52,29 @@ export const MakeSearchableModal = ({
             color="primary"
             data-testid={`${TEST_ID}-heading`}
           >
-            Make this data searchable
+            {t('browser.makeSearchable.title')}
           </S.Heading>
         </S.Header>
 
         <S.Description color="secondary" data-testid={`${TEST_ID}-body`}>
-          We&rsquo;ll take you to the Search workspace to set up the index.
+          {t('browser.makeSearchable.description.intro')}
           {prefix != null && (
             <>
               {' '}
-              All keys starting with{' '}
-              <Text color="secondary" variant="semiBold" component="span">
-                '{prefix}'
-              </Text>{' '}
-              will be included.
+              <Trans
+                i18nKey="browser.makeSearchable.description.prefix"
+                values={{ prefix: escapeTrans(prefix) }}
+                components={{
+                  bold: (
+                    <Text color="secondary" variant="semiBold" component="span">
+                      {''}
+                    </Text>
+                  ),
+                }}
+              />
             </>
           )}{' '}
-          You can review and adjust the schema before creating the index.
+          {t('browser.makeSearchable.description.outro')}
         </S.Description>
 
         <Modal.Content.Footer.Compose>
@@ -75,14 +84,14 @@ export const MakeSearchableModal = ({
               onClick={onCancel}
               data-testid={`${TEST_ID}-cancel`}
             >
-              Cancel
+              {t('browser.makeSearchable.button.cancel')}
             </SecondaryButton>
             <PrimaryButton
               size="large"
               onClick={onConfirm}
               data-testid={`${TEST_ID}-confirm`}
             >
-              Continue
+              {t('browser.makeSearchable.button.continue')}
             </PrimaryButton>
           </Row>
         </Modal.Content.Footer.Compose>
