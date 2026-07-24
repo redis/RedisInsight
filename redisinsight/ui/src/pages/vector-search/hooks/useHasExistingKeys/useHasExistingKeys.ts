@@ -25,21 +25,28 @@ export const useHasExistingKeys = (
   enabled: boolean = true,
 ): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
-  const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(false)
+  // The probe the last completed check ran for. Deriving `loading` from this
+  // (instead of an effect-set flag) keeps it true from the very first render
+  // where a probe is pending, avoiding a flash when `enabled` flips on after
+  // mount (e.g. feature flags resolving on a cold create-index page load).
+  const [checkedProbe, setCheckedProbe] = useState<string | null>(null)
 
   const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
+  // Include every input the check depends on (instance, route, encoding) so a
+  // change to any of them marks the result pending and surfaces `loading`.
+  const probe = enabled ? `${instanceId ?? ''}:${pathname}:${encoding}` : null
+  const loading = probe !== null && checkedProbe !== probe
+
   const checkForKeys = useCallback(
-    async (signal?: AbortSignal) => {
+    async (currentProbe: string, signal?: AbortSignal) => {
       if (!instanceId) {
-        setLoading(false)
+        setCheckedProbe(currentProbe)
         return
       }
-
-      setLoading(true)
 
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
@@ -84,7 +91,7 @@ export const useHasExistingKeys = (
         setError(true)
       } finally {
         if (!signal?.aborted) {
-          setLoading(false)
+          setCheckedProbe(currentProbe)
         }
       }
     },
@@ -92,16 +99,16 @@ export const useHasExistingKeys = (
   )
 
   useEffect(() => {
-    if (!enabled) return undefined
+    if (probe === null) return undefined
 
     // Abort in-flight requests on unmount to prevent state updates after cleanup
     const controller = new AbortController()
-    checkForKeys(controller.signal)
+    checkForKeys(probe, controller.signal)
 
     return () => {
       controller.abort()
     }
-  }, [enabled, checkForKeys, pathname])
+  }, [probe, checkForKeys])
 
   return { hasKeys, loading, error }
 }

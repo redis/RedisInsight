@@ -105,6 +105,11 @@ export interface CreateIndexPageProviderProps {
   mode?: CreateIndexMode
   sampleData?: SampleDataContent
   isManualCreation?: boolean
+  /**
+   * Legacy (pre dev-vs-enhancements) override for browse mode. When provided
+   * it takes precedence over the keys-probe-derived `isManualCreation`.
+   */
+  showBrowser?: boolean
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
   initialPrefix?: string

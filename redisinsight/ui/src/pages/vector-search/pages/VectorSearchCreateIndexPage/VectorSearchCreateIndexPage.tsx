@@ -3,6 +3,8 @@ import { useLocation, useParams, Redirect } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 import { Loader } from 'uiSrc/components/base/display'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
 import {
@@ -33,17 +35,23 @@ export const VectorSearchCreateIndexPage = () => {
   const preselected = hasPreselectedKey(state)
   const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
 
+  // With the flag off, restore the legacy flow: no keys probe and browse mode
+  // whenever existing data is requested without a preselected key.
+  const enhancementsEnabled = useAppSelector(
+    isVectorSearchEnhancementsEnabledSelector,
+  )
+
   const {
     hasKeys: hasExistingKeys,
     loading: hasExistingKeysLoading,
     error: hasExistingKeysError,
-  } = useHasExistingKeys(isBrowseFlow)
+  } = useHasExistingKeys(isBrowseFlow && enhancementsEnabled)
 
   if (mode === CreateIndexMode.SampleData && !sampleData) {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
   }
 
-  if (isBrowseFlow && hasExistingKeysLoading) {
+  if (enhancementsEnabled && isBrowseFlow && hasExistingKeysLoading) {
     return (
       <S.PageWrapper
         align="center"
@@ -57,14 +65,18 @@ export const VectorSearchCreateIndexPage = () => {
 
   // A failed/inconclusive probe keeps browse mode rather than hiding the browser
   const isManualCreation =
-    isBrowseFlow && !hasExistingKeys && !hasExistingKeysError
+    enhancementsEnabled &&
+    isBrowseFlow &&
+    !hasExistingKeys &&
+    !hasExistingKeysError
 
   return (
     <CreateIndexPageProvider
       instanceId={instanceId}
       mode={mode}
       sampleData={sampleData}
-      isManualCreation={isManualCreation}
+      isManualCreation={enhancementsEnabled ? isManualCreation : undefined}
+      showBrowser={enhancementsEnabled ? undefined : isBrowseFlow}
       initialKey={preselected ? existingState?.initialKey : undefined}
       initialKeyType={preselected ? existingState?.initialKeyType : undefined}
       initialPrefix={preselected ? existingState?.initialPrefix : undefined}

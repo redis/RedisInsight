@@ -62,6 +62,7 @@ export const CreateIndexPageProvider = ({
   sampleData,
   mode: modeProp,
   isManualCreation: isManualCreationProp = false,
+  showBrowser: showBrowserProp,
   initialKey: initialKeyProp,
   initialKeyType: initialKeyTypeProp,
   initialPrefix: initialPrefixProp,
@@ -178,7 +179,13 @@ export const CreateIndexPageProvider = ({
     return t('vectorSearch.createIndex.displayNameFallback')
   }, [isSampleData, sampleData, t])
 
-  const showBrowser = !isSampleData && !initialKeyProp && !isManualCreation
+  // Legacy (flag-off) callers pass `showBrowser` explicitly; otherwise it is
+  // derived from the keys probe via `isManualCreation`.
+  const showBrowser =
+    !isSampleData &&
+    (showBrowserProp !== undefined
+      ? showBrowserProp
+      : !initialKeyProp && !isManualCreation)
 
   const selectedFields = useMemo(() => {
     if (isSampleData) return fields

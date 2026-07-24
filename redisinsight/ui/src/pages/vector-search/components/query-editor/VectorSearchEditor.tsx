@@ -3,6 +3,8 @@ import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { useTranslation } from 'uiSrc/i18n'
 import { MonacoLanguage } from 'uiSrc/constants'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import {
   useQueryEditorContext,
@@ -60,6 +62,9 @@ export const VectorSearchEditor = () => {
   const { t } = useTranslation()
   const { monacoObjects, query, onSubmit, indexes, activeIndexName } =
     useQueryEditorContext()
+  const vsEnhancementsEnabled = useAppSelector(
+    isVectorSearchEnhancementsEnabledSelector,
+  )
   // Start as true because useMonacoRedisEditor auto-focuses the editor on mount
   const [focused, setFocused] = useState(true)
   const [contentLeft, setContentLeft] = useState(0)
@@ -159,7 +164,9 @@ export const VectorSearchEditor = () => {
         onChange={onChange}
         editorDidMount={editorDidMount}
       />
-      <VectorEmbeddingHighlight monacoObjects={monacoObjects} query={query} />
+      {vsEnhancementsEnabled && (
+        <VectorEmbeddingHighlight monacoObjects={monacoObjects} query={query} />
+      )}
     </S.EditorContainer>
   )
 }

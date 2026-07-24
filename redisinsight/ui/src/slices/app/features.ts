@@ -74,6 +74,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devLanguage]: {
         flag: false,
       },
+      [FeatureFlags.devVectorSearchEnhancements]: {
+        flag: false,
+      },
       [FeatureFlags.valueDecoder]: {
         flag: false,
       },
@@ -245,6 +248,17 @@ export const isDevLanguageEnabledSelector = (state: RootState): boolean => {
 
   const features = state.app.features.featureFlags.features
   return features[FeatureFlags.devLanguage]?.flag ?? false
+}
+
+export const isVectorSearchEnhancementsEnabledSelector = (
+  state: RootState,
+): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.devVectorSearchEnhancements]?.flag ?? false
 }
 
 export default appFeaturesSlice.reducer
