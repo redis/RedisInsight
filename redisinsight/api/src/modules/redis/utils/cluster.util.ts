@@ -1,12 +1,10 @@
 import { RedisClient } from 'src/modules/redis/client';
 import {
   convertMultilineReplyToObject,
-  parseNodesFromClusterInfoReply,
+  parseNodesFromClusterSlotsReply,
+  RedisClusterSlotsReply,
 } from 'src/modules/redis/utils/reply.util';
-import {
-  IRedisClusterNodeAddress,
-  RedisClusterNodeLinkState,
-} from 'src/models';
+import { IRedisClusterNodeAddress } from 'src/models';
 
 /**
  * Check weather database is a cluster
@@ -30,20 +28,31 @@ export const isCluster = async (client: RedisClient): Promise<boolean> => {
 };
 
 /**
- * Discover all cluster nodes for current connection
+ * Discover all cluster nodes for current connection.
+ *
+ * Uses "CLUSTER SLOTS" rather than "CLUSTER NODES": each node's preferred
+ * connection address there is already resolved server-side according to
+ * the `cluster-preferred-endpoint-type` config (ip / hostname /
+ * unknown-endpoint), so clusters behind per-node load balancers or NAT
+ * (where the raw ip is not routable to clients) remain reachable without
+ * the client re-deriving an ip-vs-hostname preference itself - which
+ * "CLUSTER NODES" has no way to express correctly, since it only exposes
+ * the announced hostname as unconditional metadata, not the server's
+ * actual preference.
  * @param client
  */
 export const discoverClusterNodes = async (
   client: RedisClient,
 ): Promise<IRedisClusterNodeAddress[]> => {
-  const nodes = parseNodesFromClusterInfoReply(
-    (await client.sendCommand(['cluster', 'nodes'], {
-      replyEncoding: 'utf8',
-    })) as string,
-  ).filter((node) => node.linkState === RedisClusterNodeLinkState.Connected);
+  const slots = (await client.sendCommand(['cluster', 'slots'], {
+    replyEncoding: 'utf8',
+  })) as RedisClusterSlotsReply;
 
-  return nodes.map((node) => ({
-    host: node.host,
-    port: node.port,
-  }));
+  const nodes = parseNodesFromClusterSlotsReply(slots, client.options?.host);
+  if (!nodes.length && client.options?.host) {
+    // CLUSTER SLOTS omits unassigned-slot / '?' nodes; keep the discovery
+    // entrypoint as a seed so a partially-configured cluster still connects.
+    return [{ host: client.options.host, port: client.options.port }];
+  }
+  return nodes;
 };

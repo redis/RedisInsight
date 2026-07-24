@@ -104,16 +104,6 @@ export const mockRedisSentinelMasterResponse: Array<string[]> = [
   mockSentinelMasterInOkState,
 ];
 
-// eslint-disable-next-line max-len
-export const mockRedisClusterNodesResponse: string =
-  '07c37dfeb235213a872192d90877d0cd55635b91 127.0.0.1:30004@31004 slave e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 0 1426238317239 4 connected\n' +
-  'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 127.0.0.1:30001@31001 myself,master - 0 0 1 connected 0-16383';
-
-// eslint-disable-next-line max-len
-export const mockRedisClusterNodesResponseIPv6: string =
-  '07c37dfeb235213a872192d90877d0cd55635b91 2001:db8::1:7001@17001 slave e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 0 1426238317239 4 connected\n' +
-  'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 2001:db8::2:7002@17002 myself,master - 0 0 1 connected 0-16383';
-
 export const mockStandaloneRedisInfoReply: string = `${
   mockRedisServerInfoResponse
 }\r\n${mockRedisClientsInfoResponse}\r\n${mockRedisMemoryInfoResponse}\r\n${
