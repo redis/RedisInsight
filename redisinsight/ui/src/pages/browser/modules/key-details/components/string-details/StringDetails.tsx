@@ -39,6 +39,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 import { StringDetailsValue } from './string-details-value'
 import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
@@ -49,6 +50,7 @@ export interface Props extends KeyDetailsHeaderProps {}
 const StringDetails = (props: Props) => {
   const { onRemoveKey } = props
   const keyType = KeyTypes.String
+  const { t } = useTranslation()
 
   const { loading, viewFormat: viewFormatProp } =
     useAppSelector(selectedKeySelector)
@@ -116,13 +118,13 @@ const StringDetails = (props: Props) => {
       {keyValue && isFullyAvailable && !editItem && (
         <CopyButton
           copy={copyValue}
-          aria-label="Copy value"
+          aria-label={t('browser.string.copyValueAria')}
           onCopy={handleCopyValue}
           data-testid="copy-string-value"
         />
       )}
       <EditItemAction
-        title="Edit Value"
+        title={t('browser.string.editValue')}
         tooltipContent={editToolTip}
         isEditable={isStringEditable && isEditable}
         onEditItem={() => {
