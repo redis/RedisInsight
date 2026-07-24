@@ -693,6 +693,7 @@
   "oauth.mfa.description": "Your Redis Cloud account is protected with multi-factor authentication. Enter the code from your authenticator app to finish signing in.",
   "oauth.mfa.invalidCode": "Invalid or expired code. Please try again.",
   "oauth.mfa.title": "Enter your verification code",
+  "oauth.mfa.totpUnavailable": "This account can't be verified with an authenticator app here. Finish signing in from the Redis Cloud console.",
   "oauth.mfa.verify": "Verify",
   "pubsub.empty.description": "Subscribe to the Channel to see all the messages published to your database",
   "pubsub.empty.imageAlt": "Pub/Sub",

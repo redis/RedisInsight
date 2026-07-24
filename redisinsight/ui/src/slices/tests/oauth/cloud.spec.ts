@@ -1142,6 +1142,31 @@ describe('oauth cloud slice', () => {
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
+
+      it('abort without opening the dialog when TOTP is not an available factor', async () => {
+        // Arrange
+        const responsePayload = {
+          response: {
+            status: 401,
+            data: {
+              message: 'Multi-factor authentication is required.',
+              errorCode: CustomErrorCodes.CloudApiMfaRequired,
+              factors: { totpFactorAvailable: false, smsFactorAvailable: true },
+            },
+          },
+        }
+
+        apiService.get = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchUserInfo())
+
+        // Assert
+        const actions = store.getActions()
+        expect(actions).not.toContainEqual(setMfaDialogState(true))
+        expect(actions).toContainEqual(setOAuthCloudSource(null))
+        expect(actions).toContainEqual(setSSOFlow(undefined))
+      })
     })
 
     describe('submitMfaCodeAction', () => {

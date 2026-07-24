@@ -9,6 +9,7 @@ import {
   Pages,
 } from 'uiSrc/constants'
 import {
+  createAxiosError,
   getApiErrorCode,
   getApiErrorCustomCode,
   getApiErrorMessage,
@@ -428,6 +429,31 @@ export function fetchUserInfo(
       if (
         getApiErrorCustomCode(error) === CustomErrorCodes.CloudApiMfaRequired
       ) {
+        const factors = (
+          error?.response?.data as {
+            factors?: { totpFactorAvailable?: boolean }
+          }
+        )?.factors
+
+        // only TOTP is supported; if the challenge cannot be satisfied with an
+        // authenticator code, abort instead of prompting for one that can never
+        // complete (and would burn the user's MFA attempts)
+        if (factors && factors.totpFactorAvailable === false) {
+          dispatch(getUserInfoFailure(errorMessage))
+          dispatch(
+            addErrorNotification(
+              createAxiosError({
+                message: i18n.t('oauth.mfa.totpUnavailable'),
+              }),
+            ),
+          )
+          dispatch(setOAuthCloudSource(null))
+          dispatch(setSSOFlow(undefined))
+
+          onFailAction?.()
+          return
+        }
+
         dispatch(getUserInfoFailure(errorMessage))
         dispatch(setMfaDialogState(true))
 
