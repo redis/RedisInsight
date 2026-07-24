@@ -23,12 +23,14 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { ConfirmationPopover } from 'uiSrc/components'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   onDelete: (key: RedisResponseBuffer) => void
 }
 
 const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
+  const { t } = useTranslation()
   const {
     type,
     nameString: keyProp,
@@ -78,7 +80,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       button={
         <IconButton
           icon={DeleteIcon}
-          aria-label="Delete Key"
+          aria-label={t('browser.keyDetails.delete.aria')}
           className="deleteKeyBtn"
           onClick={showPopoverDelete}
           data-testid="delete-key-btn"

@@ -23,6 +23,7 @@ import { stringDataSelector } from 'uiSrc/slices/browser/string'
 import { isFullStringLoaded } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   Container,
   ControlsIcon,
@@ -36,6 +37,7 @@ export interface Props {
 }
 const KeyDetailsHeaderFormatter = (props: Props) => {
   const { width } = props
+  const { t } = useTranslation()
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { viewType } = useAppSelector(keysSelector)
@@ -72,7 +74,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
           >
             <>
               {width >= MIDDLE_SCREEN_RESOLUTION ? (
-                <OptionText>{text}</OptionText>
+                <OptionText>{t(text)}</OptionText>
               ) : (
                 <ControlsIcon
                   size="m"
@@ -89,14 +91,14 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
             size="s"
             data-test-subj={`format-option-${value}`}
           >
-            {text}
+            {t(text)}
           </Text>
         ),
       }),
     )
 
     setOptions(newOptions)
-  }, [viewFormat, keyType, width, isStringFormattingEnabled])
+  }, [viewFormat, keyType, width, isStringFormattingEnabled, t])
 
   const onChangeType = (value: KeyValueFormat) => {
     sendEventTelemetry({
