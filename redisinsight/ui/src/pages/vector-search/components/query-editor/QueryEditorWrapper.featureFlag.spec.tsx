@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { FeatureFlags } from 'uiSrc/constants'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
 
@@ -29,13 +28,15 @@ jest.mock('uiSrc/components/query', () => {
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
-  appFeatureFlagsFeaturesSelector: jest.fn(() => ({})),
+  isVectorSearchEnhancementsEnabledSelector: jest.fn(() => false),
 }))
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const routerDom = require('react-router-dom')
 
-const mockFeatures = jest.mocked(appFeatureFlagsFeaturesSelector)
+const mockEnhancementsEnabled = jest.mocked(
+  isVectorSearchEnhancementsEnabledSelector,
+)
 
 const renderComponent = () =>
   render(
@@ -54,9 +55,7 @@ describe('QueryEditorWrapper > vector embedding highlight gating', () => {
   })
 
   it('renders the embedding highlight when dev-vs-enhancements is on', () => {
-    mockFeatures.mockReturnValue({
-      [FeatureFlags.devVectorSearchEnhancements]: { flag: true },
-    })
+    mockEnhancementsEnabled.mockReturnValue(true)
 
     renderComponent()
 
@@ -64,9 +63,7 @@ describe('QueryEditorWrapper > vector embedding highlight gating', () => {
   })
 
   it('hides the embedding highlight when dev-vs-enhancements is off', () => {
-    mockFeatures.mockReturnValue({
-      [FeatureFlags.devVectorSearchEnhancements]: { flag: false },
-    })
+    mockEnhancementsEnabled.mockReturnValue(false)
 
     renderComponent()
 

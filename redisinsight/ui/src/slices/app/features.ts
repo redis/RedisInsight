@@ -253,6 +253,10 @@ export const isDevLanguageEnabledSelector = (state: RootState): boolean => {
 export const isVectorSearchEnhancementsEnabledSelector = (
   state: RootState,
 ): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
   const features = state.app.features.featureFlags.features
   return features[FeatureFlags.devVectorSearchEnhancements]?.flag ?? false
 }
