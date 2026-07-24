@@ -37,6 +37,7 @@ export enum KnownFeatures {
   DevBrowser = 'dev-browser',
   Array = 'array',
   DevLanguage = 'dev-language',
+  DevVectorSearchEnhancements = 'dev-vs-enhancements',
   ValueDecoder = 'valueDecoder',
 }
 

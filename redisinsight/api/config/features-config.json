@@ -1,6 +1,10 @@
 {
-  "version": 9,
+  "version": 9.1,
   "features": {
+    "dev-vs-enhancements": {
+      "flag": false,
+      "perc": [[0, 100]]
+    },
     "dev-language": {
       "flag": true,
       "perc": [[0, 0]],

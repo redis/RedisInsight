@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { useTranslation } from 'uiSrc/i18n'
-import { MonacoLanguage } from 'uiSrc/constants'
+import { MonacoLanguage, FeatureFlags } from 'uiSrc/constants'
+import { FeatureFlagComponent } from 'uiSrc/components'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import {
   stopProcessing,
@@ -130,10 +131,12 @@ const Query = (props: Props) => {
             onChange={onChange}
             editorDidMount={editorDidMount}
           />
-          <VectorEmbeddingHighlight
-            monacoObjects={monacoObjects}
-            query={query}
-          />
+          <FeatureFlagComponent name={FeatureFlags.devVectorSearchEnhancements}>
+            <VectorEmbeddingHighlight
+              monacoObjects={monacoObjects}
+              query={query}
+            />
+          </FeatureFlagComponent>
         </S.InputContainer>
         <S.QueryFooter>
           {useLiteActions ? (

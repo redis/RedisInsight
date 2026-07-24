@@ -3,11 +3,13 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
-import { useCreateIndexFlow } from '../../hooks'
+import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
 import { CreateIndexMode } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import {
   SearchTelemetryCancelStep,
@@ -31,6 +33,15 @@ export const VectorSearchProvider = ({
 
   const { run: createIndexFlow, loading: createIndexLoading } =
     useCreateIndexFlow()
+
+  // With dev-vs-enhancements the create-index page probes for keys itself and
+  // manual creation is always available, so this legacy probe is only run to
+  // gate the "existing data" entry points when the flag is off.
+  const enhancementsEnabled = useAppSelector(
+    isVectorSearchEnhancementsEnabledSelector,
+  )
+  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
+    useHasExistingKeys(!enhancementsEnabled)
 
   const openPickSampleDataModal = useCallback(
     (source: SearchTelemetrySource) => {
@@ -164,8 +175,15 @@ export const VectorSearchProvider = ({
     () => ({
       openPickSampleDataModal,
       navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
     }),
-    [openPickSampleDataModal, navigateToExistingDataFlow],
+    [
+      openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
+    ],
   )
 
   return (

@@ -110,6 +110,10 @@ export class FeatureFlagProvider {
       KnownFeatures.ValueDecoder,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
+    this.strategies.set(
+      KnownFeatures.DevVectorSearchEnhancements,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
   }
 
   getStrategy(name: string): FeatureFlagStrategy {
