@@ -2,9 +2,10 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { PreviewToggle } from './PreviewToggle'
-import { PREVIEW_COMMAND_LABEL, PREVIEW_LABEL } from './PreviewToggle.constants'
 
 const TEST_ID = 'preview-toggle'
+const PREVIEW_LABEL = 'Preview'
+const PREVIEW_COMMAND_LABEL = 'Preview command'
 
 describe('PreviewToggle', () => {
   it('collapses to the short label when narrow and expands when wide', () => {
