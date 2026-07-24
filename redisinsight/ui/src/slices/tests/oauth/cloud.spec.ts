@@ -1237,6 +1237,7 @@ describe('oauth cloud slice', () => {
           removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress),
           addErrorNotification(responsePayload as AxiosError),
           setOAuthCloudSource(null),
+          setSSOFlow(undefined),
         ]
         expect(store.getActions()).toEqual(expectedActions)
         expect(onFailAction).toBeCalled()

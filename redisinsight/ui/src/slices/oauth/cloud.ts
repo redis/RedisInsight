@@ -479,6 +479,8 @@ export function submitMfaCodeAction(
         dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
         dispatch(addErrorNotification(error))
         dispatch(setOAuthCloudSource(null))
+        // release ConfigOAuth's in-progress guard so a later sign-in is not swallowed
+        dispatch(setSSOFlow(undefined))
 
         onFailAction?.()
         return

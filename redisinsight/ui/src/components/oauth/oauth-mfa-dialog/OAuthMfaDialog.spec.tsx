@@ -16,6 +16,7 @@ import {
   submitMfaCode,
   submitMfaCodeSuccess,
 } from 'uiSrc/slices/oauth/cloud'
+import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { apiService } from 'uiSrc/services'
 import OAuthMfaDialog from './OAuthMfaDialog'
 import { OAuthMfaDialogProps } from './OAuthMfaDialog.types'
@@ -127,6 +128,7 @@ describe('OAuthMfaDialog', () => {
     const expectedActions = [
       setMfaDialogState(false),
       setOAuthCloudSource(null),
+      setSSOFlow(undefined),
     ]
     expect(store.getActions()).toEqual(expectedActions)
   })

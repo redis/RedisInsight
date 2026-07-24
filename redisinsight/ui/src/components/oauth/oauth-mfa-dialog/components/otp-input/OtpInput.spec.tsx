@@ -91,6 +91,18 @@ describe('OtpInput', () => {
     expect(onChange).toHaveBeenCalledWith('1')
   })
 
+  it('should not shift later digits when a middle box is cleared', () => {
+    const onChange = jest.fn()
+    renderComponent({ value: '12345', onChange })
+
+    fireEvent.keyDown(box(2), { key: 'Backspace' })
+
+    expect(onChange).toHaveBeenCalledWith('1245')
+    // the digit after the cleared box keeps its position, it does not slide left
+    expect(box(2).value).toBe('')
+    expect(box(3).value).toBe('4')
+  })
+
   it('should mark boxes invalid via aria-invalid', () => {
     renderComponent({ isInvalid: true })
 

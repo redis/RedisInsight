@@ -9,6 +9,7 @@ import {
   setOAuthCloudSource,
   submitMfaCodeAction,
 } from 'uiSrc/slices/oauth/cloud'
+import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -50,6 +51,9 @@ const OAuthMfaDialog = ({ onVerified }: OAuthMfaDialogProps) => {
   const handleCancel = () => {
     dispatch(setMfaDialogState(false))
     dispatch(setOAuthCloudSource(null))
+    // clearing the SSO flow releases ConfigOAuth's in-progress guard, so a
+    // later failed sign-in still surfaces instead of being swallowed
+    dispatch(setSSOFlow(undefined))
   }
 
   const handleChange = (next: string) => {

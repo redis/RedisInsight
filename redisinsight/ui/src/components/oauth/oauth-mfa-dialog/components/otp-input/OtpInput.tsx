@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import * as S from './OtpInput.styles'
 import { OtpInputProps } from './OtpInput.types'
 
 const DEFAULT_LENGTH = 6
 const DIGITS_ONLY = /\d/g
+
+// fixed-length representation so clearing a middle box does not shift the rest
+const toSlots = (value: string, length: number): string[] =>
+  Array.from({ length }, (_, index) => value[index] ?? '')
 
 const OtpInput = ({
   value,
@@ -18,12 +22,14 @@ const OtpInput = ({
   'data-testid': dataTestid,
 }: OtpInputProps) => {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([])
+  const [slots, setSlots] = useState<string[]>(() => toSlots(value, length))
 
-  const focusAt = (index: number) => {
-    const target = inputsRef.current[Math.max(0, Math.min(index, length - 1))]
-    target?.focus()
-    target?.select()
-  }
+  // the parent clears the value to reset the field (error dismissed, dialog closed)
+  useEffect(() => {
+    if (value === '') {
+      setSlots(toSlots('', length))
+    }
+  }, [value, length])
 
   // refocus the first box when the code is rejected so the user can retype
   useEffect(() => {
@@ -32,10 +38,18 @@ const OtpInput = ({
     }
   }, [isInvalid])
 
-  const emit = (next: string) => {
-    onChange(next)
-    if (next.length === length) {
-      onComplete?.(next)
+  const focusAt = (index: number) => {
+    const target = inputsRef.current[Math.max(0, Math.min(index, length - 1))]
+    target?.focus()
+    target?.select()
+  }
+
+  const commit = (next: string[]) => {
+    setSlots(next)
+    const code = next.join('')
+    onChange(code)
+    if (next.every((digit) => digit !== '')) {
+      onComplete?.(code)
     }
   }
 
@@ -46,25 +60,24 @@ const OtpInput = ({
         return
       }
 
-      const chars = value.split('')
+      const next = [...slots]
       // typing into a box keeps the last digit entered there
-      chars[index] = digits[digits.length - 1]
-      emit(chars.join('').slice(0, length))
+      next[index] = digits[digits.length - 1]
+      commit(next)
       focusAt(index + 1)
     }
 
   const handleKeyDown =
     (index: number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const chars = value.split('')
-
       if (e.key === 'Backspace') {
         e.preventDefault()
-        if (chars[index]) {
-          chars[index] = ''
-          onChange(chars.join(''))
+        const next = [...slots]
+        if (next[index]) {
+          next[index] = ''
+          commit(next)
         } else if (index > 0) {
-          chars[index - 1] = ''
-          onChange(chars.join(''))
+          next[index - 1] = ''
+          commit(next)
           focusAt(index - 1)
         }
       } else if (e.key === 'ArrowLeft') {
@@ -86,13 +99,13 @@ const OtpInput = ({
       return
     }
 
-    emit(pasted)
+    commit(toSlots(pasted, length))
     focusAt(pasted.length)
   }
 
   return (
     <S.Container data-testid={dataTestid}>
-      {Array.from({ length }).map((_, index) => (
+      {slots.map((digit, index) => (
         <input
           // fixed-length list, index is a stable identity here
           // eslint-disable-next-line react/no-array-index-key
@@ -104,7 +117,7 @@ const OtpInput = ({
           inputMode="numeric"
           autoComplete="one-time-code"
           maxLength={1}
-          value={value[index] ?? ''}
+          value={digit}
           disabled={disabled}
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus={autoFocus && index === 0}
