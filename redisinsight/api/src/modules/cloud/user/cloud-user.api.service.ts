@@ -5,13 +5,16 @@ import { CloudUserRepository } from 'src/modules/cloud/user/repositories/cloud-u
 import { CloudUser, CloudUserAccount } from 'src/modules/cloud/user/models';
 import { CloudSessionService } from 'src/modules/cloud/session/cloud-session.service';
 import { wrapHttpError } from 'src/common/utils';
-import { CloudApiUnauthorizedException } from 'src/modules/cloud/common/exceptions';
+import {
+  CloudApiMfaRequiredException,
+  CloudApiUnauthorizedException,
+} from 'src/modules/cloud/common/exceptions';
 import { CloudUserApiProvider } from 'src/modules/cloud/user/providers/cloud-user.api.provider';
 import { CloudRequestUtm } from 'src/modules/cloud/common/models';
 import { CloudAuthService } from 'src/modules/cloud/auth/cloud-auth.service';
 import { CloudSession } from 'src/modules/cloud/session/models/cloud-session';
 import { ServerService } from 'src/modules/server/server.service';
-import { isValidToken } from './utils';
+import { isTokenExpired, isValidToken } from './utils';
 
 @Injectable()
 export class CloudUserApiService {
@@ -76,16 +79,19 @@ export class CloudUserApiService {
       );
 
       if (!isValidToken(session?.accessToken)) {
-        if (!session?.refreshToken) {
+        if (session?.refreshToken) {
+          await this.cloudAuthService.renewTokens(
+            sessionMetadata,
+            session?.idpType,
+            session?.refreshToken,
+          );
+        } else if (isTokenExpired(session?.accessToken)) {
           this.logger.error('Refresh token is undefined');
           throw new CloudApiUnauthorizedException();
         }
-
-        await this.cloudAuthService.renewTokens(
-          sessionMetadata,
-          session?.idpType,
-          session?.refreshToken,
-        );
+        // within the proactive-renewal buffer but still unexpired and no refresh
+        // token to renew with: proceed with the current token. Covers the MFA
+        // login where the human delay entering the code crosses the buffer.
       }
     } catch (e) {
       this.logger.error('Error trying renew token', e);
@@ -97,11 +103,13 @@ export class CloudUserApiService {
    * Login user to api using accessToken from oauth flow
    * @param sessionMetadata
    * @param utm
+   * @param mfaCode
    * @private
    */
   private async ensureLogin(
     sessionMetadata: SessionMetadata,
     utm?: CloudRequestUtm,
+    mfaCode?: string,
   ): Promise<void> {
     try {
       await this.ensureAccessToken(sessionMetadata);
@@ -130,10 +138,16 @@ export class CloudUserApiService {
             });
         }
 
-        const apiSessionId = await this.api.getApiSessionId(
-          session,
-          preparedUtm,
-        );
+        const apiSessionId =
+          (await this.api.getApiSessionId(
+            mfaCode
+              ? { ...session, apiSessionId: session?.mfaApiSessionId }
+              : session,
+            preparedUtm,
+            mfaCode,
+          )) ||
+          // the mfa re-login reuses the challenge session and may not re-set the cookie
+          (mfaCode ? session?.mfaApiSessionId : undefined);
 
         if (!apiSessionId) {
           throw new CloudApiUnauthorizedException();
@@ -141,14 +155,33 @@ export class CloudUserApiService {
 
         await this.sessionService.updateSessionData(sessionMetadata.sessionId, {
           apiSessionId,
+          ...(mfaCode ? { mfaApiSessionId: null } : {}),
         });
       }
 
       await this.ensureCsrf(sessionMetadata);
     } catch (e) {
+      if (e instanceof CloudApiMfaRequiredException && e.apiSessionId) {
+        await this.sessionService.updateSessionData(sessionMetadata.sessionId, {
+          mfaApiSessionId: e.apiSessionId,
+        });
+      }
+
       this.logger.error('Unable to login user', e, sessionMetadata);
       throw wrapHttpError(e);
     }
+  }
+
+  /**
+   * Complete a cloud login that was challenged for MFA by re-sending it with a TOTP code
+   * @param sessionMetadata
+   * @param mfaCode
+   */
+  async verifyMfaCode(
+    sessionMetadata: SessionMetadata,
+    mfaCode: string,
+  ): Promise<void> {
+    return this.ensureLogin(sessionMetadata, undefined, mfaCode);
   }
 
   /**

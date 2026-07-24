@@ -134,6 +134,11 @@ export default {
     'Unable to get required data from the user profile.',
   CLOUD_OAUTH_UNKNOWN_AUTHORIZATION_REQUEST: 'Unknown authorization request.',
   CLOUD_OAUTH_UNEXPECTED_ERROR: 'Unexpected error.',
+  CLOUD_MFA_REQUIRED:
+    'Multi-factor authentication is required to complete sign in.',
+  CLOUD_MFA_INVALID_CODE: 'Invalid or expired code. Please try again.',
+  CLOUD_MFA_QUOTA_EXCEEDED:
+    'Too many authentication attempts. Wait a few minutes and sign in again.',
 
   CLOUD_JOB_UNEXPECTED_ERROR: 'Unexpected error occurred',
   CLOUD_JOB_ABORTED: 'Cloud job aborted',

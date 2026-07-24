@@ -21,6 +21,8 @@ import {
 import { when, resetAllWhenMocks } from 'jest-when';
 import {
   CloudApiInternalServerErrorException,
+  CloudApiMfaQuotaExceededException,
+  CloudApiMfaRequiredException,
   CloudApiUnauthorizedException,
 } from 'src/modules/cloud/common/exceptions';
 import { CloudUserApiService } from 'src/modules/cloud/user/cloud-user.api.service';
@@ -254,6 +256,39 @@ describe('CloudUserApiService', () => {
       ).rejects.toThrow(CloudApiUnauthorizedException);
       expect(authService.renewTokens).not.toHaveBeenCalled();
     });
+    it('Should proceed without renewing when the token is within the renewal buffer, still unexpired, and there is no refresh token', async () => {
+      // exp within the 2-min proactive-renewal buffer but not yet expired
+      const mockedAccessToken = sign(
+        { exp: Math.trunc(Date.now() / 1000) + 60 },
+        'test',
+      );
+      sessionService.getSession.mockResolvedValueOnce({
+        ...mockCloudApiAuthDto,
+        accessToken: mockedAccessToken,
+        refreshToken: undefined,
+      });
+
+      await expect(
+        service['ensureAccessToken'](mockSessionMetadata),
+      ).resolves.toEqual(undefined);
+      expect(authService.renewTokens).not.toHaveBeenCalled();
+    });
+    it('Should throw when the token is actually expired and there is no refresh token', async () => {
+      const mockedAccessToken = sign(
+        { exp: Math.trunc(Date.now() / 1000) - 60 },
+        'test',
+      );
+      sessionService.getSession.mockResolvedValueOnce({
+        ...mockCloudApiAuthDto,
+        accessToken: mockedAccessToken,
+        refreshToken: undefined,
+      });
+
+      await expect(
+        service['ensureAccessToken'](mockSessionMetadata),
+      ).rejects.toThrow(CloudApiUnauthorizedException);
+      expect(authService.renewTokens).not.toHaveBeenCalled();
+    });
   });
 
   describe('ensureLogin', () => {
@@ -422,6 +457,42 @@ describe('CloudUserApiService', () => {
         expect.anything(),
       );
     });
+    it('should store the challenge session id when login is challenged for mfa', async () => {
+      when(mockedAxios.post)
+        .calledWith('login', expect.anything(), expect.anything())
+        .mockRejectedValueOnce({
+          message: 'Request failed with status code 401',
+          isAxiosError: true,
+          response: {
+            status: 401,
+            data: {
+              errors: {
+                code: 'user-mfa-required',
+                params: '{"totpFactorAvailable":true}',
+              },
+            },
+            headers: {
+              'set-cookie': [
+                'anything;JSESSIONID=pending-mfa-session;anything;',
+              ],
+            },
+          },
+        });
+      sessionService.getSession.mockResolvedValueOnce({
+        ...mockCloudSession,
+        apiSessionId: null,
+      });
+
+      await expect(
+        service['ensureLogin'](mockSessionMetadata),
+      ).rejects.toBeInstanceOf(CloudApiMfaRequiredException);
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+        {
+          mfaApiSessionId: 'pending-mfa-session',
+        },
+      );
+    });
     it('should throw unauthorized error when no session id successfully fetched', async () => {
       when(mockedAxios.post)
         .calledWith('login', expect.anything(), expect.anything())
@@ -470,6 +541,123 @@ describe('CloudUserApiService', () => {
         expect.anything(),
         expect.anything(),
       );
+    });
+  });
+
+  describe('verifyMfaCode', () => {
+    let spyEnsureAccessToken: jest.SpyInstance;
+    let spyEnsureCsrf: jest.SpyInstance;
+
+    const mockMfaLoginAxiosError = (data: unknown) => ({
+      message: 'Request failed with status code 401',
+      isAxiosError: true,
+      response: { status: 401, data },
+    });
+
+    beforeEach(async () => {
+      spyEnsureAccessToken = jest.spyOn(service as any, 'ensureAccessToken');
+      spyEnsureAccessToken.mockResolvedValue(undefined);
+      spyEnsureCsrf = jest.spyOn(service as any, 'ensureCsrf');
+      spyEnsureCsrf.mockResolvedValue(undefined);
+      when(mockedAxios.post)
+        .calledWith('login', expect.anything(), expect.anything())
+        .mockResolvedValue({
+          status: 200,
+          headers: {
+            'set-cookie': [
+              `anything;JSESSIONID=${mockCloudApiAuthDto.apiSessionId};anything;`,
+            ],
+          },
+        });
+      sessionService.getSession.mockResolvedValueOnce({
+        ...mockCloudSession,
+        apiSessionId: null,
+      });
+    });
+
+    it('should re-login with mfa_code and mfa_type and store apiSessionId', async () => {
+      expect(
+        await service.verifyMfaCode(mockSessionMetadata, '123456'),
+      ).toEqual(undefined);
+      expect(spyEnsureAccessToken).toHaveBeenCalledTimes(1);
+      expect(spyEnsureCsrf).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.post).toHaveBeenNthCalledWith(
+        1,
+        'login',
+        expect.objectContaining({
+          mfa_code: '123456',
+          mfa_type: 'Totp',
+        }),
+        expect.anything(),
+      );
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+        {
+          apiSessionId: mockCloudApiAuthDto.apiSessionId,
+          mfaApiSessionId: null,
+        },
+      );
+    });
+    it('should send the challenge cookie and keep its session id when no new cookie is returned', async () => {
+      sessionService.getSession.mockReset();
+      sessionService.getSession.mockResolvedValueOnce({
+        ...mockCloudSession,
+        apiSessionId: null,
+        mfaApiSessionId: 'pending-mfa-session',
+      });
+      when(mockedAxios.post)
+        .calledWith('login', expect.anything(), expect.anything())
+        .mockResolvedValue({ status: 200, headers: {} });
+
+      expect(
+        await service.verifyMfaCode(mockSessionMetadata, '123456'),
+      ).toEqual(undefined);
+      expect(mockedAxios.post).toHaveBeenNthCalledWith(
+        1,
+        'login',
+        expect.objectContaining({ mfa_code: '123456' }),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            cookie: 'JSESSIONID=pending-mfa-session',
+          }),
+        }),
+      );
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+        {
+          apiSessionId: 'pending-mfa-session',
+          mfaApiSessionId: null,
+        },
+      );
+    });
+    it('should throw CloudApiMfaRequiredException when the code is rejected', async () => {
+      when(mockedAxios.post)
+        .calledWith('login', expect.anything(), expect.anything())
+        .mockRejectedValueOnce(
+          mockMfaLoginAxiosError({
+            errors: { code: 'user-mfa-required', params: '{}' },
+          }),
+        );
+
+      await expect(
+        service.verifyMfaCode(mockSessionMetadata, '000000'),
+      ).rejects.toBeInstanceOf(CloudApiMfaRequiredException);
+      expect(sessionService.updateSessionData).not.toHaveBeenCalled();
+    });
+    it('should throw CloudApiMfaQuotaExceededException when the attempt quota is exhausted', async () => {
+      when(mockedAxios.post)
+        .calledWith('login', expect.anything(), expect.anything())
+        .mockRejectedValueOnce(
+          mockMfaLoginAxiosError({
+            errors: { code: 'mfa-quota-exceeded' },
+          }),
+        );
+
+      await expect(
+        service.verifyMfaCode(mockSessionMetadata, '111111'),
+      ).rejects.toBeInstanceOf(CloudApiMfaQuotaExceededException);
+      expect(sessionService.updateSessionData).not.toHaveBeenCalled();
     });
   });
 
