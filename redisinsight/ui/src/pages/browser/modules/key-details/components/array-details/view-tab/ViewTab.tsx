@@ -116,6 +116,7 @@ const ViewTab = ({
     isRefreshDisabled,
     handleDeleteRange,
     openAddPanel,
+    t,
   }
   const latestRef = useRef(latest)
   latestRef.current = latest
@@ -132,7 +133,7 @@ const ViewTab = ({
           onDeleteRange={latestRef.current.handleDeleteRange}
         />
         <AddItemsAction
-          title={t('browser.array.addElements')}
+          title={latestRef.current.t('browser.array.addElements')}
           width={width}
           openAddItemPanel={latestRef.current.openAddPanel}
         />
