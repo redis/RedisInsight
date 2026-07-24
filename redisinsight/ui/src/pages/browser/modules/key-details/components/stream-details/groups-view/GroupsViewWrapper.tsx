@@ -98,7 +98,7 @@ const GroupsViewWrapper = (props: Props) => {
       return
     }
     setIdError('')
-  }, [editValue])
+  }, [editValue, t])
 
   const formatItem = useCallback(
     (item: ConsumerGroupDto): IConsumerGroup => ({
