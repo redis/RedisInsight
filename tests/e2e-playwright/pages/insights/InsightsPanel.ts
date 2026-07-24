@@ -140,12 +140,7 @@ export class InsightsPanel {
    * @param folderId - The accordion id (e.g., 'custom-tutorials', 'tutorials')
    */
   async expandTutorialFolder(folderId: string): Promise<void> {
-    const button = this.getAccordionButton(folderId);
-    const isExpanded = await button.getAttribute('aria-expanded');
-    if (isExpanded !== 'true') {
-      await button.click();
-      await expect(button).toHaveAttribute('aria-expanded', 'true');
-    }
+    await this.setAccordionExpanded(folderId, true);
   }
 
   /**
@@ -153,12 +148,24 @@ export class InsightsPanel {
    * @param folderId - The accordion id (e.g., 'custom-tutorials', 'tutorials')
    */
   async collapseTutorialFolder(folderId: string): Promise<void> {
+    await this.setAccordionExpanded(folderId, false);
+  }
+
+  /**
+   * A single click hangs when the parent accordion is still animating and the
+   * nested header intercepts pointer events. Re-check the state before each
+   * retried click so the toggle stays idempotent.
+   */
+  private async setAccordionExpanded(folderId: string, expanded: boolean): Promise<void> {
     const button = this.getAccordionButton(folderId);
-    const isExpanded = await button.getAttribute('aria-expanded');
-    if (isExpanded === 'true') {
-      await button.click();
-      await expect(button).toHaveAttribute('aria-expanded', 'false');
-    }
+    await expect(button).toBeVisible();
+    const target = expanded ? 'true' : 'false';
+    await expect(async () => {
+      if ((await button.getAttribute('aria-expanded')) !== target) {
+        await button.click({ timeout: 5000 });
+      }
+      await expect(button).toHaveAttribute('aria-expanded', target, { timeout: 2000 });
+    }).toPass({ timeout: 20000 });
   }
 
   /**
