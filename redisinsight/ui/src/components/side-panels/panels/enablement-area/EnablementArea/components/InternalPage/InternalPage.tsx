@@ -1,5 +1,4 @@
-import React, { useMemo, useRef, useEffect, useState } from 'react'
-import JsxParser from 'react-jsx-parser'
+import React, { useRef, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
@@ -29,17 +28,16 @@ import {
   CloudLink,
   RedisInsightLink,
 } from 'uiSrc/components/markdown'
+import {
+  MarkdownRenderer,
+  MarkdownLeafComponents,
+} from 'uiSrc/components/markdown/MarkdownRenderer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
 
 import styles from './styles.module.scss'
-
-// Case-sensitive strip of HTML <link> elements to prevent external resource loading
-// while preserving PascalCase <Link> React components used by tutorials.
-// JsxParser's blacklistedTags is case-insensitive, so we handle <link> separately.
-const LOWERCASE_LINK_TAG = /<link\b[^>]*\/?>|<\/link\s*>/g
 
 export interface Props {
   onClose: () => void
@@ -73,13 +71,17 @@ const InternalPage = (props: Props) => {
     manifestPath,
     sourcePath,
   } = props
-  const components: any = {
-    Image,
-    Code,
-    RedisUploadButton,
+  // Defined per render (not at module scope) because Code is re-exported
+  // through the components barrel that InternalPage itself is part of;
+  // capturing it at module-eval time would see it as undefined mid-cycle.
+  const markdownComponents: Partial<MarkdownLeafComponents> = {
+    RedisCode: Code,
+    CodeBlock: Code,
+    RedisUpload: RedisUploadButton,
+    ExternalLink: Link,
     CloudLink,
     RedisInsightLink,
-    Link,
+    Image,
   }
   const containerRef = useRef<HTMLDivElement>(null)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -153,48 +155,6 @@ const InternalPage = (props: Props) => {
     }
   }, [isLoading, location])
 
-  const sanitizedContent = useMemo(
-    () => content?.replace(LOWERCASE_LINK_TAG, '') ?? '',
-    [content],
-  )
-
-  const contentComponent = useMemo(
-    () => (
-      // @ts-ignore
-      <JsxParser
-        bindings={{ path }}
-        components={components}
-        blacklistedTags={[
-          'script',
-          'iframe',
-          'object',
-          'embed',
-          'form',
-          'input',
-          'textarea',
-          'select',
-          'button',
-          'meta',
-          'base',
-          'style',
-          'svg',
-          'math',
-          'video',
-          'audio',
-          'source',
-          'applet',
-          'frame',
-          'frameset',
-        ]}
-        blacklistedAttrs={[/^on.*/i, /^style$/i]}
-        autoCloseVoidElements
-        jsx={sanitizedContent}
-        onError={(e) => console.error(e)}
-      />
-    ),
-    [sanitizedContent],
-  )
-
   return (
     <div className={styles.container} data-test-subj="internal-page">
       <div className={styles.header}>
@@ -254,7 +214,11 @@ const InternalPage = (props: Props) => {
           />
         )}
         {!isLoading && error && <EmptyPrompt />}
-        {!isLoading && !error && contentComponent}
+        {!isLoading && !error && (
+          <MarkdownRenderer path={path} components={markdownComponents}>
+            {content ?? ''}
+          </MarkdownRenderer>
+        )}
       </div>
       {!!pagination?.length && (
         <>

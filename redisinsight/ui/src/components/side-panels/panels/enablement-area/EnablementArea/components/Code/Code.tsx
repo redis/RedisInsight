@@ -16,9 +16,9 @@ import CodeButtonBlock from 'uiSrc/components/markdown/CodeButtonBlock'
 import { getFileInfo, getTutorialSection } from '../../utils'
 
 export interface Props {
-  label: string
+  label?: string
   children: string
-  lang: string
+  lang?: string
   params?: string
   path?: string
 }

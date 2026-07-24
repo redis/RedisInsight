@@ -1,6 +1,6 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { fireEvent, render } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import {
   isShowCapabilityTutorialPopover,
@@ -79,23 +79,27 @@ describe('InternalPage', () => {
 
     expect(onClose).toBeCalled()
   })
-  it('should parse and render JSX string', () => {
-    const content = '<h1 data-testid="header">Header</h1>'
-    const { queryByTestId } = render(
-      <InternalPage {...instance(mockedProps)} content={content} />,
+  it('should render a redis code fence and a relative link as markdown', () => {
+    const content = '```redis Run me\nGET k\n```\n\n[Doc](./doc.md)'
+    render(
+      <InternalPage
+        {...instance(mockedProps)}
+        content={content}
+        path="/tutorials/x/page.md"
+      />,
     )
 
-    expect(queryByTestId('header')).toBeInTheDocument()
+    expect(screen.getByTestId('code-button-block-label')).toHaveTextContent(
+      'Run me',
+    )
+    expect(screen.getByRole('link', { name: 'Doc' })).toBeInTheDocument()
   })
-  it('should strip lowercase <link> tags from content', () => {
-    const content =
-      '<link rel="stylesheet" href="https://evil.com/exfil.css" /><p data-testid="safe">safe</p>'
-    const { queryByTestId, container } = render(
-      <InternalPage {...instance(mockedProps)} content={content} />,
-    )
+  it('should render raw HTML in content as literal text and inject no script', () => {
+    const content = '<p>{alert(1)}</p>'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
 
-    expect(queryByTestId('safe')).toBeInTheDocument()
-    expect(container.querySelector('link')).not.toBeInTheDocument()
+    expect(screen.getByText(content, { exact: false })).toBeInTheDocument()
+    expect(document.querySelector('script')).toBeNull()
   })
 
   describe('capability', () => {

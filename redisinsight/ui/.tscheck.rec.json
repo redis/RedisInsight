@@ -93,9 +93,6 @@
   "src/components/main-router/constants/defaultRoutes.ts": {
     "TS2322": 4
   },
-  "src/components/markdown/CloudLink/CloudLink.spec.tsx": {
-    "TS2741": 2
-  },
   "src/components/markdown/CloudLink/CloudLink.tsx": {
     "TS2345": 1
   },
@@ -760,13 +757,10 @@
   },
   "src/services/formatter/MarkdownToJsxString.ts": {
     "TS2345": 4,
-    "TS2769": 3
+    "TS2769": 2
   },
   "src/services/query-library/QueryLibraryService.spec.ts": {
     "TS2322": 1
-  },
-  "src/services/tests/formatter/MarkdownToJsxString.spec.ts": {
-    "TS2352": 1
   },
   "src/setup-env.ts": {
     "TS2307": 1
@@ -1012,9 +1006,6 @@
   },
   "src/utils/tests/events/handleDownloadButton.spec.ts": {
     "TS2345": 1
-  },
-  "src/utils/tests/formatters/markdown/remarkRedisUpload.spec.ts": {
-    "TS2339": 3
   },
   "src/utils/tests/formatters/valueFormatters.spec.ts": {
     "TS2769": 2
