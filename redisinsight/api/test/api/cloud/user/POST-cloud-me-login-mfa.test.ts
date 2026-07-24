@@ -16,9 +16,7 @@ const { request, server } = deps;
 const endpoint = () => request(server).post('/cloud/me/login/mfa');
 
 const dataSchema = Joi.object({
-  code: Joi.string()
-    .pattern(/^\d{6}$/)
-    .required(),
+  code: Joi.string().required(),
 }).strict();
 
 const validInputData = { code: '123456' };
