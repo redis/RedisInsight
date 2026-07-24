@@ -14,6 +14,16 @@ const leaves = {
     </a>
   ),
   Image: ({ src }: any) => <img data-testid="img" src={src} alt="" />,
+  RedisInsightLink: ({ url, text }: any) => (
+    <a data-testid="ri-link" href={url}>
+      {text}
+    </a>
+  ),
+  CloudLink: ({ url, text }: any) => (
+    <a data-testid="cloud-link" href={url}>
+      {text}
+    </a>
+  ),
 }
 
 describe('MarkdownRenderer', () => {
@@ -68,5 +78,33 @@ describe('MarkdownRenderer', () => {
     const link = screen.getByTestId('ext')
     expect(link).toHaveAttribute('href', 'https://redis.io')
     expect(link).toHaveTextContent('Redis')
+  })
+
+  it('routes a redisinsight: link to the RedisInsightLink leaf with the scheme stripped', () => {
+    render(
+      <MarkdownRenderer components={leaves}>
+        {'[Open](redisinsight:/browser)'}
+      </MarkdownRenderer>,
+    )
+    const link = screen.getByTestId('ri-link')
+    expect(link).toHaveAttribute('href', '/browser')
+    expect(link).toHaveTextContent('Open')
+    // safeUrl only allowlists http/https/mailto/relative, so a redisinsight:
+    // href would otherwise be stripped before any component sees it; this
+    // link must reach the leaf via the structured redisinsightlink node, not
+    // via the sanitized href.
+    expect(screen.queryByTestId('ext')).not.toBeInTheDocument()
+  })
+
+  it('routes a Redis Cloud titled link to the CloudLink leaf', () => {
+    render(
+      <MarkdownRenderer components={leaves}>
+        {'[Try Cloud](https://redis.io/try-free "Redis Cloud")'}
+      </MarkdownRenderer>,
+    )
+    const link = screen.getByTestId('cloud-link')
+    expect(link).toHaveAttribute('href', 'https://redis.io/try-free')
+    expect(link).toHaveTextContent('Try Cloud')
+    expect(screen.queryByTestId('ext')).not.toBeInTheDocument()
   })
 })

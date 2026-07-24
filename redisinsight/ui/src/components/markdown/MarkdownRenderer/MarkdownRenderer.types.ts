@@ -23,5 +23,4 @@ export interface MarkdownRendererProps {
   children: string
   path?: string
   components: Partial<MarkdownLeafComponents>
-  onError?: () => void
 }

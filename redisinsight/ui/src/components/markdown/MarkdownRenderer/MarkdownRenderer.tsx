@@ -2,13 +2,13 @@ import React, { type ComponentPropsWithoutRef } from 'react'
 import ReactMarkdown, { type Components, type ExtraProps } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { remarkRedisCodeBlock } from 'uiSrc/utils/formatters/markdown/remarkRedisCodeBlock'
+import { remarkRedisInsightLink } from 'uiSrc/utils/formatters/markdown/remarkRedisInsightLink'
 import { safeUrl } from 'uiSrc/utils/formatters/markdown/safeUrl'
 import { getFileUrlFromMd } from 'uiSrc/utils/pathUtil'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { MarkdownRendererProps } from './MarkdownRenderer.types'
 
-const REMARK_PLUGINS = [remarkGfm, remarkRedisCodeBlock]
+const REMARK_PLUGINS = [remarkGfm, remarkRedisCodeBlock, remarkRedisInsightLink]
 
 // Flattens a react-markdown node's children into a plain string, for leaves
 // (RedisCode/CodeBlock) that take string children instead of React nodes.
@@ -19,16 +19,18 @@ const nodeText = (children: React.ReactNode): string =>
 
 /**
  * Shared markdown renderer for the tutorial pane and Copilot chat. Wraps
- * react-markdown with remark-gfm and remarkRedisCodeBlock (structured Redis
- * code fences), safeUrl (drops unsafe link/image schemes), and element
- * overrides that delegate to the caller-supplied leaf components. Renders
- * without rehype-raw, so raw HTML in the source is shown as escaped text
- * rather than parsed into elements.
+ * react-markdown with remark-gfm, remarkRedisCodeBlock (structured Redis code
+ * fences), and remarkRedisInsightLink (structured redisinsight: links), plus
+ * safeUrl (drops unsafe link/image schemes) and element overrides that
+ * delegate to the caller-supplied leaf components. Renders without
+ * rehype-raw, so raw HTML in the source is shown as escaped text rather than
+ * parsed into elements.
  *
  * react-markdown's `components` map is typed to intrinsic HTML tag names, but
- * remarkRedisCodeBlock emits hast elements with custom tag names (rediscode/
- * codeblock/redisupload) via `data.hName`. Cast through `unknown` to add
- * those handlers alongside the built-in `a`/`img` overrides.
+ * remarkRedisCodeBlock/remarkRedisInsightLink emit hast elements with custom
+ * tag names (rediscode/codeblock/redisupload/redisinsightlink) via
+ * `data.hName`. Cast through `unknown` to add those handlers alongside the
+ * built-in `a`/`img` overrides.
  */
 export const MarkdownRenderer = ({
   children,
@@ -80,6 +82,12 @@ export const MarkdownRenderer = ({
       const resolved = decodeURI(new URL(getFileUrlFromMd(file, path)).pathname)
       return <RedisUpload label={label} path={resolved} />
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
+    redisinsightlink: ({ node }: any) => {
+      const { url = '', text = '' } = node?.properties || {}
+      if (!RedisInsightLink) return <>{text}</>
+      return <RedisInsightLink url={url} text={text} />
+    },
     a: ({
       href = '',
       title,
@@ -87,16 +95,10 @@ export const MarkdownRenderer = ({
     }: ComponentPropsWithoutRef<'a'> & ExtraProps) => {
       const text = nodeText(linkChildren)
 
-      if (href.toLowerCase().startsWith('redisinsight:')) {
-        if (!RedisInsightLink) return <>{linkChildren}</>
-        return (
-          <RedisInsightLink
-            url={href.replace('redisinsight:', '')}
-            text={text || EXTERNAL_LINKS.redisIo}
-          />
-        )
-      }
-
+      // redisinsight: links never reach this handler with their scheme
+      // intact: safeUrl's allowlist strips unknown schemes before urlTransform
+      // returns, so they're rewritten to structured redisinsightlink nodes by
+      // remarkRedisInsightLink in the remark phase, before sanitization runs.
       if (title === 'Redis Cloud') {
         if (!CloudLink) return <>{linkChildren}</>
         return <CloudLink url={href} text={text || 'Redis Cloud'} />
@@ -126,10 +128,10 @@ export const MarkdownRenderer = ({
       remarkPlugins={REMARK_PLUGINS}
       urlTransform={safeUrl}
       // react-markdown's Components type only allows intrinsic HTML tag
-      // names as keys, but remarkRedisCodeBlock emits hast elements tagged
-      // rediscode/codeblock/redisupload via data.hName. Cast through
-      // unknown to register those handlers alongside the built-in a/img
-      // overrides.
+      // names as keys, but our remark plugins emit hast elements tagged
+      // rediscode/codeblock/redisupload/redisinsightlink via data.hName.
+      // Cast through unknown to register those handlers alongside the
+      // built-in a/img overrides.
       components={mapped as unknown as Components}
     >
       {children}
