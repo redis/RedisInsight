@@ -3,14 +3,8 @@ import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
-import {
-  PREVIEW_COMMAND_LABEL,
-  PREVIEW_LABEL,
-  PREVIEW_TOGGLE_ARIA_LABEL,
-  PREVIEW_TOGGLE_HIDE_TOOLTIP,
-  PREVIEW_TOGGLE_SHOW_TOOLTIP,
-} from './PreviewToggle.constants'
 import { PreviewToggleProps } from './PreviewToggle.types'
 import * as S from './PreviewToggle.styles'
 
@@ -26,26 +20,33 @@ export const PreviewToggle = ({
   disabled = false,
   disabledTooltip,
   'data-testid': dataTestId,
-}: PreviewToggleProps) => (
-  <RiTooltip
-    content={
-      pressed
-        ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-        : disabled && disabledTooltip
-          ? disabledTooltip
-          : PREVIEW_TOGGLE_SHOW_TOOLTIP
-    }
-    position="top"
-  >
-    <S.PreviewToggleButton
-      pressed={pressed}
-      onPressedChange={onPressedChange}
-      disabled={disabled}
-      aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-      data-testid={dataTestId}
+}: PreviewToggleProps) => {
+  const { t } = useTranslation()
+  return (
+    <RiTooltip
+      content={
+        pressed
+          ? t('browser.keyDetails.preview.hideTooltip')
+          : disabled && disabledTooltip
+            ? disabledTooltip
+            : t('browser.keyDetails.preview.showTooltip')
+      }
+      position="top"
     >
-      <RiIcon size="m" type="CliIcon" />
-      <Text size="s">{wide ? PREVIEW_COMMAND_LABEL : PREVIEW_LABEL}</Text>
-    </S.PreviewToggleButton>
-  </RiTooltip>
-)
+      <S.PreviewToggleButton
+        pressed={pressed}
+        onPressedChange={onPressedChange}
+        disabled={disabled}
+        aria-label={t('browser.keyDetails.preview.toggleAria')}
+        data-testid={dataTestId}
+      >
+        <RiIcon size="m" type="CliIcon" />
+        <Text size="s">
+          {wide
+            ? t('browser.keyDetails.preview.commandLabel')
+            : t('browser.keyDetails.preview.label')}
+        </Text>
+      </S.PreviewToggleButton>
+    </RiTooltip>
+  )
+}

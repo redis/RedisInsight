@@ -13,6 +13,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -69,6 +70,7 @@ const EditableTextArea = (props: Props) => {
   const [value, setValue] = useState('')
   const [isHovering, setIsHovering] = useState(false)
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
+  const { t } = useTranslation()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
@@ -121,7 +123,7 @@ const EditableTextArea = (props: Props) => {
           >
             <IconButton
               icon={EditIcon}
-              aria-label="Edit field"
+              aria-label={t('browser.keyDetails.editable.editAria')}
               className={cx('editFieldBtn', styles.editBtn)}
               disabled={isEditDisabled}
               onClick={(e: React.MouseEvent) => {
@@ -166,10 +168,13 @@ const EditableTextArea = (props: Props) => {
               }}
               onApply={() => {
                 requestConfirmation({
-                  title: 'Edit value on production database?',
-                  actionDescription:
-                    'You are about to modify a value on a production database.',
-                  confirmButtonText: 'Save',
+                  title: t('browser.keyDetails.editable.confirmTitle'),
+                  actionDescription: t(
+                    'browser.keyDetails.editable.confirmMessage',
+                  ),
+                  confirmButtonText: t(
+                    'browser.keyDetails.editable.confirmButton',
+                  ),
                   commandId: BrowserConfirmationCommandId.EditValue,
                   disableConfirmationInput: true,
                   onConfirm: () => {
@@ -185,7 +190,7 @@ const EditableTextArea = (props: Props) => {
               <TextArea
                 name="value"
                 id="value"
-                placeholder="Enter Value"
+                placeholder={t('browser.keyDetails.editable.valuePlaceholder')}
                 value={value}
                 onChangeCapture={handleOnChange}
                 disabled={isLoading}
