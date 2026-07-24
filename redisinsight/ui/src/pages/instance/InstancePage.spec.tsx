@@ -34,15 +34,10 @@ import {
 import { setClusterDetailsInitialState } from 'uiSrc/slices/analytics/clusterDetails'
 import { setDatabaseAnalysisInitialState } from 'uiSrc/slices/analytics/dbAnalysis'
 import { setInitialAnalyticsSettings } from 'uiSrc/slices/analytics/settings'
+import { setInitialRecommendationsState } from 'uiSrc/slices/recommendations/recommendations'
 import {
-  getRecommendations,
-  setInitialRecommendationsState,
-} from 'uiSrc/slices/recommendations/recommendations'
-import {
-  getDatabaseConfigInfo,
   loadInstances,
-  setConnectedInfoInstance,
-  setConnectedInstance,
+  resetConnectedInstance,
   setDefaultInstance,
 } from 'uiSrc/slices/instances/instances'
 import * as rdiInstanceSlice from 'uiSrc/slices/rdi/instances'
@@ -123,15 +118,27 @@ describe('InstancePage', () => {
       contextInstanceId: 'prevId',
     })
 
+    // Seed a different already-connected DB so InstancePage resets on switch
+    // (Redis Stack keeps the same id and must not reset).
+    const initialState = set(
+      cloneDeep(initialStateDefault),
+      'connections.instances.connectedInstance.id',
+      'prevId',
+    )
+    const testStore = mockStore(initialState)
+
     // Flush pending async thunks leaked from previous test renders
     await act(async () => {})
-    store.clearActions()
+    testStore.clearActions()
 
     await act(() => {
       render(
         <BrowserRouter>
           <InstancePage {...instance(mockedProps)} />
         </BrowserRouter>,
+        {
+          store: testStore,
+        },
       )
     })
 
@@ -157,10 +164,7 @@ describe('InstancePage', () => {
       loadRdiInstances(),
       getAllPlugins(),
       setDefaultInstance(),
-      setConnectedInstance(),
-      getDatabaseConfigInfo(),
-      setConnectedInfoInstance(),
-      getRecommendations(),
+      resetConnectedInstance(),
       ...resetContextActions,
       clearExpertChatHistory(),
       setConnectivityError(null),
@@ -168,9 +172,39 @@ describe('InstancePage', () => {
       setDbConfig(undefined),
     ]
 
-    expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+    expect(testStore.getActions().slice(0, expectedActions.length)).toEqual(
       expectedActions,
     )
+  })
+
+  it('should not reset connected instance when already connected to same id', async () => {
+    ;(appContextSelector as jest.Mock).mockReturnValue({
+      contextInstanceId: '',
+    })
+
+    const initialState = set(
+      cloneDeep(initialStateDefault),
+      'connections.instances.connectedInstance.id',
+      INSTANCE_ID_MOCK,
+    )
+    const testStore = mockStore(initialState)
+
+    await act(async () => {})
+    testStore.clearActions()
+
+    await act(() => {
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+        {
+          store: testStore,
+        },
+      )
+    })
+
+    expect(testStore.getActions()).not.toContainEqual(resetConnectedInstance())
+    expect(testStore.getActions()).toContainEqual(setDefaultInstance())
   })
 
   it('should call databases list api', async () => {

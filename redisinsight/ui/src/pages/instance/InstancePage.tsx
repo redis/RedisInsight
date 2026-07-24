@@ -3,6 +3,8 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 
 import {
+  checkConnectToInstanceAction,
+  connectedInstanceSelector,
   fetchConnectedInstanceAction,
   fetchConnectedInstanceInfoAction,
   fetchInstancesAction,
@@ -49,6 +51,7 @@ const InstancePage = ({ routes = [] }: Props) => {
 
   const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
   const { data: dbInstances } = useAppSelector(dbInstancesSelector)
+  const { id: connectedInstanceId } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId: connectionInstanceId } = useParams<{
     instanceId: string
@@ -75,12 +78,29 @@ const InstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchConnectedInstanceAction(connectionInstanceId))
-    dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
-    dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
-    dispatch(fetchRecommendationsAction(connectionInstanceId))
-    let intervalId: ReturnType<typeof setInterval>
+    const loadInstanceData = () => {
+      dispatch(fetchConnectedInstanceAction(connectionInstanceId))
+      dispatch(getDatabaseConfigInfoAction(connectionInstanceId))
+      dispatch(fetchConnectedInstanceInfoAction(connectionInstanceId))
+      dispatch(fetchRecommendationsAction(connectionInstanceId))
+    }
 
+    // Only reset when switching away from a different connected DB.
+    // Redis Stack already set connectedInstance.id before routing here;
+    // resetting would clear it and ProtectedRoute would bounce to home.
+    // Always load instance data after connect attempt (success or fail) so
+    // connectedInstance.loading settles and Vector Search does not spin forever.
+    dispatch(
+      checkConnectToInstanceAction(
+        connectionInstanceId,
+        loadInstanceData,
+        loadInstanceData,
+        Boolean(connectedInstanceId) &&
+          connectedInstanceId !== connectionInstanceId,
+      ),
+    )
+
+    let intervalId: ReturnType<typeof setInterval>
     if (shouldGetRecommendations) {
       intervalId = setInterval(() => {
         dispatch(fetchRecommendationsAction(connectionInstanceId))
