@@ -14,10 +14,12 @@ import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkA
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 const BulkDeleteSummary = () => {
+  const { t } = useTranslation()
   const [title, setTitle] = useState<string>('')
   const { scanned = 0, total = 0, keys } = useAppSelector(keysDataSelector)
   const { keyCount } = useAppSelector(bulkActionsDeleteSelector)
@@ -32,7 +34,7 @@ const BulkDeleteSummary = () => {
   useEffect(() => {
     // If no keys have been scanned yet, can't calculate approximation (avoid division by zero)
     if (scanned === 0) {
-      setTitle('Expected amount: N/A')
+      setTitle(t('browser.bulkActions.delete.expectedAmountNa'))
       return
     }
 
@@ -41,23 +43,27 @@ const BulkDeleteSummary = () => {
       const approximateCount =
         scanned < total ? (keyCount * total) / scanned : keyCount
       setTitle(
-        `Expected amount: ${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))} keys`,
+        t('browser.bulkActions.delete.expectedAmount', {
+          amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))}`,
+        }),
       )
       return
     }
 
     // Otherwise, calculate from scanned keys (normal bulk delete)
     if (scanned < total && !keys.length) {
-      setTitle('Expected amount: N/A')
+      setTitle(t('browser.bulkActions.delete.expectedAmountNa'))
       return
     }
 
     const approximateCount =
       scanned < total ? (keys.length * total) / scanned : keys.length
     setTitle(
-      `Expected amount: ${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))} keys`,
+      t('browser.bulkActions.delete.expectedAmount', {
+        amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))}`,
+      }),
     )
-  }, [scanned, total, keys, keyCount, isFolderDelete])
+  }, [scanned, total, keys, keyCount, isFolderDelete, t])
 
   // For folder delete: use folder's key count for "found"
   // For normal bulk delete: use browser scan progress and found keys count
@@ -75,9 +81,7 @@ const BulkDeleteSummary = () => {
               position="right"
               content={
                 <Text size="XS">
-                  Expected amount is estimated based on the number of keys
-                  scanned and the scan percentage. The final number may be
-                  different.
+                  {t('browser.bulkActions.delete.expectedAmountTooltip')}
                 </Text>
               }
             >
@@ -85,9 +89,12 @@ const BulkDeleteSummary = () => {
             </RiTooltip>
           </Row>
           <Text color="primary" size="S" data-testid="bulk-delete-summary">
-            {`Scanned ${getApproximatePercentage(total, scanned)} `}
-            {`(${numberWithSpaces(scanned)}/${nullableNumberWithSpaces(total)}) `}
-            {`and found ${numberWithSpaces(displayFound)} keys`}
+            {t('browser.bulkActions.delete.scanned', {
+              percentage: getApproximatePercentage(total, scanned),
+              scanned: numberWithSpaces(scanned),
+              total: nullableNumberWithSpaces(total),
+              found: numberWithSpaces(displayFound),
+            })}
           </Text>
         </Col>
       )}

@@ -8,49 +8,49 @@ import { AddKeyTypeOption } from '../AddKey.types'
 
 export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
   {
-    text: 'Hash',
+    text: 'common.keyType.hash',
     value: KeyTypes.Hash,
     color: GROUP_TYPES_COLORS[KeyTypes.Hash],
   },
   {
-    text: 'List',
+    text: 'common.keyType.list',
     value: KeyTypes.List,
     color: GROUP_TYPES_COLORS[KeyTypes.List],
   },
   {
-    text: 'Array',
+    text: 'common.keyType.array',
     value: KeyTypes.Array,
     color: GROUP_TYPES_COLORS[KeyTypes.Array],
     minVersion: CommandsVersions.ARRAY.since,
     isEnabledSelector: isArrayEnabledSelector,
   },
   {
-    text: 'Set',
+    text: 'common.keyType.set',
     value: KeyTypes.Set,
     color: GROUP_TYPES_COLORS[KeyTypes.Set],
   },
   {
-    text: 'Sorted Set',
+    text: 'common.keyType.sortedSet',
     value: KeyTypes.ZSet,
     color: GROUP_TYPES_COLORS[KeyTypes.ZSet],
   },
   {
-    text: 'String',
+    text: 'common.keyType.string',
     value: KeyTypes.String,
     color: GROUP_TYPES_COLORS[KeyTypes.String],
   },
   {
-    text: 'JSON',
+    text: 'common.keyType.json',
     value: KeyTypes.ReJSON,
     color: GROUP_TYPES_COLORS[KeyTypes.ReJSON],
   },
   {
-    text: 'Stream',
+    text: 'common.keyType.stream',
     value: KeyTypes.Stream,
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
   {
-    text: 'Vector Set',
+    text: 'common.keyType.vectorSet',
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,
