@@ -30,6 +30,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -39,6 +40,7 @@ export interface Props {
 
 const AddZsetMembers = (props: Props) => {
   const { closePanel } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [members, setMembers] = useState<IZsetMemberState[]>([
@@ -181,15 +183,11 @@ const AddZsetMembers = (props: Props) => {
 
   const handleSubmit = () => {
     requestConfirmation({
-      title: 'Add members on production database?',
-      actionDescription: (
-        <>
-          You are about to add {members.length} member
-          {members.length === 1 ? '' : 's'} to a sorted set on a production
-          database.
-        </>
-      ),
-      confirmButtonText: 'Add members',
+      title: t('browser.zset.add.confirmTitle'),
+      actionDescription: t('browser.zset.add.confirmMessage', {
+        count: members.length,
+      }),
+      confirmButtonText: t('browser.zset.add.confirmButton'),
       commandId: BrowserConfirmationCommandId.AddZsetMembers,
       disableConfirmationInput: true,
       onConfirm: submitData,
@@ -258,7 +256,7 @@ const AddZsetMembers = (props: Props) => {
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
-              Cancel
+              {t('browser.zset.add.cancel')}
             </SecondaryButton>
           </div>
         </FlexItem>
@@ -270,7 +268,7 @@ const AddZsetMembers = (props: Props) => {
               onClick={handleSubmit}
               data-testid="save-members-btn"
             >
-              Save
+              {t('browser.zset.add.save')}
             </PrimaryButton>
           </div>
         </FlexItem>

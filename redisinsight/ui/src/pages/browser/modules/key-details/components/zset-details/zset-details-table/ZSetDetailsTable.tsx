@@ -72,6 +72,7 @@ import {
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import { AddMembersToZSetDto, SearchZSetMembersResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
@@ -95,6 +96,7 @@ export interface Props {
 
 const ZSetDetailsTable = (props: Props) => {
   const { onRemoveKey } = props
+  const { t } = useTranslation()
 
   const { loading, searching } = useAppSelector(zsetSelector)
   const { loading: updateLoading } = useAppSelector(
@@ -302,9 +304,9 @@ const ZSetDetailsTable = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Member',
+      label: t('browser.zset.column.member'),
       isSearchable: true,
-      prependSearchName: 'Member:',
+      prependSearchName: t('browser.zset.searchMemberPrefix'),
       initialSearchValue: '',
       truncateText: true,
       isResizable: true,
@@ -349,7 +351,7 @@ const ZSetDetailsTable = (props: Props) => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Member'
+                    ? t('browser.zset.column.member')
                     : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
                 }
                 tooltipContent={tooltipContent}
@@ -361,7 +363,7 @@ const ZSetDetailsTable = (props: Props) => {
     },
     {
       id: 'score',
-      label: 'Score',
+      label: t('browser.zset.column.score'),
       minWidth: 154,
       isSortable: true,
       truncateText: true,
@@ -377,13 +379,13 @@ const ZSetDetailsTable = (props: Props) => {
         const isTruncatedValue = isTruncatedString(nameItem)
         const isEditable = isNumber(score) && !isTruncatedValue
         const editToolTipContent = !isNumber(score)
-          ? 'Use CLI or Workbench to edit the score'
+          ? t('browser.zset.scoreEditDisabledTooltip')
           : TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
 
         return (
           <EditableInput
             initialValue={score.toString()}
-            placeholder="Enter Score"
+            placeholder={t('browser.zset.scorePlaceholder')}
             field={rowIndex?.toString()}
             editToolTipContent={!isEditable ? editToolTipContent : null}
             isEditing={editing}
@@ -399,7 +401,7 @@ const ZSetDetailsTable = (props: Props) => {
             <div className="innerCellAsCell">
               {!expanded && (
                 <RiTooltip
-                  title="Score"
+                  title={t('browser.zset.column.score')}
                   className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="bottom"
