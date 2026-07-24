@@ -14,7 +14,6 @@ import {
   getApiErrorCustomCode,
   getApiErrorMessage,
   getAxiosError,
-  getTranslatedApiError,
   isStatusSuccessful,
   Maybe,
   Nullable,
@@ -496,29 +495,27 @@ export function submitMfaCodeAction(
       const error = _err as AxiosError
       const errorCode = getApiErrorCustomCode(error)
 
-      if (errorCode === CustomErrorCodes.CloudApiMfaQuotaExceeded) {
-        // the server blocks further attempts for a while: abort instead of retrying
-        dispatch(setMfaDialogState(false))
-        dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
-        dispatch(addErrorNotification(error))
-        dispatch(setOAuthCloudSource(null))
-        // release ConfigOAuth's in-progress guard so a later sign-in is not swallowed
-        dispatch(setSSOFlow(undefined))
-
-        onFailAction?.()
+      // a rejected code (mfa-invalid-code, or a re-challenge) is the only
+      // retryable failure: keep the dialog open with a clear inline message
+      if (
+        errorCode === CustomErrorCodes.CloudApiMfaInvalidCode ||
+        errorCode === CustomErrorCodes.CloudApiMfaRequired
+      ) {
+        dispatch(submitMfaCodeFailure(i18n.t('oauth.mfa.invalidCode')))
         return
       }
 
-      // a rejected code comes back as mfa-invalid-code (or a re-challenge); show
-      // a clear inline message rather than the generic backend error text
-      const isInvalidCode =
-        errorCode === CustomErrorCodes.CloudApiMfaInvalidCode ||
-        errorCode === CustomErrorCodes.CloudApiMfaRequired
-      const message = isInvalidCode
-        ? i18n.t('oauth.mfa.invalidCode')
-        : getTranslatedApiError(error)
+      // anything else (quota exceeded, an expired challenge session, or an
+      // unexpected error) means the pending challenge is dead - abort the whole
+      // flow instead of leaving a retry dialog that submits against nothing
+      dispatch(setMfaDialogState(false))
+      dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
+      dispatch(addErrorNotification(error))
+      dispatch(setOAuthCloudSource(null))
+      // release ConfigOAuth's in-progress guard so a later sign-in is not swallowed
+      dispatch(setSSOFlow(undefined))
 
-      dispatch(submitMfaCodeFailure(message))
+      onFailAction?.()
     }
   }
 }

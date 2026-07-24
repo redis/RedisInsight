@@ -28,7 +28,10 @@ export const isTokenExpired = (token?: string): boolean => {
   }
 
   try {
-    return getTokenExp(token) <= Date.now();
+    const exp = getTokenExp(token);
+    // a token without an exp claim yields NaN; treat it as expired rather than
+    // letting `NaN <= now` (false) report it as still valid
+    return Number.isNaN(exp) || exp <= Date.now();
   } catch {
     return true;
   }

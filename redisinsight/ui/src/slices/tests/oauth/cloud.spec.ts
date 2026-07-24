@@ -1267,6 +1267,37 @@ describe('oauth cloud slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
         expect(onFailAction).toBeCalled()
       })
+
+      it('abort the flow when the challenge session has expired (non-MFA 401)', async () => {
+        // Arrange
+        const responsePayload = {
+          response: {
+            status: 401,
+            data: {
+              message: 'Authorization failed',
+              errorCode: CustomErrorCodes.CloudApiUnauthorized,
+            },
+          },
+        }
+
+        apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+        const onFailAction = jest.fn()
+
+        // Act
+        await store.dispatch<any>(
+          submitMfaCodeAction('123456', undefined, onFailAction),
+        )
+
+        // Assert
+        const actions = store.getActions()
+        expect(actions).not.toContainEqual(
+          submitMfaCodeFailure('Invalid or expired code. Please try again.'),
+        )
+        expect(actions).toContainEqual(setMfaDialogState(false))
+        expect(actions).toContainEqual(setOAuthCloudSource(null))
+        expect(actions).toContainEqual(setSSOFlow(undefined))
+        expect(onFailAction).toBeCalled()
+      })
     })
 
     describe('createFreeDb', () => {
