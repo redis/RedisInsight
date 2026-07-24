@@ -319,6 +319,7 @@
     "react-hotkeys-hook": "^3.3.1",
     "react-i18next": "^13.5",
     "react-jsx-parser": "^2.4.1",
+    "react-markdown": "^9.1.0",
     "react-monaco-editor": "^0.59.0",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^3.0.2",

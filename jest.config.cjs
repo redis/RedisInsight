@@ -60,7 +60,7 @@ module.exports = {
     '\\.mjs$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid|react-jsx-parser)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid|react-jsx-parser|react-markdown|devlop|hast-util-to-jsx-runtime|hast-util-whitespace|comma-separated-tokens|property-information|space-separated-tokens|unist-util-position|vfile|vfile-message|unist-util-stringify-position|html-url-attributes|mdast-util-.*|micromark.*|decode-named-character-reference|character-entities|trim-lines|unist-util-visit.*|remark-.*|estree-util-is-identifier-name|hastscript|web-namespaces|zwitch|ccount|escape-string-regexp|markdown-table|longest-streak)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [
