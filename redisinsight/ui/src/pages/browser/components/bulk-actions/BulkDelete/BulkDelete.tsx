@@ -9,6 +9,7 @@ import {
 } from 'uiSrc/slices/browser/bulkActions'
 import { Col } from 'uiSrc/components/base/layout/flex'
 
+import { useTranslation } from 'uiSrc/i18n'
 import BulkDeleteFooter from './BulkDeleteFooter'
 import BulkDeleteSummary from './BulkDeleteSummary'
 import BulkActionsInfo from '../BulkActionsInfo'
@@ -19,6 +20,7 @@ export interface Props {
 
 const BulkDelete = (props: Props) => {
   const { onCancel } = props
+  const { t } = useTranslation()
   const { filter, search, loading } = useAppSelector(bulkActionsDeleteSelector)
   const {
     status,
@@ -66,10 +68,10 @@ const BulkDelete = (props: Props) => {
           data-testid="bulk-actions-placeholder"
         >
           <Text size="XL" color="primary" variant="semiBold">
-            No pattern or key type set
+            {t('browser.bulkActions.placeholder.title')}
           </Text>
           <Text color="secondary">
-            To perform a bulk action, set the pattern or select the key type
+            {t('browser.bulkActions.placeholder.description')}
           </Text>
         </Col>
       )}

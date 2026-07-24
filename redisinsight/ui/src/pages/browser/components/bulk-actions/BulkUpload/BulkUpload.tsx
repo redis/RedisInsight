@@ -32,6 +32,7 @@ import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   StyledContent,
   StyledFooter,
@@ -49,6 +50,7 @@ const MAX_FILE_SIZE = MAX_MB_FILE * 1024 * 1024
 
 const BulkUpload = (props: Props) => {
   const { onCancel } = props
+  const { t } = useTranslation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { loading, fileName } = useAppSelector(bulkActionsUploadSelector)
   const { status, progress, duration } =
@@ -116,7 +118,7 @@ const BulkUpload = (props: Props) => {
         <StyledContent gap="l" align="start">
           <Row align="start" grow={false}>
             <Text color="primary">
-              Upload the text file with the list of Redis commands
+              {t('browser.bulkActions.upload.instruction')}
             </Text>
             <RiTooltip
               content={
@@ -140,16 +142,18 @@ const BulkUpload = (props: Props) => {
           </Row>
           <RiFilePicker
             id="bulk-upload-file-input"
-            initialPromptText="Select or drag and drop a file"
+            initialPromptText={t('browser.bulkActions.upload.promptText')}
             isInvalid={isInvalid}
             onChange={onFileChange}
             display="large"
             data-testid="bulk-upload-file-input"
-            aria-label="Select or drag and drop file"
+            aria-label={t('browser.bulkActions.upload.promptAria')}
           />
           {isInvalid && (
             <ColorText color="danger" data-testid="input-file-error-msg">
-              File should not exceed {MAX_MB_FILE} MB
+              {t('browser.bulkActions.upload.fileSizeError', {
+                max: MAX_MB_FILE,
+              })}
             </ColorText>
           )}
           <UploadWarning />
@@ -159,7 +163,7 @@ const BulkUpload = (props: Props) => {
           loading={loading}
           status={status}
           progress={progress}
-          title="Commands executed from file"
+          title={t('browser.bulkActions.upload.executedTitle')}
           subTitle={<div className="truncateText">{fileName}</div>}
         >
           <BulkActionSummary
@@ -178,7 +182,9 @@ const BulkUpload = (props: Props) => {
           onClick={handleClickCancel}
           data-testid="bulk-action-cancel-btn"
         >
-          {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
+          {isProcessedBulkAction(status)
+            ? t('browser.bulkActions.button.close')
+            : t('browser.bulkActions.button.cancel')}
         </SecondaryButton>
         {!isCompleted ? (
           <RiPopover
@@ -194,7 +200,7 @@ const BulkUpload = (props: Props) => {
                 loading={loading}
                 data-testid="bulk-action-warning-btn"
               >
-                Upload
+                {t('browser.bulkActions.button.upload')}
               </PrimaryButton>
             }
           >
@@ -202,11 +208,10 @@ const BulkUpload = (props: Props) => {
               <Col data-testid="bulk-action-tooltip" gap="s">
                 <StyledPopoverIcon type="ToastDangerIcon" />
                 <StyledPopoverText size="L" color="primary">
-                  Are you sure you want to perform this action?
+                  {t('browser.bulkActions.confirmTitle')}
                 </StyledPopoverText>
                 <StyledPopoverText size="M" color="secondary">
-                  All commands from the file will be executed against your
-                  database.
+                  {t('browser.bulkActions.upload.confirmMessage')}
                 </StyledPopoverText>
               </Col>
               <Row justify="end">
@@ -215,7 +220,7 @@ const BulkUpload = (props: Props) => {
                   onClick={handleUpload}
                   data-testid="bulk-action-apply-btn"
                 >
-                  Upload
+                  {t('browser.bulkActions.button.upload')}
                 </PrimaryButton>
               </Row>
             </StyledPopoverContainer>
@@ -227,7 +232,7 @@ const BulkUpload = (props: Props) => {
             onClick={onStartAgain}
             data-testid="bulk-action-start-new-btn"
           >
-            Start New
+            {t('browser.bulkActions.button.startNew')}
           </PrimaryButton>
         )}
       </StyledFooter>

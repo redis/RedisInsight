@@ -9,6 +9,7 @@ import {
   waitFor,
 } from 'uiSrc/utils/test-utils'
 import { addArrayKey, addKeyIntoList } from 'uiSrc/slices/browser/keys'
+import i18n from 'uiSrc/i18n'
 import { stringToBuffer } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Environment } from 'apiClient'
@@ -92,7 +93,10 @@ const contiguousDataset = SAMPLE_DATASETS.find(
 const valueFindingRegex = /^value-\d+$/
 
 const getModeOptionLabel = (mode: string) =>
-  CREATION_MODE_OPTIONS.find(({ value }) => value === mode)?.label ?? ''
+  i18n.t(
+    (CREATION_MODE_OPTIONS.find(({ value }) => value === mode)?.label ??
+      '') as never,
+  )
 
 const selectSampleMode = () =>
   fireEvent.click(screen.getByTestId('add-key-array-populate-sample'))

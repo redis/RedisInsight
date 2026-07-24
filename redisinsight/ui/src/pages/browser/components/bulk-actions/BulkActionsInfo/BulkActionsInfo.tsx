@@ -6,6 +6,7 @@ import { BulkActionsStatus, KeyTypes, RedisDataType } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import BulkActionsStatusDisplay from '../BulkActionsStatusDisplay'
 import {
@@ -32,6 +33,7 @@ export interface Props {
 }
 
 const BulkActionsInfo = (props: Props) => {
+  const { t } = useTranslation()
   const {
     children,
     loading,
@@ -39,7 +41,7 @@ const BulkActionsInfo = (props: Props) => {
     search,
     status,
     progress,
-    title = 'Delete Keys with',
+    title = t('browser.bulkActions.info.title'),
     subTitle,
     error,
   } = props
@@ -67,7 +69,7 @@ const BulkActionsInfo = (props: Props) => {
             {filter && (
               <BulkActionsInfoFilter data-testid="bulk-actions-info-filter">
                 <Text size="s" color="primary">
-                  Key type:
+                  {t('browser.bulkActions.info.keyType')}
                 </Text>
                 <GroupBadge type={filter} />
               </BulkActionsInfoFilter>
@@ -75,7 +77,7 @@ const BulkActionsInfo = (props: Props) => {
             {search && (
               <BulkActionsInfoFilter data-testid="bulk-actions-info-search">
                 <Text size="s" color="primary">
-                  Pattern:
+                  {t('browser.bulkActions.info.pattern')}
                 </Text>
                 <BulkActionsInfoSearch color="primary">
                   {' '}

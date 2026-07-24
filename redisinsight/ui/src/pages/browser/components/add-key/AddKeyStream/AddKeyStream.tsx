@@ -7,7 +7,7 @@ import {
   Maybe,
   stringToBuffer,
 } from 'uiSrc/utils'
-import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
 import { StreamEntryFields } from 'uiSrc/pages/browser/modules/key-details/components/stream-details/add-stream-entity'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateStreamDto } from 'apiClient'
@@ -28,6 +28,7 @@ export const INITIAL_STREAM_FIELD_STATE = {
 
 const AddKeyStream = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
 
   const [entryIdError, setEntryIdError] = useState('')
   const [entryID, setEntryID] = useState<string>('*')
@@ -49,9 +50,7 @@ const AddKeyStream = (props: Props) => {
 
   const validateEntryID = () => {
     setEntryIdError(
-      entryIdRegex.test(entryID)
-        ? ''
-        : `${config.entryId.name} format is incorrect`,
+      entryIdRegex.test(entryID) ? '' : t('browser.addKey.stream.entryIdError'),
     )
   }
 
@@ -95,7 +94,7 @@ const AddKeyStream = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         disabled={!isFormValid}
         actionTestId="add-key-hash-btn"
       />

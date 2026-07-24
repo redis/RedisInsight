@@ -1,11 +1,12 @@
+import { ParseKeys } from 'i18next'
 import { Maybe } from 'uiSrc/utils'
 
 import type { PopulateMode } from './constants'
 
 export interface PopulateOption {
   value: PopulateMode
-  label: string
-  description?: string
+  label: ParseKeys
+  description?: ParseKeys
   disabled?: boolean
   id: string
 }

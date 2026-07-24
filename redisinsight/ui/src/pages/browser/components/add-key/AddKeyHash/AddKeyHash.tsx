@@ -21,7 +21,8 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateHashWithExpireDto, HashFieldDto } from 'apiClient'
 
 import { IHashFieldState, INITIAL_HASH_FIELD_STATE } from './interfaces'
-import { AddHashFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddHashFormConfig } from '../constants/fields-config'
 
 export interface Props {
   keyName: string
@@ -31,6 +32,8 @@ export interface Props {
 
 const AddKeyHash = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddHashFormConfig(t)
   const { loading } = useAppSelector(addKeyStateSelector)
   const { version } = useAppSelector(connectedInstanceOverviewSelector)
   const { [FeatureFlags.hashFieldExpiration]: hashFieldExpirationFeature } =
@@ -196,7 +199,7 @@ const AddKeyHash = (props: Props) => {
                   <TextInput
                     name={`fieldTTL-${item.id}`}
                     id={`fieldTTL-${item.id}`}
-                    placeholder="Enter TTL"
+                    placeholder={t('browser.addKey.hash.ttlPlaceholder')}
                     value={item.fieldTTL || ''}
                     disabled={loading}
                     onChange={(value) =>
@@ -218,7 +221,7 @@ const AddKeyHash = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-hash-btn"

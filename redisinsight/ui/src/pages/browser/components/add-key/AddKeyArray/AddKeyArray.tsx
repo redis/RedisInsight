@@ -30,6 +30,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import { CreateArrayWithExpireDto, Environment } from 'apiClient'
+import { useTranslation } from 'uiSrc/i18n'
 
 import LoadSampleDataset, {
   DEFAULT_SAMPLE_DATASET,
@@ -82,6 +83,12 @@ const AddKeyArray = (props: Props) => {
     setKeyName,
     setKeyNameDisabled,
   } = props
+  const { t } = useTranslation()
+  const creationModeOptions = CREATION_MODE_OPTIONS.map((option) => ({
+    ...option,
+    inputDisplay: t(option.inputDisplay),
+    label: t(option.label),
+  }))
   const [populateMode, setPopulateMode] = useState<PopulateMode>(
     PopulateMode.Manual,
   )
@@ -253,7 +260,7 @@ const AddKeyArray = (props: Props) => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <FormField label={POPULATE_LABEL}>
+      <FormField label={t(POPULATE_LABEL)}>
         <RiRadioGroupRoot
           value={populateMode}
           onChange={(value: PopulateMode) => setPopulateMode(value)}
@@ -275,11 +282,11 @@ const AddKeyArray = (props: Props) => {
                 </RiRadioGroupItemRoot>
                 <Col gap="xs">
                   <Text size="M" color="primary">
-                    {option.label}
+                    {t(option.label)}
                   </Text>
                   {option.description && (
                     <Text size="XS" color="secondary">
-                      {option.description}
+                      {t(option.description)}
                     </Text>
                   )}
                 </Col>
@@ -304,8 +311,7 @@ const AddKeyArray = (props: Props) => {
                 color="danger"
                 data-testid="add-key-array-prod-warning"
               >
-                Loading sample data is disabled for your production database to
-                avoid accidental data modifications.
+                {t('browser.addKey.array.prodWarning')}
               </Text>
             </>
           )}
@@ -314,7 +320,7 @@ const AddKeyArray = (props: Props) => {
         <>
           <RiSelect
             value={mode}
-            options={CREATION_MODE_OPTIONS}
+            options={creationModeOptions}
             onChange={(value) => setMode(value as ArrayCreationMode)}
             data-testid="creation-mode-select"
           />
@@ -337,7 +343,7 @@ const AddKeyArray = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={onClickAction}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading || isSubmittingSampleDataset}
         disabled={
           isSampleMode
