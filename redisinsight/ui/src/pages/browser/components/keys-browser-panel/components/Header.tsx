@@ -8,6 +8,7 @@ import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import { ViewSwitch, ColumnsMenu } from 'uiSrc/components/browser'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { KeyTreeSettings } from '../../key-tree'
 import { useKeysBrowserPanel } from '../contexts/Context'
@@ -15,6 +16,7 @@ import { useKeysBrowserPanel } from '../contexts/Context'
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
 const Header = () => {
+  const { t } = useTranslation()
   const {
     viewType,
     searchMode,
@@ -42,7 +44,9 @@ const Header = () => {
                 disabled={
                   searchMode === SearchMode.Redisearch && !selectedIndex
                 }
-                disabledRefreshButtonMessage="Select an index to refresh keys."
+                disabledRefreshButtonMessage={t(
+                  'browser.keysBrowser.refreshDisabledMessage',
+                )}
                 iconSize="S"
                 postfix="keys"
                 loading={loading}
@@ -71,7 +75,7 @@ const Header = () => {
               <ActionIconButton
                 icon={PlusIcon}
                 variant="secondary"
-                aria-label="Add key"
+                aria-label={t('browser.keysBrowser.addKeyAria')}
                 onClick={openAddKeyPanel}
                 data-testid="btn-add-key"
               />

@@ -12,6 +12,7 @@ import {
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface DeleteProps {
   nameString: string
@@ -34,6 +35,7 @@ export const DeleteKeyPopover = ({
   onDelete,
   onOpenPopover,
 }: DeleteProps) => {
+  const { t } = useTranslation()
   const { environment } = useDatabaseEnvironment()
   const bypassConfirmation = environment === Environment.Development
 
@@ -59,13 +61,13 @@ export const DeleteKeyPopover = ({
         <IconButton
           icon={DeleteIcon}
           onClick={onClick}
-          aria-label="Delete Key"
+          aria-label={t('browser.deletePopover.aria')}
           data-testid={`delete-key-btn-${nameString}`}
         />
       }
       onClick={(e) => e.stopPropagation()}
       title={formatLongName(nameString)}
-      message="will be deleted."
+      message={t('browser.deletePopover.message')}
       confirmButton={
         <DestructiveButton
           size="small"
@@ -74,7 +76,7 @@ export const DeleteKeyPopover = ({
           onClick={() => onDelete(name)}
           data-testid="submit-delete-key"
         >
-          Delete
+          {t('browser.deletePopover.button')}
         </DestructiveButton>
       }
     />

@@ -34,6 +34,7 @@ import { Modal } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { REDISEARCH_VERSION_REQUIRED_CONTENT } from 'uiSrc/components/messages'
+import { useTranslation } from 'uiSrc/i18n'
 
 import styles from './styles.module.scss'
 
@@ -65,6 +66,7 @@ const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
 `
 
 const BrowserSearchPanel = (props: Props) => {
+  const { t } = useTranslation()
   const { handleCreateIndexPanel } = props
   const { viewType, searchMode } = useAppSelector(keysSelector)
   const { id: instanceId, modules } = useAppSelector(connectedInstanceSelector)
@@ -87,8 +89,8 @@ const BrowserSearchPanel = (props: Props) => {
   const searchModes: ISwitchType<SearchMode>[] = [
     {
       type: SearchMode.Pattern,
-      tooltipText: 'Filter by Key Name or Pattern',
-      ariaLabel: 'Filter by Key Name or Pattern button',
+      tooltipText: t('browser.search.mode.pattern.tooltip'),
+      ariaLabel: t('browser.search.mode.pattern.aria'),
       dataTestId: 'search-mode-pattern-btn',
       isActiveView() {
         return searchMode === this.type
@@ -102,8 +104,8 @@ const BrowserSearchPanel = (props: Props) => {
     },
     {
       type: SearchMode.Redisearch,
-      tooltipText: 'Search by Values of Keys',
-      ariaLabel: 'Search by Values of Keys button',
+      tooltipText: t('browser.search.mode.redisearch.tooltip'),
+      ariaLabel: t('browser.search.mode.redisearch.aria'),
       dataTestId: 'search-mode-redisearch-btn',
       disabled: !hasRedisearch || !hasMinimumRedisearchVersion,
       isActiveView() {

@@ -41,6 +41,7 @@ import {
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import * as S from './RediSearchIndexesList.styles'
 
 export const CREATE = JSON.stringify('create')
@@ -50,6 +51,7 @@ export interface Props {
 }
 
 const RediSearchIndexesList = (props: Props) => {
+  const { t } = useTranslation()
   const { onCreateIndex } = props
 
   const { viewType, searchMode } = useAppSelector(keysSelector)
@@ -165,7 +167,7 @@ const RediSearchIndexesList = (props: Props) => {
           color="primary"
           data-testid="create-index-btn"
         >
-          Create Index
+          {t('browser.redisearch.createIndex')}
         </Text>
       </Row>
     ),
@@ -223,20 +225,20 @@ const RediSearchIndexesList = (props: Props) => {
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">
           <RiSelect.Trigger.Value
-            placeholder="Select Index"
+            placeholder={t('browser.redisearch.selectIndex')}
             data-testid="select-index-placeholder"
             valueRender={selectValueRender}
           />
           <RiSelect.Trigger.LoadingIndicator loading={loading} />
           <RiSelect.Trigger.Arrow data-testid="select-index-arrow" />
           <div style={{ zIndex: 6 }}>
-            <RiTooltip content="Refresh Indexes">
+            <RiTooltip content={t('browser.redisearch.refreshTooltip')}>
               <IconButton
                 size="M"
                 icon={ResetIcon}
                 disabled={loading}
                 onClick={handleRefresh}
-                aria-label="refresh indexes list"
+                aria-label={t('browser.redisearch.refreshAria')}
                 data-testid="refresh-indexes-btn"
                 onPointerDown={(e) => e.stopPropagation()}
               />

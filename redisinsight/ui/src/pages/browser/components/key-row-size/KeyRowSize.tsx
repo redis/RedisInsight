@@ -6,6 +6,7 @@ import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { Maybe, formatBytes } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -17,6 +18,7 @@ export interface Props {
 
 const KeyRowSize = (props: Props) => {
   const { size, nameString, deletePopoverId, rowId } = props
+  const { t } = useTranslation()
 
   if (isUndefined(size)) {
     return (
@@ -58,7 +60,7 @@ const KeyRowSize = (props: Props) => {
           data-testid={`size-${nameString}`}
         >
           <RiTooltip
-            title="Key Size"
+            title={t('browser.keyList.size.tooltipTitle')}
             className={styles.tooltip}
             anchorClassName="truncateText"
             position="right"

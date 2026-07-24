@@ -33,6 +33,7 @@ import {
   RiSelect,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
+import { useTranslation } from 'uiSrc/i18n'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
 import styles from './styles.module.scss'
@@ -49,6 +50,7 @@ const FilterKeyTypeSelect = styled(RiSelect)`
 `
 
 const FilterKeyType = ({ modules }: Props) => {
+  const { t } = useTranslation()
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
   const [typeSelected, setTypeSelected] = useState<string>('all')
   const [isVersionSupported, setIsVersionSupported] = useState<boolean>(true)
@@ -104,6 +106,7 @@ const FilterKeyType = ({ modules }: Props) => {
     })
     .map((item) => {
       const { value, color, text } = item
+      const label = t(text)
       return {
         value,
         inputDisplay: (
@@ -111,7 +114,7 @@ const FilterKeyType = ({ modules }: Props) => {
             color={color}
             data-test-subj={`filter-option-type-${value}`}
           >
-            {text}
+            {label}
           </HealthText>
         ),
         dropdownDisplay: (
@@ -119,7 +122,7 @@ const FilterKeyType = ({ modules }: Props) => {
             color={color}
             data-test-subj={`filter-option-type-${value}`}
           >
-            {text}
+            {label}
           </HealthText>
         ),
         'data-test-subj': `filter-option-type-${value}`,
@@ -130,10 +133,10 @@ const FilterKeyType = ({ modules }: Props) => {
     value: ALL_KEY_TYPES_VALUE,
     inputDisplay: (
       <div className={styles.dropdownOption} data-testid="all-key-types-option">
-        All Key Types
+        {t('browser.filter.allKeyTypes')}
       </div>
     ),
-    dropdownDisplay: <span>All Key Types</span>,
+    dropdownDisplay: <span>{t('browser.filter.allKeyTypes')}</span>,
   })
 
   const onChangeType = (initValue: string) => {

@@ -21,12 +21,14 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   handleAddKeyPanel: (value: boolean) => void
   handleBulkActionsPanel: (value: boolean) => void
 }
 const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { viewType, search, filter } = useAppSelector(keysSelector)
@@ -52,7 +54,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       onClick={openAddKeyPanel}
       data-testid="btn-add-key"
     >
-      Add key
+      {t('browser.actions.addKey')}
     </SecondaryButton>
   )
   const openBulkActions = () => {
@@ -70,9 +72,9 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       icon={SubscriptionsIcon}
       onClick={openBulkActions}
       data-testid="btn-bulk-actions"
-      aria-label="bulk actions"
+      aria-label={t('browser.actions.bulkActionsAria')}
     >
-      Bulk actions
+      {t('browser.actions.bulkActions')}
     </EmptyButton>
   )
   return (
