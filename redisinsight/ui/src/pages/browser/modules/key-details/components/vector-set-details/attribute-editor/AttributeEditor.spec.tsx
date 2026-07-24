@@ -9,7 +9,8 @@ import {
   JSON_VALIDATION_DEBOUNCE_MS,
 } from './constants'
 
-const queryWarning = () => screen.queryByText(i18n.t(ATTRIBUTES_WARNING_MESSAGE))
+const queryWarning = () =>
+  screen.queryByText(i18n.t(ATTRIBUTES_WARNING_MESSAGE))
 
 const defaultProps: AttributeEditorProps = {
   value: '',

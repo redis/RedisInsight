@@ -181,22 +181,21 @@ const actionsColumn: ColumnDef<VectorSetSimilarityMatch> = {
   },
 }
 
+const withLocalizedHeader = (
+  col: ColumnDef<VectorSetSimilarityMatch>,
+  t: TFunction,
+): ColumnDef<VectorSetSimilarityMatch> =>
+  typeof col.header === 'string'
+    ? { ...col, header: t(col.header as ParseKeys) }
+    : col
+
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
   t: TFunction,
-): ColumnDef<VectorSetSimilarityMatch>[] =>
-  [
-    rankColumn,
-    nameColumn,
-    ...attributeKeys.map((key) => buildAttributeColumn(key, t)),
-    similarityColumn,
-    actionsColumn,
-    // Static column defs carry i18n keys as their `header`; translate the
-    // string headers here so header cells read the locale. Attribute columns
-    // use the raw attribute key as header and are left untranslated.
-  ].map((col) =>
-    typeof col.header === 'string' &&
-    col.header.startsWith('browser.vectorSet.')
-      ? { ...col, header: t(col.header as ParseKeys) }
-      : col,
-  )
+): ColumnDef<VectorSetSimilarityMatch>[] => [
+  withLocalizedHeader(rankColumn, t),
+  withLocalizedHeader(nameColumn, t),
+  ...attributeKeys.map((key) => buildAttributeColumn(key, t)),
+  withLocalizedHeader(similarityColumn, t),
+  actionsColumn,
+]
