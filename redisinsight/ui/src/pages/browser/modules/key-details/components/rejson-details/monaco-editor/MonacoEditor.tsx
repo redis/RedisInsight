@@ -21,6 +21,7 @@ import {
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { CopyButton } from 'uiSrc/components/copy-button'
+import { useTranslation } from 'uiSrc/i18n'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
 import { jsonToReadableString } from '../utils'
@@ -32,6 +33,7 @@ const ROOT_PATH = '$'
 
 const MonacoEditor = (props: BaseProps) => {
   const { data, length, selectedKey } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
@@ -86,7 +88,7 @@ const MonacoEditor = (props: BaseProps) => {
           <CopyButton
             copy={value}
             onCopy={handleCopy}
-            aria-label="Copy value"
+            aria-label={t('browser.rejson.copyValueAria')}
             data-testid="copy-json-editor-value"
           />
         </S.CopyButtonWrapper>
@@ -97,7 +99,7 @@ const MonacoEditor = (props: BaseProps) => {
           onClick={switchEditorType}
           data-testid="json-data-cancel-btn"
         >
-          Close
+          {t('browser.rejson.close')}
         </SecondaryButton>
 
         <PrimaryButton
@@ -105,7 +107,7 @@ const MonacoEditor = (props: BaseProps) => {
           onClick={submitUpdate}
           data-testid="json-data-update-btn"
         >
-          Overwrite Data
+          {t('browser.rejson.overwriteData')}
         </PrimaryButton>
       </Row>
     </div>

@@ -14,6 +14,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 import styles from '../../styles.module.scss'
 import ConfirmOverwrite from '../add-item/ConfirmOverwrite'
@@ -26,6 +27,7 @@ export interface Props {
 
 const EditEntireItemAction = (props: Props) => {
   const { initialValue, onCancel, onSubmit } = props
+  const { t } = useTranslation()
   const [value, setValue] = useState<string>(initialValue)
   const [error, setError] = useState<Nullable<string>>(null)
   const [isConfirmationVisible, setIsConfirmationVisible] =
@@ -42,7 +44,7 @@ const EditEntireItemAction = (props: Props) => {
     e.preventDefault()
 
     if (!isValidJSON(value)) {
-      setError(JSONErrors.valueJSONFormat)
+      setError(t(JSONErrors.valueJSONFormat))
       return
     }
 
@@ -78,7 +80,7 @@ const EditEntireItemAction = (props: Props) => {
                     valid={!error}
                     className={styles.fullWidthTextArea}
                     value={value}
-                    placeholder="Enter JSON value"
+                    placeholder={t('browser.rejson.jsonValuePlaceholder')}
                     onChange={setValue}
                     data-testid="json-value"
                   />
@@ -91,7 +93,7 @@ const EditEntireItemAction = (props: Props) => {
                   <div className={cx(styles.controls, styles.controlsBottom)}>
                     <IconButton
                       icon={CancelSlimIcon}
-                      aria-label="Cancel add"
+                      aria-label={t('browser.rejson.cancelAddAria')}
                       className={styles.declineBtn}
                       onClick={onCancel}
                       data-testid="cancel-edit-btn"
@@ -100,7 +102,7 @@ const EditEntireItemAction = (props: Props) => {
                       icon={CheckThinIcon}
                       color="primary"
                       type="submit"
-                      aria-label="Apply"
+                      aria-label={t('browser.rejson.applyAria')}
                       className={styles.applyBtn}
                       data-testid="apply-edit-btn"
                     />
