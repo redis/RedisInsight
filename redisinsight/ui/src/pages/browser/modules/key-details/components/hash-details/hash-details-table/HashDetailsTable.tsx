@@ -87,6 +87,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   AddFieldsToHashDto,
   GetHashFieldsResponse,
@@ -115,6 +116,7 @@ export interface Props {
 
 const HashDetailsTable = (props: Props) => {
   const { isExpireFieldsAvailable, onRemoveKey } = props
+  const { t } = useTranslation()
 
   const {
     total,
@@ -373,12 +375,12 @@ const HashDetailsTable = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'field',
-      label: 'Field',
+      label: t('browser.hash.column.field'),
       isSearchable: true,
       isResizable: true,
       minWidth: 120,
       relativeWidth: hashSizes?.field || 40,
-      prependSearchName: 'Field:',
+      prependSearchName: t('browser.hash.searchFieldPrefix'),
       initialSearchValue: '',
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -421,7 +423,7 @@ const HashDetailsTable = (props: Props) => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Field'
+                    ? t('browser.hash.column.field')
                     : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
                 }
                 tooltipContent={tooltipContent}
@@ -433,7 +435,11 @@ const HashDetailsTable = (props: Props) => {
     },
     {
       id: 'value',
-      label: isValueDecoderEnabled ? <ValueDecoderHeaderLabel /> : 'Value',
+      label: isValueDecoderEnabled ? (
+        <ValueDecoderHeaderLabel />
+      ) : (
+        t('browser.hash.column.value')
+      ),
       minWidth: 120,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -488,7 +494,9 @@ const HashDetailsTable = (props: Props) => {
             value={formattedValue}
             expanded={expanded}
             title={
-              isValid ? 'Value' : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+              isValid
+                ? t('browser.hash.column.value')
+                : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
             }
             tooltipContent={tooltipContent}
           />
@@ -573,7 +581,7 @@ const HashDetailsTable = (props: Props) => {
   if (isExpireFieldsAvailable) {
     columns.splice(2, 0, {
       id: 'ttl',
-      label: 'TTL',
+      label: t('browser.hash.column.ttl'),
       absoluteWidth: 140,
       minWidth: 140,
       truncateText: true,
@@ -595,7 +603,7 @@ const HashDetailsTable = (props: Props) => {
         return (
           <EditableInput
             initialValue={expire === -1 ? '' : expire?.toString()}
-            placeholder="Enter TTL"
+            placeholder={t('browser.hash.ttlPlaceholder')}
             field={field}
             isEditing={isEditing}
             onEdit={(value: boolean) => handleEditField(rowIndex, value, 'ttl')}
@@ -609,10 +617,10 @@ const HashDetailsTable = (props: Props) => {
           >
             <div className="innerCellAsCell">
               {expire === -1 ? (
-                'No Limit'
+                t('browser.hash.ttlNoLimit')
               ) : (
                 <RiTooltip
-                  title="Time to Live"
+                  title={t('browser.hash.ttlTooltipTitle')}
                   className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="right"
