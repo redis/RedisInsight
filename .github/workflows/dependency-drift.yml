@@ -1,0 +1,54 @@
+name: Dependency Drift
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch/ref to report drift for'
+        type: string
+        default: 'main'
+      show_ignored:
+        description: 'Expand the ignored / low-priority list'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: Report dependency drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.branch || 'main' }}
+
+      # `npm outdated` queries the registry and the report reads `current` from
+      # the committed lockfiles; the core tests are plain `node --test`. None of
+      # it needs `node_modules`, so we only set up Node.
+      - name: Setup Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Run dependency-drift core tests
+        run: npm run test:scripts
+
+      - name: Report dependency drift
+        env:
+          SHOW_IGNORED: ${{ inputs.show_ignored }}
+        run: |
+          flag=""
+          if [ "$SHOW_IGNORED" = "true" ]; then flag="--show-ignored"; fi
+          {
+            echo "### Dependency drift — \`${{ inputs.branch || 'main' }}\`"
+            echo ''
+            echo '```'
+            node scripts/dependency-drift-report.mjs $flag | tee /dev/stderr
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

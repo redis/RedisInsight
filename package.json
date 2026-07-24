@@ -60,6 +60,7 @@
     "sb": "storybook dev -p 6006",
     "build-sb": "storybook build",
     "deps:audit": "node scripts/dependency-audit-report.mjs",
+    "deps:drift": "node scripts/dependency-drift-report.mjs",
     "test:scripts": "node --test scripts/lib/*.test.mjs"
   },
   "lint-staged": {
