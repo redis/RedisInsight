@@ -217,7 +217,7 @@ export const SimilaritySearchForm = ({
         <FlexItem grow={false}>
           <Row align="center" gap="m">
             <S.CountInlineLabel data-testid={`${TEST_ID}-count-label`}>
-              Result count
+              {t('browser.vectorSet.search.resultCount')}
             </S.CountInlineLabel>
             <QuantityCounter
               value={state.count ?? SIMILARITY_SEARCH_COUNT_DEFAULT}
@@ -238,7 +238,7 @@ export const SimilaritySearchForm = ({
           <FormField>
             <Row align="center" gap="s">
               <S.FilterLabel>
-                Filter expression
+                {t('browser.vectorSet.search.filterLabel')}
                 <FilterSyntaxHelpPopover />
               </S.FilterLabel>
               <FlexItem grow>
@@ -301,7 +301,7 @@ export const SimilaritySearchForm = ({
               disabled={submitDisabled}
               data-testid={`${TEST_ID}-submit`}
             >
-              Find similar items
+              {t('browser.vectorSet.search.submit')}
             </PrimaryButton>
           </RiTooltip>
         </FlexItem>
