@@ -1,6 +1,7 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 import { JSONErrors } from 'uiSrc/pages/browser/modules/key-details/components/rejson-details/constants'
 import EditEntireItemAction, { Props } from './EditEntireItemAction'
 
@@ -47,7 +48,7 @@ describe('EditEntireItemAction', () => {
 
     fireEvent.submit(screen.getByTestId('json-entire-form'))
     expect(screen.getByTestId('edit-json-error')).toHaveTextContent(
-      JSONErrors.valueJSONFormat,
+      i18n.t(JSONErrors.valueJSONFormat),
     )
     expect(handleUpdateValueFormSubmit).not.toHaveBeenCalled()
   })

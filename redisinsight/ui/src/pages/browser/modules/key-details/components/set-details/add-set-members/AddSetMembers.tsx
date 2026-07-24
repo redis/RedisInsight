@@ -34,6 +34,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -43,6 +44,7 @@ export interface Props {
 
 const AddSetMembers = (props: Props) => {
   const { closePanel } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [members, setMembers] = useState<ISetMemberState[]>([
     { ...INITIAL_SET_MEMBER_STATE },
@@ -140,14 +142,11 @@ const AddSetMembers = (props: Props) => {
 
   const handleSubmit = () => {
     requestConfirmation({
-      title: 'Add members on production database?',
-      actionDescription: (
-        <>
-          You are about to add {members.length} member
-          {members.length === 1 ? '' : 's'} to a set on a production database.
-        </>
-      ),
-      confirmButtonText: 'Add members',
+      title: t('browser.set.add.confirmTitle'),
+      actionDescription: t('browser.set.add.confirmMessage', {
+        count: members.length,
+      }),
+      confirmButtonText: t('browser.set.add.confirmButton'),
       commandId: BrowserConfirmationCommandId.AddSetMembers,
       disableConfirmationInput: true,
       onConfirm: submitData,
@@ -196,7 +195,7 @@ const AddSetMembers = (props: Props) => {
             onClick={() => closePanel(true)}
             data-testid="cancel-members-btn"
           >
-            <ColorText color="default">Cancel</ColorText>
+            <ColorText color="default">{t('browser.set.add.cancel')}</ColorText>
           </SecondaryButton>
         </FlexItem>
         <FlexItem>
@@ -206,7 +205,7 @@ const AddSetMembers = (props: Props) => {
             onClick={handleSubmit}
             data-testid="save-members-btn"
           >
-            Save
+            {t('browser.set.add.save')}
           </PrimaryButton>
         </FlexItem>
       </Row>
