@@ -1,4 +1,5 @@
 import { visit } from 'unist-util-visit'
+import type { Root } from 'mdast'
 
 const REDIS_UPLOAD_RE = /^redis-upload:\[(.*)] (.*)/i
 const PARAMS_SEPARATOR = ':'
@@ -7,7 +8,7 @@ const PARAMS_SEPARATOR = ':'
 // data.hName/hProperties, so react-markdown maps them to components without any
 // HTML string or expression evaluation.
 export const remarkRedisCodeBlock =
-  (): ((tree: Node) => void) => (tree: any) => {
+  (): ((tree: Root) => void) => (tree: any) => {
     visit(tree, 'code', (node: any) => {
       const lang: string = node.lang || ''
       const meta: string = node.meta || ''
