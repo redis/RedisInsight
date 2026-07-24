@@ -35,6 +35,7 @@ import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/edit
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ComposedInput } from 'uiSrc/components/base/inputs'
@@ -59,6 +60,7 @@ const actionsWidth = 48
 export interface Props {}
 
 const GroupsViewWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const {
     lastRefreshTime,
     data: loadedGroups = [],
@@ -92,7 +94,7 @@ const GroupsViewWrapper = (props: Props) => {
 
   useEffect(() => {
     if (!consumerGroupIdRegex.test(editValue)) {
-      setIdError('ID format is not correct')
+      setIdError(t('browser.stream.group.idFormatError'))
       return
     }
     setIdError('')
@@ -210,7 +212,7 @@ const GroupsViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Group Name',
+      label: t('browser.stream.groups.nameColumn'),
       truncateText: true,
       isSortable: true,
       minWidth: 100,
@@ -243,7 +245,7 @@ const GroupsViewWrapper = (props: Props) => {
     },
     {
       id: 'consumers',
-      label: 'Consumers',
+      label: t('browser.stream.groups.consumersColumn'),
       minWidth: 120,
       maxWidth: 120,
       absoluteWidth: 120,
@@ -257,7 +259,7 @@ const GroupsViewWrapper = (props: Props) => {
     },
     {
       id: 'pending',
-      label: 'Pending',
+      label: t('browser.stream.groups.pendingColumn'),
       minWidth: 95,
       maxWidth: 95,
       absoluteWidth: 95,
@@ -290,7 +292,9 @@ const GroupsViewWrapper = (props: Props) => {
             >
               {!!pending && (
                 <RiTooltip
-                  title={`${pending} Pending Messages`}
+                  title={t('browser.stream.groups.pendingMessages', {
+                    count: pending,
+                  })}
                   className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="bottom"
@@ -307,7 +311,7 @@ const GroupsViewWrapper = (props: Props) => {
     },
     {
       id: 'lastDeliveredId',
-      label: 'Last Delivered ID',
+      label: t('browser.stream.groups.lastDeliveredColumn'),
       minWidth: 200,
       maxWidth: 200,
       absoluteWidth: 200,
@@ -371,7 +375,7 @@ const GroupsViewWrapper = (props: Props) => {
               <ComposedInput
                 name="id"
                 id="id"
-                placeholder="ID*"
+                placeholder={t('browser.stream.group.idPlaceholder')}
                 value={editValue}
                 onChange={(value) =>
                   setEditValue(validateConsumerGroupId(value))
@@ -385,7 +389,7 @@ const GroupsViewWrapper = (props: Props) => {
                   <RiTooltip
                     anchorClassName="inputAppendIcon"
                     position="left"
-                    title="Enter Valid ID, 0 or $"
+                    title={t('browser.stream.group.idTooltipTitle')}
                     content={lastDeliveredIDTooltipText}
                   >
                     <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
@@ -394,7 +398,7 @@ const GroupsViewWrapper = (props: Props) => {
               />
               {!showIdError && (
                 <span className={styles.idText} data-testid="id-help-text">
-                  Timestamp - Sequence Number or $
+                  {t('browser.stream.group.idFormatHint')}
                 </span>
               )}
               {showIdError && (
@@ -422,10 +426,11 @@ const GroupsViewWrapper = (props: Props) => {
             <PopoverDelete
               header={viewName}
               text={
-                <>
-                  and all its consumers will be removed from{' '}
-                  <b>{selectedKeyString}</b>
-                </>
+                <Trans
+                  i18nKey="browser.stream.groups.deleteMessage"
+                  values={{ key: escapeTrans(selectedKeyString) }}
+                  components={{ bold: <b /> }}
+                />
               }
               item={viewName}
               suffix={suffix}

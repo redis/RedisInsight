@@ -16,9 +16,11 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { useTranslation } from 'uiSrc/i18n'
 import { ConsumerGroupDto } from 'apiClient'
 
 const StreamTabs = () => {
+  const { t } = useTranslation()
   const { viewType } = useAppSelector(streamSelector)
   const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
   const { nameString: selectedGroupName = '' } =
@@ -56,12 +58,12 @@ const StreamTabs = () => {
     const baseTabs: TabInfo[] = [
       {
         value: StreamViewType.Data,
-        label: 'Stream Data',
+        label: t('browser.stream.tabs.data'),
         content: null,
       },
       {
         value: StreamViewType.Groups,
-        label: 'Consumer Groups',
+        label: t('browser.stream.tabs.groups'),
         content: null,
       },
     ]
@@ -87,7 +89,7 @@ const StreamTabs = () => {
     }
 
     return baseTabs
-  }, [viewType, selectedGroupName, selectedConsumerName])
+  }, [viewType, selectedGroupName, selectedConsumerName, t])
 
   return (
     <Tabs

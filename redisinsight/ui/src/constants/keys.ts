@@ -105,20 +105,22 @@ export const STREAM_ADD_GROUP_VIEW_TYPES = [
   StreamViewType.Messages,
 ]
 
-export const STREAM_ADD_ACTION = Object.freeze({
-  [StreamViewType.Data]: {
-    name: 'New Entry',
-  },
-  [StreamViewType.Groups]: {
-    name: 'New Group',
-  },
-  [StreamViewType.Consumers]: {
-    name: 'New Group',
-  },
-  [StreamViewType.Messages]: {
-    name: 'New Group',
-  },
-})
+// `name` holds an i18n key resolved with t() at render time.
+export const STREAM_ADD_ACTION: Record<StreamViewType, { name: ParseKeys }> =
+  Object.freeze({
+    [StreamViewType.Data]: {
+      name: 'browser.stream.addAction.newEntry',
+    },
+    [StreamViewType.Groups]: {
+      name: 'browser.stream.addAction.newGroup',
+    },
+    [StreamViewType.Consumers]: {
+      name: 'browser.stream.addAction.newGroup',
+    },
+    [StreamViewType.Messages]: {
+      name: 'browser.stream.addAction.newGroup',
+    },
+  })
 
 export enum SortOrder {
   ASC = 'ASC',
