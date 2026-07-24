@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
@@ -36,6 +36,7 @@ import {
 } from 'uiSrc/components/notifications/components'
 import { localStorageService } from 'uiSrc/services'
 import { CustomError, OAuthSocialAction } from 'uiSrc/slices/interfaces'
+import { OAuthMfaDialog } from 'uiSrc/components/oauth'
 
 const ConfigOAuth = () => {
   const { ssoFlow, isRecommendedSettings } = useAppSelector(cloudSelector)
@@ -155,7 +156,12 @@ const ConfigOAuth = () => {
     }
   }
 
-  return null
+  const onMfaVerified = () => {
+    dispatch(addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()))
+    dispatch(fetchUserInfo(fetchUserInfoSuccess, closeInfinityNotification))
+  }
+
+  return <OAuthMfaDialog onVerified={onMfaVerified} />
 }
 
 export default ConfigOAuth

@@ -27,6 +27,11 @@ export interface StateAppOAuth {
     data: Nullable<CloudUser>
     freeDb: CloudUserFreeDbState
   }
+  mfa: {
+    isOpenDialog: boolean
+    loading: boolean
+    error: string
+  }
   plan: {
     isOpenDialog: boolean
     data: CloudSubscriptionPlanResponse[]

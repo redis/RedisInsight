@@ -64,8 +64,14 @@ export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
 
 export const cloudAuthInterceptor = (error: AxiosError) => {
   const { response, config } = error
+  // an MFA challenge is a 401 too, but the session is still valid and must be
+  // kept so the pending login can be completed with a TOTP code
+  const isMfaChallenge =
+    (response?.data as { errorCode?: number })?.errorCode ===
+    CustomErrorCodes.CloudApiMfaRequired
   if (
     response?.status === 401 &&
+    !isMfaChallenge &&
     config?.url &&
     CLOUD_AUTH_API_ENDPOINTS.includes(config.url as any)
   ) {
