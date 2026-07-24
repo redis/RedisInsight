@@ -6,6 +6,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { KeyDetailsHeaderFormatter } from 'uiSrc/pages/browser/modules/key-details-header/components/key-details-header-formatter'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ClearResultsAction } from '../clear-results-action'
 import * as S from './VectorSetKeySubheader.styles'
@@ -21,6 +22,7 @@ const VectorSetKeySubheader = ({
   onClearResults,
   additionalActions,
 }: Props) => {
+  const { t } = useTranslation()
   return (
     <S.Container>
       <AutoSizer disableHeight>
@@ -35,8 +37,14 @@ const VectorSetKeySubheader = ({
                     data-testid="vector-set-preview-summary"
                   >
                     {width > MIDDLE_SCREEN_RESOLUTION
-                      ? `Previewing ${previewCount} out of ${total}`
-                      : `${previewCount} out of ${total}`}
+                      ? t('browser.vectorSet.subheader.previewingFull', {
+                          count: previewCount,
+                          total,
+                        })
+                      : t('browser.vectorSet.subheader.previewingShort', {
+                          count: previewCount,
+                          total,
+                        })}
                   </Text>
                 </FlexItem>
               )}
@@ -50,7 +58,7 @@ const VectorSetKeySubheader = ({
                   />
                 ) : (
                   <AddItemsAction
-                    title="Add Elements"
+                    title={t('browser.vectorSet.addElements')}
                     width={width}
                     openAddItemPanel={openAddItemPanel}
                   />

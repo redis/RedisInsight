@@ -1,5 +1,7 @@
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
+import { ParseKeys } from 'i18next'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { useVectorSetElementListData } from '../hooks'
 import {
   TABLE_MIN_WIDTH,
@@ -13,6 +15,7 @@ export interface Props {
 }
 
 const VectorSetElementList = memo(({ actionsConfig }: Props) => {
+  const { t } = useTranslation()
   const {
     meta,
     currentPageData,
@@ -23,10 +26,20 @@ const VectorSetElementList = memo(({ actionsConfig }: Props) => {
     total,
   } = useVectorSetElementListData({ actionsConfig })
 
+  const columns = useMemo(
+    () =>
+      vectorSetColumns.map((col) =>
+        typeof col.header === 'string' && col.header
+          ? { ...col, header: t(col.header as ParseKeys) }
+          : col,
+      ),
+    [t],
+  )
+
   return (
     <S.Container data-testid="vector-set-details">
       <S.StyledTable
-        columns={vectorSetColumns}
+        columns={columns}
         data={currentPageData}
         meta={meta}
         stripedRows

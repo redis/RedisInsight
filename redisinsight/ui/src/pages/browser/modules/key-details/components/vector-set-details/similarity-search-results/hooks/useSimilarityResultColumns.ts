@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 
@@ -45,6 +46,7 @@ export const attributeColumnId = (key: string): string =>
 export const useSimilarityResultColumns = (
   matches: VectorSetSimilarityMatch[],
 ): UseSimilarityResultColumnsResult => {
+  const { t } = useTranslation()
   const parsedAttributesCache = useMemo<ParsedAttributesCache>(
     () => buildParsedAttributesCache(matches),
     [matches],
@@ -60,8 +62,8 @@ export const useSimilarityResultColumns = (
   >(() => new Set())
 
   const columns = useMemo(
-    () => buildSimilarityResultsColumns(attributeKeys),
-    [attributeKeys],
+    () => buildSimilarityResultsColumns(attributeKeys, t),
+    [attributeKeys, t],
   )
 
   const columnsMap = useMemo(() => {

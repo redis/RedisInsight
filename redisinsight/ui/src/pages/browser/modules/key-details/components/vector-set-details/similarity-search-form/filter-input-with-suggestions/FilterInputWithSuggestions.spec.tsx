@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, screen } from '@testing-library/react'
 import { render } from 'uiSrc/utils/test-utils'
 
+import i18n from 'uiSrc/i18n'
 import { FilterInputWithSuggestions } from './FilterInputWithSuggestions'
 import { SUGGESTIONS_HINT } from './constants'
 
@@ -60,7 +61,7 @@ describe('FilterInputWithSuggestions', () => {
     focusAt(screen.getByTestId(TEST_ID) as HTMLInputElement, 1, '.')
 
     expect(screen.getByTestId(`${TEST_ID}-suggestions-hint`)).toHaveTextContent(
-      SUGGESTIONS_HINT,
+      i18n.t(SUGGESTIONS_HINT),
     )
   })
 

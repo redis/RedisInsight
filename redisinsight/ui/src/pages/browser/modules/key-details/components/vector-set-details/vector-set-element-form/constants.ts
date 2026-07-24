@@ -1,3 +1,4 @@
+import { ParseKeys } from 'i18next'
 import { IVectorSetElementState } from './interfaces'
 
 export const INITIAL_VECTOR_SET_ELEMENT_STATE: IVectorSetElementState = {
@@ -21,10 +22,12 @@ export const FP32_ESCAPE_REGEX = /^(?:\s*\\x[0-9a-fA-F]{2})+\s*$/
 // instead of leaking through to the numeric parser as "not a number".
 export const FP32_ESCAPE_PREFIX_REGEX = /^\\x/
 
-export const DEFAULT_VECTOR_HELP_TEXT =
-  'Format is detected automatically. The first vector defines the required dimension for this set.'
+export const DEFAULT_VECTOR_HELP_TEXT: ParseKeys =
+  'browser.vectorSet.form.vectorHelp'
 
-export const INVALID_FP32_FORMAT_ERROR = 'Invalid FP32 byte string'
-export const INVALID_FP32_BYTE_LENGTH_ERROR =
-  'FP32 byte length must be a multiple of 4'
-export const INVALID_NUMERIC_FORMAT_ERROR = 'Invalid number format in vector'
+export const INVALID_FP32_FORMAT_ERROR: ParseKeys =
+  'browser.vectorSet.form.invalidFp32'
+export const INVALID_FP32_BYTE_LENGTH_ERROR: ParseKeys =
+  'browser.vectorSet.form.invalidFp32Length'
+export const INVALID_NUMERIC_FORMAT_ERROR: ParseKeys =
+  'browser.vectorSet.form.invalidNumeric'

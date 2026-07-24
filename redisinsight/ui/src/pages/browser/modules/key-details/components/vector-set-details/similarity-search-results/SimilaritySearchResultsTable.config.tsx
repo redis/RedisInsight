@@ -1,4 +1,5 @@
 import React from 'react'
+import { ParseKeys, TFunction } from 'i18next'
 
 import {
   CellContext,
@@ -113,6 +114,7 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
 
 const buildAttributeColumn = (
   key: string,
+  t: TFunction,
 ): ColumnDef<VectorSetSimilarityMatch> => ({
   id: `${SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX}${key}`,
   header: key,
@@ -144,7 +146,9 @@ const buildAttributeColumn = (
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}
       >
         {isMissing ? (
-          <S.NilAttributeValue variant="italic">Empty</S.NilAttributeValue>
+          <S.NilAttributeValue variant="italic">
+            {t('browser.vectorSet.results.emptyAttr')}
+          </S.NilAttributeValue>
         ) : (
           renderAttributeValue(value)
         )}
@@ -179,10 +183,20 @@ const actionsColumn: ColumnDef<VectorSetSimilarityMatch> = {
 
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
-): ColumnDef<VectorSetSimilarityMatch>[] => [
-  rankColumn,
-  nameColumn,
-  ...attributeKeys.map(buildAttributeColumn),
-  similarityColumn,
-  actionsColumn,
-]
+  t: TFunction,
+): ColumnDef<VectorSetSimilarityMatch>[] =>
+  [
+    rankColumn,
+    nameColumn,
+    ...attributeKeys.map((key) => buildAttributeColumn(key, t)),
+    similarityColumn,
+    actionsColumn,
+    // Static column defs carry i18n keys as their `header`; translate the
+    // string headers here so header cells read the locale. Attribute columns
+    // use the raw attribute key as header and are left untranslated.
+  ].map((col) =>
+    typeof col.header === 'string' &&
+    col.header.startsWith('browser.vectorSet.')
+      ? { ...col, header: t(col.header as ParseKeys) }
+      : col,
+  )
