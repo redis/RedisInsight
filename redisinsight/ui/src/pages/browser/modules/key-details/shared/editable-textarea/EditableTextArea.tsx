@@ -13,6 +13,10 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import {
+  NonUnicodeEditConfirmation,
+  useNonUnicodeEditGuard,
+} from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -70,6 +74,7 @@ const EditableTextArea = (props: Props) => {
   const [isHovering, setIsHovering] = useState(false)
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
   const { requestConfirmation } = useProductionWriteConfirmation()
+  const editGuard = useNonUnicodeEditGuard()
 
   useEffect(() => {
     setValue(initialValue)
@@ -113,25 +118,34 @@ const EditableTextArea = (props: Props) => {
         >
           {children}
         </Text>
-        {!hideEditButton && isHovering && (
-          <RiTooltip
-            content={editToolTipContent}
+        {!hideEditButton && (isHovering || editGuard.isOpen) && (
+          <NonUnicodeEditConfirmation
+            isOpen={editGuard.isOpen}
+            format={editGuard.format}
             anchorClassName={styles.editBtnAnchor}
-            data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
-          >
-            <IconButton
-              icon={EditIcon}
-              aria-label="Edit field"
-              className={cx('editFieldBtn', styles.editBtn)}
-              disabled={isEditDisabled}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation()
-                onEdit?.(true)
-                setIsHovering(false)
-              }}
-              data-testid={`${testIdPrefix}_edit-btn-${field}`}
-            />
-          </RiTooltip>
+            onCancel={editGuard.cancel}
+            onChangeToUnicode={editGuard.changeToUnicode}
+            onEditAnyway={editGuard.editAnyway}
+            button={
+              <RiTooltip
+                content={editToolTipContent}
+                data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
+              >
+                <IconButton
+                  icon={EditIcon}
+                  aria-label="Edit field"
+                  className={cx('editFieldBtn', styles.editBtn)}
+                  disabled={isEditDisabled}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation()
+                    editGuard.requestEdit(() => onEdit?.(true))
+                    setIsHovering(false)
+                  }}
+                  data-testid={`${testIdPrefix}_edit-btn-${field}`}
+                />
+              </RiTooltip>
+            }
+          />
         )}
       </div>
     )

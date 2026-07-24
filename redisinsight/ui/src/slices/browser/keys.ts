@@ -110,7 +110,7 @@ import {
 
 const riConfig = getConfig()
 
-const defaultViewFormat = KeyValueFormat.Unicode
+export const defaultViewFormat = KeyValueFormat.Unicode
 
 export const initialState: KeysStore = {
   loading: false,

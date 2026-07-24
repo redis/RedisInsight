@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
@@ -39,6 +39,10 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import {
+  NonUnicodeEditConfirmation,
+  useNonUnicodeEditGuard,
+} from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
 import { StringDetailsValue } from './string-details-value'
 import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
@@ -88,13 +92,33 @@ const StringDetails = (props: Props) => {
   const [editItem, setEditItem] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
+  const {
+    isOpen: isEditConfirmOpen,
+    format: editConfirmFormat,
+    requestEdit,
+    cancel: cancelEditConfirm,
+    changeToUnicode: changeEditToUnicode,
+    editAnyway,
+  } = useNonUnicodeEditGuard()
 
-  const handleCopyValue = () => {
+  const handleHeaderEdit = useCallback(() => {
+    if (editItem) {
+      dispatch(setSelectedKeyRefreshDisabled(false))
+      setEditItem(false)
+      return
+    }
+    requestEdit(() => {
+      dispatch(setSelectedKeyRefreshDisabled(true))
+      setEditItem(true)
+    })
+  }, [editItem, requestEdit, dispatch])
+
+  const handleCopyValue = useCallback(() => {
     sendEventTelemetry({
       event: TelemetryEvent.STRING_VALUE_COPIED,
       eventData: { databaseId: instanceId },
     })
-  }
+  }, [instanceId])
 
   const handleRefreshKey = (
     key: RedisResponseBuffer,
@@ -109,28 +133,53 @@ const StringDetails = (props: Props) => {
     onRemoveKey()
   }
 
-  const Actions = () => (
-    <Row align="center" gap="s" grow={false}>
-      {/* Hidden while editing: copyValue comes from the saved Redis value, not
-          the unsaved textarea the user is currently editing. */}
-      {keyValue && isFullyAvailable && !editItem && (
-        <CopyButton
-          copy={copyValue}
-          aria-label="Copy value"
-          onCopy={handleCopyValue}
-          data-testid="copy-string-value"
+  // Hidden while editing: copyValue comes from the saved Redis value, not the
+  // unsaved textarea the user is currently editing.
+  const showCopyButton = !!keyValue && isFullyAvailable && !editItem
+
+  // Stable identity so a re-render doesn't remount (and close) the popover.
+  const Actions = useCallback(
+    () => (
+      <Row align="center" gap="s" grow={false}>
+        {showCopyButton && (
+          <CopyButton
+            copy={copyValue}
+            aria-label="Copy value"
+            onCopy={handleCopyValue}
+            data-testid="copy-string-value"
+          />
+        )}
+        <NonUnicodeEditConfirmation
+          isOpen={isEditConfirmOpen}
+          format={editConfirmFormat}
+          onCancel={cancelEditConfirm}
+          onChangeToUnicode={changeEditToUnicode}
+          onEditAnyway={editAnyway}
+          button={
+            <EditItemAction
+              title="Edit Value"
+              tooltipContent={editToolTip}
+              isEditable={isStringEditable && isEditable}
+              onEditItem={handleHeaderEdit}
+            />
+          }
         />
-      )}
-      <EditItemAction
-        title="Edit Value"
-        tooltipContent={editToolTip}
-        isEditable={isStringEditable && isEditable}
-        onEditItem={() => {
-          dispatch(setSelectedKeyRefreshDisabled(!editItem))
-          setEditItem(!editItem)
-        }}
-      />
-    </Row>
+      </Row>
+    ),
+    [
+      showCopyButton,
+      copyValue,
+      handleCopyValue,
+      isEditConfirmOpen,
+      editConfirmFormat,
+      cancelEditConfirm,
+      changeEditToUnicode,
+      editAnyway,
+      editToolTip,
+      isStringEditable,
+      isEditable,
+      handleHeaderEdit,
+    ],
   )
 
   return (
