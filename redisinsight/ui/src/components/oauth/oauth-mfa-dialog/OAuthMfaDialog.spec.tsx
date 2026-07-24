@@ -145,6 +145,21 @@ describe('OAuthMfaDialog', () => {
     )
   })
 
+  it('should ignore cancel while a verification is in flight', () => {
+    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+      ...mockMfaOpenState,
+      loading: true,
+    })
+    renderComponent()
+
+    const cancelBtn = screen.getByTestId('oauth-mfa-dialog-cancel-btn')
+    expect(cancelBtn).toBeDisabled()
+
+    fireEvent.click(cancelBtn)
+
+    expect(store.getActions()).toEqual([])
+  })
+
   it('should reset the error when the user edits the code after a failure', () => {
     ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
       ...mockMfaOpenState,

@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/constants'
 import {
   getApiErrorCode,
+  getApiErrorCustomCode,
   getApiErrorMessage,
   getAxiosError,
   getTranslatedApiError,
@@ -33,7 +34,6 @@ import {
   CloudCapiKey,
   CloudJobInfoState,
   CloudSuccessResult,
-  CustomError,
   EnhancedAxiosError,
   Instance,
   OAuthSocialAction,
@@ -56,9 +56,6 @@ import {
   CloudJobInfo,
   CloudSubscriptionPlanResponse,
 } from 'apiClient'
-
-const getCloudApiErrorCode = (error: AxiosError): Maybe<number> =>
-  (error?.response?.data as CustomError)?.errorCode
 
 export const initialState: StateAppOAuth = {
   loading: false,
@@ -429,7 +426,7 @@ export function fetchUserInfo(
       const errorMessage = getApiErrorMessage(error)
 
       if (
-        getCloudApiErrorCode(error) === CustomErrorCodes.CloudApiMfaRequired
+        getApiErrorCustomCode(error) === CustomErrorCodes.CloudApiMfaRequired
       ) {
         dispatch(getUserInfoFailure(errorMessage))
         dispatch(setMfaDialogState(true))
@@ -471,7 +468,7 @@ export function submitMfaCodeAction(
       }
     } catch (_err) {
       const error = _err as AxiosError
-      const errorCode = getCloudApiErrorCode(error)
+      const errorCode = getApiErrorCustomCode(error)
 
       if (errorCode === CustomErrorCodes.CloudApiMfaQuotaExceeded) {
         // the server blocks further attempts for a while: abort instead of retrying

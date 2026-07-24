@@ -49,6 +49,10 @@ const OAuthMfaDialog = ({ onVerified }: OAuthMfaDialogProps) => {
   const isSubmitDisabled = code.length !== MFA_CODE_LENGTH || loading
 
   const handleCancel = () => {
+    // ignore cancel while a verification is in flight, otherwise the pending
+    // request could still resolve and resume the flow after the user cancelled
+    if (loading) return
+
     dispatch(setMfaDialogState(false))
     dispatch(setOAuthCloudSource(null))
     // clearing the SSO flow releases ConfigOAuth's in-progress guard, so a
@@ -121,6 +125,7 @@ const OAuthMfaDialog = ({ onVerified }: OAuthMfaDialogProps) => {
               <SecondaryButton
                 size="l"
                 onClick={handleCancel}
+                disabled={loading}
                 data-testid="oauth-mfa-dialog-cancel-btn"
               >
                 {t('oauth.mfa.cancel')}
