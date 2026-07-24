@@ -177,8 +177,14 @@ export class KeyList {
    */
   async clickKey(keyName: string): Promise<void> {
     const keyEl = this.getKeyRow(keyName);
-    const isListRowVisible = await keyEl.isVisible();
-    if (isListRowVisible) {
+    // isVisible() does not auto-wait, so a row still rendering reads as absent
+    // and gets mis-routed to the tree path. Wait for it first; a genuine miss
+    // (tree view with a collapsed folder) falls through to selectKeyInTree.
+    const isRowVisible = await keyEl
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (isRowVisible) {
       await keyEl.click();
       return;
     }
@@ -194,6 +200,9 @@ export class KeyList {
     // browserViewType persists in localStorage across specs in the same Electron instance.
     // If list view leaked from a previous spec, switch to tree view here so the rest of this
     // helper (which only matches tree-view test ids) doesn't time out.
+    // Wait for the keys panel to settle first so a still-rendering list is not
+    // misread as "not list view", which would skip the needed switch.
+    await expect(this.keyListContainer).toBeVisible();
     if (await this.keyListTable.isVisible()) {
       await this.switchToTreeView();
     }
