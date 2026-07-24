@@ -1,4 +1,3 @@
-import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { WhatsNewVersion, WhatsNewVersionType } from '../types'
 
 export const version360: WhatsNewVersion = {
@@ -11,7 +10,6 @@ export const version360: WhatsNewVersion = {
       title: 'Vector Sets support',
       body: 'Create Vector Sets (Redis 8) manually or from the bundled vec2word sample, add elements with attributes, and run similarity search in the GUI. Handy for prototyping semantic search.',
       location: 'Browser — add a key of type Vector Set',
-      featureFlag: FeatureFlags.vectorSet,
     },
     {
       id: 'dev-vs-prod-mode',
