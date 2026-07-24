@@ -87,4 +87,32 @@ describe('QueryCardCliGroupResult', () => {
     expect(errorBtn).not.toBeInTheDocument()
     expect(screen.getByText('(nil)')).toBeInTheDocument()
   })
+
+  it('should not show ModuleNotLoaded for successful TS.RANGE in group mode', () => {
+    const mockResult = [
+      {
+        response: [
+          {
+            id: 'id',
+            command: 'TS.RANGE ts:prices - +',
+            // Raw Redis reply shape that previously fooled the success check
+            response: [[1784245557285, '100']],
+            status: CommandExecutionStatus.Success,
+          },
+        ],
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+    render(
+      <QueryCardCliGroupResult
+        {...instance(mockedProps)}
+        result={mockResult}
+      />,
+    )
+
+    expect(
+      screen.queryByTestId('module-not-loaded-content'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText(/TS\.RANGE ts:prices/)).toBeInTheDocument()
+  })
 })
