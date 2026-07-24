@@ -61,5 +61,20 @@ describe('MarkdownMessage', () => {
       expect(screen.getByText(/A bike\./)).toBeInTheDocument()
       expect(container.querySelector('img')).toBeNull()
     })
+
+    // Copilot content never contains images, and markdown image syntax
+    // (unlike raw HTML) reaches MarkdownRenderer's own `img` handler, which
+    // renders a live <img> by default — a crafted `![](https://attacker/?...)`
+    // would fire an outbound GET on load and exfiltrate data.
+    it('should not render an <img> for markdown image syntax', () => {
+      render(
+        <MarkdownMessage>
+          {'![leak](https://attacker.example/x.png)'}
+        </MarkdownMessage>,
+      )
+
+      expect(document.querySelector('img')).toBeNull()
+      expect(screen.queryByRole('img')).toBeNull()
+    })
   })
 })
