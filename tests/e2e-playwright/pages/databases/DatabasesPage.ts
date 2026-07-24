@@ -50,12 +50,21 @@ export class DatabasesPage extends BasePage {
 
   /**
    * Clicking the logo shows the home list fetched at app load, which is stale
-   * when a database was created via API afterwards. A visible row or empty
-   * state cannot be trusted as current, so reload to force a refetch, then wait
-   * for the list (or the empty state) to render.
+   * when a database was created via API afterwards, so reload to force a
+   * refetch. The reload remounts HomePage with an empty list and only fetches
+   * GET /databases from a post-paint effect, so the empty-state placeholder can
+   * render before the response lands. Wait for that fetch (during which the
+   * placeholder is hidden) before treating the list as ready.
    */
   private async refreshDatabaseList(): Promise<void> {
+    const listFetched = this.page
+      .waitForResponse(
+        (response) => response.request().method() === 'GET' && /\/databases(\?|$)/.test(response.url()),
+        { timeout: 15000 },
+      )
+      .catch(() => undefined);
     await this.reload();
+    await listFetched;
     const firstRow = this.page.getByTestId(/^instance-name-/).first();
     const emptyState = this.page.getByTestId('empty-database-instance-list');
     await expect(firstRow.or(emptyState)).toBeVisible();
