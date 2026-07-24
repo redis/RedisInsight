@@ -17,6 +17,7 @@ import {
 } from 'uiSrc/components/production-write-confirmation'
 import { stringToSerializedBufferFormat } from 'uiSrc/utils'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
+import { useTranslation } from 'uiSrc/i18n'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
@@ -43,6 +44,7 @@ import {
   MOVE_TO_ELEMENT_HINT,
   MOVE_TO_ELEMENT_LABEL,
   VALUE_LABEL,
+  VALUE_PLACEHOLDER,
 } from './ArrayAddForm.constants'
 import { ArrayAddFormProps } from './ArrayAddForm.types'
 
@@ -55,6 +57,7 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
  * via ARSET/ARMSET, so it would overwrite from the front instead of appending.
  */
 export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { viewFormat, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   // Resolve the target key from the live selection (like the List/Hash add
@@ -121,9 +124,9 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
 
   const handleAdd = () => {
     requestConfirmation({
-      title: CONFIRM_TITLE,
-      actionDescription: CONFIRM_DESCRIPTION,
-      confirmButtonText: CONFIRM_BUTTON_TEXT,
+      title: t(CONFIRM_TITLE),
+      actionDescription: t(CONFIRM_DESCRIPTION),
+      confirmButtonText: t(CONFIRM_BUTTON_TEXT),
       commandId: BrowserConfirmationCommandId.AddArrayElements,
       disableConfirmationInput: true,
       onConfirm: () => {
@@ -168,24 +171,24 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
         <Row align="end" gap="m">
           <FlexItem>
             <FormField
-              label={INDEX_LABEL}
-              infoIconProps={{ content: INDEX_HINT }}
+              label={t(INDEX_LABEL)}
+              infoIconProps={{ content: t(INDEX_HINT) }}
             >
               <TextInput
                 value={index}
                 onChange={setIndex}
-                placeholder={INDEX_PLACEHOLDER}
-                error={indexInvalid ? INVALID_INDEX_MESSAGE : undefined}
+                placeholder={t(INDEX_PLACEHOLDER)}
+                error={indexInvalid ? t(INVALID_INDEX_MESSAGE) : undefined}
                 data-testid={`${TEST_ID}-index`}
               />
             </FormField>
           </FlexItem>
           <FlexItem grow>
-            <FormField label={VALUE_LABEL}>
+            <FormField label={t(VALUE_LABEL)}>
               <TextInput
                 value={value}
                 onChange={setValue}
-                placeholder="Enter value"
+                placeholder={t(VALUE_PLACEHOLDER)}
                 data-testid={`${TEST_ID}-value`}
               />
             </FormField>
@@ -198,7 +201,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
           <Checkbox
             id={`${TEST_ID}-move-to-element`}
             name="move-to-element"
-            label={MOVE_TO_ELEMENT_LABEL}
+            label={t(MOVE_TO_ELEMENT_LABEL)}
             checked={moveToElement}
             onChange={(e) => setMoveToElement(e.target.checked)}
             data-testid={`${TEST_ID}-move-to-element`}
@@ -206,7 +209,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
         </FlexItem>
         <FlexItem grow={false}>
           <RiTooltip
-            content={MOVE_TO_ELEMENT_HINT}
+            content={t(MOVE_TO_ELEMENT_HINT)}
             position="top"
             anchorClassName="inline-flex"
           >
@@ -225,7 +228,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
             onClick={() => closePanel(true)}
             data-testid={`${TEST_ID}-cancel`}
           >
-            {CANCEL_BUTTON_LABEL}
+            {t(CANCEL_BUTTON_LABEL)}
           </SecondaryButton>
         </FlexItem>
         <FlexItem grow={false}>
@@ -235,7 +238,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
             loading={updating}
             data-testid={`${TEST_ID}-submit`}
           >
-            {ADD_BUTTON_LABEL}
+            {t(ADD_BUTTON_LABEL)}
           </PrimaryButton>
         </FlexItem>
       </Row>

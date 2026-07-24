@@ -1,5 +1,8 @@
-export const ARRAY_TABLE_EMPTY_MESSAGE = 'No elements in range'
-export const ARRAY_TABLE_LOADING_MESSAGE = 'Loading…'
+import { ParseKeys } from 'i18next'
+
+export const ARRAY_TABLE_EMPTY_MESSAGE: ParseKeys = 'browser.array.table.empty'
+export const ARRAY_TABLE_LOADING_MESSAGE: ParseKeys =
+  'browser.array.table.loading'
 
 // Array results table column widths, shared with NeighbourBand so the expanded
 // row lines up with the same columns.
