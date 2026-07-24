@@ -37,6 +37,7 @@ import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiTooltip } from 'uiSrc/components'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { useTranslation } from 'uiSrc/i18n'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
 import AddKeyHash from './AddKeyHash'
 import AddKeyZset from './AddKeyZset'
@@ -58,6 +59,7 @@ export interface Props {
 }
 const AddKey = (props: Props) => {
   const { onAddKeyPanel, onClosePanel, arePanelsCollapsed } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const { loading } = useAppSelector(addKeyStateSelector)
@@ -103,7 +105,7 @@ const AddKey = (props: Props) => {
             data-test-subj={value}
             data-testid={value}
           >
-            {text}
+            {t(text)}
           </HealthText>
         ),
       }
@@ -164,16 +166,16 @@ const AddKey = (props: Props) => {
       >
         <Col justify="center" className={styles.content}>
           <FlexItem grow style={{ marginBottom: '36px' }}>
-            <Title size="M">New Key</Title>
+            <Title size="M">{t('browser.addKey.title')}</Title>
             {!arePanelsCollapsed && (
               <RiTooltip
-                content="Close"
+                content={t('browser.addKey.close.tooltip')}
                 position="left"
                 anchorClassName={styles.closeKeyTooltip}
               >
                 <IconButton
                   icon={CancelSlimIcon}
-                  aria-label="Close key"
+                  aria-label={t('browser.addKey.close.aria')}
                   className={styles.closeBtn}
                   onClick={() => closeKey()}
                 />

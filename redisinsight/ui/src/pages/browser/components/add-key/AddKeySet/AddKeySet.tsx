@@ -11,7 +11,8 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiClient'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
-import { AddSetFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddSetFormConfig } from '../constants/fields-config'
 
 export interface Props {
   keyName: string
@@ -21,6 +22,8 @@ export interface Props {
 
 const AddKeySet = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddSetFormConfig(t)
   const { loading } = useAppSelector(addKeyStateSelector)
   const [members, setMembers] = useState<ISetMemberState[]>([
     { ...INITIAL_SET_MEMBER_STATE },
@@ -151,7 +154,7 @@ const AddKeySet = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-set-btn"

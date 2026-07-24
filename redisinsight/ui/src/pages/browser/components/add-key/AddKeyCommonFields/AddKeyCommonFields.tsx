@@ -8,7 +8,8 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddCommonFieldsFormConfig } from '../constants/fields-config'
 
 import styles from './styles.module.scss'
 
@@ -41,6 +42,8 @@ const AddKeyCommonFields = (props: Props) => {
     setKeyTTL,
     keyNameDisabled = false,
   } = props
+  const { t } = useTranslation()
+  const config = getAddCommonFieldsFormConfig(t)
 
   const handleTTLChange = (value: string) => {
     const validatedValue = validateTTLNumberForAddKey(value)
@@ -56,9 +59,12 @@ const AddKeyCommonFields = (props: Props) => {
       <Row className={styles.container} gap="m">
         <FlexItem grow>
           <FormFieldset
-            legend={{ children: 'Select key type', display: 'hidden' }}
+            legend={{
+              children: t('browser.addKey.selectKeyType'),
+              display: 'hidden',
+            }}
           >
-            <FormField label="Key Type" required>
+            <FormField label={t('browser.addKey.keyType')} required>
               <RiSelect
                 options={options}
                 valueRender={({ option }): JSX.Element =>

@@ -6,12 +6,14 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import { MAX_BULK_ACTION_ERRORS_LENGTH } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { bulkActionsDeleteSummarySelector } from 'uiSrc/slices/browser/bulkActions'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const MIN_ROW_HEIGHT = 30
 const PROTRUDING_OFFSET = 2
 
 const BulkDeleteContent = () => {
+  const { t } = useTranslation()
   const { errors = [] } = useAppSelector(bulkActionsDeleteSummarySelector) ?? {}
 
   const outerRef = useRef<HTMLDivElement>(null)
@@ -56,10 +58,14 @@ const BulkDeleteContent = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Text className={styles.headerTitle}>Error list</Text>
+        <Text className={styles.headerTitle}>
+          {t('browser.bulkActions.delete.errorList')}
+        </Text>
         {errors.length >= MAX_BULK_ACTION_ERRORS_LENGTH && (
           <Text className={styles.headerSummary}>
-            last {MAX_BULK_ACTION_ERRORS_LENGTH} errors are shown
+            {t('browser.bulkActions.delete.lastErrors', {
+              count: MAX_BULK_ACTION_ERRORS_LENGTH,
+            })}
           </Text>
         )}
       </div>
