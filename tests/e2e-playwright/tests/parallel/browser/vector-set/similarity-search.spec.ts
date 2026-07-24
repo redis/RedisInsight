@@ -4,8 +4,6 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet } from './helpers';
 
-test.use({ featureFlags: { vectorSet: true } });
-
 test.describe('Browser > Vector Set > Similarity search', () => {
   let database: DatabaseInstance;
 

@@ -4,8 +4,6 @@ import { DatabaseInstance } from 'e2eSrc/types';
 
 const VEC2WORD_KEY = 'vec2word';
 
-test.use({ featureFlags: { vectorSet: true } });
-
 test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   let database: DatabaseInstance;
 

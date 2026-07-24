@@ -3,8 +3,6 @@ import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 
-test.use({ featureFlags: { vectorSet: true } });
-
 test.describe('Browser > Vector Set > Add Key (manual)', () => {
   let database: DatabaseInstance;
 
