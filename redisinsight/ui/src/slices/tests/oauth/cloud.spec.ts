@@ -6,6 +6,7 @@ import {
   clearStoreActions,
   initialStateDefault,
   mockedStore,
+  mockStore,
 } from 'uiSrc/utils/test-utils'
 import { Environment } from 'apiClient'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -23,6 +24,7 @@ import {
 import { CloudJobStatus, CloudJobName } from 'uiSrc/electron/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
+import { ApiEndpoints, CustomErrorCodes } from 'uiSrc/constants'
 import reducer, {
   initialState,
   oauthCloudSelector,
@@ -68,6 +70,13 @@ import reducer, {
   logoutUserAction,
   oauthCloudUserSelector,
   setInitialLoadingState,
+  setMfaDialogState,
+  submitMfaCode,
+  submitMfaCodeSuccess,
+  submitMfaCodeFailure,
+  submitMfaCodeAction,
+  resetMfaError,
+  oauthCloudMfaSelector,
 } from '../../oauth/cloud'
 
 let store: typeof mockedStore
@@ -370,6 +379,160 @@ describe('oauth cloud slice', () => {
         },
       })
       expect(oauthCloudSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('setMfaDialogState', () => {
+    it('should properly open the dialog', () => {
+      // Arrange
+      const state = {
+        ...initialState,
+        mfa: {
+          ...initialState.mfa,
+          isOpenDialog: true,
+        },
+      }
+
+      // Act
+      const nextState = reducer(initialState, setMfaDialogState(true))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudSelector(rootState)).toEqual(state)
+    })
+
+    it('should reset loading and error when the dialog is closed', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        mfa: {
+          isOpenDialog: true,
+          loading: true,
+          error: 'Some error',
+        },
+      }
+
+      // Act
+      const nextState = reducer(currentState, setMfaDialogState(false))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual(initialState.mfa)
+    })
+  })
+
+  describe('submitMfaCode', () => {
+    it('should properly set loading state', () => {
+      // Arrange
+      const state = {
+        ...initialState.mfa,
+        loading: true,
+      }
+
+      // Act
+      const nextState = reducer(initialState, submitMfaCode())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('submitMfaCodeSuccess', () => {
+    it('should stop loading and close the dialog', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        mfa: {
+          isOpenDialog: true,
+          loading: true,
+          error: '',
+        },
+      }
+
+      // Act
+      const nextState = reducer(currentState, submitMfaCodeSuccess())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual(initialState.mfa)
+    })
+  })
+
+  describe('submitMfaCodeFailure', () => {
+    it('should stop loading and set the error', () => {
+      // Arrange
+      const error = 'Some error'
+      const currentState = {
+        ...initialState,
+        mfa: {
+          isOpenDialog: true,
+          loading: true,
+          error: '',
+        },
+      }
+      const state = {
+        isOpenDialog: true,
+        loading: false,
+        error,
+      }
+
+      // Act
+      const nextState = reducer(currentState, submitMfaCodeFailure(error))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('resetMfaError', () => {
+    it('should clear the error while keeping the dialog open', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        mfa: {
+          isOpenDialog: true,
+          loading: false,
+          error: 'Some error',
+        },
+      }
+      const state = {
+        isOpenDialog: true,
+        loading: false,
+        error: '',
+      }
+
+      // Act
+      const nextState = reducer(currentState, resetMfaError())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: {
+          cloud: nextState,
+        },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual(state)
     })
   })
 
@@ -949,6 +1112,160 @@ describe('oauth cloud slice', () => {
           setOAuthCloudSource(null),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('call getUserInfoFailure and setMfaDialogState when fetch fails with mfa required', async () => {
+        // Arrange
+        const errorMessage =
+          'Multi-factor authentication is required to complete sign in.'
+        const responsePayload = {
+          response: {
+            status: 401,
+            data: {
+              message: errorMessage,
+              errorCode: CustomErrorCodes.CloudApiMfaRequired,
+              factors: { totpFactorAvailable: true },
+            },
+          },
+        }
+
+        apiService.get = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchUserInfo())
+
+        // Assert
+        const expectedActions = [
+          getUserInfo(),
+          getUserInfoFailure(errorMessage),
+          setMfaDialogState(true),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('abort without opening the dialog when TOTP is not an available factor', async () => {
+        // Arrange
+        const responsePayload = {
+          response: {
+            status: 401,
+            data: {
+              message: 'Multi-factor authentication is required.',
+              errorCode: CustomErrorCodes.CloudApiMfaRequired,
+              factors: { totpFactorAvailable: false, smsFactorAvailable: true },
+            },
+          },
+        }
+
+        apiService.get = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchUserInfo())
+
+        // Assert
+        const actions = store.getActions()
+        expect(actions).not.toContainEqual(setMfaDialogState(true))
+        expect(actions).toContainEqual(setOAuthCloudSource(null))
+        expect(actions).toContainEqual(setSSOFlow(undefined))
+      })
+    })
+
+    describe('submitMfaCodeAction', () => {
+      it('call submitMfaCodeSuccess and onSuccessAction when the code is accepted', async () => {
+        // Arrange
+        apiService.post = jest.fn().mockResolvedValue({ status: 200 })
+        const onSuccessAction = jest.fn()
+
+        // Act
+        await store.dispatch<any>(
+          submitMfaCodeAction('123456', onSuccessAction),
+        )
+
+        // Assert
+        expect(apiService.post).toBeCalledWith(
+          ApiEndpoints.CLOUD_ME_LOGIN_MFA,
+          {
+            code: '123456',
+          },
+        )
+        const expectedActions = [submitMfaCode(), submitMfaCodeSuccess()]
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccessAction).toBeCalled()
+      })
+
+      it('should not fire another request while a submit is already in flight', async () => {
+        // Arrange
+        const stateWithSubmitInFlight = cloneDeep(initialStateDefault)
+        stateWithSubmitInFlight.oauth.cloud.mfa.loading = true
+        const customStore = mockStore(stateWithSubmitInFlight)
+
+        apiService.post = jest.fn()
+
+        // Act
+        await customStore.dispatch<any>(submitMfaCodeAction('123456'))
+
+        // Assert
+        expect(apiService.post).not.toBeCalled()
+        expect(customStore.getActions()).toEqual([])
+      })
+
+      it('call submitMfaCodeFailure with a clear invalid-code message and keep the dialog open when the code is rejected', async () => {
+        // Arrange
+        const responsePayload = {
+          response: {
+            status: 400,
+            data: {
+              message: 'Request failed with status code 400',
+              errorCode: CustomErrorCodes.CloudApiMfaInvalidCode,
+            },
+          },
+        }
+
+        apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        // Act
+        await store.dispatch<any>(submitMfaCodeAction('000000'))
+
+        // Assert
+        const expectedActions = [
+          submitMfaCode(),
+          submitMfaCodeFailure('Invalid or expired code. Please try again.'),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('close the dialog, show error notification and abort when the mfa quota is exceeded', async () => {
+        // Arrange
+        const errorMessage =
+          'Too many authentication attempts. Wait a few minutes and sign in again.'
+        const responsePayload = {
+          response: {
+            status: 429,
+            data: {
+              message: errorMessage,
+              errorCode: CustomErrorCodes.CloudApiMfaQuotaExceeded,
+            },
+          },
+        }
+
+        apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+        const onFailAction = jest.fn()
+
+        // Act
+        await store.dispatch<any>(
+          submitMfaCodeAction('111111', undefined, onFailAction),
+        )
+
+        // Assert
+        const expectedActions = [
+          submitMfaCode(),
+          setMfaDialogState(false),
+          removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress),
+          addErrorNotification(responsePayload as AxiosError),
+          setOAuthCloudSource(null),
+          setSSOFlow(undefined),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onFailAction).toBeCalled()
       })
     })
 

@@ -1,4 +1,7 @@
 export * from './cloud-api.unauthorized.exception';
+export * from './cloud-api.mfa-required.exception';
+export * from './cloud-api.mfa-invalid-code.exception';
+export * from './cloud-api.mfa-quota-exceeded.exception';
 export * from './cloud-api.bad-request.exception';
 export * from './cloud-api.forbidden.exception';
 export * from './cloud-api.internal-server-error.exception';

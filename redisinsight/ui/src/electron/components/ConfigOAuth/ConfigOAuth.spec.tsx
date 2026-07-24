@@ -1,9 +1,12 @@
 import React from 'react'
 import {
+  act,
   cleanup,
   createMockedStore,
+  fireEvent,
   mockedStore,
   render,
+  screen,
 } from 'uiSrc/utils/test-utils'
 
 import {
@@ -16,11 +19,14 @@ import {
   fetchUserInfo,
   getPlans,
   getUserInfo,
+  oauthCloudMfaSelector,
   setJob,
   setOAuthCloudSource,
   setSocialDialogState,
   showOAuthProgress,
   signInFailure,
+  submitMfaCode,
+  submitMfaCodeSuccess,
 } from 'uiSrc/slices/oauth/cloud'
 import {
   cloudSelector,
@@ -31,6 +37,7 @@ import {
   addInfiniteNotification,
 } from 'uiSrc/slices/app/notifications'
 import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
+import { apiService } from 'uiSrc/services'
 import ConfigOAuth from './ConfigOAuth'
 
 jest.mock('uiSrc/slices/oauth/cloud', () => ({
@@ -40,6 +47,11 @@ jest.mock('uiSrc/slices/oauth/cloud', () => ({
     .mockImplementation(
       jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
     ),
+  oauthCloudMfaSelector: jest.fn().mockReturnValue({
+    isOpenDialog: false,
+    loading: false,
+    error: '',
+  }),
 }))
 
 jest.mock('uiSrc/slices/instances/cloud', () => ({
@@ -233,5 +245,40 @@ describe('ConfigOAuth', () => {
       ...afterCallbackActions,
       ...expectedActions,
     ])
+  })
+
+  it('should resume the sign in flow after mfa verification', async () => {
+    ;(cloudSelector as jest.Mock).mockReturnValue({
+      ssoFlow: 'signIn',
+    })
+    ;(fetchUserInfo as jest.Mock).mockImplementation(
+      jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
+    )
+    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+      isOpenDialog: true,
+      loading: false,
+      error: '',
+    })
+    apiService.post = jest.fn().mockResolvedValue({ status: 200 })
+    apiService.get = jest.fn().mockResolvedValue({ status: 200, data: {} })
+
+    renderConfigOAuth()
+
+    // pasting the full code auto-submits and completes the pending login
+    await act(async () => {
+      fireEvent.paste(screen.getByTestId('oauth-mfa-dialog-code-input-0'), {
+        clipboardData: { getData: () => '123456' },
+      })
+    })
+
+    const expectedActions = [
+      submitMfaCode(),
+      submitMfaCodeSuccess(),
+      addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()),
+      getUserInfo(),
+    ]
+    expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+      expectedActions,
+    )
   })
 })

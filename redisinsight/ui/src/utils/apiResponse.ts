@@ -28,6 +28,11 @@ export const createAxiosError = (options: ErrorOptions): AxiosError =>
 
 export const getApiErrorCode = (error: AxiosError) => error?.response?.status
 
+// The stable custom `errorCode` from the response body. Distinct from
+// getApiErrorCode, which returns the HTTP status.
+export const getApiErrorCustomCode = (error: AxiosError): number | undefined =>
+  (error?.response?.data as CustomError)?.errorCode
+
 export function getApiErrorMessage(error: AxiosError): string {
   // @ts-ignore
   const errorMessage = error?.response?.data?.message

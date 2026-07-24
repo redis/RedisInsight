@@ -2,15 +2,24 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AxiosError } from 'axios'
 import { remove } from 'lodash'
 import { apiService, localStorageService } from 'uiSrc/services'
-import { ApiEndpoints, BrowserStorageItem, Pages } from 'uiSrc/constants'
 import {
+  ApiEndpoints,
+  BrowserStorageItem,
+  CustomErrorCodes,
+  Pages,
+} from 'uiSrc/constants'
+import {
+  createAxiosError,
   getApiErrorCode,
+  getApiErrorCustomCode,
   getApiErrorMessage,
   getAxiosError,
+  getTranslatedApiError,
   isStatusSuccessful,
   Maybe,
   Nullable,
 } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 
 import { CloudJobName, CloudJobStatus } from 'uiSrc/electron/constants'
 import {
@@ -74,6 +83,11 @@ export const initialState: StateAppOAuth = {
       error: '',
       data: null,
     },
+  },
+  mfa: {
+    isOpenDialog: false,
+    loading: false,
+    error: '',
   },
   plan: {
     loading: false,
@@ -148,6 +162,28 @@ const oauthCloudSlice = createSlice({
       { payload }: PayloadAction<boolean>,
     ) => {
       state.isOpenSelectAccountDialog = payload
+    },
+    setMfaDialogState: (state, { payload }: PayloadAction<boolean>) => {
+      state.mfa.isOpenDialog = payload
+      if (!payload) {
+        state.mfa.loading = false
+        state.mfa.error = ''
+      }
+    },
+    submitMfaCode: (state) => {
+      state.mfa.loading = true
+      state.mfa.error = ''
+    },
+    submitMfaCodeSuccess: (state) => {
+      state.mfa.loading = false
+      state.mfa.isOpenDialog = false
+    },
+    submitMfaCodeFailure: (state, { payload }: PayloadAction<string>) => {
+      state.mfa.loading = false
+      state.mfa.error = payload
+    },
+    resetMfaError: (state) => {
+      state.mfa.error = ''
     },
     setJob: (state, { payload }: PayloadAction<CloudJobInfoState>) => {
       state.job = payload
@@ -237,6 +273,11 @@ export const {
   setSocialDialogState,
   setOAuthCloudSource,
   setSelectAccountDialogState,
+  setMfaDialogState,
+  submitMfaCode,
+  submitMfaCodeSuccess,
+  submitMfaCodeFailure,
+  resetMfaError,
   setJob,
   setIsOpenSelectPlanDialog,
   getPlans,
@@ -272,6 +313,7 @@ export const oauthCloudPAgreementSelector = (state: RootState) =>
   state.oauth.cloud.agreement
 export const oauthCapiKeysSelector = (state: RootState) =>
   state.oauth.cloud.capiKeys
+export const oauthCloudMfaSelector = (state: RootState) => state.oauth.cloud.mfa
 
 // The reducer
 export default oauthCloudSlice.reducer
@@ -383,11 +425,100 @@ export function fetchUserInfo(
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
+
+      if (
+        getApiErrorCustomCode(error) === CustomErrorCodes.CloudApiMfaRequired
+      ) {
+        const factors = (
+          error?.response?.data as {
+            factors?: { totpFactorAvailable?: boolean }
+          }
+        )?.factors
+
+        // only TOTP is supported; if the challenge cannot be satisfied with an
+        // authenticator code, abort instead of prompting for one that can never
+        // complete (and would burn the user's MFA attempts)
+        if (factors && factors.totpFactorAvailable === false) {
+          dispatch(getUserInfoFailure(errorMessage))
+          dispatch(
+            addErrorNotification(
+              createAxiosError({
+                message: i18n.t('oauth.mfa.totpUnavailable'),
+              }),
+            ),
+          )
+          dispatch(setOAuthCloudSource(null))
+          dispatch(setSSOFlow(undefined))
+
+          onFailAction?.()
+          return
+        }
+
+        dispatch(getUserInfoFailure(errorMessage))
+        dispatch(setMfaDialogState(true))
+
+        onFailAction?.()
+        return
+      }
+
       dispatch(addErrorNotification(error))
       dispatch(getUserInfoFailure(errorMessage))
       dispatch(setOAuthCloudSource(null))
 
       onFailAction?.()
+    }
+  }
+}
+
+// Asynchronous thunk action
+export function submitMfaCodeAction(
+  code: string,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    // a duplicate submit would burn another server-side mfa attempt
+    if (getState().oauth.cloud.mfa.loading) return
+
+    dispatch(submitMfaCode())
+
+    try {
+      const { status } = await apiService.post(
+        ApiEndpoints.CLOUD_ME_LOGIN_MFA,
+        { code },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(submitMfaCodeSuccess())
+        onSuccessAction?.()
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorCode = getApiErrorCustomCode(error)
+
+      if (errorCode === CustomErrorCodes.CloudApiMfaQuotaExceeded) {
+        // the server blocks further attempts for a while: abort instead of retrying
+        dispatch(setMfaDialogState(false))
+        dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
+        dispatch(addErrorNotification(error))
+        dispatch(setOAuthCloudSource(null))
+        // release ConfigOAuth's in-progress guard so a later sign-in is not swallowed
+        dispatch(setSSOFlow(undefined))
+
+        onFailAction?.()
+        return
+      }
+
+      // a rejected code comes back as mfa-invalid-code (or a re-challenge); show
+      // a clear inline message rather than the generic backend error text
+      const isInvalidCode =
+        errorCode === CustomErrorCodes.CloudApiMfaInvalidCode ||
+        errorCode === CustomErrorCodes.CloudApiMfaRequired
+      const message = isInvalidCode
+        ? i18n.t('oauth.mfa.invalidCode')
+        : getTranslatedApiError(error)
+
+      dispatch(submitMfaCodeFailure(message))
     }
   }
 }

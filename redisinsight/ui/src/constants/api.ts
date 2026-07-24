@@ -157,6 +157,7 @@ enum ApiEndpoints {
   CLOUD_ME = 'cloud/me',
   CLOUD_ME_JOBS = 'cloud/me/jobs',
   CLOUD_ME_ACCOUNTS = 'cloud/me/accounts',
+  CLOUD_ME_LOGIN_MFA = 'cloud/me/login/mfa',
   CLOUD_ME_LOGOUT = 'cloud/me/logout',
   CLOUD_CURRENT = 'current',
 
