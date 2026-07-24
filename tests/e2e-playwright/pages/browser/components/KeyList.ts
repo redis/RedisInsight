@@ -177,8 +177,14 @@ export class KeyList {
    */
   async clickKey(keyName: string): Promise<void> {
     const keyEl = this.getKeyRow(keyName);
-    const isListRowVisible = await keyEl.isVisible();
-    if (isListRowVisible) {
+    // isVisible() does not auto-wait, so a row still rendering reads as absent
+    // and gets mis-routed to the tree path. Wait for it first; a genuine miss
+    // (tree view with a collapsed folder) falls through to selectKeyInTree.
+    const isRowVisible = await keyEl
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (isRowVisible) {
       await keyEl.click();
       return;
     }

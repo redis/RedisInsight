@@ -66,6 +66,9 @@ export class VectorSetKeyDetails {
 
   async waitForLoad(): Promise<void> {
     await expect(this.elementsTable).toBeVisible();
+    // The panel shell paints before its rows are fetched; wait for the inner
+    // table too so callers asserting on element cells don't race the render.
+    await expect(this.elementsTableInner).toBeVisible();
   }
 
   async addElement(name: string, vector: string): Promise<void> {
@@ -75,7 +78,9 @@ export class VectorSetKeyDetails {
     await this.elementVectorInput.fill(vector);
     await expect(this.saveElementsButton).toBeEnabled();
     await this.saveElementsButton.click();
-    await expect(this.elementNameInput).toBeHidden();
+    // Gate on the added element appearing in the table, the real outcome,
+    // rather than the form closing, which can lag the save round-trip.
+    await expect(this.elementValueCell(name)).toBeVisible();
   }
 
   viewElementButton(elementName: string): Locator {

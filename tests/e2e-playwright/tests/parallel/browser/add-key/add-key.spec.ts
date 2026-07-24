@@ -158,8 +158,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.addKeyDialog.clickCancel();
 
     // Dialog should be closed
-    const isVisible = await browserPage.addKeyDialog.isVisible();
-    expect(isVisible).toBe(false);
+    await browserPage.addKeyDialog.expectHidden();
   });
 
   test(`should add a key with TTL`, async ({ browserPage }) => {

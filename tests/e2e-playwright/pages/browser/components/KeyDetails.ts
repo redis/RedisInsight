@@ -226,10 +226,12 @@ export class KeyDetails {
   }
 
   async editTtl(ttlSeconds: string): Promise<void> {
-    // Click on TTL to open edit mode
-    await this.ttlValue.click();
-    // Wait for the edit input to appear - use the textbox with "No limit" placeholder
+    // Edit mode replaces the TTL text with an inline input; clicking the hidden
+    // text then hangs, so open it only when the input is not already showing.
     const ttlInput = this.page.getByRole('textbox', { name: /no limit/i });
+    if (!(await ttlInput.isVisible())) {
+      await this.ttlValue.click();
+    }
     await ttlInput.waitFor({ state: 'visible' });
     // Clear and fill the new TTL value
     await ttlInput.clear();

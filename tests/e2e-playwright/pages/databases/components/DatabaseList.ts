@@ -237,6 +237,9 @@ export class DatabaseList {
    * Select a database row by checking its checkbox
    */
   async selectRow(name: string): Promise<void> {
+    // Wait for the row itself before reaching for its checkbox, so a list still
+    // loading fails with a clear "row not visible" rather than a 60s check() timeout.
+    await expect(this.getRow(name)).toBeVisible();
     await this.getRowCheckbox(name).check();
   }
 
