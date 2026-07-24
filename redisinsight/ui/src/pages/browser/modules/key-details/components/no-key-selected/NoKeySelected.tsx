@@ -9,6 +9,7 @@ import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,6 +23,7 @@ export interface Props {
 export const NoKeySelected = (props: Props) => {
   const { keyProp, totalKeys, onClosePanel, error, keysLastRefreshTime } = props
 
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const handleClosePanel = () => {
@@ -34,8 +36,7 @@ export const NoKeySelected = (props: Props) => {
       {totalKeys > 0 ? (
         <Text textAlign="center">
           <span data-testid="select-key-message">
-            Select the key from the list on the left to see the details of the
-            key.
+            {t('browser.keyDetails.noKeySelected.message')}
           </span>
         </Text>
       ) : (
@@ -47,13 +48,13 @@ export const NoKeySelected = (props: Props) => {
   return (
     <>
       <RiTooltip
-        content="Close"
+        content={t('browser.keyDetails.noKeySelected.closeTooltip')}
         position="left"
         anchorClassName={styles.closeRightPanel}
       >
         <IconButton
           icon={CancelSlimIcon}
-          aria-label="Close panel"
+          aria-label={t('browser.keyDetails.noKeySelected.closeAria')}
           className={styles.closeBtn}
           onClick={handleClosePanel}
           data-testid="close-right-panel-btn"
