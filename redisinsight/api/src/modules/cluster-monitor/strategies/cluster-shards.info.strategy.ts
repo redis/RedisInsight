@@ -11,12 +11,14 @@ import {
 import { RedisClient } from 'src/modules/redis/client';
 
 export class ClusterShardsInfoStrategy extends AbstractInfoStrategy {
-  async getClusterNodesFromRedis(client: RedisClient) {
+  async getClusterNodesFromRedis(
+    client: RedisClient,
+  ): Promise<Partial<ClusterNodeDetails>[]> {
     const resp = (await client.sendCommand(['cluster', 'shards'], {
       replyEncoding: 'utf8',
     })) as any[];
 
-    return [].concat(
+    return ([] as Partial<ClusterNodeDetails>[]).concat(
       ...resp.map((shardArray) => {
         const shard = convertArrayReplyToObject(shardArray);
         const slots = ClusterShardsInfoStrategy.calculateSlots(shard.slots);
