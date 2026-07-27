@@ -665,11 +665,7 @@
     "TS7010": 1,
     "TS7053": 4
   },
-  "src/modules/cluster-monitor/strategies/cluster-shards.info.strategy.spec.ts": {
-    "TS2339": 10
-  },
   "src/modules/cluster-monitor/strategies/cluster-shards.info.strategy.ts": {
-    "TS2769": 1,
     "TS7005": 1,
     "TS7034": 1,
     "TS7053": 1
@@ -1263,13 +1259,8 @@
   "src/modules/redis/redis.client.storage.ts": {
     "TS2322": 2
   },
-  "src/modules/redis/utils/reply.util.spec.ts": {
-    "TS2322": 4
-  },
   "src/modules/redis/utils/reply.util.ts": {
-    "TS2538": 1,
-    "TS7005": 1,
-    "TS7034": 1
+    "TS2538": 1
   },
   "src/modules/server/local.server.service.ts": {
     "TS2345": 2
