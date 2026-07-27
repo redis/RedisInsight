@@ -4,11 +4,12 @@ services:
   redis:
     image: redis:8.8-alpine
 
-  # Scope the run to suites that declared `tag('array')` (the new Array data
-  # type read endpoints). redis:8.8-alpine has no modules and ships Redis 8.8
-  # semantics (per-field hash TTL, RediSearch flag changes, etc.) that other
-  # untagged suites don't tolerate, so leaving them in would produce noise
-  # unrelated to the suite this RTE was added for.
+  # Scope the run to the suites tagged for this RTE: `array` (the Array data
+  # type read endpoints) and `vectorSet` (the VectorSet endpoints — a core
+  # Redis 8.0+ type, so no modules required). redis:8.8-alpine has no modules
+  # and ships Redis 8.8 semantics (per-field hash TTL, RediSearch flag changes,
+  # etc.) that other untagged suites don't tolerate, so leaving them in would
+  # produce noise unrelated to the suites this RTE was added for.
   test:
     environment:
-      TEST_TAGS: array
+      TEST_TAGS: array,vectorSet
