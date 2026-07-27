@@ -1156,7 +1156,10 @@ describe('oauth cloud slice', () => {
           },
         }
 
-        apiService.get = jest.fn().mockRejectedValueOnce(responsePayload)
+        apiService.get = jest
+          .fn()
+          .mockRejectedValueOnce(responsePayload)
+          .mockResolvedValue({ status: 200 })
 
         // Act
         await store.dispatch<any>(fetchUserInfo())
@@ -1165,7 +1168,10 @@ describe('oauth cloud slice', () => {
         const actions = store.getActions()
         expect(actions).not.toContainEqual(setMfaDialogState(true))
         expect(actions).toContainEqual(setOAuthCloudSource(null))
-        expect(actions).toContainEqual(setSSOFlow(undefined))
+        // an unsatisfiable challenge revokes the backend session, not just local state
+        expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
+        expect(actions).toContainEqual(logoutUser())
+        expect(actions).toContainEqual(setSSOFlow())
       })
     })
 
@@ -1248,6 +1254,7 @@ describe('oauth cloud slice', () => {
         }
 
         apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+        apiService.get = jest.fn().mockResolvedValue({ status: 200 })
         const onFailAction = jest.fn()
 
         // Act
@@ -1255,15 +1262,19 @@ describe('oauth cloud slice', () => {
           submitMfaCodeAction('111111', undefined, onFailAction),
         )
 
-        // Assert
+        // Assert - the abort revokes the backend session (logout) instead of
+        // only clearing renderer state
         const expectedActions = [
           submitMfaCode(),
           setMfaDialogState(false),
           removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress),
           addErrorNotification(responsePayload as AxiosError),
           setOAuthCloudSource(null),
-          setSSOFlow(undefined),
+          logoutUser(),
+          setSSOFlow(),
+          logoutUserSuccess(),
         ]
+        expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
         expect(store.getActions()).toEqual(expectedActions)
         expect(onFailAction).toBeCalled()
       })
@@ -1281,6 +1292,7 @@ describe('oauth cloud slice', () => {
         }
 
         apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+        apiService.get = jest.fn().mockResolvedValue({ status: 200 })
         const onFailAction = jest.fn()
 
         // Act
@@ -1295,7 +1307,10 @@ describe('oauth cloud slice', () => {
         )
         expect(actions).toContainEqual(setMfaDialogState(false))
         expect(actions).toContainEqual(setOAuthCloudSource(null))
-        expect(actions).toContainEqual(setSSOFlow(undefined))
+        // the dead challenge session is revoked on the backend, not just locally
+        expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
+        expect(actions).toContainEqual(logoutUser())
+        expect(actions).toContainEqual(setSSOFlow())
         expect(onFailAction).toBeCalled()
       })
     })

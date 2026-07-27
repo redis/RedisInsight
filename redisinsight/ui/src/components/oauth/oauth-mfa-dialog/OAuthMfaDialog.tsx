@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
+  logoutUserAction,
   oauthCloudMfaSelector,
   resetMfaError,
   setMfaDialogState,
   setOAuthCloudSource,
   submitMfaCodeAction,
 } from 'uiSrc/slices/oauth/cloud'
-import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -55,9 +55,10 @@ const OAuthMfaDialog = ({ onVerified }: OAuthMfaDialogProps) => {
 
     dispatch(setMfaDialogState(false))
     dispatch(setOAuthCloudSource(null))
-    // clearing the SSO flow releases ConfigOAuth's in-progress guard, so a
-    // later failed sign-in still surfaces instead of being swallowed
-    dispatch(setSSOFlow(undefined))
+    // the oauth callback already credentialed the backend session; revoke it so
+    // the abandoned sign-in cannot be resumed on a later fetch or app restart.
+    // logout also clears the SSO flow, releasing ConfigOAuth's in-progress guard
+    dispatch(logoutUserAction())
   }
 
   const handleChange = (next: string) => {

@@ -9,6 +9,7 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import {
+  logoutUser,
   oauthCloudMfaSelector,
   resetMfaError,
   setMfaDialogState,
@@ -18,6 +19,7 @@ import {
 } from 'uiSrc/slices/oauth/cloud'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { apiService } from 'uiSrc/services'
+import { ApiEndpoints } from 'uiSrc/constants'
 import OAuthMfaDialog from './OAuthMfaDialog'
 import { OAuthMfaDialogProps } from './OAuthMfaDialog.types'
 
@@ -120,17 +122,22 @@ describe('OAuthMfaDialog', () => {
     expect(onVerified).toBeCalled()
   })
 
-  it('should close the dialog and reset the oauth source on cancel', () => {
+  it('should close the dialog and revoke the backend session on cancel', async () => {
+    apiService.get = jest.fn().mockResolvedValue({ status: 200 })
     renderComponent()
 
-    fireEvent.click(screen.getByTestId('oauth-mfa-dialog-cancel-btn'))
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('oauth-mfa-dialog-cancel-btn'))
+    })
 
-    const expectedActions = [
-      setMfaDialogState(false),
-      setOAuthCloudSource(null),
-      setSSOFlow(undefined),
-    ]
-    expect(store.getActions()).toEqual(expectedActions)
+    const actions = store.getActions()
+    expect(actions).toContainEqual(setMfaDialogState(false))
+    expect(actions).toContainEqual(setOAuthCloudSource(null))
+    // a canceled sign-in must delete the credentialed backend session, not just
+    // reset renderer state
+    expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
+    expect(actions).toContainEqual(logoutUser())
+    expect(actions).toContainEqual(setSSOFlow(undefined))
   })
 
   it('should show the inline error', () => {

@@ -447,7 +447,9 @@ export function fetchUserInfo(
             ),
           )
           dispatch(setOAuthCloudSource(null))
-          dispatch(setSSOFlow(undefined))
+          // revoke the backend session credentialed by the oauth callback so an
+          // unsatisfiable challenge cannot be resumed later; also clears the SSO flow
+          await dispatch<any>(logoutUserAction())
 
           onFailAction?.()
           return
@@ -512,8 +514,10 @@ export function submitMfaCodeAction(
       dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
       dispatch(addErrorNotification(error))
       dispatch(setOAuthCloudSource(null))
-      // release ConfigOAuth's in-progress guard so a later sign-in is not swallowed
-      dispatch(setSSOFlow(undefined))
+      // the oauth callback already credentialed the backend session; revoke it
+      // so the abandoned login cannot be resumed on a later fetch or restart.
+      // logout also clears the SSO flow, releasing ConfigOAuth's guard
+      await dispatch<any>(logoutUserAction())
 
       onFailAction?.()
     }
