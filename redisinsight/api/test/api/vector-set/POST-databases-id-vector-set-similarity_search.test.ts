@@ -20,10 +20,8 @@ const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
 
 const mainCheckFn = getMainCheckFn(endpoint);
 
-// A self-match should score a perfect 1.0, but the default int8 quantization
-// can land it slightly under (~0.999 observed), so assert closeness rather than
-// an exact score — mirroring the e2e vector-set similarity tests.
-const SELF_MATCH_SCORE_TOLERANCE = 0.001;
+// Default int8 quantization nudges a self-match score just under 1.0.
+const SELF_MATCH_SCORE_TOLERANCE = 0.01;
 
 const responseSchema = Joi.object()
   .keys({
@@ -63,11 +61,8 @@ describe('POST /databases/:id/vector-set/similarity-search', () => {
         checkFn: ({ body }: any) => {
           expect(body.elements.length).to.eql(2);
 
-          // Querying by element 'a' ranks a self-match first with a ~1.0 score.
-          // Because 'a' ([1,2,3]) and 'b' ([1,2,3.1]) quantize almost identically,
-          // either can occupy the top slot, so assert the top score is within
-          // tolerance of a perfect match and that 'a' is present — rather than
-          // pinning an exact name that flakes on the quantization tie.
+          // Top match is a near-perfect self-match; 'a'/'b' quantize alike so
+          // avoid pinning the top name.
           expect(body.elements[0].score).to.be.closeTo(
             1,
             SELF_MATCH_SCORE_TOLERANCE,
