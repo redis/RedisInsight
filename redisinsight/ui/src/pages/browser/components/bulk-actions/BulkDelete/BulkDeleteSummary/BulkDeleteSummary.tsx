@@ -42,9 +42,11 @@ const BulkDeleteSummary = () => {
     if (isFolderDelete) {
       const approximateCount =
         scanned < total ? (keyCount * total) / scanned : keyCount
+      const rounded = Math.round(approximateCount)
       setTitle(
         t('browser.bulkActions.delete.expectedAmount', {
-          amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))}`,
+          count: rounded,
+          amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(rounded)}`,
         }),
       )
       return
@@ -58,9 +60,11 @@ const BulkDeleteSummary = () => {
 
     const approximateCount =
       scanned < total ? (keys.length * total) / scanned : keys.length
+    const rounded = Math.round(approximateCount)
     setTitle(
       t('browser.bulkActions.delete.expectedAmount', {
-        amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(Math.round(approximateCount))}`,
+        count: rounded,
+        amount: `${scanned < total ? '~' : ''}${nullableNumberWithSpaces(rounded)}`,
       }),
     )
   }, [scanned, total, keys, keyCount, isFolderDelete, t])
@@ -90,6 +94,7 @@ const BulkDeleteSummary = () => {
           </Row>
           <Text color="primary" size="S" data-testid="bulk-delete-summary">
             {t('browser.bulkActions.delete.scanned', {
+              count: displayFound,
               percentage: getApproximatePercentage(total, scanned),
               scanned: numberWithSpaces(scanned),
               total: nullableNumberWithSpaces(total),
