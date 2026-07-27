@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { debounce, findIndex, isUndefined, orderBy, reject } from 'lodash'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { CellMeasurerCache } from 'react-virtualized'
 import {
   bufferToString,
@@ -86,6 +88,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     sortedColumn,
   } = props
 
+  const { t } = useTranslation()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { handler: keyFormatConvertor } = useKeyFormat()
 
@@ -431,7 +434,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   const columns: ITableColumn[] = [
     {
       id: 'type',
-      label: 'Type',
+      label: t('browser.keyList.column.type'),
       absoluteWidth: 'auto',
       minWidth: 126,
       render: (cellData: any, { nameString }: any) => (
@@ -440,7 +443,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     },
     {
       id: 'nameString',
-      label: 'Key',
+      label: t('browser.keyList.column.key'),
       minWidth: 94,
       truncateText: true,
       render: (
@@ -473,7 +476,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   if (visibleColumns.includes(BrowserColumns.TTL)) {
     columns.push({
       id: 'ttl',
-      label: 'TTL',
+      label: t('browser.keyList.column.ttl'),
       absoluteWidth: ttlColumnSize,
       minWidth: ttlColumnSize,
       truncateText: true,
@@ -510,7 +513,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   if (visibleColumns.includes(BrowserColumns.Size)) {
     columns.push({
       id: 'size',
-      label: 'Size',
+      label: t('browser.keyList.column.size'),
       absoluteWidth: 90,
       minWidth: 90,
       alignment: TableCellAlignment.Right,

@@ -9,6 +9,7 @@ import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
+import { useTranslation } from 'uiSrc/i18n'
 
 import ScanMore from '../scan-more'
 import styles from './styles.module.scss'
@@ -38,6 +39,7 @@ const KeysSummary = (props: Props) => {
     loadMoreItems,
     nextCursor,
   } = props
+  const { t } = useTranslation()
 
   const resultsLength = items.length
   const scannedDisplay = resultsLength > scanned ? resultsLength : scanned
@@ -59,14 +61,14 @@ const KeysSummary = (props: Props) => {
             <FlexItem>
               <Row gap="s">
                 <ColorText size="s" variant="semiBold" component="span">
-                  {'Results: '}
+                  {t('browser.keysBrowser.results')}
                   <span data-testid="keys-number-of-results">
                     {numberWithSpaces(resultsLength)}
                   </span>
                   {'. '}
                 </ColorText>
                 <ColorText size="s" color="secondary" component="span">
-                  {'Scanned '}
+                  {t('browser.keysBrowser.scannedPrefix')}
                   <span data-testid="keys-number-of-scanned">
                     {notAccurateScanned}
                     {numberWithSpaces(scannedDisplay)}
@@ -88,7 +90,7 @@ const KeysSummary = (props: Props) => {
           {!scanned && (
             <FlexItem>
               <Text size="s" variant="semiBold" component="span">
-                {'Total: '}
+                {t('browser.keysBrowser.total')}
                 {nullableNumberWithSpaces(totalItemsCount)}
               </Text>
             </FlexItem>
@@ -118,7 +120,7 @@ const KeysSummary = (props: Props) => {
         <Row align="center">
           <FlexItem>
             <Text size="s" data-testid="scanning-text">
-              Scanning...
+              {t('browser.keysBrowser.scanning')}
             </Text>
           </FlexItem>
         </Row>

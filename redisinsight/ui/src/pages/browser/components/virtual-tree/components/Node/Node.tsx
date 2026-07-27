@@ -9,10 +9,8 @@ import {
   FeatureFlags,
   KeyTypes,
   ModulesKeyTypes,
-  TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
-  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
-  TEXT_BULK_DELETE_TOOLTIP,
 } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
 import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
@@ -44,6 +42,7 @@ export type NodeProps = NodeComponentProps<
 }
 
 const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
+  const { t } = useTranslation()
   const {
     id: nodeId,
     isLeaf,
@@ -145,12 +144,12 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
 
   const getDeleteTooltip = () => {
     if (hasUnprintableChars) {
-      return TEXT_BULK_DELETE_DISABLED_UNPRINTABLE
+      return t('browser.tree.folder.deleteDisabledUnprintable')
     }
     if (delimiters.length > 1) {
-      return TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS
+      return t('browser.tree.folder.deleteDisabledMultipleDelimiters')
     }
-    return TEXT_BULK_DELETE_TOOLTIP(deletePattern)
+    return t('browser.tree.folder.deleteTooltip', { pattern: deletePattern })
   }
   const deleteTooltip = getDeleteTooltip()
 
@@ -205,7 +204,7 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
                   onClick={handleDeleteFolder}
                   disabled={isDeleteDisabled}
                   className="showOnHoverKey"
-                  aria-label="Delete Folder Keys"
+                  aria-label={t('browser.tree.folder.deleteAria')}
                   data-testid={`delete-folder-btn-${fullName}`}
                 />
               </RiTooltip>
@@ -285,7 +284,10 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
         )}
       </S.FolderTooltipHeader>
       <ColorText color="secondary">
-        {`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}
+        {t('browser.tree.folder.keyCount', {
+          count: keyCount,
+          percentage: Math.round(keyApproximate * 100) / 100,
+        })}
       </ColorText>
     </>
   )
