@@ -53,8 +53,25 @@ describe('GET /cloud/me', () => {
   });
 
   describe('MFA challenge', () => {
+    // The API keeps one shared, in-memory cloud session for the whole suite. By
+    // the time this runs a prior test has logged in, so the session holds an
+    // apiSessionId + cached user and GET /cloud/me returns that cached profile
+    // without ever calling /login. Reset it to a pre-login state first: a failed
+    // account switch (and its failed re-login) drives the auth-retry to
+    // invalidate the apiSessionId and cached user, so the next GET /cloud/me
+    // performs a real login and reaches the challenge.
     beforeEach(async () => {
-      // the outer hook stubs /login -> 200; drop it so /login can challenge
+      nock.cleanAll();
+      initSMApiNockScope()
+        .persist()
+        .post('/accounts/setcurrent/1')
+        .reply(401, mockCapiUnauthorizedError)
+        .get('/users/me')
+        .reply(401, mockCapiUnauthorizedError)
+        .post('/login')
+        .query(true)
+        .reply(401, mockCapiUnauthorizedError);
+      await request(server).put('/cloud/me/accounts/1/current');
       nock.cleanAll();
     });
 
@@ -78,14 +95,7 @@ describe('GET /cloud/me', () => {
                 },
               },
               { 'set-cookie': 'JSESSIONID=mfa-challenge' },
-            )
-            // a valid apiSessionId on the shared session would skip /login; a
-            // 401 makes the auth-retry drop it so the challenge reaches /login
-            .get('/users/me')
-            .reply(401, mockCapiUnauthorizedError)
-            // likewise, a session still missing csrf would stop before /login
-            .get('/csrf')
-            .reply(200, { csrfToken: 'csrf' });
+            );
         },
         statusCode: 401,
         checkFn: ({ body }: any) => {
