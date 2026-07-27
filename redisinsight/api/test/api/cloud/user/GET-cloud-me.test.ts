@@ -88,7 +88,7 @@ describe('GET /cloud/me', () => {
             .reply(200, { csrfToken: 'csrf' });
         },
         statusCode: 401,
-        checkFn: ({ body }) => {
+        checkFn: ({ body }: any) => {
           // errorCode the frontend interceptor keys off to keep the session
           expect(body.errorCode).to.eq(11025);
           expect(body.error).to.eq('CloudApiMfaRequired');
