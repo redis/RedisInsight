@@ -104,7 +104,7 @@ const OtpInput = ({
   }
 
   return (
-    <S.Container data-testid={dataTestid}>
+    <S.Container gap="l" justify="center" data-testid={dataTestid}>
       {slots.map((digit, index) => (
         <input
           // fixed-length list, index is a stable identity here
