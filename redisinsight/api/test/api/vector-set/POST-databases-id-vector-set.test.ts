@@ -22,26 +22,6 @@ const mainCheckFn = getMainCheckFn(endpoint);
 // VCARD has no typed method on rte.client; assert state via `call`.
 const vcard = (key: string) => rte.client.call('VCARD', key);
 
-interface CreateVectorSetTestCase {
-  name: string;
-  data: { keyName: string } & Record<string, unknown>;
-  statusCode: number;
-  before?: () => Promise<unknown>;
-  after?: () => Promise<unknown>;
-}
-
-const createCheckFn = (testCase: CreateVectorSetTestCase) => {
-  it(testCase.name, async () => {
-    if (testCase.before) {
-      await testCase.before();
-    }
-    await validateApiCall({ endpoint, ...testCase });
-    if (testCase.after) {
-      await testCase.after();
-    }
-  });
-};
-
 describe('POST /databases/:id/vector-set', () => {
   // Vector sets are a Redis 8.0 data type; skip where the server lacks VADD.
   requirements('rte.version>=8.0');
@@ -51,42 +31,40 @@ describe('POST /databases/:id/vector-set', () => {
     const newKey = constants.getRandomString();
     const ttlKey = constants.getRandomString();
 
-    (
-      [
-        {
-          name: 'Should create a vector set from numeric values',
-          data: {
-            keyName: newKey,
-            elements: [
-              { name: 'a', vectorValues: [1, 2, 3] },
-              { name: 'b', vectorValues: [4, 5, 6] },
-            ],
-          },
-          statusCode: 201,
-          before: async () => {
-            expect(await rte.client.exists(newKey)).to.eql(0);
-          },
-          after: async () => {
-            expect(await rte.client.exists(newKey)).to.eql(1);
-            expect(await vcard(newKey)).to.eql(2);
-            expect(await rte.client.ttl(newKey)).to.eql(-1);
-          },
+    [
+      {
+        name: 'Should create a vector set from numeric values',
+        data: {
+          keyName: newKey,
+          elements: [
+            { name: 'a', vectorValues: [1, 2, 3] },
+            { name: 'b', vectorValues: [4, 5, 6] },
+          ],
         },
-        {
-          name: 'Should create a vector set with a TTL',
-          data: {
-            keyName: ttlKey,
-            elements: [{ name: 'a', vectorValues: [1, 2, 3] }],
-            expire: 100,
-          },
-          statusCode: 201,
-          after: async () => {
-            expect(await vcard(ttlKey)).to.eql(1);
-            expect(await rte.client.ttl(ttlKey)).to.gte(95);
-          },
+        statusCode: 201,
+        before: async () => {
+          expect(await rte.client.exists(newKey)).to.eql(0);
         },
-      ] as CreateVectorSetTestCase[]
-    ).map(createCheckFn);
+        after: async () => {
+          expect(await rte.client.exists(newKey)).to.eql(1);
+          expect(await vcard(newKey)).to.eql(2);
+          expect(await rte.client.ttl(newKey)).to.eql(-1);
+        },
+      },
+      {
+        name: 'Should create a vector set with a TTL',
+        data: {
+          keyName: ttlKey,
+          elements: [{ name: 'a', vectorValues: [1, 2, 3] }],
+          expire: 100,
+        },
+        statusCode: 201,
+        after: async () => {
+          expect(await vcard(ttlKey)).to.eql(1);
+          expect(await rte.client.ttl(ttlKey)).to.gte(95);
+        },
+      },
+    ].map(mainCheckFn);
   });
 
   describe('Validation', () => {
