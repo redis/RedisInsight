@@ -140,4 +140,28 @@ describe('useHasExistingKeys', () => {
     expect(mockApiPost).not.toHaveBeenCalled()
     expect(result.current.loading).toBe(false)
   })
+
+  it('should re-scan and show loading when re-enabled for the same inputs', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [], total: 0, cursor: 0 }],
+    })
+
+    const { result, rerender, waitForNextUpdate } = renderHook(
+      ({ enabled }) => useHasExistingKeys(enabled),
+      { initialProps: { enabled: true } },
+    )
+    await waitForNextUpdate()
+    expect(result.current.loading).toBe(false)
+
+    rerender({ enabled: false })
+    mockApiPost.mockClear()
+
+    rerender({ enabled: true })
+    expect(result.current.loading).toBe(true)
+
+    await waitForNextUpdate()
+    expect(mockApiPost).toHaveBeenCalled()
+    expect(result.current.loading).toBe(false)
+  })
 })

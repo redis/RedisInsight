@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
-import { useCreateIndexFlow } from '../../hooks'
+import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
 import { CreateIndexMode } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import {
   SearchTelemetryCancelStep,
@@ -31,6 +33,21 @@ export const VectorSearchProvider = ({
 
   const { run: createIndexFlow, loading: createIndexLoading } =
     useCreateIndexFlow()
+
+  const enhancementsEnabled = useAppSelector(
+    isVectorSearchEnhancementsEnabledSelector,
+  )
+  // Only the welcome and list entry points consume the legacy probe, so scope
+  // it to the base route and skip the scans on create-index and query pages.
+  const isEntryRoute = !!useRouteMatch({
+    path: Pages.vectorSearch(instanceId),
+    exact: true,
+  })
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys(!enhancementsEnabled && isEntryRoute)
 
   const openPickSampleDataModal = useCallback(
     (source: SearchTelemetrySource) => {
@@ -164,8 +181,17 @@ export const VectorSearchProvider = ({
     () => ({
       openPickSampleDataModal,
       navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
+      hasExistingKeysError,
     }),
-    [openPickSampleDataModal, navigateToExistingDataFlow],
+    [
+      openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
+      hasExistingKeysError,
+    ],
   )
 
   return (
