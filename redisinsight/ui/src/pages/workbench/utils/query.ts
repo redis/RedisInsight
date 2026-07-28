@@ -331,8 +331,13 @@ export const findStopArgumentWithSuggestions = (
   currentBlock: BlockTokensTree,
 ): Nullable<FoundCommandArgument> => {
   const { queryArgs, command } = currentBlock
+  const stopArgumentResult = findStopArgument(queryArgs, command)
+  // findStopArgument returns null when the command has no argument spec
+  // (e.g. a token-only command); there are no suggestions to offer, so bail
+  // out instead of destructuring null.
+  if (!stopArgumentResult) return null
   const { isBlocked, stopArgument, skippedArguments, blockParent } =
-    findStopArgument(queryArgs, command)
+    stopArgumentResult
 
   if (isBlocked) {
     const isBlockedWithSuggestions =
