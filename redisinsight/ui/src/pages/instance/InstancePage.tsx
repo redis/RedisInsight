@@ -85,20 +85,25 @@ const InstancePage = ({ routes = [] }: Props) => {
       dispatch(fetchRecommendationsAction(connectionInstanceId))
     }
 
-    // Only reset when switching away from a different connected DB.
-    // Redis Stack already set connectedInstance.id before routing here;
-    // resetting would clear it and ProtectedRoute would bounce to home.
-    // Always load instance data after connect attempt (success or fail) so
-    // connectedInstance.loading settles and Vector Search does not spin forever.
-    dispatch(
-      checkConnectToInstanceAction(
-        connectionInstanceId,
-        loadInstanceData,
-        loadInstanceData,
-        Boolean(connectedInstanceId) &&
-          connectedInstanceId !== connectionInstanceId,
-      ),
-    )
+    // Picker / Redis Stack / nav already connect before routing here and set
+    // connectedInstance.id. Skip the redundant /connect (heavy: module probe,
+    // INFO, CLIENT LIST, recommendations, analytics) when we're already on
+    // the same id. Always load instance data after connect attempt (success or
+    // fail) so connectedInstance.loading settles and Vector Search does not
+    // spin forever. Only reset when switching away from a different DB —
+    // Redis Stack sets the id before mount; resetting would bounce ProtectedRoute.
+    if (connectedInstanceId === connectionInstanceId) {
+      loadInstanceData()
+    } else {
+      dispatch(
+        checkConnectToInstanceAction(
+          connectionInstanceId,
+          loadInstanceData,
+          loadInstanceData,
+          Boolean(connectedInstanceId),
+        ),
+      )
+    }
 
     let intervalId: ReturnType<typeof setInterval>
     if (shouldGetRecommendations) {

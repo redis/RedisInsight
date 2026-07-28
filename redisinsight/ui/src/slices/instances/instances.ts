@@ -759,6 +759,7 @@ export function fetchConnectedInstanceAction(
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
+      dispatch(setConnectedInstanceFailure())
       dispatch(setDefaultInstanceFailure(errorMessage))
       dispatch(addErrorNotification(error))
       onFail?.()
