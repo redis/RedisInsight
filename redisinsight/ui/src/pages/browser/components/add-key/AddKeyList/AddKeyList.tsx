@@ -5,7 +5,7 @@ import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import {
-  optionsDestinations,
+  HEAD_DESTINATION,
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
@@ -13,7 +13,8 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { CreateListWithExpireDto, ListElementDestination } from 'apiClient'
 
-import { AddListFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddListFormConfig } from '../constants/fields-config'
 import AddMultipleFields from '../../add-multiple-fields'
 
 export interface Props {
@@ -24,6 +25,20 @@ export interface Props {
 
 const AddKeyList = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddListFormConfig(t)
+  const destinationOptions = [
+    {
+      value: TAIL_DESTINATION,
+      inputDisplay: t('browser.list.destination.tail'),
+      label: t('browser.list.destination.tail'),
+    },
+    {
+      value: HEAD_DESTINATION,
+      inputDisplay: t('browser.list.destination.head'),
+      label: t('browser.list.destination.head'),
+    },
+  ]
   const [elements, setElements] = useState<string[]>([''])
   const [destination, setDestination] =
     useState<ListElementDestination>(TAIL_DESTINATION)
@@ -82,7 +97,7 @@ const AddKeyList = (props: Props) => {
     <form onSubmit={onFormSubmit}>
       <RiSelect
         value={destination}
-        options={optionsDestinations}
+        options={destinationOptions}
         onChange={(value) => setDestination(value as ListElementDestination)}
         data-testid="destination-select"
       />
@@ -108,7 +123,7 @@ const AddKeyList = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-list-btn"

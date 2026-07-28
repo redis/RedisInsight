@@ -4,6 +4,7 @@ export interface Vec2WordPreviewRow {
 }
 
 export interface Vec2WordInfoRow {
+  testId: string
   label: string
   value: string
 }

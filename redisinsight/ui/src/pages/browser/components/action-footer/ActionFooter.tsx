@@ -7,6 +7,7 @@ import {
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
 import { Panel } from 'uiSrc/components/panel'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface ActionFooterProps {
   cancelText?: string
@@ -25,8 +26,8 @@ export interface ActionFooterProps {
 }
 
 export const ActionFooter = ({
-  cancelText = 'Cancel',
-  actionText = 'Save',
+  cancelText,
+  actionText,
   onCancel,
   onAction,
   disabled = false,
@@ -39,6 +40,9 @@ export const ActionFooter = ({
   usePortal = true,
   enableFormSubmit = true,
 }: ActionFooterProps) => {
+  const { t } = useTranslation()
+  const resolvedCancelText = cancelText ?? t('browser.addKey.button.cancel')
+  const resolvedActionText = actionText ?? t('browser.addKey.button.save')
   const content = (
     <Panel justify="end" gap={gap}>
       <FlexItem>
@@ -47,7 +51,7 @@ export const ActionFooter = ({
           data-testid={cancelTestId}
           className={cancelClassName}
         >
-          {cancelText}
+          {resolvedCancelText}
         </SecondaryButton>
       </FlexItem>
       <FlexItem>
@@ -59,7 +63,7 @@ export const ActionFooter = ({
           data-testid={actionTestId}
           className={actionClassName}
         >
-          {actionText}
+          {resolvedActionText}
         </PrimaryButton>
       </FlexItem>
     </Panel>

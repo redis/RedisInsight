@@ -3,6 +3,7 @@ import React from 'react'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { SAMPLE_DATASETS } from './data'
 import { DATASET_OPTIONS, getDatasetInfo } from './LoadSampleDataset.constants'
@@ -13,6 +14,7 @@ import * as S from './LoadSampleDataset.styles'
 // Key action. Full data lives in backend data files, so this shows just the
 // first rows.
 const LoadSampleDataset = ({ dataset, onDatasetChange, disabled }: Props) => {
+  const { t } = useTranslation()
   const remaining = dataset.elementCount - dataset.previewRows.length
 
   return (
@@ -62,7 +64,7 @@ const LoadSampleDataset = ({ dataset, onDatasetChange, disabled }: Props) => {
               color="secondary"
               data-testid="load-sample-dataset-preview-more"
             >
-              … and {remaining} more
+              {t('browser.addKey.array.moreItems', { count: remaining })}
             </Text>
           )}
         </S.PreviewColumn>
@@ -74,12 +76,12 @@ const LoadSampleDataset = ({ dataset, onDatasetChange, disabled }: Props) => {
           data-testid="load-sample-dataset-info"
           grow={false}
         >
-          {getDatasetInfo(dataset).map((row) => (
+          {getDatasetInfo(dataset, t).map((row) => (
             <S.InfoRow
-              key={row.label}
+              key={row.testId}
               gap="m"
               align="center"
-              data-testid={`load-sample-dataset-info-${row.label.toLowerCase().replace(/\s+/g, '-')}`}
+              data-testid={`load-sample-dataset-info-${row.testId}`}
             >
               <Text size="S" color="secondary">
                 {row.label}:

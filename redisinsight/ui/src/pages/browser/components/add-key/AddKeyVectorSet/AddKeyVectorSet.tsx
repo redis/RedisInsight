@@ -28,6 +28,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   SubmitElement,
@@ -53,6 +54,7 @@ const AddKeyVectorSet = ({
   setKeyName,
   setKeyNameDisabled,
 }: Props) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { loading } = useAppSelector(addKeyStateSelector)
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
@@ -198,7 +200,7 @@ const AddKeyVectorSet = ({
   return (
     <form onSubmit={onFormSubmit}>
       <Col gap="m">
-        <FormField label={POPULATE_LABEL}>
+        <FormField label={t(POPULATE_LABEL)}>
           <RiRadioGroupRoot
             value={populateMode}
             onChange={(value: PopulateMode) => setPopulateMode(value)}
@@ -219,11 +221,11 @@ const AddKeyVectorSet = ({
                   </RiRadioGroupItemRoot>
                   <Col gap="xs">
                     <Text size="M" color="primary">
-                      {option.label}
+                      {t(option.label)}
                     </Text>
                     {option.description && (
                       <Text size="XS" color="secondary">
-                        {option.description}
+                        {t(option.description)}
                       </Text>
                     )}
                   </Col>
@@ -246,7 +248,7 @@ const AddKeyVectorSet = ({
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={onClickAction}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading || isSubmittingSampleDataset}
         disabled={!isFormValid || isSubmittingSampleDataset}
         actionTestId="add-key-vector-set-btn"
