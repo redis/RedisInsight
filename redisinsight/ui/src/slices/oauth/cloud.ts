@@ -87,6 +87,7 @@ export const initialState: StateAppOAuth = {
     isOpenDialog: false,
     loading: false,
     error: '',
+    isProfileRestore: false,
   },
   plan: {
     loading: false,
@@ -167,7 +168,11 @@ const oauthCloudSlice = createSlice({
       if (!payload) {
         state.mfa.loading = false
         state.mfa.error = ''
+        state.mfa.isProfileRestore = false
       }
+    },
+    setMfaProfileRestore: (state, { payload }: PayloadAction<boolean>) => {
+      state.mfa.isProfileRestore = payload
     },
     submitMfaCode: (state) => {
       state.mfa.loading = true
@@ -273,6 +278,7 @@ export const {
   setOAuthCloudSource,
   setSelectAccountDialogState,
   setMfaDialogState,
+  setMfaProfileRestore,
   submitMfaCode,
   submitMfaCodeSuccess,
   submitMfaCodeFailure,
@@ -367,6 +373,7 @@ async function handleCloudMfaChallenge(
   error: AxiosError,
   dispatch: AppDispatch,
   onFailAction?: () => void,
+  isProfileRestore = false,
 ): Promise<boolean> {
   const errorCode = getApiErrorCustomCode(error)
   const errorMessage = getApiErrorMessage(error)
@@ -398,6 +405,9 @@ async function handleCloudMfaChallenge(
     }
 
     dispatch(getUserInfoFailure(errorMessage))
+    // remember whether a startup restore or an interactive sign-in was
+    // challenged so verification resumes the right flow
+    dispatch(setMfaProfileRestore(isProfileRestore))
     dispatch(setMfaDialogState(true))
 
     onFailAction?.()
@@ -446,7 +456,7 @@ export function fetchProfile(
       const error = _err as AxiosError
 
       // a persisted session re-logging in on startup can be MFA-challenged
-      if (await handleCloudMfaChallenge(error, dispatch, onFailAction)) {
+      if (await handleCloudMfaChallenge(error, dispatch, onFailAction, true)) {
         return
       }
 

@@ -72,6 +72,7 @@ import reducer, {
   oauthCloudUserSelector,
   setInitialLoadingState,
   setMfaDialogState,
+  setMfaProfileRestore,
   submitMfaCode,
   submitMfaCodeSuccess,
   submitMfaCodeFailure,
@@ -411,6 +412,7 @@ describe('oauth cloud slice', () => {
       const currentState = {
         ...initialState,
         mfa: {
+          ...initialState.mfa,
           isOpenDialog: true,
           loading: true,
           error: 'Some error',
@@ -427,6 +429,22 @@ describe('oauth cloud slice', () => {
         },
       })
       expect(oauthCloudMfaSelector(rootState)).toEqual(initialState.mfa)
+    })
+  })
+
+  describe('setMfaProfileRestore', () => {
+    it('should flag the challenge as a startup restore', () => {
+      // Act
+      const nextState = reducer(initialState, setMfaProfileRestore(true))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        oauth: { cloud: nextState },
+      })
+      expect(oauthCloudMfaSelector(rootState)).toEqual({
+        ...initialState.mfa,
+        isProfileRestore: true,
+      })
     })
   })
 
@@ -460,6 +478,7 @@ describe('oauth cloud slice', () => {
           isOpenDialog: true,
           loading: true,
           error: '',
+          isProfileRestore: false,
         },
       }
 
@@ -483,6 +502,7 @@ describe('oauth cloud slice', () => {
       const currentState = {
         ...initialState,
         mfa: {
+          ...initialState.mfa,
           isOpenDialog: true,
           loading: true,
           error: '',
@@ -513,6 +533,7 @@ describe('oauth cloud slice', () => {
       const currentState = {
         ...initialState,
         mfa: {
+          ...initialState.mfa,
           isOpenDialog: true,
           loading: false,
           error: 'Some error',
@@ -1139,6 +1160,7 @@ describe('oauth cloud slice', () => {
         const expectedActions = [
           getUserInfo(),
           getUserInfoFailure(errorMessage),
+          setMfaProfileRestore(false),
           setMfaDialogState(true),
         ]
         expect(store.getActions()).toEqual(expectedActions)
@@ -1225,8 +1247,11 @@ describe('oauth cloud slice', () => {
         // Act
         await store.dispatch<any>(fetchProfile())
 
-        // Assert - the restore routes through the same MFA flow, not a silent failure
-        expect(store.getActions()).toContainEqual(setMfaDialogState(true))
+        // Assert - the restore routes through the same MFA flow, not a silent
+        // failure, and is tagged so verification resumes the restore
+        const actions = store.getActions()
+        expect(actions).toContainEqual(setMfaDialogState(true))
+        expect(actions).toContainEqual(setMfaProfileRestore(true))
       })
     })
 

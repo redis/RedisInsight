@@ -5,7 +5,9 @@ import { useHistory } from 'react-router-dom'
 import {
   createFreeDbJob,
   fetchPlans,
+  fetchProfile,
   fetchUserInfo,
+  oauthCloudMfaSelector,
   setJob,
   setOAuthCloudSource,
   setSocialDialogState,
@@ -40,9 +42,11 @@ import { OAuthMfaDialog } from 'uiSrc/components/oauth'
 
 const ConfigOAuth = () => {
   const { ssoFlow, isRecommendedSettings } = useAppSelector(cloudSelector)
+  const { isProfileRestore } = useAppSelector(oauthCloudMfaSelector)
 
   const ssoFlowRef = useRef(ssoFlow)
   const isRecommendedSettingsRef = useRef(isRecommendedSettings)
+  const isProfileRestoreRef = useRef(isProfileRestore)
   const isFlowInProgress = useRef(false)
 
   const history = useHistory()
@@ -63,6 +67,10 @@ const ConfigOAuth = () => {
   useEffect(() => {
     isRecommendedSettingsRef.current = isRecommendedSettings
   }, [isRecommendedSettings])
+
+  useEffect(() => {
+    isProfileRestoreRef.current = isProfileRestore
+  }, [isProfileRestore])
 
   const fetchUserInfoSuccess = (isSelectAccout: boolean) => {
     if (isSelectAccout) return
@@ -158,6 +166,14 @@ const ConfigOAuth = () => {
 
   const onMfaVerified = () => {
     dispatch(addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()))
+    // a startup restore only needs its profile re-fetched; routing it through
+    // fetchUserInfo would open the interactive create/select-database flow
+    if (isProfileRestoreRef.current) {
+      dispatch(
+        fetchProfile(closeInfinityNotification, closeInfinityNotification),
+      )
+      return
+    }
     dispatch(fetchUserInfo(fetchUserInfoSuccess, closeInfinityNotification))
   }
 

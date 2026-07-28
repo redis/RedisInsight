@@ -31,6 +31,9 @@ export interface StateAppOAuth {
     isOpenDialog: boolean
     loading: boolean
     error: string
+    // the challenge came from a startup profile restore, not an interactive
+    // sign-in, so verification must resume the restore rather than a create flow
+    isProfileRestore: boolean
   }
   plan: {
     isOpenDialog: boolean

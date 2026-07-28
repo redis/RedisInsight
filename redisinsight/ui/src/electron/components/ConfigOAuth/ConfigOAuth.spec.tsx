@@ -16,6 +16,7 @@ import {
 } from 'uiSrc/electron/constants'
 import {
   addFreeDb,
+  fetchProfile,
   fetchUserInfo,
   getPlans,
   getUserInfo,
@@ -47,6 +48,7 @@ jest.mock('uiSrc/slices/oauth/cloud', () => ({
     .mockImplementation(
       jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
     ),
+  fetchProfile: jest.fn().mockImplementation(() => () => {}),
   oauthCloudMfaSelector: jest.fn().mockReturnValue({
     isOpenDialog: false,
     loading: false,
@@ -280,5 +282,31 @@ describe('ConfigOAuth', () => {
     expect(store.getActions().slice(0, expectedActions.length)).toEqual(
       expectedActions,
     )
+  })
+
+  it('should resume the profile restore, not the sign in flow, after mfa verification', async () => {
+    ;(cloudSelector as jest.Mock).mockReturnValue({})
+    ;(fetchUserInfo as jest.Mock).mockClear()
+    ;(fetchProfile as jest.Mock).mockClear()
+    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+      isOpenDialog: true,
+      loading: false,
+      error: '',
+      isProfileRestore: true,
+    })
+    apiService.post = jest.fn().mockResolvedValue({ status: 200 })
+
+    renderConfigOAuth()
+
+    await act(async () => {
+      fireEvent.paste(screen.getByTestId('oauth-mfa-dialog-code-input-0'), {
+        clipboardData: { getData: () => '123456' },
+      })
+    })
+
+    // a restored session re-fetches its profile; it must not enter the
+    // interactive create/select-database flow
+    expect(fetchProfile).toHaveBeenCalled()
+    expect(fetchUserInfo).not.toHaveBeenCalled()
   })
 })
