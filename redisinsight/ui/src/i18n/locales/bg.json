@@ -770,8 +770,6 @@
   "browser.list.column.index": "Индекс",
   "browser.list.destination.head": "Добави в началото",
   "browser.list.destination.tail": "Добави в края",
-  "browser.list.push.head": "Добавяне в началото",
-  "browser.list.push.tail": "Добавяне в опашката",
   "browser.list.remove.button": "Премахване",
   "browser.list.remove.cancel": "Отказ",
   "browser.list.remove.deleteWarning": "Ако премахнете всички елементи, целият ключ ще бъде изтрит.",

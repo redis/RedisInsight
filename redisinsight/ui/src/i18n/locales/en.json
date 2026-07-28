@@ -770,8 +770,6 @@
   "browser.list.column.index": "Index",
   "browser.list.destination.head": "Push to head",
   "browser.list.destination.tail": "Push to tail",
-  "browser.list.push.head": "Push to head",
-  "browser.list.push.tail": "Push to tail",
   "browser.list.remove.button": "Remove",
   "browser.list.remove.cancel": "Cancel",
   "browser.list.remove.deleteWarning": "If you remove all Elements, the whole Key will be deleted.",

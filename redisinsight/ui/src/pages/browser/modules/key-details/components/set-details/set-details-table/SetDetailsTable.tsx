@@ -13,11 +13,7 @@ import {
   createTooltipContent,
   formattingBuffer,
 } from 'uiSrc/utils'
-import {
-  KeyTypes,
-  OVER_RENDER_BUFFER_COUNT,
-  TEXT_FAILED_CONVENT_FORMATTER,
-} from 'uiSrc/constants'
+import { KeyTypes, OVER_RENDER_BUFFER_COUNT } from 'uiSrc/constants'
 import {
   sendEventTelemetry,
   TelemetryEvent,
@@ -259,7 +255,9 @@ const SetDetailsTable = (props: Props) => {
                 title={
                   isValid
                     ? t('browser.set.column.member')
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
                 position="left"

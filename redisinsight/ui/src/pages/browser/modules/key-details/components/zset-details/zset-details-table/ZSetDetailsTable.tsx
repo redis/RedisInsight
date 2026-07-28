@@ -23,7 +23,6 @@ import {
   KeyTypes,
   OVER_RENDER_BUFFER_COUNT,
   SortOrder,
-  TEXT_FAILED_CONVENT_FORMATTER,
   TableCellAlignment,
 } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
@@ -351,7 +350,9 @@ const ZSetDetailsTable = (props: Props) => {
                 title={
                   isValid
                     ? t('browser.zset.column.member')
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
               />

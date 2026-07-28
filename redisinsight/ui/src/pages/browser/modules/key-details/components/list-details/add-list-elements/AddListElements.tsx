@@ -45,13 +45,13 @@ export const HEAD_DESTINATION: ListElementDestination =
 const getPushDestinations = (t: TFunction) => [
   {
     value: TAIL_DESTINATION,
-    inputDisplay: t('browser.list.push.tail'),
-    label: t('browser.list.push.tail'),
+    inputDisplay: t('browser.list.destination.tail'),
+    label: t('browser.list.destination.tail'),
   },
   {
     value: HEAD_DESTINATION,
-    inputDisplay: t('browser.list.push.head'),
-    label: t('browser.list.push.head'),
+    inputDisplay: t('browser.list.destination.head'),
+    label: t('browser.list.destination.head'),
   },
 ]
 
