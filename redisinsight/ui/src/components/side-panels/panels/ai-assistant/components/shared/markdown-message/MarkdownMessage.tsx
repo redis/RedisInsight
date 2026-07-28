@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { CloudLink } from 'uiSrc/components/markdown'
 import { MarkdownRenderer } from 'uiSrc/components/markdown/MarkdownRenderer'
 import { AdditionalRedisModule } from 'apiClient'
@@ -48,6 +48,21 @@ const MarkdownMessage = (props: Props) => {
     [modules, onRunCommand],
   )
 
+  // ChatCodeBlock in deps transitively covers modules/onRunCommand; the
+  // other leaves are stable module-level, so this only changes when
+  // ChatCodeBlock does. Keeps MarkdownRenderer's own [components, path]
+  // memoization from being defeated by a fresh object every render.
+  const components = useMemo(
+    () => ({
+      RedisCode: ChatCodeBlock,
+      CodeBlock: ChatCodeBlock,
+      CloudLink,
+      ExternalLink: ChatExternalLink,
+      Image: NoImage,
+    }),
+    [ChatCodeBlock],
+  )
+
   useEffect(() => {
     if (children) {
       onMessageRendered?.()
@@ -55,16 +70,7 @@ const MarkdownMessage = (props: Props) => {
   }, [children, onMessageRendered])
 
   return (
-    <MarkdownRenderer
-      allLangs
-      components={{
-        RedisCode: ChatCodeBlock,
-        CodeBlock: ChatCodeBlock,
-        CloudLink,
-        ExternalLink: ChatExternalLink,
-        Image: NoImage,
-      }}
-    >
+    <MarkdownRenderer allLangs components={components}>
       {children}
     </MarkdownRenderer>
   )
