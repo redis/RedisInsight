@@ -436,7 +436,7 @@ const HashDetailsTable = (props: Props) => {
     {
       id: 'value',
       label: isValueDecoderEnabled ? (
-        <ValueDecoderHeaderLabel />
+        <ValueDecoderHeaderLabel label={t('browser.hash.column.value')} />
       ) : (
         t('browser.hash.column.value')
       ),

@@ -719,6 +719,7 @@
   "browser.keyDetails.textWrapper.closeTooltip": "Close",
   "browser.keyDetails.tooLongName.message": "Details cannot be displayed.",
   "browser.keyDetails.tooLongName.title": "The key name is too long",
+  "browser.keyDetails.truncatedActionDisabled": "This action is disabled because the key or value is too large to process within Redis Insight.",
   "browser.keyDetails.ttl.changeConfirm.button": "Change TTL",
   "browser.keyDetails.ttl.changeConfirm.description": "You are about to change the TTL of <bold>{{name}}</bold> to <bold>{{ttl}}</bold> on a production database.",
   "browser.keyDetails.ttl.changeConfirm.title": "Change TTL on production database?",

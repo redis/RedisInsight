@@ -25,7 +25,6 @@ import {
   SortOrder,
   TEXT_FAILED_CONVENT_FORMATTER,
   TableCellAlignment,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
 } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import HelpTexts from 'uiSrc/constants/help-texts'
@@ -380,7 +379,7 @@ const ZSetDetailsTable = (props: Props) => {
         const isEditable = isNumber(score) && !isTruncatedValue
         const editToolTipContent = !isNumber(score)
           ? t('browser.zset.scoreEditDisabledTooltip')
-          : TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+          : t('browser.keyDetails.truncatedActionDisabled')
 
         return (
           <EditableInput
