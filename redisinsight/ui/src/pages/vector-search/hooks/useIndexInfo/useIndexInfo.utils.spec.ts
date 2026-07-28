@@ -97,12 +97,15 @@ describe('useIndexInfo.utils', () => {
     it('should map boolean attribute flags dynamically', () => {
       const apiResponse = indexInfoFactory.build({
         attributes: [
-          indexInfoAttributeFactory.build({
-            type: 'TEXT',
-            WITHSUFFIXTRIE: true,
-            NOSTEM: true,
-            SORTABLE: true,
-          }),
+          indexInfoAttributeFactory.build(
+            {
+              type: 'TEXT',
+              WITHSUFFIXTRIE: true,
+              NOSTEM: true,
+              SORTABLE: true,
+            },
+            { transient: { includeNoIndex: false } },
+          ),
         ],
       })
 

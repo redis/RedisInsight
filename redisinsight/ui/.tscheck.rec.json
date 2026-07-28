@@ -703,9 +703,6 @@
   "src/pages/vector-search/components/index-info/IndexInfo.stories.tsx": {
     "TS2322": 9
   },
-  "src/pages/vector-search/components/index-info/IndexInfo.utils.spec.ts": {
-    "TS2322": 1
-  },
   "src/pages/vector-search/hooks/useCreateIndexFlow/useCreateIndexFlow.spec.ts": {
     "TS2345": 1
   },
