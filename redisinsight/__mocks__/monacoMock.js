@@ -31,6 +31,8 @@ const editor = {
     getPositionAt: jest.fn().mockReturnValue({ lineNumber: 1, column: 1 }),
     getValueInRange: jest.fn().mockReturnValue(''),
     getWordUntilPosition: jest.fn().mockReturnValue(''),
+    getFullModelRange: jest.fn().mockReturnValue({}),
+    isDisposed: jest.fn().mockReturnValue(false),
   }),
   getPosition: jest.fn().mockReturnValue({}),
   getContainerDomNode: jest.fn(() => document.createElement('div')),
