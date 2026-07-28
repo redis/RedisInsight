@@ -74,6 +74,16 @@ describe('MarkdownRenderer', () => {
     expect(screen.getByTestId('img').getAttribute('src')).toContain('img.png')
   })
 
+  it('renders no image for a neutralized (dangerous) src', () => {
+    render(
+      <MarkdownRenderer path="/tutorials/x/page.md" components={leaves}>
+        {'![x](javascript:alert(1))'}
+      </MarkdownRenderer>,
+    )
+    expect(screen.queryByTestId('img')).not.toBeInTheDocument()
+    expect(document.querySelector('img')).toBeNull()
+  })
+
   it('routes a plain external link to the ExternalLink leaf', () => {
     render(
       <MarkdownRenderer components={leaves}>

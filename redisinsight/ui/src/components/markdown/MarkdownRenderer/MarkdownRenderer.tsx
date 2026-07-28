@@ -152,6 +152,9 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
         src = '',
         alt,
       }: ComponentPropsWithoutRef<'img'> & ExtraProps) => {
+        // An empty src means safeUrl neutralized a disallowed URL; render
+        // nothing rather than resolving '' into a valid page URL.
+        if (!src) return null
         const resolved = getFileUrlFromMd(src, path)
         if (!Image) return <img src={resolved} alt={alt || ''} />
         return <Image src={resolved} />
