@@ -8,15 +8,7 @@ import {
   selectedKeySelector,
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
-import {
-  KeyTypes,
-  KeyValueCompressor,
-  ModulesKeyTypes,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-  TEXT_DISABLED_STRING_EDITING,
-} from 'uiSrc/constants'
+import { KeyTypes, KeyValueCompressor, ModulesKeyTypes } from 'uiSrc/constants'
 
 import {
   KeyDetailsHeader,
@@ -70,14 +62,14 @@ const StringDetails = (props: Props) => {
     !isTruncatedValue && !isStringCompressed && isFormatEditable(viewFormatProp)
   const isStringEditable = isFullStringLoaded(keyValue?.data?.length, length)
   const noEditableText = isTruncatedValue
-    ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+    ? t('browser.keyDetails.truncatedActionDisabled')
     : isStringCompressed
-      ? TEXT_DISABLED_COMPRESSED_VALUE
-      : TEXT_DISABLED_FORMATTER_EDITING
+      ? t('browser.keyDetails.compressedValueDisabled')
+      : t('browser.keyDetails.formatterEditingDisabled')
   const editToolTip = !isEditable
     ? noEditableText
     : !isStringEditable
-      ? TEXT_DISABLED_STRING_EDITING
+      ? t('browser.string.loadAllToEdit')
       : null
 
   // The full value can be copied as text only when it is entirely loaded and not

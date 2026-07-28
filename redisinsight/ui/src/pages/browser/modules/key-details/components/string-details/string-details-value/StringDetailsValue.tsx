@@ -39,9 +39,6 @@ import {
   KeyValueFormat,
   ModulesKeyTypes,
   STRING_MAX_LENGTH,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_FAILED_CONVENT_FORMATTER,
   TEXT_INVALID_VALUE,
   TEXT_UNPRINTABLE_CHARACTERS,
 } from 'uiSrc/constants'
@@ -112,7 +109,7 @@ const StringDetailsValue = (props: Props) => {
   const [isDisabled, setIsDisabled] = useState(false)
   const [isEditable, setIsEditable] = useState(true)
   const [noEditableText, setNoEditableText] = useState<string>(
-    TEXT_DISABLED_COMPRESSED_VALUE,
+    t('browser.keyDetails.compressedValueDisabled'),
   )
 
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
@@ -164,10 +161,12 @@ const StringDetailsValue = (props: Props) => {
     )
     setNoEditableText(
       isCompressed
-        ? TEXT_DISABLED_COMPRESSED_VALUE
+        ? t('browser.keyDetails.compressedValueDisabled')
         : isTruncatedValue
-          ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
-          : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp),
+          ? t('browser.keyDetails.truncatedActionDisabled')
+          : t('browser.keyDetails.failedConvertFormatter', {
+              format: viewFormatProp,
+            }),
     )
 
     dispatch(setIsStringCompressed(isCompressed))
@@ -175,7 +174,7 @@ const StringDetailsValue = (props: Props) => {
     if (viewFormat !== viewFormatProp) {
       setViewFormat(viewFormatProp)
     }
-  }, [initialValue, viewFormatProp, compressor, length])
+  }, [initialValue, viewFormatProp, compressor, length, t])
 
   useEffect(() => {
     // Approximate calculation of textarea rows by areaValue

@@ -17,10 +17,6 @@ import {
   KeyTypes,
   OVER_RENDER_BUFFER_COUNT,
   TableCellAlignment,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-  TEXT_FAILED_CONVENT_FORMATTER,
   TEXT_INVALID_VALUE,
   TEXT_UNPRINTABLE_CHARACTERS,
 } from 'uiSrc/constants'
@@ -424,7 +420,9 @@ const HashDetailsTable = (props: Props) => {
                 title={
                   isValid
                     ? t('browser.hash.column.field')
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
               />
@@ -478,10 +476,10 @@ const HashDetailsTable = (props: Props) => {
           isFormatEditable(viewFormat) &&
           !isTruncatedFieldOrValue
         const editTooltipContent = isCompressed
-          ? TEXT_DISABLED_COMPRESSED_VALUE
+          ? t('browser.keyDetails.compressedValueDisabled')
           : isTruncatedFieldOrValue
-            ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
-            : TEXT_DISABLED_FORMATTER_EDITING
+            ? t('browser.keyDetails.truncatedActionDisabled')
+            : t('browser.keyDetails.formatterEditingDisabled')
         const isEditing =
           editingIndex?.field === 'value' && editingIndex?.index === rowIndex
 
@@ -496,7 +494,9 @@ const HashDetailsTable = (props: Props) => {
             title={
               isValid
                 ? t('browser.hash.column.value')
-                : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                : t('browser.keyDetails.failedConvertFormatter', {
+                    format: viewFormatProp,
+                  })
             }
             tooltipContent={tooltipContent}
           />
@@ -597,7 +597,7 @@ const HashDetailsTable = (props: Props) => {
           editingIndex?.field === 'ttl' && editingIndex?.index === rowIndex
         const isTruncatedFieldName = isTruncatedString(fieldItem)
         const editTooltipContent = isTruncatedFieldName
-          ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+          ? t('browser.keyDetails.truncatedActionDisabled')
           : null
 
         return (

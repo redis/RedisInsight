@@ -35,11 +35,7 @@ import {
   OVER_RENDER_BUFFER_COUNT,
   TableCellAlignment,
   TEXT_INVALID_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
   TEXT_UNPRINTABLE_CHARACTERS,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_FAILED_CONVENT_FORMATTER,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
 } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -318,10 +314,10 @@ const ListDetailsTable = () => {
           viewFormatProp,
         )
         const editTooltipContent = isCompressed
-          ? TEXT_DISABLED_COMPRESSED_VALUE
+          ? t('browser.keyDetails.compressedValueDisabled')
           : isTruncatedValue
-            ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
-            : TEXT_DISABLED_FORMATTER_EDITING
+            ? t('browser.keyDetails.truncatedActionDisabled')
+            : t('browser.keyDetails.formatterEditingDisabled')
         const serializedValue = isEditing
           ? bufferToSerializedFormat(viewFormat, elementItem, 4)
           : ''
@@ -356,7 +352,9 @@ const ListDetailsTable = () => {
                 title={
                   isValid
                     ? t('browser.list.column.element')
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
               />
