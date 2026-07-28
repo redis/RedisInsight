@@ -50,14 +50,19 @@ describe('MarkdownRenderer', () => {
     expect(document.querySelector('script')).toBeNull()
   })
 
-  it('drops javascript: links', () => {
+  it('drops javascript: links and renders an inert (non-navigable) anchor', () => {
     render(
-      <MarkdownRenderer components={leaves}>
+      <MarkdownRenderer path="/tutorials/x/page.md" components={leaves}>
         {'[x](javascript:alert(1))'}
       </MarkdownRenderer>,
     )
-    const link = screen.queryByTestId('ext')
-    expect(link?.getAttribute('href') ?? '').not.toContain('javascript:')
+    // safeUrl neutralizes the dangerous scheme to an empty href; the anchor
+    // must stay inert rather than falling through to getFileUrlFromMd, which
+    // would resolve the empty href into a navigable page.md URL.
+    const link = screen.getByText('x')
+    expect(link.tagName).toBe('A')
+    expect(link).not.toHaveAttribute('href')
+    expect(screen.queryByTestId('ext')).not.toBeInTheDocument()
   })
 
   it('resolves relative image src against path', () => {

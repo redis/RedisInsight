@@ -39,6 +39,22 @@ import { EmptyPrompt, Pagination, Code } from '..'
 
 import styles from './styles.module.scss'
 
+// External link leaf rendered for absolute-path markdown links. Defined at
+// module scope (not per render) so its function identity is stable across
+// re-renders and react-markdown doesn't remount the link's DOM node on every
+// scroll/popover update. The base Link already adds target/rel on its own.
+const TutorialExternalLink = ({
+  href,
+  children,
+}: {
+  href: string
+  children?: ReactNode
+}) => (
+  <Link external variant="inline" size="S" href={href}>
+    {children}
+  </Link>
+)
+
 export interface Props {
   onClose: () => void
   title: string
@@ -74,24 +90,11 @@ const InternalPage = (props: Props) => {
   // Defined per render (not at module scope) because Code is re-exported
   // through the components barrel that InternalPage itself is part of;
   // capturing it at module-eval time would see it as undefined mid-cycle.
-  // ExternalLink mirrors the visual style of the old remarkLink: an inline,
-  // small external link (the base Link already adds target/rel on its own).
-  const ExternalLink = ({
-    href,
-    children,
-  }: {
-    href: string
-    children?: ReactNode
-  }) => (
-    <Link external variant="inline" size="S" href={href}>
-      {children}
-    </Link>
-  )
   const markdownComponents: Partial<MarkdownLeafComponents> = {
     RedisCode: Code,
     CodeBlock: Code,
     RedisUpload: RedisUploadButton,
-    ExternalLink,
+    ExternalLink: TutorialExternalLink,
     CloudLink,
     RedisInsightLink,
     Image,

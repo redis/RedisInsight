@@ -109,6 +109,12 @@ export const MarkdownRenderer = ({
       title,
       children: linkChildren,
     }: ComponentPropsWithoutRef<'a'> & ExtraProps) => {
+      // safeUrl (urlTransform) neutralizes dangerous schemes (e.g.
+      // javascript:) to an empty href before this handler runs. Render an
+      // inert anchor with no href instead of falling through to
+      // getFileUrlFromMd, which would resolve '' into a navigable page URL.
+      if (!href) return <a>{linkChildren}</a>
+
       const text = nodeText(linkChildren)
 
       // redisinsight: links never reach this handler with their scheme
