@@ -2,6 +2,9 @@ import styled from 'styled-components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
 export const Container = styled(Row)`
+  /* vertical breathing room so the focus ring is not clipped by the dialog body */
+  padding: ${({ theme }) => theme.core.space.space025} 0;
+
   input {
     width: 3.5rem;
     height: 4rem;

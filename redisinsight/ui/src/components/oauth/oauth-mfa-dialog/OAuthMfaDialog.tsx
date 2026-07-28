@@ -112,9 +112,14 @@ const OAuthMfaDialog = ({ onVerified }: OAuthMfaDialogProps) => {
                 data-testid="oauth-mfa-dialog-code-input"
               />
               {error && (
-                <ColorText color="danger" data-testid="oauth-mfa-dialog-error">
-                  {error}
-                </ColorText>
+                <Row justify="center">
+                  <ColorText
+                    color="danger"
+                    data-testid="oauth-mfa-dialog-error"
+                  >
+                    {error}
+                  </ColorText>
+                </Row>
               )}
             </Col>
           }
