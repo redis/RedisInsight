@@ -356,10 +356,12 @@ describe('shouldDropEvent', () => {
     expect(shouldDropEvent(errorEvent('', [], 'Canceled'))).toBe(true)
   })
 
-  it('drops errors originating in a browser extension', () => {
-    const event = errorEvent('boom', [
-      { function: 'g', filename: 'chrome-extension://abcdef/inpage.js' },
-    ])
+  it.each([
+    'chrome-extension://abcdef/inpage.js',
+    'moz-extension://abcdef/inpage.js',
+    'safari-web-extension://abcdef/inpage.js',
+  ])('drops errors originating in a browser extension (%s)', (filename) => {
+    const event = errorEvent('boom', [{ function: 'g', filename }])
     expect(shouldDropEvent(event)).toBe(true)
   })
 
@@ -372,10 +374,19 @@ describe('shouldDropEvent', () => {
     expect(shouldDropEvent(event)).toBe(true)
   })
 
-  it.each(['EBADF', 'EIO', 'EPIPE', 'ENOSPC'])(
-    'drops low-level I/O errors by code (%s), even without a matching frame',
+  it('drops ENOSPC (disk full) by code alone — it is environmental', () => {
+    expect(
+      shouldDropEvent(errorEvent('ENOSPC: no space left on device, write')),
+    ).toBe(true)
+  })
+
+  it.each(['EBADF', 'EIO', 'EPIPE'])(
+    'keeps a %s error without the Node-internal write frame (could be a real crash)',
     (code) => {
-      expect(shouldDropEvent(errorEvent(`${code}: write failed`))).toBe(true)
+      const event = errorEvent(`${code}: write failed`, [
+        { function: 'saveState', filename: '/app.asar/dist/main/store.js' },
+      ])
+      expect(shouldDropEvent(event)).toBe(false)
     },
   )
 

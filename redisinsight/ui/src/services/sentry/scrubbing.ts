@@ -281,11 +281,17 @@ const hasErrorCode = (event: Event, codes: readonly string[]): boolean => {
   return codes.some((code) => new RegExp(`\\b${code}\\b`).test(text))
 }
 
-/** Node broken-pipe / bad-fd I/O writes surfacing as fatal uncaught errors. */
+/**
+ * Node broken-pipe / bad-fd I/O writes surfacing as fatal uncaught errors.
+ *
+ * Matched on the Node-internal write frame, NOT on the errno alone: EBADF/EIO/
+ * EPIPE can also come from genuine app-level socket or file operations that we
+ * do want to see, so requiring the storm's stack signature avoids suppressing
+ * real crashes that merely share an error code.
+ */
 const IO_WRITE_FUNCTIONS = ['afterWriteDispatched', 'writeSync', 'onStreamRead']
-const IO_WRITE_CODES = ['EBADF', 'EIO', 'EPIPE'] as const
-const isNodeIoWriteNoise = (event: Event): boolean => {
-  const fromFrame = eventFrames(event).some((frame) => {
+const isNodeIoWriteNoise = (event: Event): boolean =>
+  eventFrames(event).some((frame) => {
     const fn = frame.function ?? ''
     const location = `${frame.module ?? ''} ${frame.filename ?? ''} ${
       frame.abs_path ?? ''
@@ -297,18 +303,21 @@ const isNodeIoWriteNoise = (event: Event): boolean => {
       location.includes('internal/')
     return isWriteFn && isNodeInternal
   })
-  return fromFrame || hasErrorCode(event, IO_WRITE_CODES)
-}
 
 /** Monaco editor cancellation — a benign `Canceled` throw, never a defect. */
 const isMonacoCancellation = (event: Event): boolean =>
   event.exception?.values?.some((value) => value.type === 'Canceled') ?? false
 
 /** Errors thrown from a user's installed browser extension, not our code. */
+const EXTENSION_URL_SCHEMES = [
+  'chrome-extension://', // Chromium (Electron renderer + Chrome web build)
+  'moz-extension://', // Firefox web build
+  'safari-web-extension://', // Safari web build
+]
 const isBrowserExtensionNoise = (event: Event): boolean =>
   eventFrames(event).some((frame) =>
     [frame.filename, frame.abs_path, frame.module].some((source) =>
-      (source ?? '').includes('chrome-extension://'),
+      EXTENSION_URL_SCHEMES.some((scheme) => (source ?? '').includes(scheme)),
     ),
   )
 
@@ -331,6 +340,8 @@ export const shouldDropEvent = (event: Event): boolean =>
   isBrowserExtensionNoise(event) ||
   isNodeIoWriteNoise(event) ||
   isGpuAbnormalExit(event) ||
+  // ENOSPC (disk full) is environmental with no app-side fix, so it is safe to
+  // match by code alone — unlike EBADF/EIO/EPIPE (see isNodeIoWriteNoise).
   hasErrorCode(event, ['ENOSPC'])
 
 /** Stable fingerprint for the localized "Failed to open: <OS message>" family. */
