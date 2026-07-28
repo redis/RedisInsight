@@ -71,6 +71,18 @@ describe('OtpInput', () => {
     expect(onComplete).toHaveBeenCalledWith('123456')
   })
 
+  it('should distribute a full code autofilled into one box', () => {
+    const onChange = jest.fn()
+    const onComplete = jest.fn()
+    renderComponent({ value: '', onChange, onComplete })
+
+    // a password manager / OS autofill delivers the whole code via change
+    fireEvent.change(box(0), { target: { value: '123456' } })
+
+    expect(onChange).toHaveBeenCalledWith('123456')
+    expect(onComplete).toHaveBeenCalledWith('123456')
+  })
+
   it('should strip non-digits and cap the pasted value at the length', () => {
     const onChange = jest.fn()
     renderComponent({ value: '', onChange })

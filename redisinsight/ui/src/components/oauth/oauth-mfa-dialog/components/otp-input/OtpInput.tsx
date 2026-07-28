@@ -53,6 +53,17 @@ const OtpInput = ({
     }
   }
 
+  // fill the slots from a full code (paste or OS/password-manager autofill) and
+  // move focus past the last filled box
+  const fillFrom = (raw: string) => {
+    const digits = (raw.match(DIGITS_ONLY) || []).join('').slice(0, length)
+    if (!digits) {
+      return
+    }
+    commit(toSlots(digits, length))
+    focusAt(digits.length)
+  }
+
   const handleChange =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const digits = (e.target.value.match(DIGITS_ONLY) || []).join('')
@@ -60,8 +71,14 @@ const OtpInput = ({
         return
       }
 
+      // autofill delivers the whole code into one box; spread it across the
+      // slots like a paste instead of keeping only the last digit
+      if (digits.length > 1) {
+        fillFrom(digits)
+        return
+      }
+
       const next = [...slots]
-      // typing into a box keeps the last digit entered there
       next[index] = digits[digits.length - 1]
       commit(next)
       focusAt(index + 1)
@@ -91,16 +108,7 @@ const OtpInput = ({
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault()
-    const pasted = (e.clipboardData.getData('text').match(DIGITS_ONLY) || [])
-      .join('')
-      .slice(0, length)
-
-    if (!pasted) {
-      return
-    }
-
-    commit(toSlots(pasted, length))
-    focusAt(pasted.length)
+    fillFrom(e.clipboardData.getData('text'))
   }
 
   return (
