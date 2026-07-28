@@ -27,6 +27,8 @@ const createEditor = (value: string) => {
     })),
     getOffsetAt: jest.fn(() => 0),
     getValueInRange: jest.fn(() => ''),
+    getFullModelRange: jest.fn(() => ({})),
+    isDisposed: jest.fn(() => false),
   }
   const decorations = { set: jest.fn(), clear: jest.fn() }
   const dispose = jest.fn()
@@ -102,5 +104,19 @@ describe('useVectorEmbeddingCollapse', () => {
     expect(editor.onDidChangeModelContent).toHaveBeenCalled()
     unmount()
     expect(dispose).toHaveBeenCalled()
+  })
+
+  it('restores collapsed embeddings and clears decorations on unmount', () => {
+    const placeholder = collapseVectorEmbeddingValue(`"${FP32_ESCAPED}"`, 3, 12)
+    const { unmount, editor, decorations } = renderCollapse(
+      `HSET k v ${placeholder}`,
+    )
+
+    unmount()
+
+    expect(decorations.clear).toHaveBeenCalled()
+    const [, edits] = editor.executeEdits.mock.calls.at(-1)!
+    expect(edits[0].text).toContain(FP32_ESCAPED)
+    expect(edits[0].text).not.toContain('▸vector')
   })
 })

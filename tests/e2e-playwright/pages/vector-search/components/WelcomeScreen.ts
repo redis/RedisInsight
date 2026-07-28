@@ -18,6 +18,6 @@ export class WelcomeScreen {
     this.subtitle = page.getByText('Discover how Redis enables full-text and vector search');
     this.features = page.getByTestId('welcome-screen--features');
     this.trySampleDataButton = page.getByRole('button', { name: 'Try with sample data' });
-    this.useMyDatabaseButton = page.getByRole('button', { name: 'Create index' });
+    this.useMyDatabaseButton = page.getByTestId('welcome-screen--use-my-database-btn');
   }
 }

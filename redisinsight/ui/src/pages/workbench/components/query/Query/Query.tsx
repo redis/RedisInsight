@@ -4,6 +4,7 @@ import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { useTranslation } from 'uiSrc/i18n'
 import { MonacoLanguage } from 'uiSrc/constants'
+import { isVectorSearchEnhancementsEnabledSelector } from 'uiSrc/slices/app/features'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import {
   stopProcessing,
@@ -39,6 +40,9 @@ const Query = (props: Props) => {
 
   const { monacoObjects, query, setQuery, isLoading, onSubmit } =
     useQueryEditorContext()
+  const vsEnhancementsEnabled = useAppSelector(
+    isVectorSearchEnhancementsEnabledSelector,
+  )
 
   const {
     items: execHistoryItems,
@@ -130,10 +134,12 @@ const Query = (props: Props) => {
             onChange={onChange}
             editorDidMount={editorDidMount}
           />
-          <VectorEmbeddingHighlight
-            monacoObjects={monacoObjects}
-            query={query}
-          />
+          {vsEnhancementsEnabled && (
+            <VectorEmbeddingHighlight
+              monacoObjects={monacoObjects}
+              query={query}
+            />
+          )}
         </S.InputContainer>
         <S.QueryFooter>
           {useLiteActions ? (

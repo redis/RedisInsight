@@ -16,7 +16,8 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiClient'
-import { AddZsetFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddZsetFormConfig } from '../constants/fields-config'
 
 export interface Props {
   keyName: string
@@ -26,6 +27,8 @@ export interface Props {
 
 const AddKeyZset = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddZsetFormConfig(t)
   const { loading } = useAppSelector(addKeyStateSelector)
   const [members, setMembers] = useState<IZsetMemberState[]>([
     { ...INITIAL_ZSET_MEMBER_STATE },
@@ -229,7 +232,7 @@ const AddKeyZset = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-zset-btn"

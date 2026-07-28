@@ -14,6 +14,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { StyledTabs } from './BulkActionsTabs.styles'
 
@@ -23,6 +24,7 @@ export interface Props {
 
 const BulkActionsTabs = (props: Props) => {
   const { onChangeType } = props
+  const { t } = useTranslation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { filter, search } = useAppSelector(keysSelector)
   const { type } = useAppSelector(selectedBulkActionsSelector)
@@ -54,16 +56,16 @@ const BulkActionsTabs = (props: Props) => {
     () => [
       {
         value: BulkActionsType.Delete,
-        label: <Text size="S">Delete Keys</Text>,
+        label: <Text size="S">{t('browser.bulkActions.tab.deleteKeys')}</Text>,
         content: null,
       },
       {
         value: BulkActionsType.Upload,
-        label: <Text size="S">Upload Data</Text>,
+        label: <Text size="S">{t('browser.bulkActions.tab.uploadData')}</Text>,
         content: null,
       },
     ],
-    [],
+    [t],
   )
 
   return (

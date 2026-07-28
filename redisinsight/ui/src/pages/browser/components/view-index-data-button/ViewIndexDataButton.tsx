@@ -17,16 +17,16 @@ import {
 } from 'uiSrc/pages/vector-search/telemetry.constants'
 import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/pages/VectorSearchQueryPage/VectorSearchQueryPage.constants'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
 import * as S from './ViewIndexDataButton.styles'
-
-const VIEW_INDEX_LABEL = 'View index'
 
 export const ViewIndexDataButton = ({
   indexes,
   instanceId,
   onNavigate,
 }: ViewIndexDataButtonProps) => {
+  const { t } = useTranslation()
   const history = useHistory()
 
   const navigateTo = useCallback(
@@ -74,7 +74,7 @@ export const ViewIndexDataButton = ({
         onClick={() => navigateTo(indexes[0].name)}
         data-testid="view-index-data-btn"
       >
-        {VIEW_INDEX_LABEL}
+        {t('browser.viewIndex.label')}
       </EmptyButton>
     )
   }
@@ -84,7 +84,7 @@ export const ViewIndexDataButton = ({
       <MenuTrigger>
         <EmptyButton size="small" data-testid="view-index-data-menu-trigger">
           <S.TriggerRow gap="s" align="center">
-            {VIEW_INDEX_LABEL}
+            {t('browser.viewIndex.label')}
             <S.CountBadge
               grow={false}
               centered

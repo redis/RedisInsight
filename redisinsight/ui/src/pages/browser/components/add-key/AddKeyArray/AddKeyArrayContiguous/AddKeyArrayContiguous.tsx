@@ -5,12 +5,15 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 
-import { AddArrayFormConfig as config } from '../../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddArrayFormConfig } from '../../constants/fields-config'
 import AddMultipleFields from '../../../add-multiple-fields'
 import { AddKeyArrayContiguousProps } from './AddKeyArrayContiguous.types'
 
 const AddKeyArrayContiguous = (props: AddKeyArrayContiguousProps) => {
   const { disabled, value, onChange } = props
+  const { t } = useTranslation()
+  const config = getAddArrayFormConfig(t)
   const { startIndex, values } = value
 
   const setStartIndex = (next: string) => onChange({ startIndex: next, values })

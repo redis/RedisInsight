@@ -68,6 +68,28 @@ export const useVectorEmbeddingCollapse = ({
     return () => cancelAnimationFrame(frame)
   }, [isEditorReady, monacoObjects])
 
+  // The feature can be switched off at runtime (vectorSearchEnhancements flag),
+  // unmounting this component while embeddings are still collapsed. Restore the
+  // real values into the model and drop the decorations on unmount so the
+  // editor is never left with an inert placeholder chip.
+  useEffect(
+    () => () => {
+      decorationCollection.current?.clear()
+
+      const model = monacoObjects.current?.editor.getModel()
+      if (!model || model.isDisposed()) return
+
+      const text = model.getValue()
+      const expanded = expandVectorEmbeddings(text)
+      if (expanded !== text) {
+        monacoObjects.current?.editor.executeEdits(COLLAPSE_EDIT_SOURCE, [
+          { range: model.getFullModelRange(), text: expanded },
+        ])
+      }
+    },
+    [monacoObjects],
+  )
+
   // Auto-collapse detected embeddings and (re)draw the placeholder chips. Runs
   // whenever the query text or the copied-tick state changes.
   useEffect(() => {

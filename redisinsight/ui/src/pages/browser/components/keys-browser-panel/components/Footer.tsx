@@ -6,10 +6,12 @@ import ScanMore from 'uiSrc/components/scan-more'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { Text, ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { useKeysBrowserPanel } from '../contexts/Context'
 
 const Footer = () => {
+  const { t } = useTranslation()
   const {
     viewType,
     searchMode,
@@ -51,12 +53,12 @@ const Footer = () => {
       <FlexItem>
         {headerLoading && !keysState.total && !isNull(keysState.total) && (
           <Text size="s" data-testid="scanning-text">
-            Scanning...
+            {t('browser.keysBrowser.scanning')}
           </Text>
         )}
         {!!footerScanned && (
           <ColorText size="s" variant="semiBold" component="span">
-            {'Results: '}
+            {t('browser.keysBrowser.results')}
             <span data-testid="keys-number-of-results">
               {numberWithSpaces(keysState.keys.length)}
             </span>
@@ -64,7 +66,7 @@ const Footer = () => {
         )}
         {!footerScanned && (!!keysState.total || isNull(keysState.total)) && (
           <Text size="s" variant="semiBold" component="span">
-            {'Total: '}
+            {t('browser.keysBrowser.total')}
             {nullableNumberWithSpaces(keysState.total)}
           </Text>
         )}
@@ -73,7 +75,7 @@ const Footer = () => {
         {!!footerScanned && (
           <FlexItem>
             <ColorText size="s" color="secondary" component="span">
-              {'Scanned '}
+              {t('browser.keysBrowser.scannedPrefix')}
               <span data-testid="keys-number-of-scanned">
                 {footerNotAccurateScanned}
                 {numberWithSpaces(footerScannedDisplay)}

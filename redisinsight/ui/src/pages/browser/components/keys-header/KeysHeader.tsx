@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-this-in-sfc */
 import React, { Ref, useEffect, useRef, useState } from 'react'
+import { ParseKeys } from 'i18next'
 import { Environment } from 'apiClient'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -60,6 +61,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Text } from 'uiSrc/components/base/text'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import { localStorageService } from 'uiSrc/services'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 import * as S from './KeysHeader.styles'
 
@@ -87,14 +89,26 @@ export interface Props {
   onChangeSorting?: (column: string | null, order: SortOrder | null) => void
 }
 
-const SORTABLE_COLUMNS = [
+const SORTABLE_COLUMNS: {
+  id: string
+  label: ParseKeys
+  requiresColumn: BrowserColumns | null
+}[] = [
   {
     id: 'nameString',
-    label: 'Key',
+    label: 'browser.keyList.column.key',
     requiresColumn: null as BrowserColumns | null,
   },
-  { id: 'ttl', label: 'TTL', requiresColumn: BrowserColumns.TTL },
-  { id: 'size', label: 'Size', requiresColumn: BrowserColumns.Size },
+  {
+    id: 'ttl',
+    label: 'browser.keyList.column.ttl',
+    requiresColumn: BrowserColumns.TTL,
+  },
+  {
+    id: 'size',
+    label: 'browser.keyList.column.size',
+    requiresColumn: BrowserColumns.Size,
+  },
 ]
 
 const KeysHeader = (props: Props) => {
@@ -108,6 +122,7 @@ const KeysHeader = (props: Props) => {
     sortedColumn,
     onChangeSorting,
   } = props
+  const { t } = useTranslation()
 
   const { id: instanceId, keyNameFormat } = useAppSelector(
     connectedInstanceSelector,
@@ -154,8 +169,8 @@ const KeysHeader = (props: Props) => {
   const viewTypes: ISwitchType<KeyViewType>[] = [
     {
       type: KeyViewType.Browser,
-      tooltipText: 'List View',
-      ariaLabel: 'List view button',
+      tooltipText: t('browser.keysHeader.view.listTooltip'),
+      ariaLabel: t('browser.keysHeader.view.listAria'),
       dataTestId: 'view-type-browser-btn',
       isActiveView() {
         return viewType === this.type
@@ -170,9 +185,9 @@ const KeysHeader = (props: Props) => {
     {
       type: KeyViewType.Tree,
       tooltipText: isTreeViewDisabled
-        ? 'Tree View is unavailable when the HEX key name format is selected.'
-        : 'Tree View',
-      ariaLabel: 'Tree view button',
+        ? t('browser.keysHeader.view.treeDisabledTooltip')
+        : t('browser.keysHeader.view.treeTooltip'),
+      ariaLabel: t('browser.keysHeader.view.treeAria'),
       dataTestId: 'view-type-list-btn',
       disabled: isTreeViewDisabled,
       isActiveView() {
@@ -418,11 +433,11 @@ const KeysHeader = (props: Props) => {
                         onPressedChange={toggleColumnsConfigVisibility}
                         className={styles.columnsButton}
                         data-testid="btn-columns-actions"
-                        aria-label="columns"
+                        aria-label={t('browser.keysHeader.columnsAria')}
                         pressed={columnsConfigShown}
                       >
                         <RiIcon size="m" type="ColumnsIcon" />
-                        <Text size="s">Columns</Text>
+                        <Text size="s">{t('browser.keysHeader.columns')}</Text>
                       </ToggleButton>
                     }
                   >
@@ -433,7 +448,7 @@ const KeysHeader = (props: Props) => {
                             <Checkbox
                               id="show-key-size"
                               name="show-key-size"
-                              label="Key size"
+                              label={t('browser.keysHeader.keySize')}
                               checked={shownColumns.includes(
                                 BrowserColumns.Size,
                               )}
@@ -449,7 +464,7 @@ const KeysHeader = (props: Props) => {
                           </FlexItem>
                           <FlexItem>
                             <RiTooltip
-                              content="Hide the key size to avoid performance issues when working with large keys."
+                              content={t('browser.keysHeader.keySizeTooltip')}
                               position="top"
                               anchorClassName="flex-row"
                             >
@@ -468,7 +483,7 @@ const KeysHeader = (props: Props) => {
                         <Checkbox
                           id="show-ttl"
                           name="show-ttl"
-                          label="TTL"
+                          label={t('browser.keysHeader.ttl')}
                           checked={shownColumns.includes(BrowserColumns.TTL)}
                           onChange={(e) =>
                             changeColumnsShown(
@@ -486,7 +501,7 @@ const KeysHeader = (props: Props) => {
                           </FlexItem>
                           <FlexItem>
                             <Text size="s" style={{ marginBottom: 4 }}>
-                              Sort by:
+                              {t('browser.keysHeader.sortBy')}
                             </Text>
                             <Col gap="s">
                               {SORTABLE_COLUMNS.filter(
@@ -500,7 +515,7 @@ const KeysHeader = (props: Props) => {
                                   justify="between"
                                 >
                                   <FlexItem grow>
-                                    <Text size="s">{col.label}</Text>
+                                    <Text size="s">{t(col.label)}</Text>
                                   </FlexItem>
                                   <Row gap="xs" grow={false}>
                                     <FlexItem>
@@ -519,7 +534,9 @@ const KeysHeader = (props: Props) => {
                                               )
                                         }
                                         data-testid={`sort-asc-${col.id}`}
-                                        title={`Sort ${col.label} ascending`}
+                                        title={t('browser.keysHeader.sortAsc', {
+                                          column: t(col.label),
+                                        })}
                                       >
                                         <RiIcon type="ArrowUpIcon" size="s" />
                                       </S.SortButton>
@@ -540,7 +557,10 @@ const KeysHeader = (props: Props) => {
                                               )
                                         }
                                         data-testid={`sort-desc-${col.id}`}
-                                        title={`Sort ${col.label} descending`}
+                                        title={t(
+                                          'browser.keysHeader.sortDesc',
+                                          { column: t(col.label) },
+                                        )}
                                       >
                                         <RiIcon type="ArrowDownIcon" size="s" />
                                       </S.SortButton>

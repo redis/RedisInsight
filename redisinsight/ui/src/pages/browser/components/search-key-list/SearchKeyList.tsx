@@ -45,14 +45,15 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
-const placeholders = {
-  [SearchMode.Pattern]: 'Filter by Key Name or Pattern',
-  [SearchMode.Redisearch]: 'Search per Values of Keys',
-}
-
 const SearchKeyList = () => {
+  const { t } = useTranslation()
+  const placeholders = {
+    [SearchMode.Pattern]: t('browser.search.placeholder.pattern'),
+    [SearchMode.Redisearch]: t('browser.search.placeholder.redisearch'),
+  }
   const { id } = useAppSelector(connectedInstanceSelector)
   const { search, filter, viewType, searchMode } = useAppSelector(keysSelector)
   const { search: redisearchQuery, selectedIndex } =
@@ -196,7 +197,7 @@ const SearchKeyList = () => {
               ? searchHistory
               : rediSearchHistory,
           ),
-          buttonTooltipTitle: 'Show History',
+          buttonTooltipTitle: t('browser.search.showHistory'),
           loading:
             searchMode === SearchMode.Pattern
               ? searchHistoryLoading

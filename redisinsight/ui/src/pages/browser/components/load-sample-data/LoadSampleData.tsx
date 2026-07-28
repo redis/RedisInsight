@@ -21,6 +21,7 @@ import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import { Environment } from 'apiClient'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -30,6 +31,7 @@ export interface Props {
 
 const LoadSampleData = (props: Props) => {
   const { anchorClassName, onSuccess } = props
+  const { t } = useTranslation()
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
 
   const { id } = useAppSelector(connectedInstanceSelector)
@@ -65,7 +67,7 @@ const LoadSampleData = (props: Props) => {
         <RiTooltip
           content={
             isProduction
-              ? 'Button disabled for your production database to avoid accidental data modifications.'
+              ? t('browser.loadSampleData.productionTooltip')
               : undefined
           }
           data-testid="load-sample-data-btn-tooltip"
@@ -78,7 +80,7 @@ const LoadSampleData = (props: Props) => {
             disabled={loading || isProduction}
             data-testid="load-sample-data-btn"
           >
-            Load sample data
+            {t('browser.loadSampleData.button')}
           </SecondaryButton>
         </RiTooltip>
       }
@@ -88,12 +90,11 @@ const LoadSampleData = (props: Props) => {
           <RiIcon size="m" type="ToastDangerIcon" color="attention500" />
         </FlexItem>
         <FlexItem>
-          <Text variant="semiBold">Execute commands in bulk</Text>
-          <Spacer size="m" />
-          <Text size="s">
-            All commands from the file will be automatically executed against
-            your database. Avoid executing them in production databases.
+          <Text variant="semiBold">
+            {t('browser.loadSampleData.confirm.title')}
           </Text>
+          <Spacer size="m" />
+          <Text size="s">{t('browser.loadSampleData.confirm.message')}</Text>
           <Spacer size="l" />
           <Row justify="end">
             <FlexItem>
@@ -105,7 +106,7 @@ const LoadSampleData = (props: Props) => {
                 onClick={handleSampleData}
                 data-testid="load-sample-data-btn-confirm"
               >
-                Execute
+                {t('browser.loadSampleData.confirm.execute')}
               </PrimaryButton>
             </FlexItem>
           </Row>

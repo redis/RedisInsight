@@ -1,3 +1,4 @@
+import { TFunction } from 'i18next'
 import { Vec2WordInfoRow, Vec2WordPreviewRow } from './LoadSampleDataset.types'
 
 export const VEC2WORD_COLLECTION_NAME = 'vec2word'
@@ -8,9 +9,25 @@ export const VEC2WORD_PREVIEW: Vec2WordPreviewRow[] = [
   { word: 'apple', vector: '[-0.011, 0.054, 0.092, …]' },
 ]
 
-export const VEC2WORD_INFO: Vec2WordInfoRow[] = [
-  { label: 'Dataset', value: VEC2WORD_COLLECTION_NAME },
-  { label: 'Size', value: '100' },
-  { label: 'Vector size', value: '300' },
-  { label: 'Embedding', value: 'GloVe' },
+export const getVec2WordInfo = (t: TFunction): Vec2WordInfoRow[] => [
+  {
+    testId: 'dataset',
+    label: t('browser.addKey.vectorSet.sample.dataset'),
+    value: VEC2WORD_COLLECTION_NAME,
+  },
+  {
+    testId: 'size',
+    label: t('browser.addKey.vectorSet.sample.size'),
+    value: '100',
+  },
+  {
+    testId: 'vector-size',
+    label: t('browser.addKey.vectorSet.sample.vectorSize'),
+    value: '300',
+  },
+  {
+    testId: 'embedding',
+    label: t('browser.addKey.vectorSet.sample.embedding'),
+    value: 'GloVe',
+  },
 ]

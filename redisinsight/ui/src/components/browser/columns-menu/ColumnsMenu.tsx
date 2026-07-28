@@ -6,6 +6,7 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import * as S from './ColumnsMenu.styles'
 
@@ -15,6 +16,7 @@ export interface ColumnsMenuProps {
 }
 
 const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleVisibility = () => setIsOpen(!isOpen)
@@ -29,11 +31,11 @@ const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
         <S.ColumnsButton
           onPressedChange={toggleVisibility}
           data-testid="btn-columns-actions"
-          aria-label="columns"
+          aria-label={t('browser.keysHeader.columnsAria')}
           pressed={isOpen}
         >
           <RiIcon size="m" type="ColumnsIcon" />
-          <Text size="s">Columns</Text>
+          <Text size="s">{t('browser.keysHeader.columns')}</Text>
         </S.ColumnsButton>
       }
     >
@@ -44,7 +46,7 @@ const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
               <S.StyledCheckbox
                 id="show-key-size"
                 name="show-key-size"
-                label="Key size"
+                label={t('browser.keysHeader.keySize')}
                 checked={shownColumns.includes(BrowserColumns.Size)}
                 onChange={(e) =>
                   onToggleColumn(e.target.checked, BrowserColumns.Size)
@@ -54,7 +56,7 @@ const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
             </FlexItem>
             <FlexItem>
               <RiTooltip
-                content="Hide the key size to avoid performance issues when working with large keys."
+                content={t('browser.keysHeader.keySizeTooltip')}
                 position="top"
                 anchorClassName="flex-row"
               >
@@ -72,7 +74,7 @@ const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
           <Checkbox
             id="show-ttl"
             name="show-ttl"
-            label="TTL"
+            label={t('browser.keysHeader.ttl')}
             checked={shownColumns.includes(BrowserColumns.TTL)}
             onChange={(e) =>
               onToggleColumn(e.target.checked, BrowserColumns.TTL)
