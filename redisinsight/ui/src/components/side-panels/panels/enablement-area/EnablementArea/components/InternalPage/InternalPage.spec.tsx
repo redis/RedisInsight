@@ -94,6 +94,17 @@ describe('InternalPage', () => {
     )
     expect(screen.getByRole('link', { name: 'Doc' })).toBeInTheDocument()
   })
+  it('should render a non-redis fence as plain code with no Run button, alongside a redis fence with one', () => {
+    const content = '```redis Run me\nGET k\n```\n\n```bash\nls -la\n```'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
+
+    expect(screen.getByTestId('run-btn-Run me')).toBeInTheDocument()
+    expect(screen.getByText('ls -la')).toBeInTheDocument()
+    // Only the redis fence above is interactive; the bash fence must not
+    // render a second copy/run block.
+    expect(screen.getAllByTestId('code-button-block-content')).toHaveLength(1)
+  })
+
   it('should render an external link with inline/small styling props', () => {
     const content = '[Redis Docs](https://redis.io/docs)'
     render(<InternalPage {...instance(mockedProps)} content={content} />)

@@ -102,7 +102,6 @@ const InternalPage = (props: Props) => {
   const markdownComponents: Partial<MarkdownLeafComponents> = useMemo(
     () => ({
       RedisCode: Code,
-      CodeBlock: Code,
       RedisUpload: RedisUploadButton,
       ExternalLink: TutorialExternalLink,
       CloudLink,

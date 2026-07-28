@@ -1,4 +1,4 @@
-import React, { type ComponentPropsWithoutRef, useMemo } from 'react'
+import React, { type ComponentPropsWithoutRef, memo, useMemo } from 'react'
 import ReactMarkdown, { type Components, type ExtraProps } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { PluggableList } from 'unified'
@@ -31,12 +31,12 @@ const nodeText = (children: React.ReactNode): string =>
  * `data.hName`. Cast through `unknown` to add those handlers alongside the
  * built-in `a`/`img` overrides.
  */
-export const MarkdownRenderer = ({
+export const MarkdownRenderer = memo(function MarkdownRenderer({
   children,
   path = '',
   components,
   allLangs = false,
-}: MarkdownRendererProps) => {
+}: MarkdownRendererProps) {
   const remarkPlugins: PluggableList = useMemo(
     () => [
       remarkGfm,
@@ -173,4 +173,4 @@ export const MarkdownRenderer = ({
       {children}
     </ReactMarkdown>
   )
-}
+})

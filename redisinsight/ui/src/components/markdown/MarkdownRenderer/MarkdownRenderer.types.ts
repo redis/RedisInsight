@@ -23,8 +23,9 @@ export interface MarkdownRendererProps {
   children: string
   path?: string
   components: Partial<MarkdownLeafComponents>
-  // When true, fences without a language are also rendered via the
+  // When true, every non-Redis fence (languaged or not) is rendered via the
   // `CodeBlock` leaf instead of a plain `<pre>`. Copilot chat sets this so
-  // language-less fences keep copy/run; tutorials leave it off.
+  // all fences keep copy/run; tutorials leave it off so non-Redis fences
+  // render as plain code with no Run button.
   allLangs?: boolean
 }

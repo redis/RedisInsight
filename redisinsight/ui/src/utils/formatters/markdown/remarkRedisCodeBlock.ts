@@ -5,11 +5,11 @@ const REDIS_UPLOAD_RE = /^redis-upload:\[(.*)] (.*)/i
 const PARAMS_SEPARATOR = ':'
 
 export interface RemarkRedisCodeBlockOptions {
-  // Also converts fences without a language into `codeblock` nodes, so
-  // consumers that render `codeblock` via an interactive leaf (e.g. Copilot
-  // chat's copy/run code block) get that behavior for language-less fences
-  // too. Tutorials leave language-less fences as plain `<pre>` by omitting
-  // this option.
+  // Converts every non-Redis fence (languaged or not) into a `codeblock`
+  // node, so consumers that render `codeblock` via an interactive leaf (e.g.
+  // Copilot chat's copy/run code block) get that behavior for all fences.
+  // Tutorials omit this option so non-Redis fences (e.g. bash/json) are left
+  // untouched and render as plain `<pre><code>`, with no Run button.
   allLangs?: boolean
 }
 
@@ -40,18 +40,10 @@ export const remarkRedisCodeBlock =
         return
       }
 
-      if (lang) {
-        node.data = {
-          hName: 'codeblock',
-          hProperties: { label: meta, lang, value },
-        }
-        return
-      }
-
       if (options?.allLangs) {
         node.data = {
           hName: 'codeblock',
-          hProperties: { label: meta, lang: '', value },
+          hProperties: { label: meta, lang: lang || '', value },
         }
       }
     })

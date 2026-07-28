@@ -47,8 +47,16 @@ describe('remarkRedisCodeBlock', () => {
     })
   })
 
-  it('maps a plain lang fence to codeblock', () => {
+  it('leaves a languaged non-redis fence unchanged without allLangs', () => {
     const node = runOn({ lang: 'bash', meta: '', value: 'ls' })
+    expect(node.data).toBeUndefined()
+  })
+
+  it('maps a languaged non-redis fence to codeblock when allLangs is true', () => {
+    const node = runOn(
+      { lang: 'bash', meta: '', value: 'ls' },
+      { allLangs: true },
+    )
     expect(node.data.hName).toBe('codeblock')
     expect(node.data.hProperties).toEqual({
       label: '',
