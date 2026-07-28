@@ -4,7 +4,7 @@ import { crashReporter } from 'electron'
 import log from 'electron-log'
 import { electronStore } from 'desktopSrc/lib/store/store'
 import { ElectronStorageItem } from 'uiSrc/electron/constants'
-import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
+import { finalizeSentryEvent } from 'uiSrc/services/sentry'
 import pkg from '../../../../package.json'
 import configInit from '../../../config.json'
 
@@ -112,8 +112,7 @@ export const initSentry = (): void => {
       // Breadcrumbs can carry sensitive data; keep only with consent.
       beforeBreadcrumb: (breadcrumb) => (consentGranted ? breadcrumb : null),
       beforeSend(event) {
-        const scrubbed = scrubEvent(event)
-        return consentGranted ? scrubbed : minimizeEvent(scrubbed)
+        return finalizeSentryEvent(event, consentGranted)
       },
     })
 
