@@ -189,9 +189,7 @@ export class DatabaseInfoProvider {
       const helloInfo = convertArrayReplyToObject(helloResponse);
       const modules = Array.isArray(helloInfo.modules)
         ? helloInfo.modules.map((module) =>
-            Array.isArray(module)
-              ? convertArrayReplyToObject(module)
-              : module,
+            Array.isArray(module) ? convertArrayReplyToObject(module) : module,
           )
         : helloInfo.modules;
 
@@ -201,7 +199,9 @@ export class DatabaseInfoProvider {
     }
   }
 
-  private normalizeModulesFromInfo(modules: unknown): { name: string; ver?: number }[] {
+  private normalizeModulesFromInfo(
+    modules: unknown,
+  ): { name: string; ver?: number }[] {
     if (!modules) {
       return [];
     }

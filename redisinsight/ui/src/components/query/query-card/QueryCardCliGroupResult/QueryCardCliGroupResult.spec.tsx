@@ -89,6 +89,8 @@ describe('QueryCardCliGroupResult', () => {
   })
 
   it('should not show ModuleNotLoaded for successful TS.RANGE in group mode', () => {
+    // Cast: group-mode response nests execution-like objects; matches existing
+    // fixtures in this file (baseline already has TS2322 on those).
     const mockResult = [
       {
         response: [
@@ -102,7 +104,7 @@ describe('QueryCardCliGroupResult', () => {
         ],
         status: CommandExecutionStatus.Success,
       },
-    ]
+    ] as Props['result']
     render(
       <QueryCardCliGroupResult
         {...instance(mockedProps)}

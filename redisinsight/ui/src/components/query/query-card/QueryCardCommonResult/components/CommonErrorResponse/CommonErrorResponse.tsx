@@ -94,9 +94,7 @@ const CommonErrorResponse = (id: string, command = '', result?: any) => {
 
   const isSuccessfulResult = Array.isArray(result)
     ? result.length > 0 &&
-      result.every(
-        (item) => item?.status === CommandExecutionStatus.Success,
-      )
+      result.every((item) => item?.status === CommandExecutionStatus.Success)
     : result?.status === CommandExecutionStatus.Success
 
   // Don't replace a successful reply with ModuleNotLoaded — under ACL, modules
