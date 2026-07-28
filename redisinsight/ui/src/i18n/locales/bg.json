@@ -556,6 +556,7 @@
   "browser.addKey.form.value.placeholder": "Въведете стойност",
   "browser.addKey.hash.ttlPlaceholder": "Въведете TTL",
   "browser.addKey.keyType": "Тип ключ",
+  "browser.addKey.requiresVersion": "Изисква Redis {{version}}+",
   "browser.addKey.selectKeyType": "Изберете тип ключ",
   "browser.addKey.stream.entryIdError": "Форматът на ID на записа е неправилен",
   "browser.addKey.title": "Добави нов ключ",

@@ -556,6 +556,7 @@
   "browser.addKey.form.value.placeholder": "Enter Value",
   "browser.addKey.hash.ttlPlaceholder": "Enter TTL",
   "browser.addKey.keyType": "Key Type",
+  "browser.addKey.requiresVersion": "Requires Redis {{version}}+",
   "browser.addKey.selectKeyType": "Select key type",
   "browser.addKey.stream.entryIdError": "Entry ID format is incorrect",
   "browser.addKey.title": "New Key",
