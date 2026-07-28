@@ -63,11 +63,15 @@ const MarkdownMessage = (props: Props) => {
     [ChatCodeBlock],
   )
 
+  // Fire once per message content, keyed on `children` only: including
+  // onMessageRendered would re-run this whenever the parent passes a new
+  // callback reference, causing repeated scroll-to-bottom for the same message.
   useEffect(() => {
     if (children) {
       onMessageRendered?.()
     }
-  }, [children, onMessageRendered])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children])
 
   return (
     <MarkdownRenderer allLangs components={components}>

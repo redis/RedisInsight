@@ -60,6 +60,23 @@ describe('MarkdownMessage', () => {
     expect(onMessageRendered).not.toHaveBeenCalled()
   })
 
+  it('should not re-fire onMessageRendered when only the callback reference changes', () => {
+    const first = jest.fn()
+    const { rerender } = render(
+      <MarkdownMessage onMessageRendered={first}>Hello</MarkdownMessage>,
+    )
+    expect(first).toHaveBeenCalledTimes(1)
+
+    const second = jest.fn()
+    rerender(
+      <MarkdownMessage onMessageRendered={second}>Hello</MarkdownMessage>,
+    )
+
+    // Same message content, only the callback identity changed: no re-fire.
+    expect(second).not.toHaveBeenCalled()
+    expect(first).toHaveBeenCalledTimes(1)
+  })
+
   describe('security', () => {
     // RED-194228 / VDP-4596: message content can be influenced by untrusted
     // data (indirect prompt injection). MarkdownRenderer renders without
