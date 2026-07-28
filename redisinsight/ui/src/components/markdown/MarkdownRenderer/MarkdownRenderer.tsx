@@ -37,16 +37,6 @@ export const MarkdownRenderer = ({
   components,
   allLangs = false,
 }: MarkdownRendererProps) => {
-  const {
-    RedisCode,
-    CodeBlock,
-    RedisUpload,
-    ExternalLink,
-    CloudLink,
-    RedisInsightLink,
-    Image,
-  } = components
-
   const remarkPlugins: PluggableList = useMemo(
     () => [
       remarkGfm,
@@ -56,99 +46,118 @@ export const MarkdownRenderer = ({
     [allLangs],
   )
 
-  const mapped = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown's node type is a generic hast Element; the custom hProperties shape is guaranteed by remarkRedisCodeBlock, not by react-markdown's types.
-    rediscode: ({ node }: any) => {
-      const {
-        label = '',
-        params = '',
-        lang = 'redis',
-        value = '',
-      } = node?.properties || {}
-      if (!RedisCode) return <code>{value}</code>
-      return (
-        <RedisCode label={label} params={params} lang={lang} path={path}>
-          {value}
-        </RedisCode>
-      )
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
-    codeblock: ({ node }: any) => {
-      const { label = '', lang = '', value = '' } = node?.properties || {}
-      if (!CodeBlock) return <code>{value}</code>
-      return (
-        <CodeBlock label={label} lang={lang}>
-          {value}
-        </CodeBlock>
-      )
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
-    redisupload: ({ node }: any) => {
-      const { file = '', label = '' } = node?.properties || {}
-      if (!RedisUpload) return null
-      // RedisUpload resolves its own path (via getPathToResource), so it
-      // needs a bare, decoded pathname rather than a full absolute URL.
-      // A malformed `file` can make `new URL`/`decodeURI` throw (URIError);
-      // skip the block rather than crash the render tree.
-      let resolved: string
-      try {
-        resolved = decodeURI(new URL(getFileUrlFromMd(file, path)).pathname)
-      } catch {
-        return null
-      }
-      return <RedisUpload label={label} path={resolved} />
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
-    redisinsightlink: ({ node }: any) => {
-      const { url = '', text = '' } = node?.properties || {}
-      if (!RedisInsightLink) return <>{text}</>
-      return <RedisInsightLink url={url} text={text} />
-    },
-    a: ({
-      href = '',
-      title,
-      children: linkChildren,
-    }: ComponentPropsWithoutRef<'a'> & ExtraProps) => {
-      // safeUrl (urlTransform) neutralizes dangerous schemes (e.g.
-      // javascript:) to an empty href before this handler runs. Render an
-      // inert anchor with no href instead of falling through to
-      // getFileUrlFromMd, which would resolve '' into a navigable page URL.
-      if (!href) return <a>{linkChildren}</a>
+  // Memoized on [components, path] (the only things the handlers below
+  // close over) so a caller passing a stable `components` prop and `path`
+  // gets a stable `mapped` object, and ReactMarkdown doesn't re-render its
+  // whole tree on unrelated parent re-renders.
+  const mapped = useMemo(() => {
+    const {
+      RedisCode,
+      CodeBlock,
+      RedisUpload,
+      ExternalLink,
+      CloudLink,
+      RedisInsightLink,
+      Image,
+    } = components
 
-      const text = nodeText(linkChildren)
+    return {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown's node type is a generic hast Element; the custom hProperties shape is guaranteed by remarkRedisCodeBlock, not by react-markdown's types.
+      rediscode: ({ node }: any) => {
+        const {
+          label = '',
+          params = '',
+          lang = 'redis',
+          value = '',
+        } = node?.properties || {}
+        if (!RedisCode) return <code>{value}</code>
+        return (
+          <RedisCode label={label} params={params} lang={lang} path={path}>
+            {value}
+          </RedisCode>
+        )
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
+      codeblock: ({ node }: any) => {
+        const { label = '', lang = '', value = '' } = node?.properties || {}
+        if (!CodeBlock) return <code>{value}</code>
+        return (
+          <CodeBlock label={label} lang={lang}>
+            {value}
+          </CodeBlock>
+        )
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
+      redisupload: ({ node }: any) => {
+        const { file = '', label = '' } = node?.properties || {}
+        if (!RedisUpload) return null
+        // RedisUpload resolves its own path (via getPathToResource), so it
+        // needs a bare, decoded pathname rather than a full absolute URL.
+        // A malformed `file` can make `new URL`/`decodeURI` throw (URIError);
+        // skip the block rather than crash the render tree.
+        let resolved: string
+        try {
+          resolved = decodeURI(new URL(getFileUrlFromMd(file, path)).pathname)
+        } catch {
+          return null
+        }
+        return <RedisUpload label={label} path={resolved} />
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
+      redisinsightlink: ({ node }: any) => {
+        const { url = '', text = '' } = node?.properties || {}
+        if (!RedisInsightLink) return <>{text}</>
+        return <RedisInsightLink url={url} text={text} />
+      },
+      a: ({
+        href = '',
+        title,
+        children: linkChildren,
+      }: ComponentPropsWithoutRef<'a'> & ExtraProps) => {
+        // safeUrl (urlTransform) neutralizes dangerous schemes (e.g.
+        // javascript:) to an empty href before this handler runs. Render an
+        // inert anchor with no href instead of falling through to
+        // getFileUrlFromMd, which would resolve '' into a navigable page URL.
+        if (!href) return <a>{linkChildren}</a>
 
-      // redisinsight: links never reach this handler with their scheme
-      // intact: safeUrl's allowlist strips unknown schemes before urlTransform
-      // returns, so they're rewritten to structured redisinsightlink nodes by
-      // remarkRedisInsightLink in the remark phase, before sanitization runs.
-      if (title === 'Redis Cloud') {
-        if (!CloudLink) return <>{linkChildren}</>
-        return <CloudLink url={href} text={text || 'Redis Cloud'} />
-      }
+        const text = nodeText(linkChildren)
 
-      if (IS_ABSOLUTE_PATH.test(href)) {
-        if (!ExternalLink)
-          return (
-            <a href={href} target="_blank" rel="noopener noreferrer">
-              {linkChildren}
-            </a>
-          )
-        return <ExternalLink href={href}>{linkChildren}</ExternalLink>
-      }
+        // redisinsight: links never reach this handler with their scheme
+        // intact: safeUrl's allowlist strips unknown schemes before urlTransform
+        // returns, so they're rewritten to structured redisinsightlink nodes by
+        // remarkRedisInsightLink in the remark phase, before sanitization runs.
+        if (title === 'Redis Cloud') {
+          if (!CloudLink) return <>{linkChildren}</>
+          return <CloudLink url={href} text={text || 'Redis Cloud'} />
+        }
 
-      // In-page anchors must keep their href unchanged: resolving them
-      // against `path` via getFileUrlFromMd would rewrite `#section` into an
-      // absolute file URL and lose the hash.
-      if (href.startsWith('#')) return <a href={href}>{linkChildren}</a>
+        if (IS_ABSOLUTE_PATH.test(href)) {
+          if (!ExternalLink)
+            return (
+              <a href={href} target="_blank" rel="noopener noreferrer">
+                {linkChildren}
+              </a>
+            )
+          return <ExternalLink href={href}>{linkChildren}</ExternalLink>
+        }
 
-      return <a href={getFileUrlFromMd(href, path)}>{linkChildren}</a>
-    },
-    img: ({ src = '', alt }: ComponentPropsWithoutRef<'img'> & ExtraProps) => {
-      const resolved = getFileUrlFromMd(src, path)
-      if (!Image) return <img src={resolved} alt={alt || ''} />
-      return <Image src={resolved} />
-    },
-  }
+        // In-page anchors must keep their href unchanged: resolving them
+        // against `path` via getFileUrlFromMd would rewrite `#section` into an
+        // absolute file URL and lose the hash.
+        if (href.startsWith('#')) return <a href={href}>{linkChildren}</a>
+
+        return <a href={getFileUrlFromMd(href, path)}>{linkChildren}</a>
+      },
+      img: ({
+        src = '',
+        alt,
+      }: ComponentPropsWithoutRef<'img'> & ExtraProps) => {
+        const resolved = getFileUrlFromMd(src, path)
+        if (!Image) return <img src={resolved} alt={alt || ''} />
+        return <Image src={resolved} />
+      },
+    }
+  }, [components, path])
 
   return (
     <ReactMarkdown

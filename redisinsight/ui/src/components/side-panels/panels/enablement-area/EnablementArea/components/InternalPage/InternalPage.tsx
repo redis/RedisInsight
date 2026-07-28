@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, type ReactNode } from 'react'
+import React, {
+  useRef,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
@@ -90,15 +96,21 @@ const InternalPage = (props: Props) => {
   // Defined per render (not at module scope) because Code is re-exported
   // through the components barrel that InternalPage itself is part of;
   // capturing it at module-eval time would see it as undefined mid-cycle.
-  const markdownComponents: Partial<MarkdownLeafComponents> = {
-    RedisCode: Code,
-    CodeBlock: Code,
-    RedisUpload: RedisUploadButton,
-    ExternalLink: TutorialExternalLink,
-    CloudLink,
-    RedisInsightLink,
-    Image,
-  }
+  // Memoized with no deps: every value below is a stable module-level
+  // import, so the object identity stays stable across re-renders and
+  // MarkdownRenderer/ReactMarkdown don't re-render the whole tutorial tree.
+  const markdownComponents: Partial<MarkdownLeafComponents> = useMemo(
+    () => ({
+      RedisCode: Code,
+      CodeBlock: Code,
+      RedisUpload: RedisUploadButton,
+      ExternalLink: TutorialExternalLink,
+      CloudLink,
+      RedisInsightLink,
+      Image,
+    }),
+    [],
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { source } = useAppSelector(appContextCapability)

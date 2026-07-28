@@ -36,7 +36,7 @@ describe('MarkdownMessage', () => {
     ).toHaveTextContent('GET foo')
   })
 
-  it('should call onMessageRendered on mount', () => {
+  it('should call onMessageRendered on mount when there is content', () => {
     const onMessageRendered = jest.fn()
 
     render(
@@ -46,6 +46,18 @@ describe('MarkdownMessage', () => {
     )
 
     expect(onMessageRendered).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not call onMessageRendered when content is empty', () => {
+    const onMessageRendered = jest.fn()
+
+    render(
+      <MarkdownMessage onMessageRendered={onMessageRendered}>
+        {''}
+      </MarkdownMessage>,
+    )
+
+    expect(onMessageRendered).not.toHaveBeenCalled()
   })
 
   describe('security', () => {

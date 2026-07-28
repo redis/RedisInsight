@@ -49,8 +49,10 @@ const MarkdownMessage = (props: Props) => {
   )
 
   useEffect(() => {
-    onMessageRendered?.()
-  }, [children])
+    if (children) {
+      onMessageRendered?.()
+    }
+  }, [children, onMessageRendered])
 
   return (
     <MarkdownRenderer
