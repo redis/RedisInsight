@@ -22,6 +22,7 @@ import {
   getUserInfo,
   oauthCloudMfaSelector,
   setJob,
+  setMfaProfileRestore,
   setOAuthCloudSource,
   setSocialDialogState,
   showOAuthProgress,
@@ -277,6 +278,7 @@ describe('ConfigOAuth', () => {
       submitMfaCode(),
       submitMfaCodeSuccess(),
       addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()),
+      setMfaProfileRestore(false),
       getUserInfo(),
     ]
     expect(store.getActions().slice(0, expectedActions.length)).toEqual(

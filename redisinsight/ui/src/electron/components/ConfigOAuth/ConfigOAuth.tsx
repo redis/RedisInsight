@@ -9,6 +9,7 @@ import {
   fetchUserInfo,
   oauthCloudMfaSelector,
   setJob,
+  setMfaProfileRestore,
   setOAuthCloudSource,
   setSocialDialogState,
   showOAuthProgress,
@@ -166,9 +167,12 @@ const ConfigOAuth = () => {
 
   const onMfaVerified = () => {
     dispatch(addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()))
+    const isProfileRestoreVerified = isProfileRestoreRef.current
+    // the origin has been consumed; clear it so it can't leak into a later flow
+    dispatch(setMfaProfileRestore(false))
     // a startup restore only needs its profile re-fetched; routing it through
     // fetchUserInfo would open the interactive create/select-database flow
-    if (isProfileRestoreRef.current) {
+    if (isProfileRestoreVerified) {
       dispatch(
         fetchProfile(closeInfinityNotification, closeInfinityNotification),
       )

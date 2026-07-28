@@ -509,6 +509,7 @@ describe('oauth cloud slice', () => {
         },
       }
       const state = {
+        ...initialState.mfa,
         isOpenDialog: true,
         loading: false,
         error,
@@ -540,6 +541,7 @@ describe('oauth cloud slice', () => {
         },
       }
       const state = {
+        ...initialState.mfa,
         isOpenDialog: true,
         loading: false,
         error: '',
