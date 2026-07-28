@@ -650,6 +650,8 @@
   "browser.keyDetails.count.full": "Count: ",
   "browser.keyDetails.count.short": "Cnt: ",
   "browser.keyDetails.delete.aria": "Delete Key",
+  "browser.keyDetails.delete.button": "Delete",
+  "browser.keyDetails.delete.message": "will be deleted.",
   "browser.keyDetails.editable.cancelButton": "Cancel",
   "browser.keyDetails.editable.confirmButton": "Save",
   "browser.keyDetails.editable.confirmMessage": "You are about to modify a value on a production database.",

@@ -87,7 +87,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
         />
       }
       title={tooltipContent}
-      message="will be deleted."
+      message={t('browser.keyDetails.delete.message')}
       confirmButton={
         <DestructiveButton
           size="small"
@@ -95,7 +95,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
           onClick={() => onDelete(keyBuffer!)}
           data-testid="delete-key-confirm-btn"
         >
-          Delete
+          {t('browser.keyDetails.delete.button')}
         </DestructiveButton>
       }
     />

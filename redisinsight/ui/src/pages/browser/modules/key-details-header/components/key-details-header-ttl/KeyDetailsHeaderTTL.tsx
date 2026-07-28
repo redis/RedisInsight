@@ -73,7 +73,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
           <Trans
             i18nKey="browser.keyDetails.ttl.changeConfirm.description"
             values={{
-              name: escapeTrans(`${keyProp}`),
+              name: escapeTrans(keyProp ?? ''),
               ttl: escapeTrans(
                 ttlValue === '-1'
                   ? t('browser.keyDetails.ttl.noLimit')
@@ -177,7 +177,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
         >
           TTL:
           <span className={styles.ttlTextValue}>
-            {ttl === '-1' ? 'No limit' : ttl}
+            {ttl === '-1' ? t('browser.keyDetails.ttl.noLimit') : ttl}
           </span>
         </Text>
       </>

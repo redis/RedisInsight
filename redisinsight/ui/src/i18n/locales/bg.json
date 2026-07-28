@@ -650,6 +650,8 @@
   "browser.keyDetails.count.full": "Брой: ",
   "browser.keyDetails.count.short": "Бр.: ",
   "browser.keyDetails.delete.aria": "Изтриване на ключ",
+  "browser.keyDetails.delete.button": "Изтрий",
+  "browser.keyDetails.delete.message": "ще бъде изтрит.",
   "browser.keyDetails.editable.cancelButton": "Отказ",
   "browser.keyDetails.editable.confirmButton": "Запазване",
   "browser.keyDetails.editable.confirmMessage": "На път сте да промените стойност в продукционна база данни.",
