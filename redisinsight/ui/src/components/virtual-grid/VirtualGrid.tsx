@@ -13,7 +13,11 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { IProps } from './interfaces'
-import { getColumnWidth, useInnerElementType } from './utils'
+import {
+  getColumnWidth,
+  getExpandedRowHeight,
+  useInnerElementType,
+} from './utils'
 
 import styles from './styles.module.scss'
 
@@ -68,9 +72,7 @@ const VirtualGrid = (props: IProps) => {
   )
 
   const getRowHeight = (index: number) =>
-    expandedRows.indexOf(index) !== -1
-      ? Math.max(...Object.values(rowHeightsMap.current[index]))
-      : rowHeight
+    getExpandedRowHeight(index, expandedRows, rowHeightsMap.current, rowHeight)
 
   useEffect(
     () => () => {
