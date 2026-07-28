@@ -152,20 +152,24 @@ describe('AddKey', () => {
     ])
   })
 
-  it('should show Vector Set option when redis version >= 8.0', async () => {
+  it('should show Vector Set option as enabled when redis version >= 8.0', async () => {
     mockRedisVersion('8.0.0')
     renderAddKey()
 
     await userEvent.click(screen.getByTestId('select-key-type'))
     expect(await screen.findByText('Vector Set')).toBeInTheDocument()
+    // no promotion tag/wrapper when the type is supported
+    expect(screen.queryByTestId('vectorset-disabled')).not.toBeInTheDocument()
   })
 
-  it('should hide Vector Set option when redis version < 8.0', async () => {
+  it('should promote Vector Set as a disabled option with a version tag when redis version < 8.0', async () => {
     mockRedisVersion('7.4.0')
     renderAddKey()
 
     await userEvent.click(screen.getByTestId('select-key-type'))
-    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
+    // still visible (promoted), not removed from the list, rendered as disabled
+    expect(await screen.findByText('Vector Set')).toBeInTheDocument()
+    expect(screen.getByTestId('vectorset-disabled')).toBeInTheDocument()
   })
 
   it('should not show text if db contains ReJSON module', async () => {

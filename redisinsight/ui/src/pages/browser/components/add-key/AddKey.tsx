@@ -33,12 +33,12 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiTooltip } from 'uiSrc/components'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { useTranslation } from 'uiSrc/i18n'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
+import { KeyTypeOption } from './KeyTypeOption/KeyTypeOption'
 import AddKeyHash from './AddKeyHash'
 import AddKeyZset from './AddKeyZset'
 import AddKeyString from './AddKeyString'
@@ -89,27 +89,18 @@ const AddKey = (props: Props) => {
     [],
   )
 
-  const options = enabledOptions
-    .filter(
-      ({ minVersion }) =>
-        !minVersion || isVersionHigherOrEquals(version, minVersion),
-    )
-    .map((item) => {
-      const { value, color, text } = item
-      return {
-        value,
-        inputDisplay: (
-          <HealthText
-            color={color}
-            style={{ lineHeight: 'inherit' }}
-            data-test-subj={value}
-            data-testid={value}
-          >
-            {t(text)}
-          </HealthText>
-        ),
-      }
-    })
+  // Version-gated types (e.g. Vector Set, Array) stay in the list as disabled
+  // entries on unsupported Redis versions instead of being hidden.
+  const options = enabledOptions.map((item) => {
+    const isSupported =
+      !item.minVersion || isVersionHigherOrEquals(version, item.minVersion)
+
+    return {
+      value: item.value,
+      disabled: !isSupported,
+      inputDisplay: <KeyTypeOption option={item} disabled={!isSupported} />,
+    }
+  })
   const [typeSelected, setTypeSelected] = useState<string>(
     options[0]?.value ?? KeyTypes.Hash,
   )
@@ -118,6 +109,9 @@ const AddKey = (props: Props) => {
   const [keyNameDisabled, setKeyNameDisabled] = useState<boolean>(false)
 
   const onChangeType = (value: string) => {
+    if (options.find((option) => option.value === value)?.disabled) {
+      return
+    }
     setTypeSelected(value)
   }
 
