@@ -136,7 +136,7 @@ const AddItem = (props: Props) => {
                     size="M"
                     icon={CancelSlimIcon}
                     color="primary"
-                    aria-label={t('browser.rejson.cancelEditingAria')}
+                    aria-label={t('browser.rejson.cancelAddAria')}
                     className={styles.declineBtn}
                     onClick={() => onCancel?.()}
                   />

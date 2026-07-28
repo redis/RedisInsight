@@ -93,7 +93,7 @@ const EditEntireItemAction = (props: Props) => {
                   <div className={cx(styles.controls, styles.controlsBottom)}>
                     <IconButton
                       icon={CancelSlimIcon}
-                      aria-label={t('browser.rejson.cancelAddAria')}
+                      aria-label={t('browser.rejson.cancelEditingAria')}
                       className={styles.declineBtn}
                       onClick={onCancel}
                       data-testid="cancel-edit-btn"

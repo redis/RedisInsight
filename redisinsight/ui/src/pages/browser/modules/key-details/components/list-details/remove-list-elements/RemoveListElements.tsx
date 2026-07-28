@@ -209,6 +209,7 @@ const RemoveListElements = (props: Props) => {
           <Text size="s">
             <Trans
               i18nKey="browser.list.remove.willBeRemoved"
+              count={toNumber(count)}
               values={{
                 destination:
                   destination === TAIL_DESTINATION

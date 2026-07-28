@@ -42,7 +42,7 @@ export const TAIL_DESTINATION: ListElementDestination =
 export const HEAD_DESTINATION: ListElementDestination =
   ListElementDestination.Head
 
-export const getPushDestinations = (t: TFunction) => [
+const getPushDestinations = (t: TFunction) => [
   {
     value: TAIL_DESTINATION,
     inputDisplay: t('browser.list.push.tail'),
