@@ -6,4 +6,8 @@ export {
   normalizePath,
   scrubEvent,
   minimizeEvent,
+  shouldDropEvent,
+  applyFingerprint,
+  finalizeSentryEvent,
+  FAILED_TO_OPEN_FINGERPRINT,
 } from './scrubbing'

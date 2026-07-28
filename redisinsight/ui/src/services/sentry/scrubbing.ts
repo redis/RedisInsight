@@ -254,3 +254,117 @@ export const minimizeEvent = <T extends Event>(event: T): T => {
 
   return minimized as unknown as T
 }
+
+/* ------------------------------------------------------------------ *
+ * Noise filtering & grouping (RI-8353)
+ * ------------------------------------------------------------------ */
+
+/** Every stack frame across all exception values (Sentry order: crash frame last). */
+const eventFrames = (event: Event): StackFrame[] =>
+  event.exception?.values?.flatMap((value) => value.stacktrace?.frames ?? []) ??
+  []
+
+/** Message + every exception `value`/`type`, joined into one searchable string. */
+const eventText = (event: Event): string => {
+  const parts: string[] = []
+  if (typeof event.message === 'string') parts.push(event.message)
+  event.exception?.values?.forEach((value) => {
+    if (typeof value.value === 'string') parts.push(value.value)
+    if (typeof value.type === 'string') parts.push(value.type)
+  })
+  return parts.join(' ')
+}
+
+/** True when any listed error code appears as a whole word in the event text. */
+const hasErrorCode = (event: Event, codes: readonly string[]): boolean => {
+  const text = eventText(event)
+  return codes.some((code) => new RegExp(`\\b${code}\\b`).test(text))
+}
+
+/** Node broken-pipe / bad-fd I/O writes surfacing as fatal uncaught errors. */
+const IO_WRITE_FUNCTIONS = ['afterWriteDispatched', 'writeSync', 'onStreamRead']
+const IO_WRITE_CODES = ['EBADF', 'EIO', 'EPIPE'] as const
+const isNodeIoWriteNoise = (event: Event): boolean => {
+  const fromFrame = eventFrames(event).some((frame) => {
+    const fn = frame.function ?? ''
+    const location = `${frame.module ?? ''} ${frame.filename ?? ''} ${
+      frame.abs_path ?? ''
+    }`
+    const isWriteFn = IO_WRITE_FUNCTIONS.some((name) => fn.includes(name))
+    const isNodeInternal =
+      location.includes('stream_base_commons') ||
+      location.includes('node:') ||
+      location.includes('internal/')
+    return isWriteFn && isNodeInternal
+  })
+  return fromFrame || hasErrorCode(event, IO_WRITE_CODES)
+}
+
+/** Monaco editor cancellation — a benign `Canceled` throw, never a defect. */
+const isMonacoCancellation = (event: Event): boolean =>
+  event.exception?.values?.some((value) => value.type === 'Canceled') ?? false
+
+/** Errors thrown from a user's installed browser extension, not our code. */
+const isBrowserExtensionNoise = (event: Event): boolean =>
+  eventFrames(event).some((frame) =>
+    [frame.filename, frame.abs_path, frame.module].some((source) =>
+      (source ?? '').includes('chrome-extension://'),
+    ),
+  )
+
+/** Electron GPU process teardown — environmental, not actionable. */
+const isGpuAbnormalExit = (event: Event): boolean => {
+  const text = eventText(event)
+  return text.includes('abnormal-exit') && text.includes('GPU')
+}
+
+/**
+ * Decide whether an event is known noise that should never reach Sentry.
+ *
+ * Must run BEFORE scrub/minimize so it can read the message and error code:
+ * `minimizeEvent` blanks those for Tier-1 (no-consent) events, so anything that
+ * has to survive anonymization is matched on the stack frame / exception type,
+ * which both tiers keep.
+ */
+export const shouldDropEvent = (event: Event): boolean =>
+  isMonacoCancellation(event) ||
+  isBrowserExtensionNoise(event) ||
+  isNodeIoWriteNoise(event) ||
+  isGpuAbnormalExit(event) ||
+  hasErrorCode(event, ['ENOSPC'])
+
+/** Stable fingerprint for the localized "Failed to open: <OS message>" family. */
+export const FAILED_TO_OPEN_FINGERPRINT = 'failed-to-open-file'
+
+/**
+ * Collapse issues that Sentry's default grouping fragments. Currently the
+ * "Failed to open: …" shell errors, which split into one issue per OS locale
+ * because the message tail is localized. `sourceEvent` supplies the grouping
+ * signals (defaults to `event`); pass the pre-minimized event so the message is
+ * still present when fingerprinting a Tier-1 event.
+ */
+export const applyFingerprint = <T extends Event>(
+  event: T,
+  sourceEvent: Event = event,
+): T => {
+  if (eventText(sourceEvent).includes('Failed to open:')) {
+    event.fingerprint = [FAILED_TO_OPEN_FINGERPRINT]
+  }
+  return event
+}
+
+/**
+ * Single entry point for both layers' `beforeSend`: drop known noise, then
+ * scrub, then apply the consent tier, then fingerprint. Returns `null` to drop
+ * the event. Lives here (not in each init) so main and renderer cannot drift.
+ */
+export const finalizeSentryEvent = <T extends Event>(
+  event: T,
+  analyticsGranted: boolean,
+): T | null => {
+  if (shouldDropEvent(event)) return null
+  const scrubbed = scrubEvent(event)
+  const tiered = analyticsGranted ? scrubbed : minimizeEvent(scrubbed)
+  // Fingerprint from the original event — minimizeEvent has blanked the message.
+  return applyFingerprint(tiered, event)
+}

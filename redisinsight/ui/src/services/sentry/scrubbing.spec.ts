@@ -1,13 +1,26 @@
 import type { Event } from '@sentry/core'
 import {
+  FAILED_TO_OPEN_FINGERPRINT,
   NON_TRACKING_ANONYMOUS_ID,
   REDACTED,
+  applyFingerprint,
+  finalizeSentryEvent,
   minimizeEvent,
   normalizePath,
   scrubEvent,
   scrubSecretsInText,
   scrubSensitiveData,
+  shouldDropEvent,
 } from './scrubbing'
+
+/** Build an event with a single exception value + stack frames. */
+const errorEvent = (
+  value: string,
+  frames: Array<Record<string, unknown>> = [],
+  type = 'Error',
+): Event => ({
+  exception: { values: [{ type, value, stacktrace: { frames } }] },
+})
 
 describe('scrubSensitiveData', () => {
   it('redacts keys whose name contains a sensitive substring', () => {
@@ -335,5 +348,123 @@ describe('minimizeEvent', () => {
     expect(result.user).toEqual({ id: NON_TRACKING_ANONYMOUS_ID })
     expect(result.contexts?.device).toBeUndefined()
     expect(result.tags?.tier).toBe('anonymous')
+  })
+})
+
+describe('shouldDropEvent', () => {
+  it('drops Monaco editor cancellations (by exception type)', () => {
+    expect(shouldDropEvent(errorEvent('', [], 'Canceled'))).toBe(true)
+  })
+
+  it('drops errors originating in a browser extension', () => {
+    const event = errorEvent('boom', [
+      { function: 'g', filename: 'chrome-extension://abcdef/inpage.js' },
+    ])
+    expect(shouldDropEvent(event)).toBe(true)
+  })
+
+  it.each([
+    ['afterWriteDispatched', 'stream_base_commons'],
+    ['writeSync', 'node:fs'],
+    ['TCP.onStreamRead', 'stream_base_commons'],
+  ])('drops the Node I/O write storm (%s / %s frame)', (fn, moduleName) => {
+    const event = errorEvent('', [{ function: fn, module: moduleName }])
+    expect(shouldDropEvent(event)).toBe(true)
+  })
+
+  it.each(['EBADF', 'EIO', 'EPIPE', 'ENOSPC'])(
+    'drops low-level I/O errors by code (%s), even without a matching frame',
+    (code) => {
+      expect(shouldDropEvent(errorEvent(`${code}: write failed`))).toBe(true)
+    },
+  )
+
+  it('drops the Electron GPU abnormal-exit warning', () => {
+    const event: Event = {
+      message: "'GPU' process exited with 'abnormal-exit'",
+    }
+    expect(shouldDropEvent(event)).toBe(true)
+  })
+
+  it('keeps genuine application errors', () => {
+    const event = errorEvent('Cannot read properties of undefined', [
+      {
+        function: 'render',
+        filename: '/app.asar/dist/renderer/KeyTree.tsx',
+        module: 'KeyTree',
+      },
+    ])
+    expect(shouldDropEvent(event)).toBe(false)
+  })
+
+  it('does not treat an app frame merely named writeSync as I/O noise', () => {
+    // `writeSync` in app code (not a Node-internal module) must survive.
+    const event = errorEvent('boom', [
+      { function: 'writeSync', filename: '/app.asar/dist/main/store.js' },
+    ])
+    expect(shouldDropEvent(event)).toBe(false)
+  })
+
+  it('handles events with no exception or frames', () => {
+    expect(shouldDropEvent({})).toBe(false)
+    expect(shouldDropEvent({ message: 'plain message' })).toBe(false)
+  })
+})
+
+describe('applyFingerprint', () => {
+  it.each([
+    'Failed to open: The system cannot find the file specified. (0x2)',
+    'Failed to open: 系统找不到指定的文件。 (0x2)',
+    'Failed to open: El sistema no puede encontrar el archivo especificado.',
+  ])('collapses the localized "Failed to open" family: %s', (value) => {
+    const result = applyFingerprint(errorEvent(value))
+    expect(result.fingerprint).toEqual([FAILED_TO_OPEN_FINGERPRINT])
+  })
+
+  it('leaves unrelated events on default grouping', () => {
+    const result = applyFingerprint(errorEvent('some other error'))
+    expect(result.fingerprint).toBeUndefined()
+  })
+
+  it('reads grouping signals from sourceEvent when provided', () => {
+    // Target has no message (Tier-1 minimized); source still carries it.
+    const target = errorEvent('')
+    const source = errorEvent('Failed to open: file not found')
+    const result = applyFingerprint(target, source)
+    expect(result.fingerprint).toEqual([FAILED_TO_OPEN_FINGERPRINT])
+  })
+})
+
+describe('finalizeSentryEvent', () => {
+  it('returns null for dropped noise regardless of consent', () => {
+    const noise = errorEvent('', [], 'Canceled')
+    expect(finalizeSentryEvent(noise, true)).toBeNull()
+    expect(finalizeSentryEvent(noise, false)).toBeNull()
+  })
+
+  it('scrubs and keeps the full event when analytics is granted', () => {
+    const event: Event = {
+      message: 'connect redis://user:pw@host failed',
+      exception: { values: [{ type: 'Error', value: 'boom' }] },
+    }
+    const result = finalizeSentryEvent(event, true)
+    expect(result).not.toBeNull()
+    expect(result!.message).toBe(`connect redis://${REDACTED}@host failed`)
+    expect(result!.exception!.values![0].value).toBe('boom')
+  })
+
+  it('minimizes the event when analytics is not granted', () => {
+    const event = errorEvent('sensitive detail')
+    const result = finalizeSentryEvent(event, false)
+    expect(result!.exception!.values![0].value).toBe('')
+    expect(result!.user).toEqual({ id: NON_TRACKING_ANONYMOUS_ID })
+  })
+
+  it('fingerprints "Failed to open" even for a minimized (Tier-1) event', () => {
+    const event = errorEvent('Failed to open: file not found (0x2)')
+    const result = finalizeSentryEvent(event, false)
+    // Message is blanked by minimize, but fingerprint is read from the original.
+    expect(result!.exception!.values![0].value).toBe('')
+    expect(result!.fingerprint).toEqual([FAILED_TO_OPEN_FINGERPRINT])
   })
 })
