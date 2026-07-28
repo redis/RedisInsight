@@ -1,6 +1,11 @@
 {
-  "version": 9,
+  "version": 10,
   "features": {
+    "vectorSearchEnhancements": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": []
+    },
     "dev-language": {
       "flag": true,
       "perc": [[0, 0]],

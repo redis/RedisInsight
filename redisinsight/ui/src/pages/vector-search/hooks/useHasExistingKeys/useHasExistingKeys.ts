@@ -25,21 +25,22 @@ export const useHasExistingKeys = (
   enabled: boolean = true,
 ): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
-  const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(false)
+  const [checkedProbe, setCheckedProbe] = useState<string | null>(null)
 
   const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
+  const probe = enabled ? `${instanceId ?? ''}:${pathname}:${encoding}` : null
+  const loading = probe !== null && checkedProbe !== probe
+
   const checkForKeys = useCallback(
-    async (signal?: AbortSignal) => {
+    async (currentProbe: string, signal?: AbortSignal) => {
       if (!instanceId) {
-        setLoading(false)
+        setCheckedProbe(currentProbe)
         return
       }
-
-      setLoading(true)
 
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
@@ -84,7 +85,7 @@ export const useHasExistingKeys = (
         setError(true)
       } finally {
         if (!signal?.aborted) {
-          setLoading(false)
+          setCheckedProbe(currentProbe)
         }
       }
     },
@@ -92,16 +93,19 @@ export const useHasExistingKeys = (
   )
 
   useEffect(() => {
-    if (!enabled) return undefined
+    if (probe === null) {
+      setCheckedProbe(null)
+      return undefined
+    }
 
     // Abort in-flight requests on unmount to prevent state updates after cleanup
     const controller = new AbortController()
-    checkForKeys(controller.signal)
+    checkForKeys(probe, controller.signal)
 
     return () => {
       controller.abort()
     }
-  }, [enabled, checkForKeys, pathname])
+  }, [probe, checkForKeys])
 
   return { hasKeys, loading, error }
 }

@@ -124,6 +124,8 @@ test.describe('Vector Search > Create Index from List Page', () => {
 });
 
 test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', () => {
+  test.use({ featureFlags: { vectorSearchEnhancements: true } });
+
   let database: DatabaseInstance;
   const emptyIndex = IndexConfigFactory.build();
 

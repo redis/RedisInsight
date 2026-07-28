@@ -105,6 +105,7 @@ export interface CreateIndexPageProviderProps {
   mode?: CreateIndexMode
   sampleData?: SampleDataContent
   isManualCreation?: boolean
+  showBrowser?: boolean
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
   initialPrefix?: string
