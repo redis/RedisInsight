@@ -11,6 +11,7 @@ import { classToClass } from 'src/utils';
 import {
   getCertNameFromFilename,
   getPemBodyFromFileSync,
+  isImportFromFileAllowed,
   isValidPemCertificate,
   isValidPemPrivateKey,
 } from 'src/common/utils';
@@ -57,7 +58,7 @@ export class CertificateImportService {
 
     if (isValidPemCertificate(cert.certificate)) {
       toImport.certificate = cert.certificate;
-    } else {
+    } else if (isImportFromFileAllowed()) {
       try {
         toImport.certificate = getPemBodyFromFileSync(cert.certificate);
         toImport.name = getCertNameFromFilename(cert.certificate);
@@ -130,7 +131,7 @@ export class CertificateImportService {
 
     if (isValidPemCertificate(cert.certificate)) {
       toImport.certificate = cert.certificate;
-    } else {
+    } else if (isImportFromFileAllowed()) {
       try {
         toImport.certificate = getPemBodyFromFileSync(cert.certificate);
         toImport.name = getCertNameFromFilename(cert.certificate);
@@ -143,7 +144,7 @@ export class CertificateImportService {
 
     if (isValidPemPrivateKey(cert.key)) {
       toImport.key = cert.key;
-    } else {
+    } else if (isImportFromFileAllowed()) {
       try {
         toImport.key = getPemBodyFromFileSync(cert.key);
       } catch (e) {
