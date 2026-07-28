@@ -58,7 +58,11 @@ import { loadInstances as loadRdiInstances } from 'uiSrc/slices/rdi/instances'
 import { clearExpertChatHistory } from 'uiSrc/slices/panels/aiAssistant'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { getAllPlugins } from 'uiSrc/slices/app/plugins'
-import { ApiEndpoints, DEFAULT_RDI_SHOWN_COLUMNS, FeatureFlags } from 'uiSrc/constants'
+import {
+  ApiEndpoints,
+  DEFAULT_RDI_SHOWN_COLUMNS,
+  FeatureFlags,
+} from 'uiSrc/constants'
 import {
   connectDatabaseApiSpy,
   getDatabasesApiSpy,
@@ -278,13 +282,8 @@ describe('InstancePage', () => {
     })
 
     mswServer.use(
-      http.get(
-        getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`),
-        async () =>
-          HttpResponse.json(
-            { message: 'Service Unavailable' },
-            { status: 503 },
-          ),
+      http.get(getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`), async () =>
+        HttpResponse.json({ message: 'Service Unavailable' }, { status: 503 }),
       ),
     )
 

@@ -1596,9 +1596,7 @@ describe('instances slice', () => {
         }
         apiService.get = jest.fn().mockRejectedValue(responsePayload)
 
-        await store.dispatch<any>(
-          fetchConnectedInstanceAction(instances[0].id),
-        )
+        await store.dispatch<any>(fetchConnectedInstanceAction(instances[0].id))
 
         expect(store.getActions()).toEqual(
           expect.arrayContaining([
