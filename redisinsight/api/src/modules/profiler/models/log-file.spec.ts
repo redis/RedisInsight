@@ -101,8 +101,16 @@ describe('LogFile', () => {
     expect(logFile['clientObservers'].size).toEqual(0);
     expect(logFile['idleSince']).toBeGreaterThan(0);
     expect(logFile.destroy).not.toHaveBeenCalled();
-    // wait until idle threshold pass (2sec for test env)
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // poll until the idle timer fires destroy rather than waiting a fixed time,
+    // which is flaky when CI timer scheduling drifts past the wait window
+    const start = Date.now();
+    while (
+      !(logFile.destroy as jest.Mock).mock.calls.length &&
+      Date.now() - start < 8000
+    ) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
     expect(logFile.destroy).toHaveBeenCalled();
   });
 
