@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/telemetry'
 
 import { stringToBuffer } from 'uiSrc/utils'
-import { AddZsetFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddSetFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   INITIAL_SET_MEMBER_STATE,
   ISetMemberState,
@@ -45,6 +45,7 @@ export interface Props {
 const AddSetMembers = (props: Props) => {
   const { closePanel } = props
   const { t } = useTranslation()
+  const config = getAddSetFormConfig(t)
   const dispatch = useAppDispatch()
   const [members, setMembers] = useState<ISetMemberState[]>([
     { ...INITIAL_SET_MEMBER_STATE },

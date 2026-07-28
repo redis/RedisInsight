@@ -28,7 +28,7 @@ import {
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
 
-import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddListFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
@@ -67,6 +67,7 @@ export interface Props {
 const RemoveListElements = (props: Props) => {
   const { closePanel, onRemoveKey } = props
   const { t } = useTranslation()
+  const config = getAddListFormConfig(t)
 
   const optionsDestinations = [
     {

@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/telemetry'
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
-import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddListFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
@@ -58,6 +58,7 @@ const getPushDestinations = (t: TFunction) => [
 const AddListElements = (props: Props) => {
   const { closePanel } = props
   const { t } = useTranslation()
+  const config = getAddListFormConfig(t)
   const optionsDestinations = getPushDestinations(t)
 
   const [elements, setElements] = useState<string[]>([''])

@@ -29,7 +29,7 @@ import {
   updateStringValueAction,
 } from 'uiSrc/slices/browser/string'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { AddStringFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddStringFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   selectedKeyDataSelector,
   selectedKeySelector,
@@ -90,6 +90,7 @@ export interface Props {
 const StringDetailsValue = (props: Props) => {
   const { isEditItem, setIsEdit, onRefresh } = props
   const { t } = useTranslation()
+  const config = getAddStringFormConfig(t)
 
   const { compressor = null } = useAppSelector(connectedInstanceSelector)
   const { loading } = useAppSelector(stringSelector)

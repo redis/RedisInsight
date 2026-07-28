@@ -11,7 +11,7 @@ import {
   updateZsetScoreStateSelector,
 } from 'uiSrc/slices/browser/zset'
 
-import { AddZsetFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddZsetFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   INITIAL_ZSET_MEMBER_STATE,
   IZsetMemberState,
@@ -41,6 +41,7 @@ export interface Props {
 const AddZsetMembers = (props: Props) => {
   const { closePanel } = props
   const { t } = useTranslation()
+  const config = getAddZsetFormConfig(t)
   const dispatch = useAppDispatch()
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [members, setMembers] = useState<IZsetMemberState[]>([
