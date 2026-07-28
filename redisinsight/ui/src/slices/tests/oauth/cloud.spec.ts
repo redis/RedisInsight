@@ -34,6 +34,7 @@ import reducer, {
   getUserInfo,
   getUserInfoSuccess,
   getUserInfoFailure,
+  fetchProfile,
   fetchUserInfo,
   addFreeDbFailure,
   addFreeDbSuccess,
@@ -1202,6 +1203,30 @@ describe('oauth cloud slice', () => {
         expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
         expect(actions).toContainEqual(logoutUser())
         expect(actions).toContainEqual(setSSOFlow())
+      })
+    })
+
+    describe('fetchProfile', () => {
+      it('open the mfa dialog when a startup profile restore is challenged', async () => {
+        // Arrange - restart re-login reaches /login and is MFA-challenged
+        const responsePayload = {
+          response: {
+            status: 401,
+            data: {
+              message: 'Multi-factor authentication is required.',
+              errorCode: CustomErrorCodes.CloudApiMfaRequired,
+              factors: { totpFactorAvailable: true },
+            },
+          },
+        }
+
+        apiService.get = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchProfile())
+
+        // Assert - the restore routes through the same MFA flow, not a silent failure
+        expect(store.getActions()).toContainEqual(setMfaDialogState(true))
       })
     })
 

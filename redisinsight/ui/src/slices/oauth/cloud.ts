@@ -357,6 +357,70 @@ export function createFreeDbSuccess(
   }
 }
 
+// The cloud sign-in (fetchUserInfo) and the startup profile restore
+// (fetchProfile) both reach /login and can be answered with an MFA challenge -
+// on restart the in-memory api session is gone, so the persisted refresh token
+// re-logs in and may be challenged. Centralize the handling so a challenge
+// opens the dialog on both paths (or aborts on an unsupported/rate-limited
+// factor). Returns true when the error was an MFA challenge it handled.
+async function handleCloudMfaChallenge(
+  error: AxiosError,
+  dispatch: AppDispatch,
+  onFailAction?: () => void,
+): Promise<boolean> {
+  const errorCode = getApiErrorCustomCode(error)
+  const errorMessage = getApiErrorMessage(error)
+
+  if (errorCode === CustomErrorCodes.CloudApiMfaRequired) {
+    const factors = (
+      error?.response?.data as {
+        factors?: { totpFactorAvailable?: boolean }
+      }
+    )?.factors
+
+    // only TOTP is supported; if the challenge cannot be satisfied with an
+    // authenticator code, abort instead of prompting for one that can never
+    // complete (and would burn the user's MFA attempts)
+    if (factors && factors.totpFactorAvailable === false) {
+      dispatch(getUserInfoFailure(errorMessage))
+      dispatch(
+        addErrorNotification(
+          createAxiosError({
+            message: i18n.t('oauth.mfa.totpUnavailable'),
+          }),
+        ),
+      )
+      dispatch(setOAuthCloudSource(null))
+      await dispatch<any>(logoutUserAction())
+
+      onFailAction?.()
+      return true
+    }
+
+    dispatch(getUserInfoFailure(errorMessage))
+    dispatch(setMfaDialogState(true))
+
+    onFailAction?.()
+    return true
+  }
+
+  // the account is rate-limited before a code can be submitted; the 429 is not
+  // a logout trigger for the interceptor, so revoke the backend session
+  // credentialed by the oauth callback here instead of leaving it (and the SSO
+  // flow) alive
+  if (errorCode === CustomErrorCodes.CloudApiMfaQuotaExceeded) {
+    dispatch(getUserInfoFailure(errorMessage))
+    dispatch(addErrorNotification(error))
+    dispatch(setOAuthCloudSource(null))
+    await dispatch<any>(logoutUserAction())
+
+    onFailAction?.()
+    return true
+  }
+
+  return false
+}
+
 // Asynchronous thunk action
 export function fetchProfile(
   onSuccessAction?: (isMultiAccount?: boolean) => void,
@@ -378,9 +442,15 @@ export function fetchProfile(
 
         onSuccessAction?.()
       }
-    } catch (error) {
-      const errorMessage = getApiErrorMessage(error as AxiosError)
-      dispatch(getUserInfoFailure(errorMessage))
+    } catch (_err) {
+      const error = _err as AxiosError
+
+      // a persisted session re-logging in on startup can be MFA-challenged
+      if (await handleCloudMfaChallenge(error, dispatch, onFailAction)) {
+        return
+      }
+
+      dispatch(getUserInfoFailure(getApiErrorMessage(error)))
 
       onFailAction?.()
     }
@@ -425,57 +495,7 @@ export function fetchUserInfo(
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
 
-      if (
-        getApiErrorCustomCode(error) === CustomErrorCodes.CloudApiMfaRequired
-      ) {
-        const factors = (
-          error?.response?.data as {
-            factors?: { totpFactorAvailable?: boolean }
-          }
-        )?.factors
-
-        // only TOTP is supported; if the challenge cannot be satisfied with an
-        // authenticator code, abort instead of prompting for one that can never
-        // complete (and would burn the user's MFA attempts)
-        if (factors && factors.totpFactorAvailable === false) {
-          dispatch(getUserInfoFailure(errorMessage))
-          dispatch(
-            addErrorNotification(
-              createAxiosError({
-                message: i18n.t('oauth.mfa.totpUnavailable'),
-              }),
-            ),
-          )
-          dispatch(setOAuthCloudSource(null))
-          // revoke the backend session credentialed by the oauth callback so an
-          // unsatisfiable challenge cannot be resumed later; also clears the SSO flow
-          await dispatch<any>(logoutUserAction())
-
-          onFailAction?.()
-          return
-        }
-
-        dispatch(getUserInfoFailure(errorMessage))
-        dispatch(setMfaDialogState(true))
-
-        onFailAction?.()
-        return
-      }
-
-      // the account is already rate-limited before a code can be submitted; the
-      // 429 is not a logout trigger for the interceptor, so revoke the backend
-      // session credentialed by the oauth callback here instead of leaving it
-      // (and the SSO flow) alive
-      if (
-        getApiErrorCustomCode(error) ===
-        CustomErrorCodes.CloudApiMfaQuotaExceeded
-      ) {
-        dispatch(getUserInfoFailure(errorMessage))
-        dispatch(addErrorNotification(error))
-        dispatch(setOAuthCloudSource(null))
-        await dispatch<any>(logoutUserAction())
-
-        onFailAction?.()
+      if (await handleCloudMfaChallenge(error, dispatch, onFailAction)) {
         return
       }
 
