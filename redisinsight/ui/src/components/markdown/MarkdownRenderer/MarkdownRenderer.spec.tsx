@@ -96,6 +96,18 @@ describe('MarkdownRenderer', () => {
     expect(screen.queryByTestId('ext')).not.toBeInTheDocument()
   })
 
+  it('preserves an in-page #anchor href unchanged', () => {
+    render(
+      <MarkdownRenderer path="/tutorials/x/page.md" components={leaves}>
+        {'[x](#section)'}
+      </MarkdownRenderer>,
+    )
+    expect(screen.getByRole('link', { name: 'x' })).toHaveAttribute(
+      'href',
+      '#section',
+    )
+  })
+
   it('routes a Redis Cloud titled link to the CloudLink leaf', () => {
     render(
       <MarkdownRenderer components={leaves}>

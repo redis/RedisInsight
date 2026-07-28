@@ -1,14 +1,20 @@
 import type { Root } from 'mdast'
-import { remarkRedisCodeBlock } from 'uiSrc/utils/formatters/markdown/remarkRedisCodeBlock'
+import {
+  remarkRedisCodeBlock,
+  RemarkRedisCodeBlockOptions,
+} from 'uiSrc/utils/formatters/markdown/remarkRedisCodeBlock'
 
-const runOn = (code: {
-  lang?: string | null
-  meta?: string | null
-  value?: string
-}) => {
+const runOn = (
+  code: {
+    lang?: string | null
+    meta?: string | null
+    value?: string
+  },
+  options?: RemarkRedisCodeBlockOptions,
+) => {
   const node: any = { type: 'code', ...code }
   const tree: Root = { type: 'root', children: [node] }
-  remarkRedisCodeBlock()(tree)
+  remarkRedisCodeBlock(options)(tree)
   return node
 }
 
@@ -54,5 +60,18 @@ describe('remarkRedisCodeBlock', () => {
   it('leaves a no-lang fence unchanged', () => {
     const node = runOn({ lang: null, meta: '', value: 'plain' })
     expect(node.data).toBeUndefined()
+  })
+
+  it('maps a no-lang fence to codeblock when allLangs is true', () => {
+    const node = runOn(
+      { lang: null, meta: '', value: 'plain' },
+      { allLangs: true },
+    )
+    expect(node.data.hName).toBe('codeblock')
+    expect(node.data.hProperties).toEqual({
+      label: '',
+      lang: '',
+      value: 'plain',
+    })
   })
 })

@@ -94,6 +94,18 @@ describe('InternalPage', () => {
     )
     expect(screen.getByRole('link', { name: 'Doc' })).toBeInTheDocument()
   })
+  it('should render an external link with inline/small styling props', () => {
+    const content = '[Redis Docs](https://redis.io/docs)'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
+
+    const link = screen.getByRole('link', { name: /Redis Docs/ })
+    expect(link).toHaveAttribute('href', 'https://redis.io/docs')
+    // The base Link already adds target/rel for any href; this only checks
+    // the visual props (external/inline/small) applied by InternalPage's
+    // ExternalLink leaf, matching the old remarkLink styling.
+    expect(link).toHaveAttribute('target', '_blank')
+  })
+
   it('should render raw HTML in content as literal text and inject no script', () => {
     const content = '<p>{alert(1)}</p>'
     render(<InternalPage {...instance(mockedProps)} content={content} />)

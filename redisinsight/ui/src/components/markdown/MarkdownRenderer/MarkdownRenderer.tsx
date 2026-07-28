@@ -1,14 +1,13 @@
-import React, { type ComponentPropsWithoutRef } from 'react'
+import React, { type ComponentPropsWithoutRef, useMemo } from 'react'
 import ReactMarkdown, { type Components, type ExtraProps } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import type { PluggableList } from 'unified'
 import { remarkRedisCodeBlock } from 'uiSrc/utils/formatters/markdown/remarkRedisCodeBlock'
 import { remarkRedisInsightLink } from 'uiSrc/utils/formatters/markdown/remarkRedisInsightLink'
 import { safeUrl } from 'uiSrc/utils/formatters/markdown/safeUrl'
 import { getFileUrlFromMd } from 'uiSrc/utils/pathUtil'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
 import { MarkdownRendererProps } from './MarkdownRenderer.types'
-
-const REMARK_PLUGINS = [remarkGfm, remarkRedisCodeBlock, remarkRedisInsightLink]
 
 // Flattens a react-markdown node's children into a plain string, for leaves
 // (RedisCode/CodeBlock) that take string children instead of React nodes.
@@ -36,6 +35,7 @@ export const MarkdownRenderer = ({
   children,
   path = '',
   components,
+  allLangs = false,
 }: MarkdownRendererProps) => {
   const {
     RedisCode,
@@ -46,6 +46,15 @@ export const MarkdownRenderer = ({
     RedisInsightLink,
     Image,
   } = components
+
+  const remarkPlugins: PluggableList = useMemo(
+    () => [
+      remarkGfm,
+      [remarkRedisCodeBlock, { allLangs }],
+      remarkRedisInsightLink,
+    ],
+    [allLangs],
+  )
 
   const mapped = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown's node type is a generic hast Element; the custom hProperties shape is guaranteed by remarkRedisCodeBlock, not by react-markdown's types.
@@ -79,7 +88,14 @@ export const MarkdownRenderer = ({
       if (!RedisUpload) return null
       // RedisUpload resolves its own path (via getPathToResource), so it
       // needs a bare, decoded pathname rather than a full absolute URL.
-      const resolved = decodeURI(new URL(getFileUrlFromMd(file, path)).pathname)
+      // A malformed `file` can make `new URL`/`decodeURI` throw (URIError);
+      // skip the block rather than crash the render tree.
+      let resolved: string
+      try {
+        resolved = decodeURI(new URL(getFileUrlFromMd(file, path)).pathname)
+      } catch {
+        return null
+      }
       return <RedisUpload label={label} path={resolved} />
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see rediscode above.
@@ -114,6 +130,11 @@ export const MarkdownRenderer = ({
         return <ExternalLink href={href}>{linkChildren}</ExternalLink>
       }
 
+      // In-page anchors must keep their href unchanged: resolving them
+      // against `path` via getFileUrlFromMd would rewrite `#section` into an
+      // absolute file URL and lose the hash.
+      if (href.startsWith('#')) return <a href={href}>{linkChildren}</a>
+
       return <a href={getFileUrlFromMd(href, path)}>{linkChildren}</a>
     },
     img: ({ src = '', alt }: ComponentPropsWithoutRef<'img'> & ExtraProps) => {
@@ -125,7 +146,7 @@ export const MarkdownRenderer = ({
 
   return (
     <ReactMarkdown
-      remarkPlugins={REMARK_PLUGINS}
+      remarkPlugins={remarkPlugins}
       urlTransform={safeUrl}
       // react-markdown's Components type only allows intrinsic HTML tag
       // names as keys, but our remark plugins emit hast elements tagged

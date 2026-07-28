@@ -54,6 +54,7 @@ const MarkdownMessage = (props: Props) => {
 
   return (
     <MarkdownRenderer
+      allLangs
       components={{
         RedisCode: ChatCodeBlock,
         CodeBlock: ChatCodeBlock,

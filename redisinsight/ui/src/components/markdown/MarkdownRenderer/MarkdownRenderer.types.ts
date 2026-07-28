@@ -23,4 +23,8 @@ export interface MarkdownRendererProps {
   children: string
   path?: string
   components: Partial<MarkdownLeafComponents>
+  // When true, fences without a language are also rendered via the
+  // `CodeBlock` leaf instead of a plain `<pre>`. Copilot chat sets this so
+  // language-less fences keep copy/run; tutorials leave it off.
+  allLangs?: boolean
 }

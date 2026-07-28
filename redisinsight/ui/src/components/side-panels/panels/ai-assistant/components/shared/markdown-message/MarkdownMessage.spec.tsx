@@ -25,6 +25,17 @@ describe('MarkdownMessage', () => {
     ).toHaveTextContent('GET foo')
   })
 
+  it('should render a language-less code fence via the chat code block', async () => {
+    render(<MarkdownMessage>{'```\nGET foo\n```'}</MarkdownMessage>)
+
+    // Copilot passes allLangs to MarkdownRenderer so fences without a
+    // language still render as an interactive chat code block (copy/run)
+    // instead of a plain <pre>.
+    expect(
+      await screen.findByTestId('code-button-block-content'),
+    ).toHaveTextContent('GET foo')
+  })
+
   it('should call onMessageRendered on mount', () => {
     const onMessageRendered = jest.fn()
 

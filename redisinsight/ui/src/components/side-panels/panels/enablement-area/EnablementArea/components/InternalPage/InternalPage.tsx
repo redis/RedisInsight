@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, type ReactNode } from 'react'
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
@@ -74,11 +74,24 @@ const InternalPage = (props: Props) => {
   // Defined per render (not at module scope) because Code is re-exported
   // through the components barrel that InternalPage itself is part of;
   // capturing it at module-eval time would see it as undefined mid-cycle.
+  // ExternalLink mirrors the visual style of the old remarkLink: an inline,
+  // small external link (the base Link already adds target/rel on its own).
+  const ExternalLink = ({
+    href,
+    children,
+  }: {
+    href: string
+    children?: ReactNode
+  }) => (
+    <Link external variant="inline" size="S" href={href}>
+      {children}
+    </Link>
+  )
   const markdownComponents: Partial<MarkdownLeafComponents> = {
     RedisCode: Code,
     CodeBlock: Code,
     RedisUpload: RedisUploadButton,
-    ExternalLink: Link,
+    ExternalLink,
     CloudLink,
     RedisInsightLink,
     Image,
