@@ -462,6 +462,23 @@ export function fetchUserInfo(
         return
       }
 
+      // the account is already rate-limited before a code can be submitted; the
+      // 429 is not a logout trigger for the interceptor, so revoke the backend
+      // session credentialed by the oauth callback here instead of leaving it
+      // (and the SSO flow) alive
+      if (
+        getApiErrorCustomCode(error) ===
+        CustomErrorCodes.CloudApiMfaQuotaExceeded
+      ) {
+        dispatch(getUserInfoFailure(errorMessage))
+        dispatch(addErrorNotification(error))
+        dispatch(setOAuthCloudSource(null))
+        await dispatch<any>(logoutUserAction())
+
+        onFailAction?.()
+        return
+      }
+
       dispatch(addErrorNotification(error))
       dispatch(getUserInfoFailure(errorMessage))
       dispatch(setOAuthCloudSource(null))

@@ -1173,6 +1173,36 @@ describe('oauth cloud slice', () => {
         expect(actions).toContainEqual(logoutUser())
         expect(actions).toContainEqual(setSSOFlow())
       })
+
+      it('abort and revoke the session when the account is already MFA rate-limited', async () => {
+        // Arrange
+        const responsePayload = {
+          response: {
+            status: 429,
+            data: {
+              message: 'Too many authentication attempts.',
+              errorCode: CustomErrorCodes.CloudApiMfaQuotaExceeded,
+            },
+          },
+        }
+
+        apiService.get = jest
+          .fn()
+          .mockRejectedValueOnce(responsePayload)
+          .mockResolvedValue({ status: 200 })
+
+        // Act
+        await store.dispatch<any>(fetchUserInfo())
+
+        // Assert
+        const actions = store.getActions()
+        expect(actions).not.toContainEqual(setMfaDialogState(true))
+        expect(actions).toContainEqual(setOAuthCloudSource(null))
+        // a pre-submission lockout revokes the backend session, not just local state
+        expect(apiService.get).toBeCalledWith(ApiEndpoints.CLOUD_ME_LOGOUT)
+        expect(actions).toContainEqual(logoutUser())
+        expect(actions).toContainEqual(setSSOFlow())
+      })
     })
 
     describe('submitMfaCodeAction', () => {
