@@ -64,6 +64,11 @@ jest.mock('uiSrc/slices/instances/cloud', () => ({
   }),
 }))
 
+const mockCloudSelector = cloudSelector as jest.Mock
+const mockFetchUserInfo = fetchUserInfo as jest.Mock
+const mockFetchProfile = fetchProfile as jest.Mock
+const mockOauthCloudMfaSelector = oauthCloudMfaSelector as jest.Mock
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
@@ -84,7 +89,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call proper actions on success', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'signIn',
     })
 
@@ -108,7 +113,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call proper actions on failed', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'signIn',
     })
 
@@ -136,7 +141,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should fetch plans with create flow', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'create',
     })
 
@@ -145,7 +150,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -174,7 +179,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call fetch subscriptions with autodiscovery flow', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'import',
     })
 
@@ -183,7 +188,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -212,7 +217,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call create free job after success with recommended settings', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       isRecommendedSettings: true,
       ssoFlow: 'create',
     })
@@ -222,7 +227,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -251,13 +256,13 @@ describe('ConfigOAuth', () => {
   })
 
   it('should resume the sign in flow after mfa verification', async () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'signIn',
     })
-    ;(fetchUserInfo as jest.Mock).mockImplementation(
+    mockFetchUserInfo.mockImplementation(
       jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
     )
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+    mockOauthCloudMfaSelector.mockReturnValue({
       isOpenDialog: true,
       loading: false,
       error: '',
@@ -287,10 +292,10 @@ describe('ConfigOAuth', () => {
   })
 
   it('should resume the profile restore, not the sign in flow, after mfa verification', async () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({})
-    ;(fetchUserInfo as jest.Mock).mockClear()
-    ;(fetchProfile as jest.Mock).mockClear()
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({})
+    mockFetchUserInfo.mockClear()
+    mockFetchProfile.mockClear()
+    mockOauthCloudMfaSelector.mockReturnValue({
       isOpenDialog: true,
       loading: false,
       error: '',
