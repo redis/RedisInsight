@@ -1,0 +1,85 @@
+import type { Root } from 'mdast'
+import {
+  remarkRedisCodeBlock,
+  RemarkRedisCodeBlockOptions,
+} from 'uiSrc/utils/formatters/markdown/remarkRedisCodeBlock'
+
+const runOn = (
+  code: {
+    lang?: string | null
+    meta?: string | null
+    value?: string
+  },
+  options?: RemarkRedisCodeBlockOptions,
+) => {
+  const node: any = { type: 'code', ...code }
+  const tree: Root = { type: 'root', children: [node] }
+  remarkRedisCodeBlock(options)(tree)
+  return node
+}
+
+describe('remarkRedisCodeBlock', () => {
+  it('maps a redis fence to rediscode with value and params', () => {
+    const node = runOn({
+      lang: 'redis:cluster',
+      meta: 'Run me',
+      value: 'GET k',
+    })
+    expect(node.data.hName).toBe('rediscode')
+    expect(node.data.hProperties).toEqual({
+      label: 'Run me',
+      params: 'cluster',
+      lang: 'redis',
+      value: 'GET k',
+    })
+  })
+
+  it('maps a redis-upload fence to redisupload', () => {
+    const node = runOn({
+      lang: 'redis-upload:[data/x.txt]',
+      meta: 'Upload',
+      value: '',
+    })
+    expect(node.data.hName).toBe('redisupload')
+    expect(node.data.hProperties).toEqual({
+      file: 'data/x.txt',
+      label: 'Upload',
+    })
+  })
+
+  it('leaves a languaged non-redis fence unchanged without allLangs', () => {
+    const node = runOn({ lang: 'bash', meta: '', value: 'ls' })
+    expect(node.data).toBeUndefined()
+  })
+
+  it('maps a languaged non-redis fence to codeblock when allLangs is true', () => {
+    const node = runOn(
+      { lang: 'bash', meta: '', value: 'ls' },
+      { allLangs: true },
+    )
+    expect(node.data.hName).toBe('codeblock')
+    expect(node.data.hProperties).toEqual({
+      label: '',
+      lang: 'bash',
+      value: 'ls',
+    })
+  })
+
+  it('leaves a no-lang fence unchanged', () => {
+    const node = runOn({ lang: null, meta: '', value: 'plain' })
+    expect(node.data).toBeUndefined()
+  })
+
+  it('maps a no-lang fence to codeblock when allLangs is true', () => {
+    const node = runOn(
+      { lang: null, meta: '', value: 'plain' },
+      { allLangs: true },
+    )
+    expect(node.data.hName).toBe('codeblock')
+    expect(node.data.hProperties).toEqual({
+      label: '',
+      lang: '',
+      value: 'plain',
+    })
+  })
+})

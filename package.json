@@ -60,7 +60,8 @@
     "sb": "storybook dev -p 6006",
     "build-sb": "storybook build",
     "deps:audit": "node scripts/dependency-audit-report.mjs",
-    "test:scripts": "node --test scripts/lib/*.test.mjs"
+    "test:scripts": "node --test scripts/lib/*.test.mjs",
+    "test:security": "node --import tsx --test tests/security/*.test.mts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -318,7 +319,7 @@
     "react-focus-on": "^3.9.4",
     "react-hotkeys-hook": "^3.3.1",
     "react-i18next": "^13.5",
-    "react-jsx-parser": "^2.4.1",
+    "react-markdown": "^9.1.0",
     "react-monaco-editor": "^0.59.0",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^3.0.2",

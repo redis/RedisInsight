@@ -6,7 +6,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 export interface Props {
   url: string
   text: string
-  source: OAuthSocialSource
+  source?: OAuthSocialSource
 }
 
 const CloudLink = (props: Props) => {

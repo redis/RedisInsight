@@ -25,7 +25,7 @@ import {
   DatabaseNotOpened,
 } from 'uiSrc/components/messages'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
+import { ButtonLang } from 'uiSrc/utils/formatters/markdown/buttonLang'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
