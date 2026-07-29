@@ -1585,6 +1585,29 @@ describe('instances slice', () => {
           ]),
         )
       })
+
+      it('dispatches setConnectedInstanceFailure when fetch fails', async () => {
+        const errorMessage = 'Not Found!'
+        const responsePayload = {
+          response: {
+            status: 404,
+            data: { message: errorMessage },
+          },
+        }
+        apiService.get = jest.fn().mockRejectedValue(responsePayload)
+
+        await store.dispatch<any>(fetchConnectedInstanceAction(instances[0].id))
+
+        expect(store.getActions()).toEqual(
+          expect.arrayContaining([
+            setDefaultInstance(),
+            setConnectedInstance(),
+            setConnectedInstanceFailure(),
+            setDefaultInstanceFailure(errorMessage),
+            addErrorNotification(responsePayload as AxiosError),
+          ]),
+        )
+      })
     })
 
     describe('changeInstanceAliasAction', () => {

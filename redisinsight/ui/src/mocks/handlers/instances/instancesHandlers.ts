@@ -77,6 +77,10 @@ export const getDatabasesApiSpy = jest
     HttpResponse.json(INSTANCES_MOCK, { status: 200 }),
   )
 
+export const connectDatabaseApiSpy = jest
+  .fn()
+  .mockImplementation(async () => HttpResponse.text('', { status: 200 }))
+
 const handlers: HttpHandler[] = [
   // fetchInstancesAction
   http.get(getMswURL(ApiEndpoints.DATABASES), getDatabasesApiSpy),
@@ -93,9 +97,10 @@ const handlers: HttpHandler[] = [
       return HttpResponse.json(MOCK_INFO_API_RESPONSE, { status: 200 })
     },
   ),
-  http.get(getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`), async () => {
-    return HttpResponse.text('', { status: 200 })
-  }),
+  http.get(
+    getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`),
+    connectDatabaseApiSpy,
+  ),
   http.post<
     any,
     {
