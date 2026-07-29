@@ -6,7 +6,10 @@ import axios, {
 import { isNumber } from 'lodash'
 import { sessionStorageService } from 'uiSrc/services'
 import { BrowserStorageItem, CustomErrorCodes } from 'uiSrc/constants'
-import { CLOUD_AUTH_API_ENDPOINTS, CustomHeaders } from 'uiSrc/constants/api'
+import ApiEndpoints, {
+  CLOUD_AUTH_API_ENDPOINTS,
+  CustomHeaders,
+} from 'uiSrc/constants/api'
 import { store } from 'uiSrc/slices/store'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
@@ -64,14 +67,15 @@ export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
 
 export const cloudAuthInterceptor = (error: AxiosError) => {
   const { response, config } = error
-  // an MFA challenge is a 401 too, but the session is still valid and must be
-  // kept so the pending login can be completed with a TOTP code
-  const isMfaChallenge =
+  // only the /cloud/me flow opens the MFA dialog, so keep the session for an
+  // mfa-required 401 there; elsewhere it has no handler and should log out
+  const isMfaChallengeOnLogin =
+    config?.url === ApiEndpoints.CLOUD_ME &&
     (response?.data as { errorCode?: number })?.errorCode ===
-    CustomErrorCodes.CloudApiMfaRequired
+      CustomErrorCodes.CloudApiMfaRequired
   if (
     response?.status === 401 &&
-    !isMfaChallenge &&
+    !isMfaChallengeOnLogin &&
     config?.url &&
     CLOUD_AUTH_API_ENDPOINTS.includes(config.url as any)
   ) {

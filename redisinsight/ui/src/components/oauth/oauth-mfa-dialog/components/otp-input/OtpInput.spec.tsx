@@ -115,6 +115,27 @@ describe('OtpInput', () => {
     expect(box(3).value).toBe('4')
   })
 
+  it('should clear a box when its digit is deleted', () => {
+    const onChange = jest.fn()
+    renderComponent({ value: '123456', onChange })
+
+    fireEvent.change(box(2), { target: { value: '' } })
+
+    expect(onChange).toHaveBeenCalledWith('12456')
+    expect(box(2).value).toBe('')
+    expect(box(3).value).toBe('4')
+  })
+
+  it('should keep the existing digit when a non-digit is typed', () => {
+    const onChange = jest.fn()
+    renderComponent({ value: '123456', onChange })
+
+    fireEvent.change(box(2), { target: { value: 'a' } })
+
+    expect(onChange).not.toHaveBeenCalled()
+    expect(box(2).value).toBe('3')
+  })
+
   it('should mark boxes invalid via aria-invalid', () => {
     renderComponent({ isInvalid: true })
 

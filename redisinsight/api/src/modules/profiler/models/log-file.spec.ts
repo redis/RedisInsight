@@ -87,31 +87,30 @@ describe('LogFile', () => {
     );
   });
 
-  it('addProfilerClient + removeProfilerClient', async () => {
-    logFile['destroy'] = jest.fn();
+  it('addProfilerClient + removeProfilerClient', () => {
+    jest.useFakeTimers();
 
-    expect(logFile['clientObservers'].size).toEqual(0);
-    logFile.addProfilerClient(mockSocket.id);
-    expect(logFile['clientObservers'].size).toEqual(1);
-    expect(logFile['idleSince']).toEqual(0);
-    logFile.removeProfilerClient('007');
-    expect(logFile['clientObservers'].size).toEqual(1);
-    expect(logFile['idleSince']).toEqual(0);
-    logFile.removeProfilerClient(mockSocket.id);
-    expect(logFile['clientObservers'].size).toEqual(0);
-    expect(logFile['idleSince']).toBeGreaterThan(0);
-    expect(logFile.destroy).not.toHaveBeenCalled();
-    // poll until the idle timer fires destroy rather than waiting a fixed time,
-    // which is flaky when CI timer scheduling drifts past the wait window
-    const start = Date.now();
-    while (
-      !(logFile.destroy as jest.Mock).mock.calls.length &&
-      Date.now() - start < 8000
-    ) {
-      // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => setTimeout(resolve, 50));
+    try {
+      logFile['destroy'] = jest.fn();
+
+      expect(logFile['clientObservers'].size).toEqual(0);
+      logFile.addProfilerClient(mockSocket.id);
+      expect(logFile['clientObservers'].size).toEqual(1);
+      expect(logFile['idleSince']).toEqual(0);
+      logFile.removeProfilerClient('007');
+      expect(logFile['clientObservers'].size).toEqual(1);
+      expect(logFile['idleSince']).toEqual(0);
+      logFile.removeProfilerClient(mockSocket.id);
+      expect(logFile['clientObservers'].size).toEqual(0);
+      expect(logFile['idleSince']).toBeGreaterThan(0);
+      expect(logFile.destroy).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(config.get('profiler').logFileIdleThreshold);
+
+      expect(logFile.destroy).toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
     }
-    expect(logFile.destroy).toHaveBeenCalled();
   });
 
   it('destroy', async () => {

@@ -68,6 +68,13 @@ const OtpInput = ({
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const digits = (e.target.value.match(DIGITS_ONLY) || []).join('')
       if (!digits) {
+        // a cleared box (empty value) clears the slot; a non-digit keystroke
+        // leaves the existing digit in place
+        if (e.target.value === '' && slots[index]) {
+          const next = [...slots]
+          next[index] = ''
+          commit(next)
+        }
         return
       }
 
