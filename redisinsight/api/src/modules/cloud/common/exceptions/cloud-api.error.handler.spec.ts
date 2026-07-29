@@ -12,28 +12,10 @@ import {
   CloudApiUnauthorizedException,
   wrapCloudApiError,
 } from 'src/modules/cloud/common/exceptions';
-
-const mockCloudApiError = (status: number, data: unknown = null): AxiosError =>
-  ({
-    name: '',
-    message: `Request failed with status code ${status}`,
-    isAxiosError: true,
-    config: null,
-    response: {
-      statusText: '',
-      data,
-      headers: {},
-      config: null,
-      status,
-    },
-    toJSON: () => null,
-  }) as unknown as AxiosError;
-
-const mockMfaFactors = {
-  phoneNumber: '+15551234567',
-  smsFactorAvailable: false,
-  totpFactorAvailable: true,
-};
+import {
+  buildCloudApiError,
+  cloudApiMfaFactorsFactory,
+} from 'src/modules/cloud/common/exceptions/__tests__/cloud-api-error.factory';
 
 describe('wrapCloudApiError', () => {
   it('should return the error untouched when it is already an HttpException', () => {
@@ -50,18 +32,19 @@ describe('wrapCloudApiError', () => {
     [429, CloudApiInternalServerErrorException],
     [500, CloudApiInternalServerErrorException],
   ])('should map status %i by default', (status, exception) => {
-    expect(wrapCloudApiError(mockCloudApiError(status))).toBeInstanceOf(
+    expect(wrapCloudApiError(buildCloudApiError(status))).toBeInstanceOf(
       exception,
     );
   });
 
   describe('mfa errors', () => {
     it('should map user-mfa-required to CloudApiMfaRequiredException with parsed factors', () => {
+      const factors = cloudApiMfaFactorsFactory.build();
       const error = wrapCloudApiError(
-        mockCloudApiError(401, {
+        buildCloudApiError(401, {
           errors: {
             code: 'user-mfa-required',
-            params: JSON.stringify(mockMfaFactors),
+            params: JSON.stringify(factors),
           },
         }),
       );
@@ -70,13 +53,13 @@ describe('wrapCloudApiError', () => {
       expect(error.getResponse()).toMatchObject({
         statusCode: HttpStatus.UNAUTHORIZED,
         errorCode: CustomErrorCodes.CloudApiMfaRequired,
-        factors: mockMfaFactors,
+        factors,
       });
     });
 
     it('should map user-mfa-required without factors when params are not valid JSON', () => {
       const error = wrapCloudApiError(
-        mockCloudApiError(401, {
+        buildCloudApiError(401, {
           errors: { code: 'user-mfa-required', params: 'not-json' },
         }),
       );
@@ -93,7 +76,7 @@ describe('wrapCloudApiError', () => {
       'should map mfa-quota-exceeded to CloudApiMfaQuotaExceededException regardless of status (%i)',
       (status) => {
         const error = wrapCloudApiError(
-          mockCloudApiError(status, {
+          buildCloudApiError(status, {
             errors: { code: 'mfa-quota-exceeded' },
           }),
         );
@@ -108,7 +91,7 @@ describe('wrapCloudApiError', () => {
 
     it('should map mfa-invalid-code to CloudApiMfaInvalidCodeException', () => {
       const error = wrapCloudApiError(
-        mockCloudApiError(400, {
+        buildCloudApiError(400, {
           errors: { code: 'mfa-invalid-code' },
         }),
       );
@@ -122,7 +105,7 @@ describe('wrapCloudApiError', () => {
 
     it('should keep default status mapping for unknown cloud error codes', () => {
       const error = wrapCloudApiError(
-        mockCloudApiError(401, {
+        buildCloudApiError(401, {
           errors: { code: 'some-other-error' },
         }),
       );

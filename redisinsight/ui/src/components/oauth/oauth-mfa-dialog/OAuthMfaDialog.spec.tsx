@@ -27,6 +27,7 @@ const mockMfaOpenState = {
   isOpenDialog: true,
   loading: false,
   error: '',
+  isProfileRestore: false,
 }
 
 jest.mock('uiSrc/slices/oauth/cloud', () => ({
@@ -56,7 +57,7 @@ describe('OAuthMfaDialog', () => {
   })
 
   it('should not render when the dialog is closed', () => {
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValueOnce({
+    jest.mocked(oauthCloudMfaSelector).mockReturnValueOnce({
       ...mockMfaOpenState,
       isOpenDialog: false,
     })
@@ -141,7 +142,7 @@ describe('OAuthMfaDialog', () => {
   })
 
   it('should show the inline error', () => {
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValueOnce({
+    jest.mocked(oauthCloudMfaSelector).mockReturnValueOnce({
       ...mockMfaOpenState,
       error: 'Invalid code',
     })
@@ -153,7 +154,7 @@ describe('OAuthMfaDialog', () => {
   })
 
   it('should ignore cancel while a verification is in flight', () => {
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+    jest.mocked(oauthCloudMfaSelector).mockReturnValue({
       ...mockMfaOpenState,
       loading: true,
     })
@@ -168,7 +169,7 @@ describe('OAuthMfaDialog', () => {
   })
 
   it('should reset the error when the user edits the code after a failure', () => {
-    ;(oauthCloudMfaSelector as jest.Mock).mockReturnValue({
+    jest.mocked(oauthCloudMfaSelector).mockReturnValue({
       ...mockMfaOpenState,
       error: 'Invalid code',
     })
