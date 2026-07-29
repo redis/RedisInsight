@@ -46,8 +46,8 @@
     "asarUnpack": ["node_modules"],
     "provisioningProfile": "embedded.provisionprofile",
     "binaries": [
-      "Contents/Resources/app-x64.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
-      "Contents/Resources/app-arm64.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+      "Contents/Resources/app-x64.asar.unpacked/node_modules/better-sqlite3/prebuilds/darwin-x64.node",
+      "Contents/Resources/app-arm64.asar.unpacked/node_modules/better-sqlite3/prebuilds/darwin-arm64.node",
       "Contents/Resources/app-arm64.asar.unpacked/node_modules/keytar/build/Release/keytar.node",
       "Contents/Resources/app-x64.asar.unpacked/node_modules/keytar/build/Release/keytar.node"
     ],
@@ -62,8 +62,8 @@
     "asarUnpack": ["node_modules"],
     "provisioningProfile": "dev.provisionprofile",
     "binaries": [
-      "Contents/Resources/app-x64.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
-      "Contents/Resources/app-arm64.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+      "Contents/Resources/app-x64.asar.unpacked/node_modules/better-sqlite3/prebuilds/darwin-x64.node",
+      "Contents/Resources/app-arm64.asar.unpacked/node_modules/better-sqlite3/prebuilds/darwin-arm64.node",
       "Contents/Resources/app-arm64.asar.unpacked/node_modules/keytar/build/Release/keytar.node",
       "Contents/Resources/app-x64.asar.unpacked/node_modules/keytar/build/Release/keytar.node"
     ],
