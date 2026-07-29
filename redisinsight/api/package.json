@@ -94,7 +94,7 @@
     "@types/json-bigint": "^1.0.4",
     "adm-zip": "^0.6.0",
     "axios": "^1.16.0",
-    "better-sqlite3": "^12.10.1",
+    "better-sqlite3": "^13.0.1",
     "body-parser": "^1.20.6",
     "busboy": "^1.6.0",
     "class-transformer": "^0.5.1",
