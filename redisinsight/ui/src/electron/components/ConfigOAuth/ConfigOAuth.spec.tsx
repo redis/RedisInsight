@@ -1,9 +1,12 @@
 import React from 'react'
 import {
+  act,
   cleanup,
   createMockedStore,
+  fireEvent,
   mockedStore,
   render,
+  screen,
 } from 'uiSrc/utils/test-utils'
 
 import {
@@ -13,14 +16,19 @@ import {
 } from 'uiSrc/electron/constants'
 import {
   addFreeDb,
+  fetchProfile,
   fetchUserInfo,
   getPlans,
   getUserInfo,
+  oauthCloudMfaSelector,
   setJob,
+  setMfaProfileRestore,
   setOAuthCloudSource,
   setSocialDialogState,
   showOAuthProgress,
   signInFailure,
+  submitMfaCode,
+  submitMfaCodeSuccess,
 } from 'uiSrc/slices/oauth/cloud'
 import {
   cloudSelector,
@@ -31,6 +39,7 @@ import {
   addInfiniteNotification,
 } from 'uiSrc/slices/app/notifications'
 import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
+import { apiService } from 'uiSrc/services'
 import ConfigOAuth from './ConfigOAuth'
 
 jest.mock('uiSrc/slices/oauth/cloud', () => ({
@@ -40,6 +49,12 @@ jest.mock('uiSrc/slices/oauth/cloud', () => ({
     .mockImplementation(
       jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
     ),
+  fetchProfile: jest.fn().mockImplementation(() => () => {}),
+  oauthCloudMfaSelector: jest.fn().mockReturnValue({
+    isOpenDialog: false,
+    loading: false,
+    error: '',
+  }),
 }))
 
 jest.mock('uiSrc/slices/instances/cloud', () => ({
@@ -48,6 +63,11 @@ jest.mock('uiSrc/slices/instances/cloud', () => ({
     ...jest.requireActual('uiSrc/slices/instances/cloud').initialState,
   }),
 }))
+
+const mockCloudSelector = cloudSelector as jest.Mock
+const mockFetchUserInfo = fetchUserInfo as jest.Mock
+const mockFetchProfile = fetchProfile as jest.Mock
+const mockOauthCloudMfaSelector = oauthCloudMfaSelector as jest.Mock
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -69,7 +89,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call proper actions on success', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'signIn',
     })
 
@@ -93,7 +113,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call proper actions on failed', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'signIn',
     })
 
@@ -121,7 +141,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should fetch plans with create flow', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'create',
     })
 
@@ -130,7 +150,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -159,7 +179,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call fetch subscriptions with autodiscovery flow', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       ssoFlow: 'import',
     })
 
@@ -168,7 +188,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -197,7 +217,7 @@ describe('ConfigOAuth', () => {
   })
 
   it('should call create free job after success with recommended settings', () => {
-    ;(cloudSelector as jest.Mock).mockReturnValue({
+    mockCloudSelector.mockReturnValue({
       isRecommendedSettings: true,
       ssoFlow: 'create',
     })
@@ -207,7 +227,7 @@ describe('ConfigOAuth', () => {
       .mockImplementation(
         (onSuccessAction: () => void) => () => onSuccessAction(),
       )
-    ;(fetchUserInfo as jest.Mock).mockImplementation(fetchUserInfoMock)
+    mockFetchUserInfo.mockImplementation(fetchUserInfoMock)
 
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
@@ -233,5 +253,67 @@ describe('ConfigOAuth', () => {
       ...afterCallbackActions,
       ...expectedActions,
     ])
+  })
+
+  it('should resume the sign in flow after mfa verification', async () => {
+    mockCloudSelector.mockReturnValue({
+      ssoFlow: 'signIn',
+    })
+    mockFetchUserInfo.mockImplementation(
+      jest.requireActual('uiSrc/slices/oauth/cloud').fetchUserInfo,
+    )
+    mockOauthCloudMfaSelector.mockReturnValue({
+      isOpenDialog: true,
+      loading: false,
+      error: '',
+    })
+    apiService.post = jest.fn().mockResolvedValue({ status: 200 })
+    apiService.get = jest.fn().mockResolvedValue({ status: 200, data: {} })
+
+    renderConfigOAuth()
+
+    // pasting the full code auto-submits and completes the pending login
+    await act(async () => {
+      fireEvent.paste(screen.getByTestId('oauth-mfa-dialog-code-input-0'), {
+        clipboardData: { getData: () => '123456' },
+      })
+    })
+
+    const expectedActions = [
+      submitMfaCode(),
+      submitMfaCodeSuccess(),
+      addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()),
+      setMfaProfileRestore(false),
+      getUserInfo(),
+    ]
+    expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+      expectedActions,
+    )
+  })
+
+  it('should resume the profile restore, not the sign in flow, after mfa verification', async () => {
+    mockCloudSelector.mockReturnValue({})
+    mockFetchUserInfo.mockClear()
+    mockFetchProfile.mockClear()
+    mockOauthCloudMfaSelector.mockReturnValue({
+      isOpenDialog: true,
+      loading: false,
+      error: '',
+      isProfileRestore: true,
+    })
+    apiService.post = jest.fn().mockResolvedValue({ status: 200 })
+
+    renderConfigOAuth()
+
+    await act(async () => {
+      fireEvent.paste(screen.getByTestId('oauth-mfa-dialog-code-input-0'), {
+        clipboardData: { getData: () => '123456' },
+      })
+    })
+
+    // a restored session re-fetches its profile; it must not enter the
+    // interactive create/select-database flow
+    expect(fetchProfile).toHaveBeenCalled()
+    expect(fetchUserInfo).not.toHaveBeenCalled()
   })
 })

@@ -87,23 +87,30 @@ describe('LogFile', () => {
     );
   });
 
-  it('addProfilerClient + removeProfilerClient', async () => {
-    logFile['destroy'] = jest.fn();
+  it('addProfilerClient + removeProfilerClient', () => {
+    jest.useFakeTimers();
 
-    expect(logFile['clientObservers'].size).toEqual(0);
-    logFile.addProfilerClient(mockSocket.id);
-    expect(logFile['clientObservers'].size).toEqual(1);
-    expect(logFile['idleSince']).toEqual(0);
-    logFile.removeProfilerClient('007');
-    expect(logFile['clientObservers'].size).toEqual(1);
-    expect(logFile['idleSince']).toEqual(0);
-    logFile.removeProfilerClient(mockSocket.id);
-    expect(logFile['clientObservers'].size).toEqual(0);
-    expect(logFile['idleSince']).toBeGreaterThan(0);
-    expect(logFile.destroy).not.toHaveBeenCalled();
-    // wait until idle threshold pass (2sec for test env)
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    expect(logFile.destroy).toHaveBeenCalled();
+    try {
+      logFile['destroy'] = jest.fn();
+
+      expect(logFile['clientObservers'].size).toEqual(0);
+      logFile.addProfilerClient(mockSocket.id);
+      expect(logFile['clientObservers'].size).toEqual(1);
+      expect(logFile['idleSince']).toEqual(0);
+      logFile.removeProfilerClient('007');
+      expect(logFile['clientObservers'].size).toEqual(1);
+      expect(logFile['idleSince']).toEqual(0);
+      logFile.removeProfilerClient(mockSocket.id);
+      expect(logFile['clientObservers'].size).toEqual(0);
+      expect(logFile['idleSince']).toBeGreaterThan(0);
+      expect(logFile.destroy).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(config.get('profiler').logFileIdleThreshold);
+
+      expect(logFile.destroy).toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('destroy', async () => {

@@ -2,15 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AxiosError } from 'axios'
 import { remove } from 'lodash'
 import { apiService, localStorageService } from 'uiSrc/services'
-import { ApiEndpoints, BrowserStorageItem, Pages } from 'uiSrc/constants'
 import {
+  ApiEndpoints,
+  BrowserStorageItem,
+  CustomErrorCodes,
+  Pages,
+} from 'uiSrc/constants'
+import {
+  createAxiosError,
   getApiErrorCode,
+  getApiErrorCustomCode,
   getApiErrorMessage,
   getAxiosError,
   isStatusSuccessful,
   Maybe,
   Nullable,
 } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 
 import { CloudJobName, CloudJobStatus } from 'uiSrc/electron/constants'
 import {
@@ -74,6 +82,12 @@ export const initialState: StateAppOAuth = {
       error: '',
       data: null,
     },
+  },
+  mfa: {
+    isOpenDialog: false,
+    loading: false,
+    error: '',
+    isProfileRestore: false,
   },
   plan: {
     loading: false,
@@ -148,6 +162,32 @@ const oauthCloudSlice = createSlice({
       { payload }: PayloadAction<boolean>,
     ) => {
       state.isOpenSelectAccountDialog = payload
+    },
+    setMfaDialogState: (state, { payload }: PayloadAction<boolean>) => {
+      state.mfa.isOpenDialog = payload
+      if (!payload) {
+        state.mfa.loading = false
+        state.mfa.error = ''
+        state.mfa.isProfileRestore = false
+      }
+    },
+    setMfaProfileRestore: (state, { payload }: PayloadAction<boolean>) => {
+      state.mfa.isProfileRestore = payload
+    },
+    submitMfaCode: (state) => {
+      state.mfa.loading = true
+      state.mfa.error = ''
+    },
+    submitMfaCodeSuccess: (state) => {
+      state.mfa.loading = false
+      state.mfa.isOpenDialog = false
+    },
+    submitMfaCodeFailure: (state, { payload }: PayloadAction<string>) => {
+      state.mfa.loading = false
+      state.mfa.error = payload
+    },
+    resetMfaError: (state) => {
+      state.mfa.error = ''
     },
     setJob: (state, { payload }: PayloadAction<CloudJobInfoState>) => {
       state.job = payload
@@ -237,6 +277,12 @@ export const {
   setSocialDialogState,
   setOAuthCloudSource,
   setSelectAccountDialogState,
+  setMfaDialogState,
+  setMfaProfileRestore,
+  submitMfaCode,
+  submitMfaCodeSuccess,
+  submitMfaCodeFailure,
+  resetMfaError,
   setJob,
   setIsOpenSelectPlanDialog,
   getPlans,
@@ -272,6 +318,7 @@ export const oauthCloudPAgreementSelector = (state: RootState) =>
   state.oauth.cloud.agreement
 export const oauthCapiKeysSelector = (state: RootState) =>
   state.oauth.cloud.capiKeys
+export const oauthCloudMfaSelector = (state: RootState) => state.oauth.cloud.mfa
 
 // The reducer
 export default oauthCloudSlice.reducer
@@ -316,6 +363,74 @@ export function createFreeDbSuccess(
   }
 }
 
+// The cloud sign-in (fetchUserInfo) and the startup profile restore
+// (fetchProfile) both reach /login and can be answered with an MFA challenge -
+// on restart the in-memory api session is gone, so the persisted refresh token
+// re-logs in and may be challenged. Centralize the handling so a challenge
+// opens the dialog on both paths (or aborts on an unsupported/rate-limited
+// factor). Returns true when the error was an MFA challenge it handled.
+async function handleCloudMfaChallenge(
+  error: AxiosError,
+  dispatch: AppDispatch,
+  onFailAction?: () => void,
+  isProfileRestore = false,
+): Promise<boolean> {
+  const errorCode = getApiErrorCustomCode(error)
+  const errorMessage = getApiErrorMessage(error)
+
+  if (errorCode === CustomErrorCodes.CloudApiMfaRequired) {
+    const factors = (
+      error?.response?.data as {
+        factors?: { totpFactorAvailable?: boolean }
+      }
+    )?.factors
+
+    // only TOTP is supported; if the challenge cannot be satisfied with an
+    // authenticator code, abort instead of prompting for one that can never
+    // complete (and would burn the user's MFA attempts)
+    if (factors && factors.totpFactorAvailable === false) {
+      dispatch(getUserInfoFailure(errorMessage))
+      dispatch(
+        addErrorNotification(
+          createAxiosError({
+            message: i18n.t('oauth.mfa.totpUnavailable'),
+          }),
+        ),
+      )
+      dispatch(setOAuthCloudSource(null))
+      await dispatch<any>(logoutUserAction())
+
+      onFailAction?.()
+      return true
+    }
+
+    dispatch(getUserInfoFailure(errorMessage))
+    // remember whether a startup restore or an interactive sign-in was
+    // challenged so verification resumes the right flow
+    dispatch(setMfaProfileRestore(isProfileRestore))
+    dispatch(setMfaDialogState(true))
+
+    onFailAction?.()
+    return true
+  }
+
+  // the account is rate-limited before a code can be submitted; the 429 is not
+  // a logout trigger for the interceptor, so revoke the backend session
+  // credentialed by the oauth callback here instead of leaving it (and the SSO
+  // flow) alive
+  if (errorCode === CustomErrorCodes.CloudApiMfaQuotaExceeded) {
+    dispatch(getUserInfoFailure(errorMessage))
+    dispatch(addErrorNotification(error))
+    dispatch(setOAuthCloudSource(null))
+    await dispatch<any>(logoutUserAction())
+
+    onFailAction?.()
+    return true
+  }
+
+  return false
+}
+
 // Asynchronous thunk action
 export function fetchProfile(
   onSuccessAction?: (isMultiAccount?: boolean) => void,
@@ -337,9 +452,15 @@ export function fetchProfile(
 
         onSuccessAction?.()
       }
-    } catch (error) {
-      const errorMessage = getApiErrorMessage(error as AxiosError)
-      dispatch(getUserInfoFailure(errorMessage))
+    } catch (_err) {
+      const error = _err as AxiosError
+
+      // a persisted session re-logging in on startup can be MFA-challenged
+      if (await handleCloudMfaChallenge(error, dispatch, onFailAction, true)) {
+        return
+      }
+
+      dispatch(getUserInfoFailure(getApiErrorMessage(error)))
 
       onFailAction?.()
     }
@@ -383,9 +504,67 @@ export function fetchUserInfo(
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
+
+      if (await handleCloudMfaChallenge(error, dispatch, onFailAction)) {
+        return
+      }
+
       dispatch(addErrorNotification(error))
       dispatch(getUserInfoFailure(errorMessage))
       dispatch(setOAuthCloudSource(null))
+
+      onFailAction?.()
+    }
+  }
+}
+
+// Asynchronous thunk action
+export function submitMfaCodeAction(
+  code: string,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    // a duplicate submit would burn another server-side mfa attempt
+    if (getState().oauth.cloud.mfa.loading) return
+
+    dispatch(submitMfaCode())
+
+    try {
+      const { status } = await apiService.post(
+        ApiEndpoints.CLOUD_ME_LOGIN_MFA,
+        { code },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(submitMfaCodeSuccess())
+        onSuccessAction?.()
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorCode = getApiErrorCustomCode(error)
+
+      // a rejected code (mfa-invalid-code, or a re-challenge) is the only
+      // retryable failure: keep the dialog open with a clear inline message
+      if (
+        errorCode === CustomErrorCodes.CloudApiMfaInvalidCode ||
+        errorCode === CustomErrorCodes.CloudApiMfaRequired
+      ) {
+        dispatch(submitMfaCodeFailure(i18n.t('oauth.mfa.invalidCode')))
+        return
+      }
+
+      // anything else (quota exceeded, an expired challenge session, or an
+      // unexpected error) means the pending challenge is dead - abort the whole
+      // flow instead of leaving a retry dialog that submits against nothing
+      dispatch(setMfaDialogState(false))
+      dispatch(removeInfiniteNotification(InfiniteMessagesIds.oAuthProgress))
+      dispatch(addErrorNotification(error))
+      dispatch(setOAuthCloudSource(null))
+      // the oauth callback already credentialed the backend session; revoke it
+      // so the abandoned login cannot be resumed on a later fetch or restart.
+      // logout also clears the SSO flow, releasing ConfigOAuth's guard
+      await dispatch<any>(logoutUserAction())
 
       onFailAction?.()
     }

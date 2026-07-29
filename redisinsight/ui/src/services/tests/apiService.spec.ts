@@ -253,6 +253,50 @@ describe('cloudAuthInterceptor', () => {
       expect(mockedTestStore.getActions()).toEqual([])
     }
   })
+
+  it('should not call logout on an MFA-required challenge 401', async () => {
+    jest
+      .spyOn(store, 'dispatch')
+      .mockImplementation(mockedTestStore.dispatch as any)
+    jest.spyOn(store, 'getState').mockImplementation(mockedTestStore.getState)
+
+    const response: any = {
+      response: {
+        status: 401,
+        data: { errorCode: CustomErrorCodes.CloudApiMfaRequired },
+      },
+      config: { url: ApiEndpoints.CLOUD_ME },
+    }
+
+    try {
+      await cloudAuthInterceptor(response)
+    } catch {
+      expect(mockedTestStore.getActions()).toEqual([])
+    }
+  })
+
+  it('should call logout on an MFA-required 401 outside the /cloud/me flow', async () => {
+    jest
+      .spyOn(store, 'dispatch')
+      .mockImplementation(mockedTestStore.dispatch as any)
+    jest.spyOn(store, 'getState').mockImplementation(mockedTestStore.getState)
+
+    // only /cloud/me opens the dialog; a challenge on another cloud-auth
+    // endpoint has no handler, so it must fall through to logout
+    const response: any = {
+      response: {
+        status: 401,
+        data: { errorCode: CustomErrorCodes.CloudApiMfaRequired },
+      },
+      config: { url: ApiEndpoints.CLOUD_ME_ACCOUNTS },
+    }
+
+    try {
+      await cloudAuthInterceptor(response)
+    } catch {
+      expect(mockedTestStore.getActions()).toEqual([logoutUser(), setSSOFlow()])
+    }
+  })
 })
 
 describe('isConnectivityError', () => {

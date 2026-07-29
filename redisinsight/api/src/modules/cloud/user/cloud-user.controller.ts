@@ -1,8 +1,10 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
+  Post,
   Put,
   Query,
   UseInterceptors,
@@ -17,6 +19,7 @@ import { CloudUserApiService } from 'src/modules/cloud/user/cloud-user.api.servi
 import { CloudRequestUtm } from 'src/modules/cloud/common/models';
 import { SessionMetadata } from 'src/common/models';
 import { CloudAuthService } from 'src/modules/cloud/auth/cloud-auth.service';
+import { CloudUserMfaLoginDto } from 'src/modules/cloud/user/dto';
 
 @ApiTags('Cloud User')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -39,6 +42,18 @@ export class CloudUserController {
     @Query() utm: CloudRequestUtm,
   ): Promise<CloudUser> {
     return this.service.me(sessionMetadata, false, utm);
+  }
+
+  @Post('login/mfa')
+  @ApiEndpoint({
+    description: 'Complete cloud login that was challenged for MFA',
+    statusCode: 200,
+  })
+  async verifyMfaCode(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
+    @Body() dto: CloudUserMfaLoginDto,
+  ): Promise<void> {
+    return this.service.verifyMfaCode(sessionMetadata, dto.code);
   }
 
   @Put('/accounts/:id/current')
