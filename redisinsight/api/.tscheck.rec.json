@@ -787,10 +787,6 @@
     "TS7005": 1,
     "TS7034": 1
   },
-  "src/modules/database-import/certificate-import.service.spec.ts": {
-    "TS7005": 10,
-    "TS7034": 4
-  },
   "src/modules/database-import/certificate-import.service.ts": {
     "TS2322": 7,
     "TS2345": 10
@@ -818,10 +814,6 @@
   },
   "src/modules/database-import/dto/import.database.dto.ts": {
     "TS2345": 2
-  },
-  "src/modules/database-import/ssh-import.service.spec.ts": {
-    "TS7005": 1,
-    "TS7034": 1
   },
   "src/modules/database-import/ssh-import.service.ts": {
     "TS2322": 1
