@@ -203,7 +203,6 @@ const RemoveListElements = (props: Props) => {
             <Trans
               i18nKey="browser.list.remove.elementsCount"
               count={toNumber(count)}
-              values={{ count }}
               components={{ bold: <b /> }}
             />
           </h4>
