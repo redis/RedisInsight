@@ -1,4 +1,8 @@
-import { parseSearchRawResponse, parseAggregateRawResponse } from '..'
+import {
+  parseSearchRawResponse,
+  parseAggregateRawResponse,
+  parseInfoRawResponse,
+} from '..'
 
 const resultFTSearch: any[] = [
   'red:2',
@@ -105,5 +109,53 @@ describe('parseAggregateRawResponse', () => {
     expect(parseAggregateRawResponse(resultFTAggregate)).toEqual(
       resultFTAggregate,
     )
+  })
+})
+
+describe('parseInfoRawResponse', () => {
+  it('should set WITHSUFFIXTRIE only for the attribute that enables it', () => {
+    const result: any = parseInfoRawResponse([
+      'index_name',
+      'idx:trie',
+      'attributes',
+      [
+        [
+          'identifier',
+          '$.chunkText',
+          'attribute',
+          'chunkText',
+          'type',
+          'TEXT',
+          'WEIGHT',
+          '1',
+        ],
+        [
+          'identifier',
+          '$.chunkText',
+          'attribute',
+          'chunkText_trie',
+          'type',
+          'TEXT',
+          'WEIGHT',
+          '1',
+          'WITHSUFFIXTRIE',
+        ],
+        [
+          'identifier',
+          '$.chunkText',
+          'attribute',
+          'WITHSUFFIXTRIE',
+          'type',
+          'TEXT',
+          'WEIGHT',
+          '1',
+        ],
+      ],
+    ])
+
+    expect(result.attributes[0].WITHSUFFIXTRIE).toBeUndefined()
+    expect(result.attributes[1].WITHSUFFIXTRIE).toBe(true)
+    expect(result.attributes[2].attribute).toBe('WITHSUFFIXTRIE')
+    expect(result.attributes[2].WITHSUFFIXTRIE).toBeUndefined()
   })
 })

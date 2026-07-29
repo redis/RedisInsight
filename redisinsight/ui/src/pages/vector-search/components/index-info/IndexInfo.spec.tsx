@@ -1,6 +1,10 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { indexInfoFactory } from 'uiSrc/mocks/factories/vector-search/indexInfo.factory'
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import {
+  indexInfoFactory,
+  indexAttributeFactory,
+} from 'uiSrc/mocks/factories/vector-search/indexInfo.factory'
 
 import { IndexInfo } from './IndexInfo'
 import { IndexInfoProps } from './IndexInfo.types'
@@ -37,29 +41,74 @@ describe('IndexInfo', () => {
     expect(loader).toBeInTheDocument()
   })
 
-  it('should render table with columns and data', () => {
-    const mockIndexInfo = indexInfoFactory.build()
+  it('should render table with base columns and data', () => {
+    const mockIndexInfo = indexInfoFactory.build({
+      attributes: [
+        indexAttributeFactory.build({
+          type: FieldTypes.TEXT,
+          weight: '1',
+        }),
+      ],
+    })
 
     renderComponent({ indexInfo: mockIndexInfo })
 
-    // Column headers
-    const identifierCol = screen.getByText('Identifier')
-    const attributeCol = screen.getByText('Attribute')
-    const typeCol = screen.getByText('Type')
-    const weightCol = screen.getByText('Weight')
+    expect(screen.getByText('Identifier')).toBeInTheDocument()
+    expect(screen.getByText('Attribute')).toBeInTheDocument()
+    expect(screen.getByText('Type')).toBeInTheDocument()
+    expect(screen.getByText('Weight')).toBeInTheDocument()
+    expect(screen.queryByText('WITHSUFFIXTRIE')).not.toBeInTheDocument()
 
-    expect(identifierCol).toBeInTheDocument()
-    expect(attributeCol).toBeInTheDocument()
-    expect(typeCol).toBeInTheDocument()
-    expect(weightCol).toBeInTheDocument()
-
-    // First row data
     const firstAttr = mockIndexInfo.attributes[0]
-    const identifierValue = screen.getByText(firstAttr.identifier)
-    const attributeValue = screen.getByText(firstAttr.attribute)
+    expect(screen.getByText(firstAttr.identifier)).toBeInTheDocument()
+    expect(screen.getByText(firstAttr.attribute)).toBeInTheDocument()
+  })
 
-    expect(identifierValue).toBeInTheDocument()
-    expect(attributeValue).toBeInTheDocument()
+  it('should omit Weight column when no attributes have weight', () => {
+    const mockIndexInfo = indexInfoFactory.build({
+      attributes: [
+        indexAttributeFactory.build(
+          { type: FieldTypes.TAG },
+          { transient: { includeWeight: false } },
+        ),
+      ],
+    })
+
+    renderComponent({ indexInfo: mockIndexInfo })
+
+    expect(screen.queryByText('Weight')).not.toBeInTheDocument()
+  })
+
+  it('should render boolean flag columns only when present', () => {
+    const mockIndexInfo = indexInfoFactory.build({
+      attributes: [
+        indexAttributeFactory.build({
+          type: FieldTypes.TEXT,
+          flags: { WITHSUFFIXTRIE: true, SORTABLE: true },
+        }),
+        indexAttributeFactory.build({
+          type: FieldTypes.TAG,
+          flags: { CASESENSITIVE: true },
+        }),
+      ],
+    })
+
+    renderComponent({ indexInfo: mockIndexInfo })
+
+    expect(screen.getByText('SORTABLE')).toBeInTheDocument()
+    expect(screen.getByText('CASESENSITIVE')).toBeInTheDocument()
+    expect(screen.getByText('WITHSUFFIXTRIE')).toBeInTheDocument()
+    expect(screen.queryByText('NOSTEM')).not.toBeInTheDocument()
+
+    expect(
+      screen.getAllByTestId('index-info--boolean-flag-WITHSUFFIXTRIE'),
+    ).toHaveLength(2)
+    expect(
+      screen.getAllByTestId('index-info--boolean-flag-SORTABLE'),
+    ).toHaveLength(2)
+    expect(
+      screen.getAllByTestId('index-info--boolean-flag-CASESENSITIVE'),
+    ).toHaveLength(2)
   })
 
   it('should use custom dataTestId', () => {

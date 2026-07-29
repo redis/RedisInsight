@@ -134,6 +134,29 @@ export class IndexAttibuteDto {
   NOSTEM?: boolean;
 
   @ApiPropertyOptional({
+    description:
+      'Text attributes can have the WITHSUFFIXTRIE argument that enables suffix trie indexing.',
+    type: Boolean,
+  })
+  @Expose()
+  WITHSUFFIXTRIE?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Indicates that empty values are indexed for this attribute.',
+    type: Boolean,
+  })
+  @Expose()
+  INDEXEMPTY?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Indicates that missing values are indexed for this attribute.',
+    type: Boolean,
+  })
+  @Expose()
+  INDEXMISSING?: boolean;
+
+  @ApiPropertyOptional({
     description: `Indicates how the text contained in the attribute is to be split into individual tags.
       The default is ,. The value must be a single character.`,
     type: String,
