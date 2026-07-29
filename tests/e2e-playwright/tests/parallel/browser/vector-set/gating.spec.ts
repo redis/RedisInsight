@@ -29,16 +29,21 @@ test.describe('Browser > Vector Set > Gating > Redis below 8.0', () => {
     ).toHaveCount(0);
   });
 
-  test('hides Vector Set from the Add Key type dropdown', async ({ browserPage }) => {
+  test('shows Vector Set as disabled in the Add Key type dropdown', async ({ browserPage }) => {
     await browserPage.goto(database.id);
     await browserPage.openAddKeyDialog();
 
     await browserPage.addKeyDialog.keyTypeSelect.click();
     await expect(browserPage.addKeyDialog.keyTypeDropdown).toBeVisible();
 
-    await expect(
-      browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', { name: 'Vector Set', exact: true }),
-    ).toHaveCount(0);
+    // The type is promoted (visible) but disabled instead of being hidden.
+    const vectorSetOption = browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', {
+      name: 'Vector Set',
+      exact: true,
+    });
+    await expect(vectorSetOption).toBeVisible();
+    await expect(vectorSetOption).toBeDisabled();
+    await expect(browserPage.addKeyDialog.keyTypeDropdown.getByTestId('vectorset-disabled')).toBeVisible();
   });
 });
 
@@ -68,15 +73,19 @@ test.describe('Browser > Vector Set > Gating > Redis 8.8.0', () => {
     ).toBeVisible();
   });
 
-  test('shows Vector Set in the Add Key type dropdown', async ({ browserPage }) => {
+  test('shows Vector Set as enabled in the Add Key type dropdown', async ({ browserPage }) => {
     await browserPage.goto(database.id);
     await browserPage.openAddKeyDialog();
 
     await browserPage.addKeyDialog.keyTypeSelect.click();
     await expect(browserPage.addKeyDialog.keyTypeDropdown).toBeVisible();
 
-    await expect(
-      browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', { name: 'Vector Set', exact: true }),
-    ).toBeVisible();
+    const vectorSetOption = browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', {
+      name: 'Vector Set',
+      exact: true,
+    });
+    await expect(vectorSetOption).toBeVisible();
+    await expect(vectorSetOption).toBeEnabled();
+    await expect(browserPage.addKeyDialog.keyTypeDropdown.getByTestId('vectorset-disabled')).toHaveCount(0);
   });
 });
