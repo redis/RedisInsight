@@ -170,7 +170,7 @@
   },
   "src/modules/ai/query/utils/context.util.ts": {
     "TS7006": 3,
-    "TS7053": 16
+    "TS7053": 15
   },
   "src/modules/analytics/analytics.service.spec.ts": {
     "TS7005": 18,
