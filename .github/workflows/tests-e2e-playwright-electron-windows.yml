@@ -48,9 +48,10 @@ jobs:
       - name: Setup E2E environment
         uses: ./.github/actions/setup-e2e-playwright
         with:
-          # Electron tests drive the packaged app binary directly, so no
-          # Playwright-managed browser download is required.
-          browsers: 'none'
+          # The base test fixture depends on Playwright's built-in `page`, which
+          # launches Chromium even in Electron mode, so Chromium must be installed
+          # (matches the Linux Electron job).
+          browsers: 'chromium'
           working-directory: ${{ env.E2E_DIR }}
 
       - name: Build plugins and statics
