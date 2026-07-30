@@ -6,6 +6,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   id: string
@@ -23,11 +24,12 @@ const AckPopover = (props: Props) => {
     showPopover = () => {},
     acknowledge = () => {},
   } = props
+  const { t } = useTranslation()
   return (
     <ConfirmationPopover
       key={id}
       title={id}
-      message="will be acknowledged and removed from the pending messages list"
+      message={t('browser.stream.ack.message')}
       anchorPosition="leftCenter"
       ownFocus
       isOpen={isOpen}
@@ -40,14 +42,14 @@ const AckPopover = (props: Props) => {
           onClick={() => acknowledge(id)}
           data-testid="acknowledge-submit"
         >
-          Acknowledge
+          {t('browser.stream.ack.confirm')}
         </DestructiveButton>
       }
       button={
         <>
           <SecondaryButton
             size="s"
-            aria-label="Acknowledge pending message"
+            aria-label={t('browser.stream.ack.aria')}
             onClick={showPopover}
             data-testid="acknowledge-btn"
           >

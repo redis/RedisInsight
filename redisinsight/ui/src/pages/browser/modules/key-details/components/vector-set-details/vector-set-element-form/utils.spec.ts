@@ -3,10 +3,12 @@ import {
   FP32_VECTOR_FIXTURE_1_2_3,
   vectorSetElementFormStateFactory,
 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
+import i18n from 'uiSrc/i18n'
 import {
   DEFAULT_VECTOR_HELP_TEXT,
   INVALID_FP32_BYTE_LENGTH_ERROR,
   INVALID_FP32_FORMAT_ERROR,
+  INVALID_NUMERIC_FORMAT_ERROR,
 } from './constants'
 import {
   getRowDim,
@@ -64,7 +66,8 @@ describe('getVectorError', () => {
   })
 
   it('should return an error for an unparsable vector', () => {
-    expect(getVectorError('1, abc, 3')).toBe('Invalid number format in vector')
+    // getVectorError surfaces the raw i18n key; display code resolves it via t().
+    expect(getVectorError('1, abc, 3')).toBe(INVALID_NUMERIC_FORMAT_ERROR)
   })
 
   it('should return undefined for a valid vector without dimension check', () => {
@@ -77,42 +80,42 @@ describe('getVectorError', () => {
 
   it('should return a dimension-mismatch error when dimension does not match', () => {
     expect(getVectorError('1, 2', 3)).toBe(
-      'Dimension mismatch. Expected 3 values, but received 2',
+      'browser.vectorSet.form.dimensionMismatch',
     )
   })
 })
 
 describe('getVectorFieldInfo', () => {
   it('should return the default help text for an empty input', () => {
-    expect(getVectorFieldInfo('')).toEqual({
-      text: DEFAULT_VECTOR_HELP_TEXT,
+    expect(getVectorFieldInfo('', undefined, i18n.t)).toEqual({
+      text: i18n.t(DEFAULT_VECTOR_HELP_TEXT),
       isError: false,
     })
   })
 
   it('should return an error message when parsing fails', () => {
-    expect(getVectorFieldInfo('1, abc, 3')).toEqual({
+    expect(getVectorFieldInfo('1, abc, 3', undefined, i18n.t)).toEqual({
       text: 'Invalid number format in vector',
       isError: true,
     })
   })
 
   it('should return a dimension-mismatch error when dimension does not match', () => {
-    expect(getVectorFieldInfo('1, 2', 3)).toEqual({
+    expect(getVectorFieldInfo('1, 2', 3, i18n.t)).toEqual({
       text: 'Dimension mismatch. Expected 3 values, but received 2',
       isError: true,
     })
   })
 
   it('should return detected dimensions for a valid vector', () => {
-    expect(getVectorFieldInfo('1, 2, 3')).toEqual({
+    expect(getVectorFieldInfo('1, 2, 3', undefined, i18n.t)).toEqual({
       text: 'Detected numeric vector (3 dimensions).',
       isError: false,
     })
   })
 
   it('should return detected dimensions when dimension matches', () => {
-    expect(getVectorFieldInfo('1 2 3 4', 4)).toEqual({
+    expect(getVectorFieldInfo('1 2 3 4', 4, i18n.t)).toEqual({
       text: 'Detected numeric vector (4 dimensions).',
       isError: false,
     })
@@ -323,22 +326,24 @@ describe('FP32 detection in getVectorError', () => {
 
   it('should return a dimension-mismatch error when FP32 dim disagrees', () => {
     expect(getVectorError(FP32_ESCAPED_1_2_3, 5)).toBe(
-      'Dimension mismatch. Expected 5 values, but received 3',
+      'browser.vectorSet.form.dimensionMismatch',
     )
   })
 })
 
 describe('FP32 detection in getVectorFieldInfo', () => {
   it('should return the FP32 detected message for a valid FP32 input', () => {
-    expect(getVectorFieldInfo(FP32_ESCAPED_1_2_3)).toEqual({
+    expect(getVectorFieldInfo(FP32_ESCAPED_1_2_3, undefined, i18n.t)).toEqual({
       text: 'Detected FP32 vector (3 dimensions).',
       isError: false,
     })
   })
 
   it('should return the FP32 byte-length error in the hint', () => {
-    expect(getVectorFieldInfo(FP32_INVALID_BYTE_LENGTH_INPUT)).toEqual({
-      text: INVALID_FP32_BYTE_LENGTH_ERROR,
+    expect(
+      getVectorFieldInfo(FP32_INVALID_BYTE_LENGTH_INPUT, undefined, i18n.t),
+    ).toEqual({
+      text: i18n.t(INVALID_FP32_BYTE_LENGTH_ERROR),
       isError: true,
     })
   })

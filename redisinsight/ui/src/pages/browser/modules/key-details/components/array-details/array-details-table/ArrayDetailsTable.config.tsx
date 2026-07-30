@@ -21,7 +21,7 @@ export const TEST_ID = 'array-details-table'
 const indexColumn: ColumnDef<ArrayDataElement> = {
   id: 'index',
   accessorKey: 'index',
-  header: 'Index',
+  header: 'browser.array.column.index',
   enableSorting: false,
   enableResizing: true,
   size: INDEX_COLUMN_SIZE,
@@ -38,7 +38,7 @@ const indexColumn: ColumnDef<ArrayDataElement> = {
 const valueColumn: ColumnDef<ArrayDataElement> = {
   id: 'value',
   accessorKey: 'value',
-  header: 'Value',
+  header: 'browser.array.column.value',
   enableSorting: false,
   enableResizing: true,
   size: VALUE_COLUMN_SIZE,

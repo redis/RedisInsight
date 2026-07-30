@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 
 import ArrayTabs from './ArrayTabs'
 import { ArrayTabsProps } from './ArrayTabs.types'
@@ -21,7 +22,7 @@ describe('ArrayTabs', () => {
 
     Object.values(ArrayDetailsTab).forEach((tab) => {
       expect(
-        screen.getByText(ARRAY_DETAILS_TAB_LABELS[tab]),
+        screen.getByText(i18n.t(ARRAY_DETAILS_TAB_LABELS[tab])),
       ).toBeInTheDocument()
     })
   })
@@ -30,7 +31,9 @@ describe('ArrayTabs', () => {
     const onChange = jest.fn()
     renderComponent({ onChange })
 
-    fireEvent.mouseDown(screen.getByText(ARRAY_DETAILS_TAB_LABELS.aggregate))
+    fireEvent.mouseDown(
+      screen.getByText(i18n.t(ARRAY_DETAILS_TAB_LABELS.aggregate)),
+    )
 
     expect(onChange).toHaveBeenCalledWith(ArrayDetailsTab.Aggregate)
   })

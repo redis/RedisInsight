@@ -15,6 +15,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { getArrayElementEditState } from '../getArrayElementEditState'
 import { ArrayValueCellProps } from './ArrayValueCell.types'
@@ -44,6 +45,7 @@ export const ArrayValueCell = ({
   onEdit,
   onApply,
 }: ArrayValueCellProps) => {
+  const { t } = useTranslation()
   // Treat null and undefined identically — `JSON.stringify` drops keys
   // whose values are undefined, so an undefined `value` here means the
   // slot arrived without a buffer payload.
@@ -53,7 +55,7 @@ export const ArrayValueCell = ({
         variant="italic"
         data-testid={`${TEST_ID_PREFIX}-empty-${index}`}
       >
-        Empty
+        {t('browser.array.emptyValue')}
       </S.EmptyValue>
     )
   }
@@ -101,7 +103,11 @@ export const ArrayValueCell = ({
         <FormattedValue
           value={formatted}
           expanded={false}
-          title={isValid ? 'Value' : TEXT_FAILED_CONVENT_FORMATTER(viewFormat)}
+          title={
+            isValid
+              ? t('browser.array.column.value')
+              : TEXT_FAILED_CONVENT_FORMATTER(viewFormat)
+          }
           tooltipContent={tooltipContent}
           position="bottom"
         />

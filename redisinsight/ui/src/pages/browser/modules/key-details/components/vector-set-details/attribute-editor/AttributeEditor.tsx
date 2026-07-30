@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { Text } from 'uiSrc/components/base/text'
 import { useDebouncedEffect } from 'uiSrc/services'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   ATTRIBUTES_EDITOR_OPTIONS,
@@ -21,6 +22,7 @@ const AttributeEditor = ({
   height = DEFAULT_ATTRIBUTE_EDITOR_HEIGHT,
   testId = 'attribute-editor',
 }: AttributeEditorProps) => {
+  const { t } = useTranslation()
   const [showNonJsonWarning, setShowNonJsonWarning] = useState(
     () => !isJsonValid(value),
   )
@@ -53,7 +55,7 @@ const AttributeEditor = ({
         size="S"
         message={
           <Text size="s" component="span">
-            {ATTRIBUTES_WARNING_MESSAGE}
+            {t(ATTRIBUTES_WARNING_MESSAGE)}
           </Text>
         }
         data-testid={`${testId}-warning`}
