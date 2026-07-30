@@ -39,7 +39,7 @@
     "package": "npm run package:dev",
     "package:prod": "node ./scripts/prebuild.js dist && npm run build:prod && electron-builder build -p never",
     "package:stage": "node ./scripts/prebuild.js dist && npm run build:stage && electron-builder build -p never -c.mac.bundleVersion=$GITHUB_RUN_ID",
-    "package:stage:dir": "node ./scripts/prebuild.js dist && npm run build:stage && electron-builder build --dir -p never",
+    "package:stage:dir": "node ./scripts/prebuild.js dist && npm run build:stage && electron-builder build --dir -p never -c.win.signAndEditExecutable=false",
     "package:mas": "electron-builder build -p never -m mas:universal -c.mac.bundleVersion=$GITHUB_RUN_ID -c ./electron-builder-mas.js",
     "package:mas:dev": "electron-builder build -p never -m mas-dev:universal -c ./electron-builder-mas.js",
     "package:dev": "npm run build && cross-env DEBUG=electron-builder electron-builder build -p never",
