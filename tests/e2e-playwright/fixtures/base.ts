@@ -169,7 +169,7 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
   ],
 
   // Page - from Electron app or browser depending on mode
-  page: async ({ electronApp, page, baseURL, featureFlags }, use) => {
+  page: async ({ electronApp, page, baseURL, featureFlags, apiUrl }, use) => {
     const setupFeatureFlagOverrides = async (targetPage: typeof page) => {
       if (Object.keys(featureFlags).length === 0) return;
 
@@ -205,6 +205,13 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
     // Electron mode - get page from Electron app
     const electronPage = await electronApp.firstWindow();
+
+    // Accept the EULA up front so the first-run consent modal doesn't block the
+    // UI. Not every test uses the apiHelper fixture (which also accepts it), and
+    // on a fresh app launch the modal otherwise intercepts all interactions.
+    const eulaHelper = new ApiHelper({ apiUrl, windowId: electronApp.windowId });
+    await eulaHelper.ensureEulaAccepted();
+    await eulaHelper.dispose();
 
     // Set up route interception before reload so features are overridden
     await setupFeatureFlagOverrides(electronPage);
