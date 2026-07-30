@@ -14,6 +14,10 @@ on:
         description: 'Enable SSH debugging'
         type: boolean
         default: false
+      windows_only:
+        description: 'Run only the Windows Electron E2E job (skip Chromium/Docker/Linux)'
+        type: boolean
+        default: false
 
   # Trigger on PR with label (remove and re-add label to rerun)
   pull_request:
@@ -34,28 +38,37 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
+      # 'true' when only the Windows Electron job should run (Chromium/Docker/Linux skipped).
+      windows_only: ${{ steps.check.outputs.windows_only }}
     steps:
       - name: Check trigger conditions
         id: check
         env:
           EVENT_NAME: ${{ github.event_name }}
+          WINDOWS_ONLY_INPUT: ${{ inputs.windows_only }}
           HAS_E2E_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}
           HAS_RUN_ALL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
           HAS_DEPENDENCIES_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}
+          # Windows-only smoke: add the 'e2e-windows' label to a PR to run just the Windows Electron job.
+          HAS_WINDOWS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-windows') }}
         run: |
+          should_run=false
+          windows_only=false
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
+            should_run=true
+            windows_only="$WINDOWS_ONLY_INPUT"
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
+            should_run=true
           elif [[ "$EVENT_NAME" == "pull_request" ]]; then
             if [[ "$HAS_E2E_LABEL" == "true" || "$HAS_RUN_ALL_LABEL" == "true" || "$HAS_DEPENDENCIES_LABEL" == "true" ]]; then
-              echo "should_run=true" >> $GITHUB_OUTPUT
-            else
-              echo "should_run=false" >> $GITHUB_OUTPUT
+              should_run=true
+            elif [[ "$HAS_WINDOWS_LABEL" == "true" ]]; then
+              should_run=true
+              windows_only=true
             fi
-          else
-            echo "should_run=false" >> $GITHUB_OUTPUT
           fi
+          echo "should_run=$should_run" >> $GITHUB_OUTPUT
+          echo "windows_only=$windows_only" >> $GITHUB_OUTPUT
 
   # Lint and type-check E2E code
   lint:
@@ -67,7 +80,8 @@ jobs:
   # Chromium tests (local dev mode) - no build required
   e2e-dev-chromium:
     name: Chromium (Dev)
-    needs: lint
+    needs: [check-trigger, lint]
+    if: needs.check-trigger.outputs.windows_only != 'true'
     uses: ./.github/workflows/tests-e2e-playwright-chromium.yml
     secrets: inherit
     with:
@@ -77,7 +91,8 @@ jobs:
   # Build Docker image for Docker tests
   build-docker:
     name: Build Docker
-    needs: lint
+    needs: [check-trigger, lint]
+    if: needs.check-trigger.outputs.windows_only != 'true'
     uses: ./.github/workflows/pipeline-build-docker.yml
     secrets: inherit
     with:
@@ -97,7 +112,8 @@ jobs:
   # Build Linux AppImage for Electron tests
   build-linux:
     name: Build Linux
-    needs: lint
+    needs: [check-trigger, lint]
+    if: needs.check-trigger.outputs.windows_only != 'true'
     uses: ./.github/workflows/pipeline-build-linux.yml
     secrets: inherit
     with:
@@ -116,6 +132,19 @@ jobs:
       environment: ${{ inputs.environment || 'staging' }}
       debug: ${{ inputs.debug || false }}
 
+  # Electron tests (Windows) — builds inline, runs the no-docker-Redis smoke
+  # subset (settings + navigation UI). GitHub-hosted Windows runners cannot run
+  # the Linux docker Redis env, so the Redis-dependent suites stay Linux-only
+  # until that infra is solved (tracked separately).
+  e2e-electron-windows:
+    name: Electron (Windows)
+    needs: lint
+    uses: ./.github/workflows/tests-e2e-playwright-electron-windows.yml
+    secrets: inherit
+    with:
+      environment: ${{ inputs.environment || 'staging' }}
+      debug: ${{ inputs.debug || false }}
+
   # Alert on any non-success nightly result (incl. 'cancelled' from a timeout).
   notify-slack:
     name: Notify Slack on nightly failure
@@ -126,6 +155,7 @@ jobs:
       - e2e-dev-chromium
       - e2e-docker
       - e2e-electron
+      - e2e-electron-windows
     if: |
       always() &&
       github.event_name == 'schedule' &&
@@ -134,7 +164,8 @@ jobs:
        needs.build-linux.result != 'success' ||
        needs.e2e-dev-chromium.result != 'success' ||
        needs.e2e-docker.result != 'success' ||
-       needs.e2e-electron.result != 'success')
+       needs.e2e-electron.result != 'success' ||
+       needs.e2e-electron-windows.result != 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Post to Slack
@@ -167,5 +198,8 @@ jobs:
                     short: true
                   - title: "Electron (Linux)"
                     value: "${{ needs.e2e-electron.result }}"
+                    short: true
+                  - title: "Electron (Windows)"
+                    value: "${{ needs.e2e-electron-windows.result }}"
                     short: true
 

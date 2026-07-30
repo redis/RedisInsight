@@ -1,0 +1,99 @@
+name: E2E Playwright - Electron (Windows)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to run tests'
+        type: string
+        default: 'staging'
+      debug:
+        description: 'Enable SSH debugging'
+        type: boolean
+        default: false
+
+env:
+  E2E_DIR: './tests/e2e-playwright'
+
+jobs:
+  e2e-electron-windows:
+    name: E2E Electron (Windows)
+    runs-on: windows-2022
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 60
+    env:
+      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      # Electron serves its embedded API over HTTPS when TLS certs are present
+      # (mirrors the Linux Electron job). Self-signed, so tests disable cert
+      # validation via NODE_TLS_REJECT_UNAUTHORIZED at run time.
+      RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+      RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
+      RI_APP_TYPE: 'ELECTRON'
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Enable SSH Debug
+        if: ${{ inputs.debug }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
+      - name: Install all libs and dependencies
+        uses: ./.github/actions/install-all-build-libs
+        with:
+          cache-node-modules: '0'
+
+      - name: Setup E2E environment
+        uses: ./.github/actions/setup-e2e-playwright
+        with:
+          # Electron tests drive the packaged app binary directly, so no
+          # Playwright-managed browser download is required.
+          browsers: 'none'
+          working-directory: ${{ env.E2E_DIR }}
+
+      - name: Build plugins and statics
+        run: npm run build:statics:win
+
+      # Build an UNSIGNED unpacked directory (release/win-unpacked) rather than the
+      # signed NSIS installer. Fast, needs no code-signing certs, and gives
+      # Playwright a launchable executable — the Windows equivalent of the mounted
+      # AppImage in the Linux Electron job.
+      - name: Build Electron app (unsigned, unpacked)
+        run: npm run package:stage:dir
+
+      - name: Resolve Electron executable path
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'release/win-unpacked/Redis Insight.exe'
+          if (-not (Test-Path -LiteralPath $exe)) {
+            Write-Error "Electron executable not found at $exe"
+            Get-ChildItem -Path (Join-Path $env:GITHUB_WORKSPACE 'release') -ErrorAction SilentlyContinue
+            exit 1
+          }
+          "ELECTRON_EXECUTABLE_PATH=$exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Electron executable: $exe"
+
+      - name: Run Playwright tests (Electron Windows smoke)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright test --project=electron-smoke
+        env:
+          CI: true
+          # Electron uses HTTPS with self-signed TLS certificates
+          RI_ELECTRON_API_URL: 'https://localhost:5530'
+          RI_SOCKETS_CORS: 'true'
+          RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+          RI_ENCRYPTION_KEYTAR: 'false'
+          # Accept the self-signed cert served by the embedded API
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-electron-windows
+          path: |
+            ${{ env.E2E_DIR }}/test-results
+            ${{ env.E2E_DIR }}/playwright-report
+          retention-days: 14

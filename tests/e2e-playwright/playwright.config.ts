@@ -125,6 +125,36 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
       workers: 1,
       timeout: 60000,
     },
+
+    // ============================================
+    // Electron Smoke Project (no docker Redis)
+    // ============================================
+    // A curated subset of Electron tests that exercise only the app shell
+    // (settings + navigation UI) and never open a Redis connection. This is the
+    // set that can run on platforms where the docker-compose Redis test
+    // environment is unavailable — notably GitHub-hosted Windows/macOS runners,
+    // which cannot run the Linux containers in tests/e2e/rte.docker-compose.yml.
+    // Keep this list in sync with tests that have NO createDatabase/connect call.
+    {
+      name: 'electron-smoke',
+      testDir: './tests/parallel',
+      testMatch: [
+        '**/settings/general-settings/general-settings.spec.ts',
+        '**/settings/privacy-settings/privacy-settings.spec.ts',
+        '**/settings/redis-cloud-settings/redis-cloud-settings.spec.ts',
+        '**/navigation/help-menu/help-menu.spec.ts',
+        '**/navigation/main-navigation/main-navigation.spec.ts',
+        '**/navigation/notification-center/notification-center.spec.ts',
+      ],
+      dependencies: ['electron-setup'],
+      use: {
+        electronExecutablePath: appConfig.electronExecutablePath,
+        apiUrl: appConfig.electronApiUrl,
+      },
+      fullyParallel: false,
+      workers: 1,
+      timeout: 60000,
+    },
     // Example: auto-update tests for Electron
     // {
     //   name: 'electron-auto-update',
