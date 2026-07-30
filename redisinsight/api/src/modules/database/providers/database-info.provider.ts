@@ -73,13 +73,7 @@ export class DatabaseInfoProvider {
         reply.map((module: any[]) => convertArrayReplyToObject(module)),
       );
 
-      return modules.map(({ name, ver }) => ({
-        name: SUPPORTED_REDIS_MODULES[name] ?? name,
-        version: ver,
-        semanticVersion: SUPPORTED_REDIS_MODULES[name]
-          ? convertIntToSemanticVersion(ver)
-          : undefined,
-      }));
+      return this.mapToAdditionalRedisModules(modules);
     } catch (e) {
       const fromCommands = await this.determineDatabaseModulesUsingInfo(client);
       if (fromCommands.length) {
@@ -167,16 +161,31 @@ export class DatabaseInfoProvider {
         rawModules,
       );
 
-      return modules.map(({ name, ver }) => ({
-        name: SUPPORTED_REDIS_MODULES[name] ?? name,
-        version: ver,
-        semanticVersion: SUPPORTED_REDIS_MODULES[name]
-          ? convertIntToSemanticVersion(ver)
-          : undefined,
-      }));
+      return this.mapToAdditionalRedisModules(modules);
     } catch (e) {
       return [];
     }
+  }
+
+  private mapToAdditionalRedisModules(
+    modules: { name: string; ver?: number }[],
+  ): AdditionalRedisModule[] {
+    return modules.map(({ name, ver }) => {
+      const moduleName = String(name);
+      const supportedName =
+        SUPPORTED_REDIS_MODULES[
+          moduleName as keyof typeof SUPPORTED_REDIS_MODULES
+        ];
+
+      return {
+        name: supportedName ?? moduleName,
+        version: ver,
+        semanticVersion:
+          supportedName && ver != null
+            ? convertIntToSemanticVersion(ver)
+            : undefined,
+      };
+    });
   }
 
   private async getModulesFromHello(
