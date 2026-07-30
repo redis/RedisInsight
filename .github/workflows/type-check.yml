@@ -54,6 +54,11 @@ jobs:
 
       - name: UI
         if: ${{ inputs.run-ui != false }}
+        # The i18next.d.ts key-type union (built from en.json) grows with the
+        # locale files and pushes tsc past the runner's default heap. Raise it
+        # so the UI type-check doesn't OOM.
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
         run: npm run type-check --prefix redisinsight/ui
 
       - name: API

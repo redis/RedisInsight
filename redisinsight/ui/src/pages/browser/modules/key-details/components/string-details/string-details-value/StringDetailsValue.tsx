@@ -29,7 +29,7 @@ import {
   updateStringValueAction,
 } from 'uiSrc/slices/browser/string'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { AddStringFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddStringFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   selectedKeyDataSelector,
   selectedKeySelector,
@@ -39,9 +39,6 @@ import {
   KeyValueFormat,
   ModulesKeyTypes,
   STRING_MAX_LENGTH,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_FAILED_CONVENT_FORMATTER,
   TEXT_INVALID_VALUE,
   TEXT_UNPRINTABLE_CHARACTERS,
 } from 'uiSrc/constants'
@@ -68,6 +65,7 @@ import {
   NonUnicodeEditConfirmation,
   useNonUnicodeEditGuard,
 } from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -88,6 +86,8 @@ export interface Props {
 
 const StringDetailsValue = (props: Props) => {
   const { isEditItem, setIsEdit, onRefresh } = props
+  const { t } = useTranslation()
+  const config = getAddStringFormConfig(t)
 
   const { compressor = null } = useAppSelector(connectedInstanceSelector)
   const { loading } = useAppSelector(stringSelector)
@@ -109,7 +109,7 @@ const StringDetailsValue = (props: Props) => {
   const [isDisabled, setIsDisabled] = useState(false)
   const [isEditable, setIsEditable] = useState(true)
   const [noEditableText, setNoEditableText] = useState<string>(
-    TEXT_DISABLED_COMPRESSED_VALUE,
+    t('browser.keyDetails.compressedValueDisabled'),
   )
 
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
@@ -161,10 +161,12 @@ const StringDetailsValue = (props: Props) => {
     )
     setNoEditableText(
       isCompressed
-        ? TEXT_DISABLED_COMPRESSED_VALUE
+        ? t('browser.keyDetails.compressedValueDisabled')
         : isTruncatedValue
-          ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
-          : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp),
+          ? t('browser.keyDetails.truncatedActionDisabled')
+          : t('browser.keyDetails.failedConvertFormatter', {
+              format: viewFormatProp,
+            }),
     )
 
     dispatch(setIsStringCompressed(isCompressed))
@@ -172,7 +174,7 @@ const StringDetailsValue = (props: Props) => {
     if (viewFormat !== viewFormatProp) {
       setViewFormat(viewFormatProp)
     }
-  }, [initialValue, viewFormatProp, compressor, length])
+  }, [initialValue, viewFormatProp, compressor, length, t])
 
   useEffect(() => {
     // Approximate calculation of textarea rows by areaValue
@@ -204,10 +206,9 @@ const StringDetailsValue = (props: Props) => {
 
   const onApplyChanges = () => {
     requestConfirmation({
-      title: 'Edit value on production database?',
-      actionDescription:
-        'You are about to modify a value on a production database.',
-      confirmButtonText: 'Save',
+      title: t('browser.keyDetails.editable.confirmTitle'),
+      actionDescription: t('browser.keyDetails.editable.confirmMessage'),
+      confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
       commandId: BrowserConfirmationCommandId.EditValue,
       disableConfirmationInput: true,
       onConfirm: () => {
@@ -273,7 +274,11 @@ const StringDetailsValue = (props: Props) => {
       >
         {areaValue !== ''
           ? value
-          : !isLoading && <span style={{ fontStyle: 'italic' }}>Empty</span>}
+          : !isLoading && (
+              <span style={{ fontStyle: 'italic' }}>
+                {t('browser.string.empty')}
+              </span>
+            )}
       </Text>
     )
 
@@ -316,7 +321,7 @@ const StringDetailsValue = (props: Props) => {
         {isEditItem && (
           <InlineItemEditor
             controlsPosition="bottom"
-            placeholder="Enter Value"
+            placeholder={t('browser.keyDetails.editable.valuePlaceholder')}
             fieldName="value"
             expandable
             isLoading={false}
@@ -360,7 +365,7 @@ const StringDetailsValue = (props: Props) => {
                   data-testid="load-all-value-btn"
                   onClick={() => handleLoadAll(key, keyType)}
                 >
-                  Load all
+                  {t('browser.string.loadAll')}
                 </SecondaryButton>
               )}
             </FlexItem>
@@ -375,7 +380,7 @@ const StringDetailsValue = (props: Props) => {
                   onClick={handleDownloadString}
                   disabled={isTruncatedValue}
                 >
-                  Download
+                  {t('browser.string.download')}
                 </SecondaryButton>
               </FlexItem>
             )}

@@ -8,15 +8,7 @@ import {
   selectedKeySelector,
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
-import {
-  KeyTypes,
-  KeyValueCompressor,
-  ModulesKeyTypes,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-  TEXT_DISABLED_STRING_EDITING,
-} from 'uiSrc/constants'
+import { KeyTypes, KeyValueCompressor, ModulesKeyTypes } from 'uiSrc/constants'
 
 import {
   KeyDetailsHeader,
@@ -43,6 +35,7 @@ import {
   NonUnicodeEditConfirmation,
   useNonUnicodeEditGuard,
 } from 'uiSrc/pages/browser/modules/key-details/shared/non-unicode-edit-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import { StringDetailsValue } from './string-details-value'
 import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
@@ -53,6 +46,7 @@ export interface Props extends KeyDetailsHeaderProps {}
 const StringDetails = (props: Props) => {
   const { onRemoveKey } = props
   const keyType = KeyTypes.String
+  const { t } = useTranslation()
 
   const { loading, viewFormat: viewFormatProp } =
     useAppSelector(selectedKeySelector)
@@ -68,14 +62,14 @@ const StringDetails = (props: Props) => {
     !isTruncatedValue && !isStringCompressed && isFormatEditable(viewFormatProp)
   const isStringEditable = isFullStringLoaded(keyValue?.data?.length, length)
   const noEditableText = isTruncatedValue
-    ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+    ? t('browser.keyDetails.truncatedActionDisabled')
     : isStringCompressed
-      ? TEXT_DISABLED_COMPRESSED_VALUE
-      : TEXT_DISABLED_FORMATTER_EDITING
+      ? t('browser.keyDetails.compressedValueDisabled')
+      : t('browser.keyDetails.formatterEditingDisabled')
   const editToolTip = !isEditable
     ? noEditableText
     : !isStringEditable
-      ? TEXT_DISABLED_STRING_EDITING
+      ? t('browser.string.loadAllToEdit')
       : null
 
   // The full value can be copied as text only when it is entirely loaded and not
@@ -144,7 +138,7 @@ const StringDetails = (props: Props) => {
         {showCopyButton && (
           <CopyButton
             copy={copyValue}
-            aria-label="Copy value"
+            aria-label={t('browser.string.copyValueAria')}
             onCopy={handleCopyValue}
             data-testid="copy-string-value"
           />
@@ -157,7 +151,7 @@ const StringDetails = (props: Props) => {
           onEditAnyway={editAnyway}
           button={
             <EditItemAction
-              title="Edit Value"
+              title={t('browser.string.editValue')}
               tooltipContent={editToolTip}
               isEditable={isStringEditable && isEditable}
               onEditItem={handleHeaderEdit}
@@ -167,6 +161,7 @@ const StringDetails = (props: Props) => {
       </Row>
     ),
     [
+      t,
       showCopyButton,
       copyValue,
       handleCopyValue,

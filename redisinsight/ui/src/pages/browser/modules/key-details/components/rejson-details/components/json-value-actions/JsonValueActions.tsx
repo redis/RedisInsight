@@ -15,6 +15,7 @@ import { CopyButton } from 'uiSrc/components/copy-button'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { IJSONData } from '../../interfaces'
 import { isScalar, jsonToReadableString } from '../../utils'
@@ -26,6 +27,7 @@ export interface Props {
 }
 
 const JsonValueActions = ({ data, selectedKey, isDownloaded }: Props) => {
+  const { t } = useTranslation()
   const { viewType } = useAppSelector(keysSelector)
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const dispatch = useAppDispatch()
@@ -62,15 +64,15 @@ const JsonValueActions = ({ data, selectedKey, isDownloaded }: Props) => {
   return canCopy ? (
     <CopyButton
       copy={jsonToReadableString(data)}
-      aria-label="Copy value"
+      aria-label={t('browser.rejson.copyValueAria')}
       onCopy={handleCopy}
       data-testid="copy-json-value"
     />
   ) : (
-    <RiTooltip content="Download" position="left">
+    <RiTooltip content={t('browser.rejson.downloadTooltip')} position="left">
       <IconButton
         icon={DownloadIcon}
-        aria-label="Download value"
+        aria-label={t('browser.rejson.downloadValueAria')}
         onClick={handleDownload}
         data-testid="download-json-value"
       />

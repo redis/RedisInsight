@@ -17,6 +17,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { JSONScalarProps } from '../interfaces'
 import {
@@ -50,6 +51,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
   const [deleting, setDeleting] = useState<string>('')
 
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
@@ -63,15 +65,14 @@ const RejsonScalar = (props: JSONScalarProps) => {
 
   const onApplyValue = (value: string) => {
     if (!isValidJSON(value)) {
-      setError(JSONErrors.valueJSONFormat)
+      setError(t(JSONErrors.valueJSONFormat))
       return
     }
 
     requestConfirmation({
-      title: 'Edit value on production database?',
-      actionDescription:
-        'You are about to modify a JSON value on a production database.',
-      confirmButtonText: 'Save',
+      title: t('browser.keyDetails.editable.confirmTitle'),
+      actionDescription: t('browser.rejson.editConfirmMessage'),
+      confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
       commandId: BrowserConfirmationCommandId.EditRejsonValue,
       disableConfirmationInput: true,
       onConfirm: () => {
@@ -124,7 +125,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
                     }}
                     initialValue={changedValue}
                     controlsPosition="right"
-                    placeholder="Enter JSON value"
+                    placeholder={t('browser.rejson.jsonValuePlaceholder')}
                     fieldName="stringValue"
                     expandable
                     isInvalid={!!error}
