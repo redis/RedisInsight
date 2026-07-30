@@ -170,7 +170,11 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
       name: 'electron-smoke-redis',
       testDir: './tests/parallel',
       grep: /@smoke/,
-      dependencies: ['electron-setup'],
+      // Depend on 'electron-smoke' to force sequential execution. Playwright runs
+      // separate projects concurrently, and the app takes an Electron
+      // single-instance lock — a second app launched while the first is running
+      // logs "Didn't get the lock. Quiting..." and exits, failing both projects.
+      dependencies: ['electron-setup', 'electron-smoke'],
       use: {
         electronExecutablePath: appConfig.electronExecutablePath,
         apiUrl: appConfig.electronApiUrl,
