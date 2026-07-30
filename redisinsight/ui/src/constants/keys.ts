@@ -1,3 +1,4 @@
+import { ParseKeys } from 'i18next'
 import { StreamViewType } from 'uiSrc/slices/interfaces/stream'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { CommandGroup } from './commands'
@@ -125,14 +126,15 @@ export enum SortOrder {
 }
 
 export interface LengthNamingByType {
-  [key: string]: string
+  // i18n keys resolved with t() at render time.
+  [key: string]: ParseKeys
 }
 
 export const LENGTH_NAMING_BY_TYPE: LengthNamingByType = Object.freeze({
-  [ModulesKeyTypes.Graph]: 'Nodes',
-  [ModulesKeyTypes.TimeSeries]: 'Samples',
-  [KeyTypes.Stream]: 'Entries',
-  [KeyTypes.ReJSON]: 'Top-level values',
+  [ModulesKeyTypes.Graph]: 'browser.keyDetails.length.nodes',
+  [ModulesKeyTypes.TimeSeries]: 'browser.keyDetails.length.samples',
+  [KeyTypes.Stream]: 'browser.keyDetails.length.entries',
+  [KeyTypes.ReJSON]: 'browser.keyDetails.length.topLevelValues',
 })
 
 export interface ModulesKeyTypesNames {

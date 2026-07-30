@@ -14,6 +14,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -57,6 +58,7 @@ const EditablePopover = (props: Props) => {
   const [isHovering, setIsHovering] = useState(false)
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(isOpen)
   const [isDelayed, setIsDelayed] = useState(false)
+  const { t } = useTranslation()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   const delayPopover = () => {
@@ -89,10 +91,9 @@ const EditablePopover = (props: Props) => {
 
   const handleApply = (): void => {
     requestConfirmation({
-      title: 'Edit value on production database?',
-      actionDescription:
-        'You are about to modify a value on a production database.',
-      confirmButtonText: 'Save',
+      title: t('browser.keyDetails.editable.confirmTitle'),
+      actionDescription: t('browser.keyDetails.editable.confirmMessage'),
+      confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
       commandId: BrowserConfirmationCommandId.EditValue,
       disableConfirmationInput: true,
       onConfirm: () => {
@@ -123,7 +124,7 @@ const EditablePopover = (props: Props) => {
     <IconButton
       disabled={isPopoverOpen || isDisabledEditButton}
       icon={btnIconType || EditIcon}
-      aria-label="Edit field"
+      aria-label={t('browser.keyDetails.editable.editAria')}
       color="primary"
       onClick={isDisabledEditButton ? () => {} : handleButtonClick}
       className={editBtnClassName}
@@ -175,7 +176,7 @@ const EditablePopover = (props: Props) => {
                 onClick={() => handleDecline()}
                 data-testid="cancel-btn"
               >
-                Cancel
+                {t('browser.keyDetails.editable.cancelButton')}
               </SecondaryButton>
             </FlexItem>
             <FlexItem>
@@ -185,7 +186,7 @@ const EditablePopover = (props: Props) => {
                 disabled={isDisabledApply()}
                 data-testid="save-btn"
               >
-                Save
+                {t('browser.keyDetails.editable.saveButton')}
               </PrimaryButton>
             </FlexItem>
           </Row>

@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react'
 import { isUndefined } from 'lodash'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   GroupBadge,
@@ -86,6 +87,7 @@ const KeyDetailsHeader = ({
   } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { viewType } = useAppSelector(keysSelector)
+  const { t } = useTranslation()
 
   const isSearchableType = SEARCHABLE_KEY_TYPES.includes(type as KeyTypes)
   const {
@@ -203,10 +205,13 @@ const KeyDetailsHeader = ({
                 )}
                 <FlexItem>
                   {(!arePanelsCollapsed || isFullScreen) && (
-                    <RiTooltip content="Close" position="left">
+                    <RiTooltip
+                      content={t('browser.keyDetails.close.tooltip')}
+                      position="left"
+                    >
                       <IconButton
                         icon={CancelSlimIcon}
-                        aria-label="Close key"
+                        aria-label={t('browser.keyDetails.close.aria')}
                         className={styles.closeBtn}
                         onClick={() => onCloseKey()}
                         data-testid="close-key-btn"
