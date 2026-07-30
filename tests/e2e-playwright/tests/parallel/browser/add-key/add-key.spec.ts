@@ -42,7 +42,7 @@ test.describe('Browser > Add Key', () => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
-  test(`should add a String key`, async ({ browserPage }) => {
+  test(`should add a String key`, { tag: '@smoke' }, async ({ browserPage }) => {
     const keyData = StringKeyFactory.build();
 
     // Open Add Key dialog

@@ -1,5 +1,5 @@
 import { RedisConnectionConfig } from 'e2eSrc/types';
-import { getEnv, getEnvNumber } from '../env';
+import { getEnv, getEnvNumber, getEnvOptional } from '../env';
 
 /**
  * Standalone Redis configurations
@@ -7,6 +7,12 @@ import { getEnv, getEnvNumber } from '../env';
 export const standaloneConfig: RedisConnectionConfig = {
   host: getEnv('OSS_STANDALONE_HOST', '127.0.0.1'),
   port: getEnvNumber('OSS_STANDALONE_PORT', 8100),
+  // Optional credentials. The docker test environment is unauthenticated, so
+  // these are undefined there. They exist for platforms that cannot run the
+  // docker environment (e.g. Windows runners) and must point at a Redis that
+  // requires auth.
+  username: getEnvOptional('OSS_STANDALONE_USERNAME'),
+  password: getEnvOptional('OSS_STANDALONE_PASSWORD'),
 };
 
 export const standaloneV5Config: RedisConnectionConfig = {

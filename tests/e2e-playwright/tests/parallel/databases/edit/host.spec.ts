@@ -49,17 +49,21 @@ test.describe('Databases > Edit > Host field', () => {
     await databasesPage.goto();
   });
 
-  test('should expose an editable host field when editing a non-managed database', async ({ databasesPage }) => {
-    const { databaseList, addDatabaseDialog } = databasesPage;
+  test(
+    'should expose an editable host field when editing a non-managed database',
+    { tag: '@smoke' },
+    async ({ databasesPage }) => {
+      const { databaseList, addDatabaseDialog } = databasesPage;
 
-    await databaseList.expectDatabaseVisible(standaloneDb.name, { searchFirst: true });
-    await databaseList.edit(standaloneDb.name);
+      await databaseList.expectDatabaseVisible(standaloneDb.name, { searchFirst: true });
+      await databaseList.edit(standaloneDb.name);
 
-    await expect(addDatabaseDialog.dialog).toBeVisible();
-    await expect(addDatabaseDialog.hostInput).toBeVisible();
-    await expect(addDatabaseDialog.hostInput).toHaveValue(standaloneDb.host);
-    await expect(addDatabaseDialog.hostInput).toBeEditable();
-  });
+      await expect(addDatabaseDialog.dialog).toBeVisible();
+      await expect(addDatabaseDialog.hostInput).toBeVisible();
+      await expect(addDatabaseDialog.hostInput).toHaveValue(standaloneDb.host);
+      await expect(addDatabaseDialog.hostInput).toBeEditable();
+    },
+  );
 
   test('should keep the host field read-only when editing a cloud-managed database', async ({ databasesPage }) => {
     test.skip(!managedDb, 'Managed database fixture unavailable in this environment');

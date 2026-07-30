@@ -40,38 +40,42 @@ test.describe('Browser > Key Details - String', () => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
-  test('should view, edit, rename a String key and show copy-on-hover', async ({ apiHelper, browserPage }) => {
-    // Seed: create the String key via API
-    const keyData = StringKeyFactory.build();
-    const newValue = `${keyData.value}-edited`;
-    const newKeyName = `${TEST_KEY_PREFIX}string-renamed-${Date.now()}`;
+  test(
+    'should view, edit, rename a String key and show copy-on-hover',
+    { tag: '@smoke' },
+    async ({ apiHelper, browserPage }) => {
+      // Seed: create the String key via API
+      const keyData = StringKeyFactory.build();
+      const newValue = `${keyData.value}-edited`;
+      const newKeyName = `${TEST_KEY_PREFIX}string-renamed-${Date.now()}`;
 
-    await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
-    // Open the key in the details panel
-    await browserPage.keyList.searchKeys(keyData.keyName);
-    await browserPage.keyList.clickKey(keyData.keyName);
-    await browserPage.keyDetails.waitForKeyDetails();
+      // Open the key in the details panel
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
 
-    // Verify the seeded value is displayed
-    expect(await browserPage.keyDetails.getStringValue()).toBe(keyData.value);
+      // Verify the seeded value is displayed
+      expect(await browserPage.keyDetails.getStringValue()).toBe(keyData.value);
 
-    // Verify copy-key-name button appears on hover
-    expect(await browserPage.keyDetails.isCopyKeyNameButtonVisible()).toBe(true);
+      // Verify copy-key-name button appears on hover
+      expect(await browserPage.keyDetails.isCopyKeyNameButtonVisible()).toBe(true);
 
-    // Edit the value and verify it persists in both UI and Redis
-    await browserPage.keyDetails.editStringValue(newValue);
-    expect(await browserPage.keyDetails.getStringValue()).toBe(newValue);
-    const persistedValue = await apiHelper.sendCommand(database.id, `GET ${keyData.keyName}`);
-    expect(persistedValue).toBe(newValue);
+      // Edit the value and verify it persists in both UI and Redis
+      await browserPage.keyDetails.editStringValue(newValue);
+      expect(await browserPage.keyDetails.getStringValue()).toBe(newValue);
+      const persistedValue = await apiHelper.sendCommand(database.id, `GET ${keyData.keyName}`);
+      expect(persistedValue).toBe(newValue);
 
-    // Rename the key and verify the new name propagates to the Key List
-    await browserPage.keyDetails.renameKey(newKeyName);
-    await browserPage.keyList.searchKeys(newKeyName);
-    await browserPage.expectKeyInList(newKeyName);
-    await browserPage.keyList.searchKeys(keyData.keyName);
-    await browserPage.expectKeyNotInList(keyData.keyName);
-  });
+      // Rename the key and verify the new name propagates to the Key List
+      await browserPage.keyDetails.renameKey(newKeyName);
+      await browserPage.keyList.searchKeys(newKeyName);
+      await browserPage.expectKeyInList(newKeyName);
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.expectKeyNotInList(keyData.keyName);
+    },
+  );
 
   test('should view, edit TTL and have the key expire after countdown', async ({ apiHelper, browserPage }) => {
     const keyData = StringKeyFactory.build();

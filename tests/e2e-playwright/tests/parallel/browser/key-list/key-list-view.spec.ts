@@ -208,7 +208,7 @@ test.describe('Browser > Key List View', () => {
     await browserPage.keyList.waitForKeysLoaded();
   });
 
-  test('should delete key', async ({ apiHelper, browserPage }) => {
+  test('should delete key', { tag: '@smoke' }, async ({ apiHelper, browserPage }) => {
     // Seed data for this test
     await apiHelper.createStringKey(database.id, deleteMeKey, 'delete-me');
 

@@ -129,12 +129,11 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     // ============================================
     // Electron Smoke Project (no docker Redis)
     // ============================================
-    // A curated subset of Electron tests that exercise only the app shell
-    // (settings + navigation UI) and never open a Redis connection. This is the
-    // set that can run on platforms where the docker-compose Redis test
-    // environment is unavailable — notably GitHub-hosted Windows/macOS runners,
-    // which cannot run the Linux containers in tests/e2e/rte.docker-compose.yml.
-    // Keep this list in sync with tests that have NO createDatabase/connect call.
+    // Electron tests that exercise only the app shell (settings + navigation UI)
+    // and never open a Redis connection. Runs anywhere the app can launch —
+    // notably GitHub-hosted Windows/macOS runners, which cannot run the Linux
+    // containers in tests/e2e/rte.docker-compose.yml.
+    // Keep this list to files with NO createDatabase/connect call.
     {
       name: 'electron-smoke',
       testDir: './tests/parallel',
@@ -146,6 +145,31 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
         '**/navigation/main-navigation/main-navigation.spec.ts',
         '**/navigation/notification-center/notification-center.spec.ts',
       ],
+      dependencies: ['electron-setup'],
+      use: {
+        electronExecutablePath: appConfig.electronExecutablePath,
+        apiUrl: appConfig.electronApiUrl,
+      },
+      fullyParallel: false,
+      workers: 1,
+      timeout: 60000,
+    },
+
+    // ============================================
+    // Electron Smoke — Redis (one plain instance)
+    // ============================================
+    // Individual tests tagged @smoke that need a Redis connection. Deliberately
+    // a handful of high-value cases, not a permutation matrix: add a database
+    // and edit it (proves the SQLite-backed connection store works) plus
+    // create/read/update/delete a key in the Browser.
+    //
+    // Requires ONE plain standalone Redis (>= 6, no modules needed) reachable at
+    // OSS_STANDALONE_HOST/PORT. Tag additional tests with { tag: '@smoke' } to
+    // include them — but only if they need nothing beyond that single instance.
+    {
+      name: 'electron-smoke-redis',
+      testDir: './tests/parallel',
+      grep: /@smoke/,
       dependencies: ['electron-setup'],
       use: {
         electronExecutablePath: appConfig.electronExecutablePath,

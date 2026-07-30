@@ -30,7 +30,7 @@ test.describe('Add Database', () => {
     createdDatabaseNames.length = 0;
   });
 
-  test('should add standalone database', async ({ databasesPage }) => {
+  test('should add standalone database', { tag: '@smoke' }, async ({ databasesPage }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
     const config = StandaloneConfigFactory.build();
     createdDatabaseNames.push(config.name);
