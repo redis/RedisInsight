@@ -23,14 +23,6 @@ on:
   pull_request:
     types: [labeled]
 
-  # TEMPORARY (RI-8355): run the Windows Electron job on every push to the
-  # feature branch, so it can be validated in CI without opening a PR or waiting
-  # for the nightly. Handled as a Windows-only run in check-trigger below.
-  # Revert (remove this trigger + the 'push' branch in check-trigger) before merge.
-  push:
-    branches:
-      - e2e/RI-8355/windows-nightly-playwright
-
   # Nightly schedule (0 AM UTC)
   schedule:
     - cron: '0 0 * * *'
@@ -65,10 +57,6 @@ jobs:
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             should_run=true
             windows_only="$WINDOWS_ONLY_INPUT"
-          elif [[ "$EVENT_NAME" == "push" ]]; then
-            # TEMPORARY (RI-8355): branch-push testing runs the Windows job only.
-            should_run=true
-            windows_only=true
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
             should_run=true
           elif [[ "$EVENT_NAME" == "pull_request" ]]; then
