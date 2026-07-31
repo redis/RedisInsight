@@ -163,9 +163,14 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     // and edit it (proves the SQLite-backed connection store works) plus
     // create/read/update/delete a key in the Browser.
     //
-    // Requires ONE plain standalone Redis (>= 6, no modules needed) reachable at
-    // OSS_STANDALONE_HOST/PORT. Tag additional tests with { tag: '@smoke' } to
-    // include them — but only if they need nothing beyond that single instance.
+    // Requires ONE plain standalone Redis (>= 6, no modules) reachable at
+    // OSS_STANDALONE_HOST/PORT — e.g. the 'oss-standalone' service from
+    // tests/e2e/rte.docker-compose.yml. Tag additional tests with { tag: '@smoke' }
+    // to include them, but only if they need nothing beyond that single instance.
+    //
+    // Not run by the Windows CI job: those runners cannot host the docker test
+    // environment, so Redis-dependent coverage lives on the platforms that run
+    // the full suite.
     {
       name: 'electron-smoke-redis',
       testDir: './tests/parallel',

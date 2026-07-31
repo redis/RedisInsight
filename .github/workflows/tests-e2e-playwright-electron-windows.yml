@@ -76,9 +76,14 @@ jobs:
           "ELECTRON_EXECUTABLE_PATH=$exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           Write-Host "Electron executable: $exe"
 
+      # Runs the app-shell smoke project only. The Redis-backed 'electron-smoke-redis'
+      # project is deliberately NOT run here: it needs a reachable standalone Redis,
+      # and GitHub-hosted Windows runners cannot host the Linux docker test
+      # environment. Redis-dependent coverage stays on the platforms that run the
+      # full suite.
       - name: Run Playwright tests (Electron Windows smoke)
         working-directory: ${{ env.E2E_DIR }}
-        run: npx playwright test --project=electron-smoke --project=electron-smoke-redis
+        run: npx playwright test --project=electron-smoke
         env:
           CI: true
           # Electron uses HTTPS with self-signed TLS certificates
@@ -88,13 +93,6 @@ jobs:
           RI_ENCRYPTION_KEYTAR: 'false'
           # Accept the self-signed cert served by the embedded API
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
-          # The @smoke Redis tests need one reachable standalone Redis. Windows
-          # runners cannot run the Linux docker test environment, so point them at
-          # the shared cloud instance instead.
-          OSS_STANDALONE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
-          OSS_STANDALONE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
-          OSS_STANDALONE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
-          OSS_STANDALONE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
 
       - name: Upload test results
         if: always()

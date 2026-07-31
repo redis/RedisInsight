@@ -15,10 +15,6 @@ export const TEST_DB_PREFIX = 'test-';
 export const StandaloneConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
   host: redisConfig.standalone.host,
   port: redisConfig.standalone.port,
-  // Undefined against the unauthenticated docker environment; set only when
-  // OSS_STANDALONE_USERNAME/PASSWORD point at a Redis that requires auth.
-  username: redisConfig.standalone.username,
-  password: redisConfig.standalone.password,
   name: `${TEST_DB_PREFIX}standalone-${faker.string.alphanumeric(8)}`,
 }));
 
