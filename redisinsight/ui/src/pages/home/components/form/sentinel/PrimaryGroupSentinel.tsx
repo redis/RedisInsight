@@ -5,23 +5,25 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
 }
 
 const PrimaryGroupSentinel = (props: Props) => {
+  const { t } = useTranslation()
   const { formik } = props
   return (
     <Col gap="l">
       <Row gap="m" responsive>
         <FlexItem grow>
-          <FormField label="Database alias" required>
+          <FormField label={t('home.form.database.field.alias')} required>
             <TextInput
               name="name"
               id="name"
               data-testid="name"
-              placeholder="Enter Database Alias"
+              placeholder={t('home.form.database.placeholder.alias')}
               value={formik.values.name ?? ''}
               maxLength={500}
               onChange={formik.handleChange}
@@ -31,12 +33,17 @@ const PrimaryGroupSentinel = (props: Props) => {
       </Row>
       <Row gap="m" responsive>
         <FlexItem grow>
-          <FormField label="Primary group name" required>
+          <FormField
+            label={t('home.form.dbInfoSentinel.field.primaryGroupNameLabel')}
+            required
+          >
             <TextInput
               name="sentinelMasterName"
               id="sentinelMasterName"
               data-testid="primary-group"
-              placeholder="Enter Primary Group Name"
+              placeholder={t(
+                'home.form.dbInfoSentinel.placeholder.primaryGroupName',
+              )}
               value={formik.values.sentinelMasterName ?? ''}
               maxLength={500}
               onChange={formik.handleChange}
