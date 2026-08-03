@@ -1,48 +1,90 @@
 import React from 'react'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 
-export const CHECK_CLOUD_DATABASE = (
-  <>
-    <Title size="XS">Build your app with Redis Cloud</Title>
-    <Spacer size="s" />
-    <div>
-      Free Redis Cloud DBs auto-delete after 15 days of inactivity.
+// Free Cloud DBs auto-delete after this many days of inactivity.
+const FREE_CLOUD_DB_INACTIVITY_DAYS = 15
+
+export const CheckCloudDatabase = () => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <Title size="XS">
+        {t('home.databaseList.dbStatus.checkCloudDatabase.title')}
+      </Title>
       <Spacer size="s" />
-      But not to worry, you can always re-create it to test your ideas.
-      <br />
-      Includes native support for JSON, Redis Search and more.
-    </div>
-  </>
-)
+      <div>
+        {t('home.databaseList.dbStatus.checkCloudDatabase.autoDelete', {
+          days: FREE_CLOUD_DB_INACTIVITY_DAYS,
+        })}
+        <Spacer size="s" />
+        {t('home.databaseList.dbStatus.checkCloudDatabase.recreate')}
+        <br />
+        {t('home.databaseList.dbStatus.checkCloudDatabase.capabilities')}
+      </div>
+    </>
+  )
+}
 
-export const WARNING_WITH_CAPABILITY = (capability: string) => (
-  <>
-    <Title size="XS">Build your app with {capability}</Title>
-    <Spacer size="s" />
-    <div>
-      Hey, remember your interest in {capability}?
-      <br />
-      Use your free Redis Cloud DB to try it.
-    </div>
-    <Spacer size="s" />
-    <div>
-      <b>Note</b>: Free Cloud DBs auto-delete after 15 days of inactivity.
-    </div>
-  </>
-)
-export const WARNING_WITHOUT_CAPABILITY = (
-  <>
-    <Title size="XS">Your free Redis Cloud DB is waiting.</Title>
-    <Spacer size="s" />
-    <div>
-      Test ideas and build prototypes.
-      <br />
-      Includes native support for JSON, Redis Search and more.
-    </div>
-    <Spacer size="s" />
-    <div>
-      <b>Note</b>: Free Redis Cloud DBs auto-delete after 15 days of inactivity.
-    </div>
-  </>
-)
+export const WarningWithCapability = ({
+  capability,
+}: {
+  capability: string
+}) => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <Title size="XS">
+        {t('home.databaseList.dbStatus.warningWithCapability.title', {
+          capability,
+        })}
+      </Title>
+      <Spacer size="s" />
+      <div>
+        <Trans
+          i18nKey="home.databaseList.dbStatus.warningWithCapability.body"
+          values={{ capability }}
+          components={{ br: <br /> }}
+        />
+      </div>
+      <Spacer size="s" />
+      <div>
+        <Trans
+          i18nKey="home.databaseList.dbStatus.warningWithCapability.note"
+          values={{ days: FREE_CLOUD_DB_INACTIVITY_DAYS }}
+          components={{ b: <b /> }}
+        />
+      </div>
+    </>
+  )
+}
+
+export const WarningWithoutCapability = () => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <Title size="XS">
+        {t('home.databaseList.dbStatus.warningWithoutCapability.title')}
+      </Title>
+      <Spacer size="s" />
+      <div>
+        <Trans
+          i18nKey="home.databaseList.dbStatus.warningWithoutCapability.body"
+          components={{ br: <br /> }}
+        />
+      </div>
+      <Spacer size="s" />
+      <div>
+        <Trans
+          i18nKey="home.databaseList.dbStatus.warningWithoutCapability.note"
+          values={{ days: FREE_CLOUD_DB_INACTIVITY_DAYS }}
+          components={{ b: <b /> }}
+        />
+      </div>
+    </>
+  )
+}

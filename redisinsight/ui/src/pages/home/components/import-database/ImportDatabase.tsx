@@ -21,6 +21,7 @@ import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
+import { useTranslation } from 'uiSrc/i18n'
 import ResultsLog from './components/ResultsLog'
 
 import { ScrollableWrapper } from '../ManualConnection.styles'
@@ -33,6 +34,7 @@ const MAX_MB_FILE = 10
 const MAX_FILE_SIZE = MAX_MB_FILE * 1024 * 1024
 
 const ImportDatabase = (props: Props) => {
+  const { t } = useTranslation()
   const { onClose } = props
   const { loading, data, error } = useAppSelector(importInstancesSelector)
   const [files, setFiles] = useState<Nullable<FileList>>(null)
@@ -46,12 +48,15 @@ const ImportDatabase = (props: Props) => {
   useEffect(() => {
     setDomReady(true)
 
-    setModalHeader(<Title size="M">Import from file</Title>, true)
+    setModalHeader(
+      <Title size="M">{t('home.importDatabase.title')}</Title>,
+      true,
+    )
 
     return () => {
       setModalHeader(null)
     }
-  }, [])
+  }, [t])
 
   const onFileChange = (files: FileList | null) => {
     setFiles(files)
@@ -106,7 +111,7 @@ const ImportDatabase = (props: Props) => {
             onClick={onClickRetry}
             data-testid="btn-retry"
           >
-            Retry
+            {t('home.importDatabase.button.retry')}
           </PrimaryButton>
         </Row>,
         footerEl,
@@ -121,7 +126,7 @@ const ImportDatabase = (props: Props) => {
             onClick={handleOnClose}
             data-testid="btn-close"
           >
-            OK
+            {t('home.importDatabase.button.ok')}
           </PrimaryButton>
         </Row>,
         footerEl,
@@ -131,11 +136,15 @@ const ImportDatabase = (props: Props) => {
     return ReactDOM.createPortal(
       <Row justify="end" gap="m" data-testid="footer-import-database">
         <SecondaryButton className="btn-cancel" onClick={handleOnClose}>
-          Cancel
+          {t('home.importDatabase.button.cancel')}
         </SecondaryButton>
         <RiTooltip
           position="top"
-          content={isSubmitDisabled ? 'Upload a file' : undefined}
+          content={
+            isSubmitDisabled
+              ? t('home.importDatabase.tooltip.uploadFile')
+              : undefined
+          }
         >
           <PrimaryButton
             type="submit"
@@ -145,7 +154,7 @@ const ImportDatabase = (props: Props) => {
             icon={isSubmitDisabled ? InfoIcon : undefined}
             data-testid="btn-submit"
           >
-            Submit
+            {t('home.importDatabase.button.submit')}
           </PrimaryButton>
         </RiTooltip>
       </Row>,
@@ -162,25 +171,23 @@ const ImportDatabase = (props: Props) => {
           <Col grow gap="xl">
             {isShowForm && (
               <Col gap="xl">
-                <Text>
-                  Use a JSON file to import your database connections. Ensure
-                  that you only use files from trusted sources to prevent the
-                  risk of automatically executing malicious code.
-                </Text>
+                <Text>{t('home.importDatabase.description')}</Text>
 
                 <RiFilePicker
                   id="import-file-modal-filepicker"
-                  initialPromptText="Select or drag and drop a file"
+                  initialPromptText={t('home.importDatabase.filePicker.prompt')}
                   isInvalid={isInvalid}
                   onChange={onFileChange}
                   display="large"
                   data-testid="import-file-modal-filepicker"
-                  aria-label="Select or drag and drop file"
+                  aria-label={t('home.importDatabase.filePicker.ariaLabel')}
                 />
 
                 {isInvalid && (
                   <ColorText color="danger" data-testid="input-file-error-msg">
-                    {`File should not exceed ${MAX_MB_FILE} MB`}
+                    {t('home.importDatabase.error.maxFileSize', {
+                      max: MAX_MB_FILE,
+                    })}
                   </ColorText>
                 )}
               </Col>
@@ -193,7 +200,7 @@ const ImportDatabase = (props: Props) => {
                 data-testid="file-loading-indicator"
               >
                 <Loader size="xl" />
-                <Text>Uploading...</Text>
+                <Text>{t('home.importDatabase.uploading')}</Text>
               </Col>
             )}
             {error && (
@@ -208,7 +215,7 @@ const ImportDatabase = (props: Props) => {
                   color="danger600"
                   customSize="5rem"
                 />
-                <Text>Failed to add database connections</Text>
+                <Text>{t('home.importDatabase.error.failed')}</Text>
                 <Text>{error}</Text>
               </Col>
             )}

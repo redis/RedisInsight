@@ -6,6 +6,7 @@ import {
   TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP,
 } from 'uiSrc/constants'
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface DataImportResult {
   index: number
@@ -20,6 +21,7 @@ export interface Props {
 }
 
 const TableResult = (props: Props) => {
+  const { t } = useTranslation()
   const { data } = props
 
   const ErrorResult = ({ errors }: { errors: string[] }) => (
@@ -75,7 +77,7 @@ const TableResult = (props: Props) => {
           {errors ? (
             <ErrorResult errors={errors.map((e) => e.message)} />
           ) : (
-            'Successful'
+            t('home.importDatabase.table.successful')
           )}
         </div>
       ),

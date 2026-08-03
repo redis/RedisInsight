@@ -53,6 +53,7 @@ import {
   setUrlHandlingInitialState,
 } from 'uiSrc/slices/app/url-handling'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { Card } from 'uiSrc/components/base/layout'
@@ -76,6 +77,7 @@ enum OpenDialogName {
 }
 
 const HomePage = () => {
+  const { t } = useTranslation()
   const { openDialog, setOpenDialog } = useHomePageDataProvider()
 
   const dispatch = useAppDispatch()
@@ -103,7 +105,7 @@ const HomePage = () => {
   const hideDbList = instances.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {
-    setTitle('Redis databases')
+    setTitle(t('home.title'))
 
     dispatch(fetchInstancesAction(handleOpenPage))
     dispatch(resetInstancesRedisCluster())
@@ -114,7 +116,7 @@ const HomePage = () => {
     return () => {
       dispatch(setEditedInstance(null))
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if (isDeletedInstance) {
