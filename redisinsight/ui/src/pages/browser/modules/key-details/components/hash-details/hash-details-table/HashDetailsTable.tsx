@@ -17,8 +17,8 @@ import {
   KeyTypes,
   OVER_RENDER_BUFFER_COUNT,
   TableCellAlignment,
-  TEXT_INVALID_VALUE,
-  TEXT_UNPRINTABLE_CHARACTERS,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import HelpTexts from 'uiSrc/constants/help-texts'
@@ -509,12 +509,12 @@ const HashDetailsTable = (props: Props) => {
             isDisabled={disabled}
             isEditing={isEditing}
             isEditDisabled={!isEditable || updateLoading}
-            disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+            disabledTooltipText={getTextUnprintableCharacters(t)}
             onDecline={() => handleEditField(rowIndex, false, 'value')}
             onApply={(value) =>
               handleApplyEditValue(fieldItem, value, rowIndex)
             }
-            approveText={TEXT_INVALID_VALUE}
+            approveText={getTextInvalidValue(t)}
             approveByValidation={(value) =>
               formattingBuffer(
                 stringToSerializedBufferFormat(viewFormat, value),

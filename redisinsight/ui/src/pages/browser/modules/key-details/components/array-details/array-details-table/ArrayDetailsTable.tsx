@@ -265,6 +265,7 @@ const ArrayDetailsTable = memo(
           element.value as RedisResponseBuffer,
           compressor,
           viewFormat,
+          t,
         )
         setDrawerSeed(serialize())
         // Capture the connected database to guard a save confirmed later.

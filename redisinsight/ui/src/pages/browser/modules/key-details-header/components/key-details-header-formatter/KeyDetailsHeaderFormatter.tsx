@@ -6,7 +6,6 @@ import {
   KeyTypes,
   KeyValueFormat,
   MIDDLE_SCREEN_RESOLUTION,
-  TEXT_DISABLED_STRING_FORMATTING,
 } from 'uiSrc/constants'
 import {
   keysSelector,
@@ -66,7 +65,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
             data-test-subj={`format-option-${value}`}
             content={
               !isStringFormattingEnabled
-                ? TEXT_DISABLED_STRING_FORMATTING
+                ? t('browser.keyDetails.stringFormattingDisabled')
                 : viewFormat
             }
             position="top"

@@ -39,8 +39,8 @@ import {
   KeyValueFormat,
   ModulesKeyTypes,
   STRING_MAX_LENGTH,
-  TEXT_INVALID_VALUE,
-  TEXT_UNPRINTABLE_CHARACTERS,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import { calculateTextareaLines } from 'uiSrc/utils/calculateTextareaLines'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
@@ -326,11 +326,11 @@ const StringDetailsValue = (props: Props) => {
             expandable
             isLoading={false}
             isDisabled={isDisabled}
-            disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+            disabledTooltipText={getTextUnprintableCharacters(t)}
             onDecline={onDeclineChanges}
             onApply={onApplyChanges}
             declineOnUnmount={false}
-            approveText={TEXT_INVALID_VALUE}
+            approveText={getTextInvalidValue(t)}
             approveByValidation={() =>
               formattingBuffer(
                 stringToSerializedBufferFormat(viewFormat, areaValue),
