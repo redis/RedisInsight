@@ -1187,7 +1187,7 @@
   "home.title": "Redis бази данни",
   "notFound.button.databases": "Страница с бази данни",
   "notFound.description": "Претърсихме всеки шард, <br /> Но не открихме страницата, която търсите.",
-  "notFound.title": "Упс!<br/>Тази страница не същсествува",
+  "notFound.title": "Упс!<br/>Тази страница не съществува",
   "notification.error.arrayBulkDeleteLimit.message": "Можете да изтриете най-много {{max}} елемента наведнъж. Изчистете част от селекцията и опитайте отново.",
   "notification.error.arrayBulkDeleteLimit.title": "Избрани са твърде много елементи",
   "notification.error.button.copied": "Копирано",

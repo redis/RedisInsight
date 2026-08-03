@@ -105,8 +105,6 @@ const HomePage = () => {
   const hideDbList = instances.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {
-    setTitle(t('home.title'))
-
     dispatch(fetchInstancesAction(handleOpenPage))
     dispatch(resetInstancesRedisCluster())
     dispatch(resetSubscriptionsRedisCloud())
@@ -116,6 +114,10 @@ const HomePage = () => {
     return () => {
       dispatch(setEditedInstance(null))
     }
+  }, [])
+
+  useEffect(() => {
+    setTitle(t('home.title'))
   }, [t])
 
   useEffect(() => {
