@@ -26,6 +26,7 @@ import { contentSelector } from 'uiSrc/slices/content/create-redis-buttons'
 import DatabasePanelDialog from 'uiSrc/pages/home/components/database-panel-dialog'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { useTranslation } from 'uiSrc/i18n'
 
 import './styles.scss'
 import styles from './styles.module.scss'
@@ -38,6 +39,7 @@ interface IState {
 const DEFAULT_STATE = { loading: true, error: '', data: null }
 
 const EditConnection = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useAppDispatch()
   const { server } = useAppSelector(appInfoSelector)
@@ -47,7 +49,7 @@ const EditConnection = () => {
 
   let isApiSubscribed = false
 
-  setTitle('Redis Stack')
+  setTitle(t('redisStack.title'))
 
   useEffect(() => {
     getInstanceInfo()
@@ -114,7 +116,7 @@ const EditConnection = () => {
     <PagePlaceholder />
   ) : (
     <>
-      <PageHeader title="Redis Stack" />
+      <PageHeader title={t('redisStack.title')} />
       <div />
       <Page className="homePage redisStackConnection">
         <PageBody component="div" className={styles.container}>
