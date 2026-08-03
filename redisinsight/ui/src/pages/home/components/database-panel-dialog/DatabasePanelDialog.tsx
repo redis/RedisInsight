@@ -174,7 +174,7 @@ const DatabasePanelDialog = (props: Props) => {
             <IconButton
               onClick={handleClickBack}
               icon={ChevronLeftIcon}
-              aria-label="back"
+              aria-label={t('home.form.ariaLabel.back')}
               data-testid="back-btn"
             />
           </FlexItem>

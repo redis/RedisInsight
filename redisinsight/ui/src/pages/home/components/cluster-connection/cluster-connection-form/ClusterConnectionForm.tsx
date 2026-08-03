@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { isEmpty } from 'lodash'
 
 import { FormikErrors, useFormik } from 'formik'
+import { ParseKeys } from 'i18next'
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
 import { handlePasteHostName } from 'uiSrc/utils'
@@ -56,12 +57,12 @@ interface Values {
   password: string
 }
 
-const fieldDisplayNames: Values = {
-  host: 'Cluster Host',
-  port: 'Cluster Port',
-  username: 'Admin Username',
+const fieldDisplayNames: Record<keyof Values, ParseKeys> = {
+  host: 'home.form.cluster.field.host',
+  port: 'home.form.cluster.field.port',
+  username: 'home.form.cluster.field.username',
   // deepcode ignore NoHardcodedPasswords: <Not a password but "password" field placeholder>
-  password: 'Admin Password',
+  password: 'home.form.cluster.field.password',
 }
 
 const ClusterConnectionForm = (props: Props) => {
@@ -86,7 +87,14 @@ const ClusterConnectionForm = (props: Props) => {
   }
 
   const [errors, setErrors] = useState<FormikErrors<Values>>(
-    host || port || username || password ? {} : fieldDisplayNames,
+    host || port || username || password
+      ? {}
+      : Object.fromEntries(
+          Object.entries(fieldDisplayNames).map(([key, value]) => [
+            key,
+            t(value),
+          ]),
+        ),
   )
 
   const [initialValues, setInitialValues] = useState({
@@ -111,7 +119,7 @@ const ClusterConnectionForm = (props: Props) => {
 
     Object.entries(values).forEach(
       ([key, value]) =>
-        !value && Object.assign(errs, { [key]: fieldDisplayNames[key] }),
+        !value && Object.assign(errs, { [key]: t(fieldDisplayNames[key]) }),
     )
 
     setErrors(errs)
@@ -140,7 +148,7 @@ const ClusterConnectionForm = (props: Props) => {
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
     <SecondaryButton className="btn-cancel" onClick={onClick}>
-      Cancel
+      {t('home.form.cluster.button.cancel')}
     </SecondaryButton>
   )
 
@@ -168,7 +176,7 @@ const ClusterConnectionForm = (props: Props) => {
         loading={loading}
         data-testid="btn-submit"
       >
-        Submit
+        {t('home.form.cluster.button.submit')}
       </PrimaryButton>
     </RiTooltip>
   )
@@ -200,13 +208,17 @@ const ClusterConnectionForm = (props: Props) => {
         <Col gap="l">
           <Row gap="m" responsive>
             <FlexItem grow={4}>
-              <FormField label="Cluster Host" required infoIconProps={hostInfo}>
+              <FormField
+                label={t(fieldDisplayNames.host)}
+                required
+                infoIconProps={hostInfo}
+              >
                 <TextInput
                   name="host"
                   id="host"
                   data-testid="host"
                   maxLength={200}
-                  placeholder="Enter Cluster Host"
+                  placeholder={t('home.form.cluster.placeholder.host')}
                   value={formik.values.host}
                   onChange={(value) => {
                     formik.setFieldValue('host', validateField(value.trim()))
@@ -219,7 +231,7 @@ const ClusterConnectionForm = (props: Props) => {
             </FlexItem>
 
             <FlexItem grow={2}>
-              <FormField label="Cluster Port" required>
+              <FormField label={t(fieldDisplayNames.port)} required>
                 <NumericInput
                   autoValidate
                   min={0}
@@ -227,7 +239,7 @@ const ClusterConnectionForm = (props: Props) => {
                   name="port"
                   id="port"
                   data-testid="port"
-                  placeholder="Enter Cluster Port"
+                  placeholder={t('home.form.cluster.placeholder.port')}
                   value={Number(formik.values.port)}
                   onChange={(value) => formik.setFieldValue('port', value)}
                 />
@@ -237,13 +249,13 @@ const ClusterConnectionForm = (props: Props) => {
 
           <Row gap="m" responsive>
             <FlexItem grow>
-              <FormField label="Admin Username" required>
+              <FormField label={t(fieldDisplayNames.username)} required>
                 <TextInput
                   name="username"
                   id="username"
                   data-testid="username"
                   maxLength={200}
-                  placeholder="Enter Admin Username"
+                  placeholder={t('home.form.cluster.placeholder.username')}
                   value={formik.values.username}
                   onChange={(value) => formik.setFieldValue('username', value)}
                 />
@@ -251,14 +263,14 @@ const ClusterConnectionForm = (props: Props) => {
             </FlexItem>
 
             <FlexItem grow>
-              <FormField label="Admin Password" required>
+              <FormField label={t(fieldDisplayNames.password)} required>
                 <PasswordInput
                   type="dual"
                   name="password"
                   id="password"
                   data-testid="password"
                   maxLength={200}
-                  placeholder="Enter Password"
+                  placeholder={t('home.form.cluster.placeholder.password')}
                   value={formik.values.password}
                   onChange={(value) => formik.setFieldValue('password', value)}
                   autoComplete="new-password"

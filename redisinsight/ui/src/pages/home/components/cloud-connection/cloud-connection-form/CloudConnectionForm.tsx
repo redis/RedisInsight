@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { FormikErrors, useFormik } from 'formik'
+import { ParseKeys } from 'i18next'
 import { isEmpty } from 'lodash'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
@@ -26,6 +27,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Text } from 'uiSrc/components/base/text'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
 import { ScrollableWrapper } from '../../ManualConnection.styles'
@@ -48,26 +50,27 @@ interface Values {
   secretKey: string
 }
 
-const fieldDisplayNames: Values = {
-  accessKey: 'Enter API Account Key',
-  secretKey: 'Enter API User Key',
+const fieldDisplayNames: Record<keyof Values, ParseKeys> = {
+  accessKey: 'home.form.cloud.field.accessKey',
+  secretKey: 'home.form.cloud.field.secretKey',
 }
 
-const options = [
-  {
-    id: CloudConnectionOptions.Account,
-    value: CloudConnectionOptions.Account,
-    label: 'Redis Cloud account',
-  },
-  {
-    id: CloudConnectionOptions.ApiKeys,
-    value: CloudConnectionOptions.ApiKeys,
-    label: 'Redis Cloud API keys',
-  },
-]
-
 const CloudConnectionForm = (props: Props) => {
+  const { t } = useTranslation()
   const { accessKey, secretKey, onClose, onSubmit, loading } = props
+
+  const options = [
+    {
+      id: CloudConnectionOptions.Account,
+      value: CloudConnectionOptions.Account,
+      label: t('home.form.cloud.option.account'),
+    },
+    {
+      id: CloudConnectionOptions.ApiKeys,
+      value: CloudConnectionOptions.ApiKeys,
+      label: t('home.form.cloud.option.apiKeys'),
+    },
+  ]
 
   const { [FeatureFlags.cloudSso]: cloudSsoFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
@@ -75,7 +78,14 @@ const CloudConnectionForm = (props: Props) => {
 
   const [domReady, setDomReady] = useState(false)
   const [errors, setErrors] = useState<FormikErrors<Values>>(
-    accessKey || secretKey ? {} : fieldDisplayNames,
+    accessKey || secretKey
+      ? {}
+      : Object.fromEntries(
+          Object.entries(fieldDisplayNames).map(([key, value]) => [
+            key,
+            t(value),
+          ]),
+        ),
   )
   const [type, setType] = useState<CloudConnectionOptions>(
     cloudSsoFeature?.flag
@@ -92,7 +102,7 @@ const CloudConnectionForm = (props: Props) => {
 
     Object.entries(values).forEach(
       ([key, value]) =>
-        !value && Object.assign(errs, { [key]: fieldDisplayNames[key] }),
+        !value && Object.assign(errs, { [key]: t(fieldDisplayNames[key]) }),
     )
 
     setErrors(errs)
@@ -125,7 +135,7 @@ const CloudConnectionForm = (props: Props) => {
       onClick={onClick}
       style={{ marginRight: 12 }}
     >
-      Cancel
+      {t('home.form.cloud.button.cancel')}
     </SecondaryButton>
   )
 
@@ -154,7 +164,7 @@ const CloudConnectionForm = (props: Props) => {
         icon={submitIsDisabled ? InfoIcon : undefined}
         data-testid="btn-submit"
       >
-        Submit
+        {t('home.form.cloud.button.submit')}
       </PrimaryButton>
     </RiTooltip>
   )
@@ -186,13 +196,13 @@ const CloudConnectionForm = (props: Props) => {
       <form onSubmit={formik.handleSubmit}>
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API Account Key" required>
+            <FormField label={t('home.form.cloud.label.accessKey')} required>
               <TextInput
                 name="accessKey"
                 id="accessKey"
                 data-testid="access-key"
                 maxLength={200}
-                placeholder={fieldDisplayNames.accessKey}
+                placeholder={t(fieldDisplayNames.accessKey)}
                 value={formik.values.accessKey}
                 autoComplete="off"
                 onChange={(value) => {
@@ -205,13 +215,13 @@ const CloudConnectionForm = (props: Props) => {
         <Spacer size="l" />
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API User Key" required>
+            <FormField label={t('home.form.cloud.label.secretKey')} required>
               <TextInput
                 name="secretKey"
                 id="secretKey"
                 data-testid="secret-key"
                 maxLength={200}
-                placeholder={fieldDisplayNames.secretKey}
+                placeholder={t(fieldDisplayNames.secretKey)}
                 value={formik.values.secretKey}
                 autoComplete="off"
                 onChange={(value) => {
@@ -231,7 +241,9 @@ const CloudConnectionForm = (props: Props) => {
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
         <Col gap="l">
           <FlexItem grow>
-            <Text color="primary">Connect with</Text>
+            <Text color="primary">
+              {t('home.form.cloud.label.connectWith')}
+            </Text>
           </FlexItem>
           <FlexItem grow>
             <RiRadioGroup
