@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -57,12 +57,21 @@ const StreamDetails = (props: Props) => {
     }
   }
 
-  const Actions = ({ width }: { width: number }) => (
-    <StreamItemsAction
-      width={width}
-      title={t(STREAM_ADD_ACTION[streamViewType].name)}
-      openAddItemPanel={openAddItemPanel}
-    />
+  const latest = { streamViewType, openAddItemPanel, t }
+  const latestRef = useRef(latest)
+  latestRef.current = latest
+
+  const Actions = useCallback(
+    ({ width }: { width: number }) => (
+      <StreamItemsAction
+        width={width}
+        title={latestRef.current.t(
+          STREAM_ADD_ACTION[latestRef.current.streamViewType].name,
+        )}
+        openAddItemPanel={latestRef.current.openAddItemPanel}
+      />
+    ),
+    [],
   )
 
   return (

@@ -1,13 +1,7 @@
 import { ReactNode } from 'react'
+import { TFunction } from 'i18next'
 
-import {
-  KeyValueCompressor,
-  KeyValueFormat,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-  TEXT_UNPRINTABLE_CHARACTERS,
-} from 'uiSrc/constants'
+import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
 import {
   bufferToSerializedFormat,
   bufferToString,
@@ -47,6 +41,7 @@ export const getArrayElementEditState = (
   value: RedisResponseBuffer,
   compressor: Nullable<KeyValueCompressor>,
   viewFormat: KeyValueFormat,
+  t: TFunction,
 ): ArrayElementEditState => {
   const { value: decompressed, isCompressed } = decompressingBuffer(
     value,
@@ -71,13 +66,13 @@ export const getArrayElementEditState = (
 
   let editDisabledReason: Nullable<ReactNode> = null
   if (isCompressed) {
-    editDisabledReason = TEXT_DISABLED_COMPRESSED_VALUE
+    editDisabledReason = t('browser.keyDetails.compressedValueDisabled')
   } else if (isTruncated) {
-    editDisabledReason = TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+    editDisabledReason = t('browser.keyDetails.truncatedActionDisabled')
   } else if (!isFormatEditableValue) {
-    editDisabledReason = TEXT_DISABLED_FORMATTER_EDITING
+    editDisabledReason = t('browser.keyDetails.formatterEditingDisabled')
   } else if (isUnprintable) {
-    editDisabledReason = TEXT_UNPRINTABLE_CHARACTERS.content
+    editDisabledReason = t('browser.keyDetails.unprintable.content')
   }
 
   return {

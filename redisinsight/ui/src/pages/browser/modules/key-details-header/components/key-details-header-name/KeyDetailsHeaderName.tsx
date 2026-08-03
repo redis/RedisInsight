@@ -7,7 +7,7 @@ import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 
 import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
+import { getTextUnprintableCharacters } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   initialKeyInfo,
@@ -176,7 +176,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         <InlineItemEditor
           onApply={() => applyEditKey()}
           isDisabled={!keyIsEditable}
-          disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+          disabledTooltipText={getTextUnprintableCharacters(t)}
           onDecline={(event) => cancelEditKey(event)}
           viewChildrenMode={!keyIsEditing}
           isLoading={loading}

@@ -46,6 +46,7 @@ export const RowActionsCell = ({
           value as RedisResponseBuffer,
           editConfig.compressor,
           editConfig.viewFormat,
+          t,
         )
       : null
   const isEditingThisRow = editConfig?.editingIndex === index

@@ -2,8 +2,8 @@ import React from 'react'
 
 import {
   TEXT_FAILED_CONVENT_FORMATTER,
-  TEXT_INVALID_VALUE,
-  TEXT_UNPRINTABLE_CHARACTERS,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import {
   createTooltipContent,
@@ -64,7 +64,7 @@ export const ArrayValueCell = ({
   // RedisString to RedisResponseBuffer at the rendering boundary.
   const buffer = value as RedisResponseBuffer
   const { decompressedBuffer, formatted, isValid, isUnprintable, serialize } =
-    getArrayElementEditState(buffer, compressor, viewFormat)
+    getArrayElementEditState(buffer, compressor, viewFormat, t)
   const tooltipContent = createTooltipContent(
     formatted,
     decompressedBuffer,
@@ -81,8 +81,8 @@ export const ArrayValueCell = ({
       // effect could otherwise be Saved into and overwrite the patch.
       isLoading={updating || loading}
       isDisabled={isUnprintable}
-      disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
-      approveText={TEXT_INVALID_VALUE}
+      disabledTooltipText={getTextUnprintableCharacters(t)}
+      approveText={getTextInvalidValue(t)}
       approveByValidation={(editedValue) =>
         !!formattingBuffer(
           stringToSerializedBufferFormat(viewFormat, editedValue),

@@ -34,8 +34,8 @@ import {
   KeyTypes,
   OVER_RENDER_BUFFER_COUNT,
   TableCellAlignment,
-  TEXT_INVALID_VALUE,
-  TEXT_UNPRINTABLE_CHARACTERS,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -329,10 +329,10 @@ const ListDetailsTable = () => {
             isDisabled={disabled}
             isEditing={isEditing}
             isEditDisabled={!isEditable || updateLoading}
-            disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+            disabledTooltipText={getTextUnprintableCharacters(t)}
             onDecline={() => handleEditElement(index, false)}
             onApply={(value) => handleApplyEditElement(index, value)}
-            approveText={TEXT_INVALID_VALUE}
+            approveText={getTextInvalidValue(t)}
             approveByValidation={(value) =>
               formattingBuffer(
                 stringToSerializedBufferFormat(viewFormat, value),

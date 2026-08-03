@@ -1,4 +1,5 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui'
+import { TFunction } from 'i18next'
 import { KeyValueFormat, SortOrder } from './keys'
 
 export const DEFAULT_DELIMITER: EuiComboBoxOptionOption = {
@@ -8,10 +9,10 @@ export const DEFAULT_DELIMITER: EuiComboBoxOptionOption = {
 export const DEFAULT_TREE_SORTING = SortOrder.ASC
 export const DEFAULT_SHOW_HIDDEN_RECOMMENDATIONS = false
 
-export const TEXT_UNPRINTABLE_CHARACTERS = {
-  title: 'Non-printable characters have been detected',
-  content: 'Use Workbench or CLI to edit without data loss.',
-}
+export const getTextUnprintableCharacters = (t: TFunction) => ({
+  title: t('browser.keyDetails.unprintable.title'),
+  content: t('browser.keyDetails.unprintable.content'),
+})
 export const TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA =
   'This action is disabled because the key or value is too large to process within Redis Insight.'
 export const AXIOS_ERROR_DISABLED_ACTION_WITH_TRUNCATED_DATA = {
@@ -28,13 +29,11 @@ export const TEXT_CONSUMER_NAME_TOO_LONG =
 export const TEXT_DISABLED_FORMATTER_EDITING =
   'Cannot edit the value in this format'
 export const TEXT_DISABLED_STRING_EDITING = 'Load the entire value to edit it'
-export const TEXT_DISABLED_STRING_FORMATTING =
-  'Load the entire value to select a format'
 
-export const TEXT_INVALID_VALUE = {
-  title: 'Value will be saved as Unicode',
-  text: 'as it is not valid in the selected format.',
-}
+export const getTextInvalidValue = (t: TFunction) => ({
+  title: t('browser.keyDetails.invalidValue.title'),
+  text: t('browser.keyDetails.invalidValue.text'),
+})
 
 export const TEXT_DISABLED_COMPRESSED_VALUE: string =
   'Cannot edit the decompressed value'
