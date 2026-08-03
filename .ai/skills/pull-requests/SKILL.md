@@ -32,7 +32,7 @@ Describe how to test the changes.
 
 ---
 
-Closes #RI-123
+Refs #RI-123
 ```
 
 **PR Description Guidelines:**
@@ -41,6 +41,7 @@ Closes #RI-123
 - **Focus on high-level changes** - Don't list every code change in the #What section
 - **Brief and to the point** - The diff shows the details; describe the "why" and "what" at a high level
 - **Technical decisions** - Only mention significant architectural or design decisions if relevant
+- **Link, don't auto-close** - Use `Refs #RI-123` / `Addresses #RI-123`, not `Closes`/`Fixes`/`Resolves` - those keywords auto-close the issue when the PR merges, and tickets should be closed manually, not by the merge
 
 ## Review Process
 
