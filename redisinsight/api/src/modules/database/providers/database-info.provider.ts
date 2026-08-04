@@ -9,7 +9,10 @@ import {
 import { AdditionalRedisModule } from 'src/modules/database/models/additional.redis.module';
 import { REDIS_MODULES_COMMANDS, SUPPORTED_REDIS_MODULES } from 'src/constants';
 import { get, isNil } from 'lodash';
-import { RedisDatabaseInfoResponse } from 'src/modules/database/dto/redis-info.dto';
+import {
+  RedisDatabaseInfoResponse,
+  RedisDatabaseModuleDto,
+} from 'src/modules/database/dto/redis-info.dto';
 import { FeatureService } from 'src/modules/feature/feature.service';
 import { KnownFeatures } from 'src/modules/feature/constants';
 import {
@@ -79,7 +82,7 @@ export class DatabaseInfoProvider {
       if (fromCommands.length) {
         return fromCommands;
       }
-      return this.determineDatabaseModulesUsingHelloOrInfo(client);
+      return this.determineDatabaseModulesUsingHello(client);
     }
   }
 
@@ -130,27 +133,16 @@ export class DatabaseInfoProvider {
   }
 
   /**
-   * Determine database modules from HELLO or INFO response when MODULE LIST
-   * and COMMAND INFO are unavailable (e.g. restricted ACL users).
-   * Prefer HELLO: getInfo()'s INFO parser collapses duplicate `module:` lines into
-   * a single { module: "name=...,ver=..." } entry, which is not a usable module list.
+   * Determine database modules from HELLO when MODULE LIST and COMMAND INFO
+   * are unavailable (e.g. restricted ACL users).
    * @param client
    * @private
    */
-  public async determineDatabaseModulesUsingHelloOrInfo(
+  public async determineDatabaseModulesUsingHello(
     client: RedisClient,
   ): Promise<AdditionalRedisModule[]> {
     try {
-      let rawModules = await this.getModulesFromHello(client);
-
-      if (!rawModules.length) {
-        try {
-          const info = await client.getInfo();
-          rawModules = this.normalizeModulesFromInfo(info?.modules);
-        } catch {
-          // INFO may be denied
-        }
-      }
+      const rawModules = await this.getModulesFromHello(client);
 
       if (!rawModules.length) {
         return [];
@@ -168,7 +160,7 @@ export class DatabaseInfoProvider {
   }
 
   private mapToAdditionalRedisModules(
-    modules: { name: string; ver?: number }[],
+    modules: RedisDatabaseModuleDto[],
   ): AdditionalRedisModule[] {
     return modules.map(({ name, ver }) => {
       const moduleName = String(name);
@@ -190,50 +182,30 @@ export class DatabaseInfoProvider {
 
   private async getModulesFromHello(
     client: RedisClient,
-  ): Promise<{ name: string; ver?: number }[]> {
+  ): Promise<RedisDatabaseModuleDto[]> {
     try {
       const helloResponse = (await client.call(['hello'], {
         replyEncoding: 'utf8',
       })) as string[];
       const helloInfo = convertArrayReplyToObject(helloResponse);
-      const modules = Array.isArray(helloInfo.modules)
-        ? helloInfo.modules.map((module) =>
-            Array.isArray(module) ? convertArrayReplyToObject(module) : module,
-          )
-        : helloInfo.modules;
 
-      return this.normalizeModulesFromInfo(modules);
+      if (!Array.isArray(helloInfo.modules)) {
+        return [];
+      }
+
+      return helloInfo.modules
+        .map((module) =>
+          Array.isArray(module) ? convertArrayReplyToObject(module) : module,
+        )
+        .filter(
+          (module) =>
+            module &&
+            typeof module === 'object' &&
+            typeof (module as RedisDatabaseModuleDto).name === 'string',
+        ) as RedisDatabaseModuleDto[];
     } catch {
       return [];
     }
-  }
-
-  private normalizeModulesFromInfo(
-    modules: unknown,
-  ): { name: string; ver?: number }[] {
-    if (!modules) {
-      return [];
-    }
-    if (Array.isArray(modules)) {
-      return modules.filter(
-        (module) =>
-          module &&
-          typeof module === 'object' &&
-          typeof (module as { name?: unknown }).name === 'string',
-      ) as { name: string; ver?: number }[];
-    }
-    if (typeof modules === 'object') {
-      const entries = Object.entries(modules as Record<string, unknown>);
-      // INFO # Modules collapses to { module: "name=...,ver=..." } — not usable
-      if (entries.some(([key]) => key === 'module')) {
-        return [];
-      }
-      return entries.map(([name, ver]) => ({
-        name,
-        ver: parseInt(String(ver), 10) || undefined,
-      }));
-    }
-    return [];
   }
 
   public async getRedisDBSize(client: RedisClient): Promise<number> {

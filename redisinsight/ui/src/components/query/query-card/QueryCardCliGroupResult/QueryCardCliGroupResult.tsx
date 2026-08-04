@@ -28,12 +28,7 @@ const QueryCardCliGroupResult = (props: Props) => {
         isFullScreen={isFullScreen}
         items={flatten(
           result?.[0]?.response.map((item: any) => {
-            // Pass CommandExecutionResult shape so CommonErrorResponse can read
-            // item.status. Passing item.response alone makes successful array
-            // replies (e.g. TS.RANGE) look like failures under ACL (#5357).
-            const commonError = CommonErrorResponse(item.id, item.command, [
-              { status: item.status, response: item.response },
-            ])
+            const commonError = CommonErrorResponse(item.id, item.command, item)
             if (React.isValidElement(commonError) && !isNull(item.response)) {
               return [wbSummaryCommand(item.command), commonError]
             }
