@@ -51,6 +51,13 @@ const generateCodeChallenge = (verifier: string): string =>
 const generateUuid = (): string => crypto.randomUUID();
 
 /**
+ * Extract the home tenant from an MSAL account id, which AAD formats as
+ * `<local account id>.<home tenant id>`.
+ */
+const getHomeTenantId = (accountId: string): string | undefined =>
+  accountId.split('.')[1] || undefined;
+
+/**
  * Service for handling Azure Entra ID authentication.
  * Uses MSAL (Microsoft Authentication Library) for OAuth 2.0 flows.
  */
@@ -375,14 +382,15 @@ export class AzureAuthService {
       const accounts = await cache.getAllAccounts();
 
       // A user signed into multiple tenants has one cached record per realm,
-      // all sharing the same homeAccountId. When a tenant is requested, prefer
-      // the record for that realm so silent refresh targets the right tenant
-      // (falling back to any record for the account otherwise).
+      // all sharing the same homeAccountId. Match the requested realm so silent
+      // refresh targets the right tenant, defaulting to the home realm rather
+      // than whichever realm the cache lists first.
       const forAccount = (a: AccountInfo) => a.homeAccountId === accountId;
-      const account =
-        (tenantId &&
-          accounts.find((a) => forAccount(a) && a.tenantId === tenantId)) ||
-        accounts.find(forAccount);
+      const targetTenantId = tenantId || getHomeTenantId(accountId);
+      const realmAccount =
+        targetTenantId &&
+        accounts.find((a) => forAccount(a) && a.tenantId === targetTenantId);
+      const account = realmAccount || accounts.find(forAccount);
       if (!account) {
         this.logger.warn(`Account not found: ${accountId}`);
         return null;
@@ -392,13 +400,31 @@ export class AzureAuthService {
       // authority. Without it, MSAL resolves to the account's home tenant.
       const authority = tenantId ? buildAzureAuthority(tenantId) : undefined;
 
+      // MSAL resolves a cached access token by the realm of the account it is
+      // given and consults the request authority only on a cache miss, so a
+      // record from another realm yields that realm's token. Skipping the cache
+      // leaves the authority to decide which tenant issues the token.
+      const forceRefresh = Boolean(tenantId) && !realmAccount;
+
       const result = await pca.acquireTokenSilent({
         account,
         scopes: [scope],
         ...(authority && { authority }),
+        ...(forceRefresh && { forceRefresh }),
       });
 
       if (!result?.accessToken || !result?.expiresOn || !result?.account) {
+        return null;
+      }
+
+      // The target resource rejects a token from another realm, so report it as
+      // no token: callers then offer interactive re-authentication against the
+      // right tenant instead of failing on an opaque auth error.
+      if (tenantId && result.account.tenantId !== tenantId) {
+        this.logger.warn(
+          `Discarding token issued for tenant ${result.account.tenantId} ` +
+            `while tenant ${tenantId} was requested`,
+        );
         return null;
       }
 
