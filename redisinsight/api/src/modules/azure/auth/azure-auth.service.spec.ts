@@ -527,8 +527,7 @@ describe('AzureAuthService', () => {
   describe('getRedisTokenByAccountId cross-tenant safety', () => {
     const homeTenantId = faker.string.uuid();
     const otherTenantId = faker.string.uuid();
-    // MSAL keys AAD accounts as `<local account id>.<home tenant id>`
-    const homeAccountId = `${faker.string.uuid()}.${homeTenantId}`;
+    const homeAccountId = faker.string.uuid();
     let homeRealmAccount: ReturnType<typeof createMockAccount>;
 
     beforeEach(() => {
@@ -621,18 +620,9 @@ describe('AzureAuthService', () => {
       expect(result?.token).toEqual(mockAccessToken);
     });
 
-    it('should prefer the home realm when no tenant is requested', async () => {
-      // A database with no recorded tenantId, where the cache lists the most
-      // recent sign-in ahead of the home realm.
-      const otherRealmAccount = {
-        ...homeRealmAccount,
-        tenantId: otherTenantId,
-        localAccountId: faker.string.uuid(),
-      };
-      mockTokenCache.getAllAccounts.mockResolvedValue([
-        otherRealmAccount,
-        homeRealmAccount,
-      ]);
+    it('should leave acquisition untouched when no tenant is requested', async () => {
+      // A database with no recorded tenantId has no realm to target, so neither
+      // the authority nor the forced refresh applies.
       mockPca.acquireTokenSilent.mockResolvedValue({
         accessToken: faker.string.alphanumeric(100),
         expiresOn: new Date(),
@@ -642,8 +632,9 @@ describe('AzureAuthService', () => {
       await service.getRedisTokenByAccountId(homeAccountId);
 
       expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          account: homeRealmAccount,
+        expect.not.objectContaining({
+          authority: expect.anything(),
+          forceRefresh: expect.anything(),
         }),
       );
     });

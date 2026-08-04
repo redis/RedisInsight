@@ -52,13 +52,6 @@ const generateCodeChallenge = (verifier: string): string =>
 const generateUuid = (): string => crypto.randomUUID();
 
 /**
- * Extract the home tenant from an MSAL account id, which AAD formats as
- * `<local account id>.<home tenant id>`.
- */
-const getHomeTenantId = (accountId: string): string | undefined =>
-  accountId.split('.')[1] || undefined;
-
-/**
  * Compare tenant ids, which AAD reports in either casing.
  */
 const isSameTenant = (a?: string, b?: string): boolean =>
@@ -389,15 +382,14 @@ export class AzureAuthService {
       const accounts = await cache.getAllAccounts();
 
       // A user signed into multiple tenants has one cached record per realm,
-      // all sharing the same homeAccountId. Match the requested realm so silent
-      // refresh targets the right tenant, defaulting to the home realm rather
-      // than whichever realm the cache lists first.
+      // all sharing the same homeAccountId. When a tenant is requested, prefer
+      // the record for that realm so silent refresh targets the right tenant
+      // (falling back to any record for the account otherwise).
       const forAccount = (a: AccountInfo) => a.homeAccountId === accountId;
-      const targetTenantId = tenantId || getHomeTenantId(accountId);
       const realmAccount =
-        targetTenantId &&
+        tenantId &&
         accounts.find(
-          (a) => forAccount(a) && isSameTenant(a.tenantId, targetTenantId),
+          (a) => forAccount(a) && isSameTenant(a.tenantId, tenantId),
         );
       const account = realmAccount || accounts.find(forAccount);
       if (!account) {
