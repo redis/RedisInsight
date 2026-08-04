@@ -648,6 +648,50 @@ describe('AzureAuthService', () => {
       );
     });
 
+    it('should accept a token when the tenant is requested as a domain', async () => {
+      // The import and login DTOs accept a tenant domain, which MSAL reports as
+      // the canonical realm GUID.
+      const tenantDomain = 'contoso.onmicrosoft.com';
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: { ...homeRealmAccount, tenantId: otherTenantId },
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        tenantDomain,
+      );
+
+      expect(result?.token).toEqual(mockAccessToken);
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantDomain}`,
+          forceRefresh: true,
+        }),
+      );
+    });
+
+    it('should match the requested realm regardless of GUID casing', async () => {
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        homeTenantId.toUpperCase(),
+      );
+
+      expect(result?.token).toEqual(mockAccessToken);
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({ account: homeRealmAccount }),
+      );
+    });
+
     it('should reject a wrong-realm management token as well', async () => {
       mockPca.acquireTokenSilent.mockResolvedValue({
         accessToken: faker.string.alphanumeric(100),

@@ -15,6 +15,7 @@ import {
   AZURE_OAUTH_DEEPLINK_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
   AZURE_OAUTH_WEB_CALLBACK_ENDPOINT,
+  AZURE_TENANT_GUID_REGEX,
   AzureAuthStatus,
   AzureOAuthRedirectType,
   AzureRedisTokenEvents,
@@ -56,6 +57,12 @@ const generateUuid = (): string => crypto.randomUUID();
  */
 const getHomeTenantId = (accountId: string): string | undefined =>
   accountId.split('.')[1] || undefined;
+
+/**
+ * Compare tenant ids, which AAD reports in either casing.
+ */
+const isSameTenant = (a?: string, b?: string): boolean =>
+  !!a && !!b && a.toLowerCase() === b.toLowerCase();
 
 /**
  * Service for handling Azure Entra ID authentication.
@@ -389,7 +396,9 @@ export class AzureAuthService {
       const targetTenantId = tenantId || getHomeTenantId(accountId);
       const realmAccount =
         targetTenantId &&
-        accounts.find((a) => forAccount(a) && a.tenantId === targetTenantId);
+        accounts.find(
+          (a) => forAccount(a) && isSameTenant(a.tenantId, targetTenantId),
+        );
       const account = realmAccount || accounts.find(forAccount);
       if (!account) {
         this.logger.warn(`Account not found: ${accountId}`);
@@ -417,10 +426,18 @@ export class AzureAuthService {
         return null;
       }
 
+      // A tenant given as a domain has no realm to compare against; there the
+      // request authority alone pins the issuing tenant.
+      const requestedRealm =
+        tenantId && AZURE_TENANT_GUID_REGEX.test(tenantId) ? tenantId : null;
+
       // The target resource rejects a token from another realm, so report it as
       // no token: callers then offer interactive re-authentication against the
-      // right tenant instead of failing on an opaque auth error.
-      if (tenantId && result.account.tenantId !== tenantId) {
+      // right tenant instead of an opaque auth error.
+      if (
+        requestedRealm &&
+        !isSameTenant(result.account.tenantId, requestedRealm)
+      ) {
         this.logger.warn(
           `Discarding token issued for tenant ${result.account.tenantId} ` +
             `while tenant ${tenantId} was requested`,
