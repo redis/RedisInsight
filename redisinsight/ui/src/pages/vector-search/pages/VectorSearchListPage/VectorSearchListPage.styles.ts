@@ -8,7 +8,7 @@ export const HeaderRow = styled(Row).attrs({ grow: false })`
 
 // Fixed width so the reset button appearing on input does not resize the field
 export const IndexSearchInput = styled(SearchInput)`
-  width: 266px;
+  width: calc(${({ theme }) => theme.core.space.space550} * 6); // 264px
 `
 
 export const PageLayout = styled(Col).attrs({ gap: 'l' })`
