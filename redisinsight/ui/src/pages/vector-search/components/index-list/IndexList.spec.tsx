@@ -169,11 +169,12 @@ describe('IndexList', () => {
       expect(screen.getByText('No results found')).toBeInTheDocument()
     })
 
-    it('should keep No results found while a refetch is loading', () => {
+    it('should not claim No results found while rows are still loading', () => {
+      // a refetch means the index list changed, so the filtered rows are stale
       renderComponent({ data: [], loading: true, isFiltered: true })
 
-      expect(screen.getByText('No results found')).toBeInTheDocument()
-      expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      expect(screen.queryByText('No results found')).not.toBeInTheDocument()
     })
   })
 
