@@ -20,7 +20,8 @@ export const getIndexOptionLabel = (indexName: string) =>
  * "(empty name)" — stays reachable.
  */
 export const matchesIndexSearch = (indexName: string, search: string) => {
-  const term = search.toLowerCase()
+  const term = search.trim().toLowerCase()
+  if (!term) return true
 
   return (
     indexName.toLowerCase().includes(term) ||

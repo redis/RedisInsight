@@ -162,6 +162,19 @@ describe('IndexList', () => {
 
       expect(screen.getByText(mockIndexListData[0].name)).toBeInTheDocument()
     })
+
+    it('should show No results found when a filter matches nothing', () => {
+      renderComponent({ data: [], loading: false, isFiltered: true })
+
+      expect(screen.getByText('No results found')).toBeInTheDocument()
+    })
+
+    it('should keep No results found while a refetch is loading', () => {
+      renderComponent({ data: [], loading: true, isFiltered: true })
+
+      expect(screen.getByText('No results found')).toBeInTheDocument()
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+    })
   })
 
   describe('Column header tooltips', () => {

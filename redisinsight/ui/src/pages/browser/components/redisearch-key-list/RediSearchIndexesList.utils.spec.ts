@@ -33,6 +33,15 @@ describe('matchesIndexSearch', () => {
     expect(matchesIndexSearch('', 'name')).toBe(true)
     expect(matchesIndexSearch('', 'bicycle')).toBe(false)
   })
+
+  it('should treat a whitespace-only term as no filter', () => {
+    expect(matchesIndexSearch('idx:bicycle', ' ')).toBe(true)
+    expect(matchesIndexSearch('idx:bicycle', '   ')).toBe(true)
+  })
+
+  it('should ignore padding around a real term', () => {
+    expect(matchesIndexSearch('idx:bicycle', '  bicycle  ')).toBe(true)
+  })
 })
 
 describe('getIndexOptionsWidth', () => {

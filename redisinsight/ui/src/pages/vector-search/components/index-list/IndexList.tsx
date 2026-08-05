@@ -22,11 +22,13 @@ export const IndexList = memo(
     )
 
     const emptyMessage = useMemo(() => {
-      if (loading) {
-        return t('vectorSearch.list.empty.loading')
-      }
+      // A filter that matches nothing is a definitive answer, so it outranks a
+      // background refetch flipping `loading` back on
       if (isFiltered) {
         return t('vectorSearch.list.empty.noResults')
+      }
+      if (loading) {
+        return t('vectorSearch.list.empty.loading')
       }
       return t('vectorSearch.list.empty.noIndexes')
     }, [loading, isFiltered, t])
