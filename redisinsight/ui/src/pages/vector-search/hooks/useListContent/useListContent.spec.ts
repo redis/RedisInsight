@@ -11,6 +11,10 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  exampleIndexListRows,
+  mockIndexListData,
+} from 'uiSrc/mocks/factories/vector-search/indexList.factory'
 
 import { useListContent } from './useListContent'
 import { useIndexListData } from '../useIndexListData'
@@ -99,6 +103,45 @@ describe('useListContent', () => {
 
     expect(result.current.data).toBe(mockData)
     expect(result.current.loading).toBe(true)
+  })
+
+  describe('search', () => {
+    beforeEach(() => {
+      ;(useIndexListData as jest.Mock).mockReturnValue({
+        data: mockIndexListData,
+        loading: false,
+      })
+    })
+
+    it('should return every row and hasSearch false without a search term', () => {
+      const { result } = renderHook(() => useListContent())
+
+      expect(result.current.data).toEqual(mockIndexListData)
+      expect(result.current.hasSearch).toBe(false)
+    })
+
+    it('should keep only rows whose name matches the term, case-insensitively', () => {
+      const { result } = renderHook(() => useListContent('USER'))
+
+      expect(result.current.data).toEqual([exampleIndexListRows.users])
+      expect(result.current.hasSearch).toBe(true)
+    })
+
+    it('should return no rows when nothing matches', () => {
+      const { result } = renderHook(() =>
+        useListContent(faker.string.alpha(20)),
+      )
+
+      expect(result.current.data).toEqual([])
+      expect(result.current.hasSearch).toBe(true)
+    })
+
+    it('should treat a whitespace-only term as no search', () => {
+      const { result } = renderHook(() => useListContent('   '))
+
+      expect(result.current.data).toEqual(mockIndexListData)
+      expect(result.current.hasSearch).toBe(false)
+    })
   })
 
   it('should return three actions', () => {

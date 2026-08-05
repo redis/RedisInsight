@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation } from 'react-router-dom'
 
@@ -19,11 +19,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  bufferToString,
-  formatLongName,
-  isRedisearchAvailable,
-} from 'uiSrc/utils'
+import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
@@ -40,9 +36,12 @@ import {
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
 import { useTranslation } from 'uiSrc/i18n'
 import * as S from './RediSearchIndexesList.styles'
+import {
+  getIndexOptionLabel,
+  getIndexOptionsWidth,
+} from './RediSearchIndexesList.utils'
 
 export const CREATE = JSON.stringify('create')
 
@@ -129,13 +128,14 @@ const RediSearchIndexesList = (props: Props) => {
     [],
   )
 
+  const contentWidth = useMemo(
+    () => getIndexOptionsWidth(list.map((item) => bufferToString(item))),
+    [list],
+  )
+
   const options = list.map((item) => {
     const stringValue = bufferToString(item)
-    const displayValue = formatLongName(
-      getIndexDisplayName(stringValue),
-      100,
-      10,
-    )
+    const displayValue = getIndexOptionLabel(stringValue)
 
     return {
       value: stringValue,
@@ -222,6 +222,9 @@ const RediSearchIndexesList = (props: Props) => {
         options={options}
         value={selectedValue}
         onChange={onChangeIndex}
+        customCompare={(option, search) =>
+          option.value === CREATE || option.value.toLowerCase().includes(search)
+        }
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">
           <RiSelect.Trigger.Value
@@ -245,7 +248,11 @@ const RediSearchIndexesList = (props: Props) => {
             </RiTooltip>
           </div>
         </RiSelect.Trigger.Compose>
-        <RiSelect.Content optionValueRender={selectValueRender} />
+        <RiSelect.Content
+          searchable
+          contentWidth={contentWidth}
+          optionValueRender={selectValueRender}
+        />
       </RiSelect.Compose>
     </S.Container>
   )

@@ -29,7 +29,7 @@ import { localStorageService } from 'uiSrc/services'
 import { IndexListAction } from '../../components/index-list/IndexList.types'
 import { useIndexListData } from '../useIndexListData'
 
-export const useListContent = () => {
+export const useListContent = (search = '') => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -42,7 +42,14 @@ export const useListContent = () => {
     [rawIndexes],
   )
 
-  const { data, loading } = useIndexListData(indexes)
+  const { data: allRows, loading } = useIndexListData(indexes)
+
+  const data = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    if (!term) return allRows
+
+    return allRows.filter((row) => row.name.toLowerCase().includes(term))
+  }, [allRows, search])
 
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
     null,
@@ -173,6 +180,7 @@ export const useListContent = () => {
   return {
     data,
     loading,
+    hasSearch: !!search.trim(),
     actions,
     onQueryClick: handleQueryClick,
     viewingIndexName,

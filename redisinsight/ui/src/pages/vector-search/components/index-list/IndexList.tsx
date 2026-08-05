@@ -10,6 +10,7 @@ export const IndexList = memo(
   ({
     data,
     loading,
+    hasSearch,
     dataTestId = 'index-list',
     onQueryClick,
     actions,
@@ -20,17 +21,15 @@ export const IndexList = memo(
       [onQueryClick, actions],
     )
 
-    const hasIndexes = useMemo(() => !!data?.length, [data])
-
     const emptyMessage = useMemo(() => {
       if (loading) {
         return t('vectorSearch.list.empty.loading')
       }
-      if (!hasIndexes) {
-        return t('vectorSearch.list.empty.noIndexes')
+      if (hasSearch) {
+        return t('vectorSearch.list.empty.noResults')
       }
-      return t('vectorSearch.list.empty.noResults')
-    }, [loading, hasIndexes, t])
+      return t('vectorSearch.list.empty.noIndexes')
+    }, [loading, hasSearch, t])
 
     return (
       <Table

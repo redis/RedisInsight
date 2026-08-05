@@ -1691,6 +1691,7 @@
   "vectorSearch.list.header.description": "A search index organizes your data to enable fast Vector, full-text, hybrid, and numeric searches in Redis.",
   "vectorSearch.list.header.learnMore": "Learn more",
   "vectorSearch.list.header.title": "Search indexes",
+  "vectorSearch.list.search.placeholder": "Search index",
   "vectorSearch.list.tooltip.docs": "Number of documents currently indexed.",
   "vectorSearch.list.tooltip.fields": "Total number of fields defined in the index schema.",
   "vectorSearch.list.tooltip.prefix": "Keys matching this prefix are automatically indexed.",
