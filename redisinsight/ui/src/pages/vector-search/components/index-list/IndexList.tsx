@@ -10,7 +10,7 @@ export const IndexList = memo(
   ({
     data,
     loading,
-    hasSearch,
+    isFiltered,
     dataTestId = 'index-list',
     onQueryClick,
     actions,
@@ -25,11 +25,11 @@ export const IndexList = memo(
       if (loading) {
         return t('vectorSearch.list.empty.loading')
       }
-      if (hasSearch) {
+      if (isFiltered) {
         return t('vectorSearch.list.empty.noResults')
       }
       return t('vectorSearch.list.empty.noIndexes')
-    }, [loading, hasSearch, t])
+    }, [loading, isFiltered, t])
 
     return (
       <Table

@@ -18,7 +18,7 @@ export const ListContent = ({ search }: ListContentProps) => {
   const {
     data,
     loading,
-    hasSearch,
+    isFiltered,
     actions,
     onQueryClick,
     viewingIndexName,
@@ -42,7 +42,7 @@ export const ListContent = ({ search }: ListContentProps) => {
               <IndexList
                 data={data}
                 loading={loading}
-                hasSearch={hasSearch}
+                isFiltered={isFiltered}
                 onQueryClick={onQueryClick}
                 actions={actions}
                 dataTestId="vector-search--list--table"

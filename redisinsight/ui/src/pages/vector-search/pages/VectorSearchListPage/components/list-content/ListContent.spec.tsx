@@ -32,7 +32,7 @@ const mockDeleteCallback = jest.fn()
 const defaultHookReturn: UseListContentReturn = {
   data: [],
   loading: false,
-  hasSearch: false,
+  isFiltered: false,
   actions: [
     { name: 'View index', icon: ShowIcon, callback: mockViewIndexCallback },
     {
@@ -98,7 +98,7 @@ describe('ListContent', () => {
   })
 
   it('should render no-results empty state when a search filtered everything out', () => {
-    setupHook({ hasSearch: true })
+    setupHook({ isFiltered: true })
     renderComponent()
 
     expect(screen.getByText('No results found')).toBeInTheDocument()

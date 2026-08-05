@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker'
 import {
   getIndexOptionLabel,
   getIndexOptionsWidth,
+  matchesIndexSearch,
 } from './RediSearchIndexesList.utils'
 
 describe('getIndexOptionLabel', () => {
@@ -14,6 +15,23 @@ describe('getIndexOptionLabel', () => {
 
   it('should label an unnamed index instead of rendering nothing', () => {
     expect(getIndexOptionLabel('')).not.toEqual('')
+  })
+})
+
+describe('matchesIndexSearch', () => {
+  it('should match on the index name, case-insensitively', () => {
+    expect(matchesIndexSearch('idx:Restaurant', 'restaur')).toBe(true)
+    expect(matchesIndexSearch('idx:Restaurant', 'bicycle')).toBe(false)
+  })
+
+  it('should match an unnamed index by its displayed label', () => {
+    expect(matchesIndexSearch('', 'empty')).toBe(true)
+  })
+
+  it('should keep an unnamed index reachable for any term it displays', () => {
+    // '' matches no term by name alone, which would hide the option entirely
+    expect(matchesIndexSearch('', 'name')).toBe(true)
+    expect(matchesIndexSearch('', 'bicycle')).toBe(false)
   })
 })
 

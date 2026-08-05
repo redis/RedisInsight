@@ -15,6 +15,20 @@ export const getIndexOptionLabel = (indexName: string) =>
   )
 
 /**
+ * Matches an index against a drop-down search term by both its name and its displayed
+ * label, so an index whose label differs from its name — an unnamed index renders as
+ * "(empty name)" — stays reachable.
+ */
+export const matchesIndexSearch = (indexName: string, search: string) => {
+  const term = search.toLowerCase()
+
+  return (
+    indexName.toLowerCase().includes(term) ||
+    getIndexOptionLabel(indexName).toLowerCase().includes(term)
+  )
+}
+
+/**
  * Width for the index drop-down, derived from the longest label in the whole list so
  * that filtering the options never resizes the popover. `ch` approximates the label
  * width; the popover floor stays the trigger width.

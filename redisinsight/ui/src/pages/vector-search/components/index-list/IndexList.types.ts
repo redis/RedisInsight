@@ -47,7 +47,7 @@ export interface IndexListProps {
   /** Whether the list data is currently loading */
   loading?: boolean
   /** Whether `data` has been narrowed by a search term, to pick the empty-state message */
-  hasSearch?: boolean
+  isFiltered?: boolean
   /** Test ID for the list container */
   dataTestId?: string
   /** Callback when the Query button is clicked (index name is passed) */

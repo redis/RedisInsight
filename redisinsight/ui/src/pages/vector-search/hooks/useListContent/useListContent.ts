@@ -43,13 +43,16 @@ export const useListContent = (search = '') => {
   )
 
   const { data: allRows, loading } = useIndexListData(indexes)
+  const searchTerm = search.trim().toLowerCase()
 
   const data = useMemo(() => {
-    const term = search.trim().toLowerCase()
-    if (!term) return allRows
+    if (!searchTerm) return allRows
 
-    return allRows.filter((row) => row.name.toLowerCase().includes(term))
-  }, [allRows, search])
+    return allRows.filter((row) => row.name.toLowerCase().includes(searchTerm))
+  }, [allRows, searchTerm])
+
+  // A search over an empty list is not a filter — the list page still has no indexes to show
+  const isFiltered = !!searchTerm && allRows.length > 0
 
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
     null,
@@ -180,7 +183,7 @@ export const useListContent = (search = '') => {
   return {
     data,
     loading,
-    hasSearch: !!search.trim(),
+    isFiltered,
     actions,
     onQueryClick: handleQueryClick,
     viewingIndexName,

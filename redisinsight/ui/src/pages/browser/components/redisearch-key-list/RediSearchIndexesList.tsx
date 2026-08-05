@@ -41,6 +41,7 @@ import * as S from './RediSearchIndexesList.styles'
 import {
   getIndexOptionLabel,
   getIndexOptionsWidth,
+  matchesIndexSearch,
 } from './RediSearchIndexesList.utils'
 
 export const CREATE = JSON.stringify('create')
@@ -223,7 +224,7 @@ const RediSearchIndexesList = (props: Props) => {
         value={selectedValue}
         onChange={onChangeIndex}
         customCompare={(option, search) =>
-          option.value === CREATE || option.value.toLowerCase().includes(search)
+          option.value === CREATE || matchesIndexSearch(option.value, search)
         }
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">

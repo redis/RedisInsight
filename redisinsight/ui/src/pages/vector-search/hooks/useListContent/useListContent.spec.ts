@@ -113,18 +113,18 @@ describe('useListContent', () => {
       })
     })
 
-    it('should return every row and hasSearch false without a search term', () => {
+    it('should return every row and isFiltered false without a search term', () => {
       const { result } = renderHook(() => useListContent())
 
       expect(result.current.data).toEqual(mockIndexListData)
-      expect(result.current.hasSearch).toBe(false)
+      expect(result.current.isFiltered).toBe(false)
     })
 
     it('should keep only rows whose name matches the term, case-insensitively', () => {
       const { result } = renderHook(() => useListContent('USER'))
 
       expect(result.current.data).toEqual([exampleIndexListRows.users])
-      expect(result.current.hasSearch).toBe(true)
+      expect(result.current.isFiltered).toBe(true)
     })
 
     it('should return no rows when nothing matches', () => {
@@ -133,14 +133,25 @@ describe('useListContent', () => {
       )
 
       expect(result.current.data).toEqual([])
-      expect(result.current.hasSearch).toBe(true)
+      expect(result.current.isFiltered).toBe(true)
     })
 
     it('should treat a whitespace-only term as no search', () => {
       const { result } = renderHook(() => useListContent('   '))
 
       expect(result.current.data).toEqual(mockIndexListData)
-      expect(result.current.hasSearch).toBe(false)
+      expect(result.current.isFiltered).toBe(false)
+    })
+
+    it('should not report a filter when there are no indexes to filter', () => {
+      ;(useIndexListData as jest.Mock).mockReturnValue({
+        data: [],
+        loading: false,
+      })
+
+      const { result } = renderHook(() => useListContent(faker.string.alpha(5)))
+
+      expect(result.current.isFiltered).toBe(false)
     })
   })
 
