@@ -15,6 +15,15 @@ import { AppUpdateStatus, ElectronStorageItem } from 'uiSrc/electron/constants'
 
 export const initAutoUpdaterHandlers = () => {
   let pendingAvailableTimeout: ReturnType<typeof setTimeout> | null = null
+  let pendingAvailableVersion: string | null = null
+
+  const clearPendingAvailable = () => {
+    if (pendingAvailableTimeout) {
+      clearTimeout(pendingAvailableTimeout)
+      pendingAvailableTimeout = null
+      pendingAvailableVersion = null
+    }
+  }
 
   autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...')
@@ -27,12 +36,15 @@ export const initAutoUpdaterHandlers = () => {
       return
     }
 
-    if (pendingAvailableTimeout) {
-      clearTimeout(pendingAvailableTimeout)
+    if (pendingAvailableTimeout && pendingAvailableVersion === info.version) {
+      return
     }
 
+    clearPendingAvailable()
+    pendingAvailableVersion = info.version
     pendingAvailableTimeout = setTimeout(() => {
       pendingAvailableTimeout = null
+      pendingAvailableVersion = null
 
       if (updateDownloadState.downloadedInfo?.version === info.version) {
         updateDownloaded(updateDownloadState.downloadedInfo)
@@ -61,6 +73,7 @@ export const initAutoUpdaterHandlers = () => {
   autoUpdater.on('update-not-available', () => {
     log.info('Update not available.')
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+    clearPendingAvailable()
   })
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
@@ -80,10 +93,7 @@ export const initAutoUpdaterHandlers = () => {
     log.info('version', info.version)
     log.info('files', info.files)
 
-    if (pendingAvailableTimeout) {
-      clearTimeout(pendingAvailableTimeout)
-      pendingAvailableTimeout = null
-    }
+    clearPendingAvailable()
 
     updateDownloadState.isDownloading = false
     updateDownloadState.downloadedInfo = info
