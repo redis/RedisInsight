@@ -5,6 +5,12 @@ services:
   app:
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      # The hostname-based cluster advertises these names with host-published
+      # ports, and a container gets its own hosts file rather than the host's, so
+      # they have to be mapped here for the app to reach the nodes it discovers.
+      - "master-hostname-7-1:host-gateway"
+      - "master-hostname-7-2:host-gateway"
+      - "master-hostname-7-3:host-gateway"
     logging:
       driver: none
     image: redisinsight:amd64
