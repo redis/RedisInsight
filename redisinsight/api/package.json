@@ -89,6 +89,7 @@
     "@nestjs/typeorm": "^11.0.3",
     "@nestjs/websockets": "^11.1.29",
     "@okta/okta-auth-js": "^7.14.5",
+    "@redis-iris/agent-memory": "^0.2.0",
     "@segment/analytics-node": "^2.3.0",
     "@supercharge/promise-pool": "^3.3.0",
     "@types/json-bigint": "^1.0.4",
