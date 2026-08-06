@@ -66,6 +66,7 @@ export const useInfiniteNotifications = () => {
                 })
                 break
               case InfiniteMessagesIds.appUpdateAvailable:
+              case InfiniteMessagesIds.appUpdateFound:
                 sendEventTelemetry({
                   event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
                 })
