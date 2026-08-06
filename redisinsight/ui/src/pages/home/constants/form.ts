@@ -17,7 +17,7 @@ export enum SshPassType {
 export const fieldDisplayNames: Record<string, ParseKeys> = {
   port: 'home.form.field.port',
   host: 'home.form.field.host',
-  name: 'home.form.field.name',
+  name: 'home.form.field.alias',
   selectedCaCertName: 'home.form.field.selectedCaCertName',
   newCaCertName: 'home.form.field.newCaCertName',
   newCaCert: 'home.form.field.newCaCert',
