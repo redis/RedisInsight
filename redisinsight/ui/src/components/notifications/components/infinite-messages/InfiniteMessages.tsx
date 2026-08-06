@@ -77,6 +77,7 @@ interface InfiniteMessagesType {
     version: string,
     onDownload: () => void,
     onSkip: () => void,
+    onClose: () => void,
   ) => InfiniteMessage
   APP_UPDATE_DOWNLOADING: () => InfiniteMessage
   SUCCESS_DEPLOY_PIPELINE: () => InfiniteMessage
@@ -326,10 +327,12 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
     version: string,
     onDownload: () => void,
     onSkip: () => void,
+    onClose: () => void,
   ) => ({
     id: InfiniteMessagesIds.appUpdateFound,
     variation: version,
     customIcon: RiStarsIcon,
+    onClose,
     message: i18n.t('notification.infinite.appUpdateFound.message'),
     description: (
       <>

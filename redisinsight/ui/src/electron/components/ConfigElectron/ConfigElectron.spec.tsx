@@ -163,6 +163,53 @@ describe('ConfigElectron', () => {
       )
     })
 
+    it('should ignore "Skip this version" if "Update" was already clicked', () => {
+      triggerUpdateState({
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      const addAction = findInfiniteNotification(store)
+      render(addAction?.payload.description as React.ReactElement)
+
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+      fireEvent.click(screen.getByRole('button', { name: /Skip this version/ }))
+
+      expect(ipcSkipUpdateVersion).not.toHaveBeenCalled()
+    })
+
+    it('should emit close telemetry only when dismissed without choosing an action', () => {
+      triggerUpdateState({
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      const addAction = findInfiniteNotification(store)
+      addAction?.payload.onClose?.()
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+      })
+    })
+
+    it('should not emit close telemetry after "Update" was clicked', () => {
+      triggerUpdateState({
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      const addAction = findInfiniteNotification(store)
+      render(addAction?.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+      jest.clearAllMocks()
+
+      addAction?.payload.onClose?.()
+
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+      })
+    })
+
     it('should clear the toast and show an error notification on failure', () => {
       triggerUpdateState({ status: AppUpdateStatus.Error })
 

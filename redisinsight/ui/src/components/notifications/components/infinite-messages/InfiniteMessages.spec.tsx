@@ -363,9 +363,15 @@ describe('INFINITE_MESSAGES', () => {
       const version = '99.9.9'
       const onDownload = jest.fn()
       const onSkip = jest.fn()
+      const onClose = jest.fn()
 
       renderToast(
-        INFINITE_MESSAGES.APP_UPDATE_FOUND(version, onDownload, onSkip),
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(
+          version,
+          onDownload,
+          onSkip,
+          onClose,
+        ),
       )
 
       // Wait for the notification to appear
@@ -398,9 +404,15 @@ describe('INFINITE_MESSAGES', () => {
     it('should call onDownload when clicking the "Update" button', async () => {
       const onDownload = jest.fn()
       const onSkip = jest.fn()
+      const onClose = jest.fn()
 
       renderToast(
-        INFINITE_MESSAGES.APP_UPDATE_FOUND('99.9.9', onDownload, onSkip),
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(
+          '99.9.9',
+          onDownload,
+          onSkip,
+          onClose,
+        ),
       )
 
       const updateButton = await screen.findByRole('button', {
@@ -416,9 +428,15 @@ describe('INFINITE_MESSAGES', () => {
     it('should call onSkip when clicking the "Skip this version" button', async () => {
       const onDownload = jest.fn()
       const onSkip = jest.fn()
+      const onClose = jest.fn()
 
       renderToast(
-        INFINITE_MESSAGES.APP_UPDATE_FOUND('99.9.9', onDownload, onSkip),
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(
+          '99.9.9',
+          onDownload,
+          onSkip,
+          onClose,
+        ),
       )
 
       const skipButton = await screen.findByRole('button', {
