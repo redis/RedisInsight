@@ -912,8 +912,7 @@
     "TS18048": 4,
     "TS2322": 3,
     "TS2345": 2,
-    "TS7006": 1,
-    "TS7053": 2
+    "TS7006": 1
   },
   "src/modules/database/providers/database-overview.provider.spec.ts": {
     "TS2322": 2,

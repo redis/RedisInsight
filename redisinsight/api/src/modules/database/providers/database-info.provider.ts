@@ -9,7 +9,10 @@ import {
 import { AdditionalRedisModule } from 'src/modules/database/models/additional.redis.module';
 import { REDIS_MODULES_COMMANDS, SUPPORTED_REDIS_MODULES } from 'src/constants';
 import { get, isNil } from 'lodash';
-import { RedisDatabaseInfoResponse } from 'src/modules/database/dto/redis-info.dto';
+import {
+  RedisDatabaseInfoResponse,
+  RedisDatabaseModuleDto,
+} from 'src/modules/database/dto/redis-info.dto';
 import { FeatureService } from 'src/modules/feature/feature.service';
 import { KnownFeatures } from 'src/modules/feature/constants';
 import {
@@ -73,15 +76,13 @@ export class DatabaseInfoProvider {
         reply.map((module: any[]) => convertArrayReplyToObject(module)),
       );
 
-      return modules.map(({ name, ver }) => ({
-        name: SUPPORTED_REDIS_MODULES[name] ?? name,
-        version: ver,
-        semanticVersion: SUPPORTED_REDIS_MODULES[name]
-          ? convertIntToSemanticVersion(ver)
-          : undefined,
-      }));
+      return this.mapToAdditionalRedisModules(modules);
     } catch (e) {
-      return this.determineDatabaseModulesUsingInfo(client);
+      const fromCommands = await this.determineDatabaseModulesUsingInfo(client);
+      if (fromCommands.length) {
+        return fromCommands;
+      }
+      return this.determineDatabaseModulesUsingHello(client);
     }
   }
 
@@ -129,6 +130,82 @@ export class DatabaseInfoProvider {
       client.clientMetadata.sessionMetadata,
       modules,
     );
+  }
+
+  /**
+   * Determine database modules from HELLO when MODULE LIST and COMMAND INFO
+   * are unavailable (e.g. restricted ACL users).
+   * @param client
+   * @private
+   */
+  public async determineDatabaseModulesUsingHello(
+    client: RedisClient,
+  ): Promise<AdditionalRedisModule[]> {
+    try {
+      const rawModules = await this.getModulesFromHello(client);
+
+      if (!rawModules.length) {
+        return [];
+      }
+
+      const modules = await this.filterRawModules(
+        client.clientMetadata.sessionMetadata,
+        rawModules,
+      );
+
+      return this.mapToAdditionalRedisModules(modules);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  private mapToAdditionalRedisModules(
+    modules: RedisDatabaseModuleDto[],
+  ): AdditionalRedisModule[] {
+    return modules.map(({ name, ver }) => {
+      const moduleName = String(name);
+      const supportedName =
+        SUPPORTED_REDIS_MODULES[
+          moduleName as keyof typeof SUPPORTED_REDIS_MODULES
+        ];
+
+      return {
+        name: supportedName ?? moduleName,
+        version: ver,
+        semanticVersion:
+          supportedName && ver != null
+            ? convertIntToSemanticVersion(ver)
+            : undefined,
+      };
+    });
+  }
+
+  private async getModulesFromHello(
+    client: RedisClient,
+  ): Promise<RedisDatabaseModuleDto[]> {
+    try {
+      const helloResponse = (await client.call(['hello'], {
+        replyEncoding: 'utf8',
+      })) as string[];
+      const helloInfo = convertArrayReplyToObject(helloResponse);
+
+      if (!Array.isArray(helloInfo.modules)) {
+        return [];
+      }
+
+      return helloInfo.modules
+        .map((module) =>
+          Array.isArray(module) ? convertArrayReplyToObject(module) : module,
+        )
+        .filter(
+          (module) =>
+            module &&
+            typeof module === 'object' &&
+            typeof (module as RedisDatabaseModuleDto).name === 'string',
+        ) as RedisDatabaseModuleDto[];
+    } catch {
+      return [];
+    }
   }
 
   public async getRedisDBSize(client: RedisClient): Promise<number> {

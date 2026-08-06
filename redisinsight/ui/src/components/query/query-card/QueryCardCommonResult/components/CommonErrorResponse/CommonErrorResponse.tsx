@@ -91,7 +91,17 @@ const CommonErrorResponse = (id: string, command = '', result?: any) => {
       CommandExecutionStatus.Fail,
     )
   }
-  const unsupportedModule = checkUnsupportedModuleCommand(modules, commandLine)
+
+  const isSuccessfulResult = Array.isArray(result)
+    ? result.some((item) => item?.status === CommandExecutionStatus.Success)
+    : result?.status === CommandExecutionStatus.Success
+
+  // Skip ModuleNotLoaded when any reply already succeeded; under ACL, modules
+  // may be unknown even when the command ran. Callers must pass
+  // CommandExecutionResult[] (including group mode), not the raw Redis reply.
+  const unsupportedModule = !isSuccessfulResult
+    ? checkUnsupportedModuleCommand(modules, commandLine)
+    : undefined
 
   if (unsupportedModule) {
     return <ModuleNotLoaded moduleName={unsupportedModule} id={id} />
