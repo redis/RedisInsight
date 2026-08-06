@@ -101,7 +101,7 @@ const ConfigElectron = () => {
 
   const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
     switch (status) {
-      case AppUpdateStatus.Available:
+      case AppUpdateStatus.Available: {
         sendEventTelemetry({
           event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
           eventData: { strategy: AppUpdateStrategy.notify },
@@ -109,11 +109,14 @@ const ConfigElectron = () => {
         dispatch(
           removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
         )
+        let resolved = false
         dispatch(
           addInfiniteNotification(
             INFINITE_MESSAGES.APP_UPDATE_FOUND(
               version ?? '',
               () => {
+                if (resolved) return
+                resolved = true
                 sendEventTelemetry({
                   event: TelemetryEvent.UPDATE_NOTIFICATION_DOWNLOAD_CLICKED,
                 })
@@ -125,6 +128,8 @@ const ConfigElectron = () => {
                 ipcAppUpdateDownload()
               },
               () => {
+                if (resolved) return
+                resolved = true
                 sendEventTelemetry({
                   event: TelemetryEvent.UPDATE_NOTIFICATION_SKIPPED,
                 })
@@ -135,10 +140,18 @@ const ConfigElectron = () => {
                 )
                 ipcSkipUpdateVersion(version ?? '')
               },
+              () => {
+                if (!resolved) {
+                  sendEventTelemetry({
+                    event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+                  })
+                }
+              },
             ),
           ),
         )
         break
+      }
       case AppUpdateStatus.Error:
         dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
         dispatch(
