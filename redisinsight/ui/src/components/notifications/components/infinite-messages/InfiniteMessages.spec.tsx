@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
 
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
+import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import notificationsReducer, {
   addInfiniteNotification,
 } from 'uiSrc/slices/app/notifications'
@@ -312,16 +313,19 @@ describe('INFINITE_MESSAGES', () => {
 
   describe('APP_UPDATE_AVAILABLE', () => {
     it('should render message', async () => {
-      const version = '<version>'
+      const version = '99.9.9'
       const onSuccess = jest.fn()
 
       renderToast(INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, onSuccess))
 
       // Wait for the notification to appear
-      const title = await screen.findByText('New version is now available')
+      const title = await screen.findByText('Update ready to install')
       const description = await screen.findByText(
-        /With Redis Insight <version> you have access to new useful features and optimizations\.\s*Restart Redis Insight to install updates\./,
+        /Redis Insight 99.9.9 is ready/,
       )
+      const releaseNotesLink = await screen.findByRole('link', {
+        name: /see what's new/,
+      })
       const restartButton = await screen.findByRole('button', {
         name: /Restart/,
       })
@@ -329,12 +333,16 @@ describe('INFINITE_MESSAGES', () => {
 
       expect(title).toBeInTheDocument()
       expect(description).toBeInTheDocument()
+      expect(releaseNotesLink).toHaveAttribute(
+        'href',
+        EXTERNAL_LINKS.releaseNotes,
+      )
       expect(restartButton).toBeInTheDocument()
       expect(closeButton).toBeInTheDocument()
     })
 
     it('should call onSuccess when clicking restart button', async () => {
-      const version = '<version>'
+      const version = '99.9.9'
       const onSuccess = jest.fn()
 
       renderToast(INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, onSuccess))
@@ -347,6 +355,93 @@ describe('INFINITE_MESSAGES', () => {
       fireEvent.click(restartButton)
 
       expect(onSuccess).toHaveBeenCalled()
+    })
+  })
+
+  describe('APP_UPDATE_FOUND', () => {
+    it('should render message', async () => {
+      const version = '99.9.9'
+      const onDownload = jest.fn()
+      const onSkip = jest.fn()
+
+      renderToast(
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(version, onDownload, onSkip),
+      )
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('A new version is available')
+      const description = await screen.findByText(
+        /Redis Insight 99.9.9 is here\./,
+      )
+      const releaseNotesLink = await screen.findByRole('link', {
+        name: /See what's new/,
+      })
+      const updateButton = await screen.findByRole('button', {
+        name: /Update/,
+      })
+      const skipButton = await screen.findByRole('button', {
+        name: /Skip this version/,
+      })
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(releaseNotesLink).toHaveAttribute(
+        'href',
+        EXTERNAL_LINKS.releaseNotes,
+      )
+      expect(updateButton).toBeInTheDocument()
+      expect(skipButton).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
+    })
+
+    it('should call onDownload when clicking the "Update" button', async () => {
+      const onDownload = jest.fn()
+      const onSkip = jest.fn()
+
+      renderToast(
+        INFINITE_MESSAGES.APP_UPDATE_FOUND('99.9.9', onDownload, onSkip),
+      )
+
+      const updateButton = await screen.findByRole('button', {
+        name: /Update/,
+      })
+
+      fireEvent.click(updateButton)
+
+      expect(onDownload).toHaveBeenCalled()
+      expect(onSkip).not.toHaveBeenCalled()
+    })
+
+    it('should call onSkip when clicking the "Skip this version" button', async () => {
+      const onDownload = jest.fn()
+      const onSkip = jest.fn()
+
+      renderToast(
+        INFINITE_MESSAGES.APP_UPDATE_FOUND('99.9.9', onDownload, onSkip),
+      )
+
+      const skipButton = await screen.findByRole('button', {
+        name: /Skip this version/,
+      })
+
+      fireEvent.click(skipButton)
+
+      expect(onSkip).toHaveBeenCalled()
+      expect(onDownload).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('APP_UPDATE_DOWNLOADING', () => {
+    it('should render message without a close button', async () => {
+      renderToast(INFINITE_MESSAGES.APP_UPDATE_DOWNLOADING())
+
+      const title = await screen.findByText('Downloading update…')
+
+      expect(title).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: /close/i }),
+      ).not.toBeInTheDocument()
     })
   })
 
