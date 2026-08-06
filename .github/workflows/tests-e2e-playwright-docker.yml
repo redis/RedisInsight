@@ -33,6 +33,10 @@ jobs:
       RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
 
+    # Consumable by downstream jobs via needs.e2e-docker.outputs.digest.
+    outputs:
+      digest: ${{ steps.summarize.outputs.digest }}
+
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -70,9 +74,27 @@ jobs:
           docker compose -p e2e-ri-docker \
           -f tests/e2e/docker.web.docker-compose.yml \
           up --detach --force-recreate
-          # Wait for the app to be ready
-          sleep 10
+
+          # /api/health answers before the app can actually serve database
+          # routes: a run has been seen where it passed, then POST /api/databases
+          # returned 404 for the next ~50s and every spec needing a fresh
+          # database failed. Gate on the route the suite depends on instead.
           npx wait-on http://localhost:5540/api/health --timeout 60000
+
+          echo "Waiting for the databases route to serve..."
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:5540/api/databases || true)
+            if [ "$code" = "200" ]; then
+              echo "✅ databases route ready after ~$((i*2))s"
+              break
+            fi
+            if [ "$i" = "60" ]; then
+              echo "::error::databases route still returning $code after 120s"
+              docker logs e2e-ri-docker-app-1 --tail 200 || true
+              exit 1
+            fi
+            sleep 2
+          done
 
       - name: Run Playwright tests (Chromium - Docker)
         working-directory: ${{ env.E2E_DIR }}
@@ -95,6 +117,43 @@ jobs:
           OSS_STANDALONE_TLS_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOSTNAME_HOST: 'host.docker.internal'
+
+      # The app runs in a container, so its own log is the only place an API-side
+      # failure is visible. Without this a 404 from the app is undiagnosable.
+      - name: Capture RedisInsight container logs
+        if: failure()
+        run: |
+          mkdir -p "${{ env.E2E_DIR }}/test-results"
+          docker logs e2e-ri-docker-app-1 \
+            > "${{ env.E2E_DIR }}/test-results/redisinsight-container.log" 2>&1 || true
+          echo "--- last 100 lines ---"
+          tail -n 100 "${{ env.E2E_DIR }}/test-results/redisinsight-container.log" || true
+
+      # Flat, secret-redacted failure list. The raw report is megabytes of nested
+      # suites with ANSI-laden messages; this is what humans and agents read.
+      - name: Summarize Playwright results
+        id: summarize
+        if: always()
+        working-directory: ${{ env.E2E_DIR }}
+        run: |
+          node scripts/summarize-results.mjs \
+            --json test-results/agent-digest.json \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'digest<<E2E_DIGEST_EOF'
+            cat test-results/agent-digest.json
+            echo 'E2E_DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # Separate from the full report so consumers fetch a few KB instead of the
+      # whole trace/video bundle.
+      - name: Upload agent digest
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-digest-docker
+          path: ${{ env.E2E_DIR }}/test-results/agent-digest.json
+          retention-days: 14
 
       - name: Upload test results
         if: always()
