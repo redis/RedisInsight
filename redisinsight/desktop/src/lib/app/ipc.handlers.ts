@@ -45,13 +45,19 @@ export const initIPCHandlers = () => {
   ipcMain.handle(
     IpcInvokeEvent.setUpdateStrategy,
     (_event, strategy: AppUpdateStrategy) => {
-      if (Object.values(AppUpdateStrategy).includes(strategy)) {
-        electronStore?.set(ElectronStorageItem.updateStrategy, strategy)
-
-        checkForUpdate(
-          process.env.RI_MANUAL_UPGRADES_LINK || process.env.RI_UPGRADES_LINK,
-        ).catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
+      if (
+        process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ||
+        process.mas ||
+        !Object.values(AppUpdateStrategy).includes(strategy)
+      ) {
+        return
       }
+
+      electronStore?.set(ElectronStorageItem.updateStrategy, strategy)
+
+      checkForUpdate(
+        process.env.RI_MANUAL_UPGRADES_LINK || process.env.RI_UPGRADES_LINK,
+      ).catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
     },
   )
 

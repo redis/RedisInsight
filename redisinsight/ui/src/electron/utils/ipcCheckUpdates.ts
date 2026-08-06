@@ -10,7 +10,11 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { GetServerInfoResponse } from 'apiClient'
-import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
+import {
+  AppUpdateStrategy,
+  ElectronStorageItem,
+  IpcInvokeEvent,
+} from '../constants'
 
 /**
  * Whether the What's New modal should replace the update toast for the just
@@ -116,7 +120,7 @@ export const ipcSendEvents = async (serverInfo: GetServerInfoResponse) => {
         ...omit(serverInfo, ['id', 'createDateTime']),
         fromVersion: prevVer,
         toVersion: newVer,
-        strategy,
+        strategy: strategy ?? AppUpdateStrategy.auto,
       },
     })
     await window.app.ipc.invoke(

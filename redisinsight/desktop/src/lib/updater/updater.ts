@@ -90,7 +90,11 @@ export const checkForUpdate = async (url: string = '') => {
 }
 
 export const startUpdateDownload = () => {
-  if (updateDownloadState.isDownloading) {
+  if (
+    process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ||
+    process.mas ||
+    updateDownloadState.isDownloading
+  ) {
     return
   }
 
@@ -98,6 +102,7 @@ export const startUpdateDownload = () => {
   updateDownloadState.manuallyTriggered = true
   autoUpdater.downloadUpdate().catch((e) => {
     updateDownloadState.isDownloading = false
+    updateDownloadState.manuallyTriggered = false
     log.error(wrapErrorMessageSensitiveData(e))
     sendUpdateState({ status: AppUpdateStatus.Error })
   })
