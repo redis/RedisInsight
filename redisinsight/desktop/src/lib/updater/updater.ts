@@ -6,6 +6,7 @@ import { getWindows } from 'desktopSrc/lib/window'
 import { electronStore } from 'desktopSrc/lib/store/store'
 import {
   AppUpdateState,
+  AppUpdateStatus,
   ElectronStorageItem,
   IpcOnEvent,
   AppUpdateStrategy,
@@ -14,6 +15,7 @@ import {
 export const updateDownloadState = {
   isDownloading: false,
   downloadedInfo: null as UpdateDownloadedEvent | null,
+  initiatingStrategy: null as AppUpdateStrategy | null,
 }
 
 export const getUpdateStrategy = (): AppUpdateStrategy =>
@@ -65,8 +67,10 @@ export const checkForUpdate = async (url: string = '') => {
     log.error(wrapErrorMessageSensitiveData(error))
   }
 
+  updateDownloadState.initiatingStrategy = getUpdateStrategy()
   autoUpdater.forceDevUpdateConfig = !app.isPackaged
-  autoUpdater.autoDownload = getUpdateStrategy() !== AppUpdateStrategy.notify
+  autoUpdater.autoDownload =
+    updateDownloadState.initiatingStrategy !== AppUpdateStrategy.notify
   autoUpdater.autoInstallOnAppQuit = true
 
   const res = await autoUpdater.checkForUpdates()
@@ -85,6 +89,7 @@ export const startUpdateDownload = () => {
   autoUpdater.downloadUpdate().catch((e) => {
     updateDownloadState.isDownloading = false
     log.error(wrapErrorMessageSensitiveData(e))
+    sendUpdateState({ status: AppUpdateStatus.Error })
   })
 }
 
