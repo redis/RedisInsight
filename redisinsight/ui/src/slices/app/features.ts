@@ -80,6 +80,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.valueDecoder]: {
         flag: false,
       },
+      [FeatureFlags.appUpdateStrategySettings]: {
+        flag: false,
+      },
     },
   },
 }

@@ -1,6 +1,17 @@
 {
-  "version": 10,
+  "version": 11,
   "features": {
+    "appUpdateStrategySettings": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": [
+        {
+          "name": "config.server.buildType",
+          "value": "ELECTRON",
+          "cond": "eq"
+        }
+      ]
+    },
     "vectorSearchEnhancements": {
       "flag": true,
       "perc": [[0, 100]],
