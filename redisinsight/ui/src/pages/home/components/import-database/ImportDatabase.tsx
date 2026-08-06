@@ -48,14 +48,16 @@ const ImportDatabase = (props: Props) => {
   useEffect(() => {
     setDomReady(true)
 
+    return () => {
+      setModalHeader(null)
+    }
+  }, [])
+
+  useEffect(() => {
     setModalHeader(
       <Title size="M">{t('home.importDatabase.title')}</Title>,
       true,
     )
-
-    return () => {
-      setModalHeader(null)
-    }
   }, [t])
 
   const onFileChange = (files: FileList | null) => {
