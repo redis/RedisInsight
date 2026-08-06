@@ -1,10 +1,9 @@
 import {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
-  DetailsHTMLAttributes,
   HTMLAttributes,
   ImgHTMLAttributes,
-  Ref,
+  InputHTMLAttributes,
 } from 'react'
 import styled from 'styled-components'
 
@@ -33,8 +32,6 @@ const lightAccents = {
   roleAccentBg: 'rgba(127, 219, 254, 0.18)',
   chipTopicBg: 'rgba(199, 150, 228, 0.18)',
   chipTopicText: '#6a3aa0',
-  chipEntityBg: '#e8ebec',
-  chipEntityText: '#163341',
   paneHeaderBorder: '#e8ebec',
   typeMessageBg: 'rgba(45, 71, 84, 0.1)',
   typeMessageText: '#2d4754',
@@ -48,8 +45,6 @@ const darkAccents: typeof lightAccents = {
   roleAccentBg: 'rgba(127, 219, 254, 0.18)',
   chipTopicBg: 'rgba(199, 150, 228, 0.22)',
   chipTopicText: '#d4b3f0',
-  chipEntityBg: 'var(--ami-bgTertiary)',
-  chipEntityText: 'var(--ami-text)',
   paneHeaderBorder: 'var(--ami-bgTertiary)',
   typeMessageBg: 'rgba(245, 247, 250, 0.08)',
   typeMessageText: 'var(--ami-textSecondary)',
@@ -346,188 +341,6 @@ export const PaneToolbar = styled(Col)`
   border-bottom: 1px solid ${palette.separator};
 `
 
-/* ---------- summary text (summary-views cards) ---------- */
-
-export const SummaryBannerText = styled.p<
-  HTMLAttributes<HTMLParagraphElement> & {
-    $expanded?: boolean
-    ref?: Ref<HTMLParagraphElement>
-  }
->`
-  margin: 0;
-  color: ${palette.text};
-  white-space: pre-wrap;
-  /* Clamp to 4 lines by default so a long multi-paragraph summary doesn't
-   * dominate the pane. The "Show more" toggle drops the clamp. */
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  ${({ $expanded }) =>
-    $expanded &&
-    `-webkit-line-clamp: unset;
-    overflow: visible;`}
-`
-
-export const SummaryBannerToggle = styled.button<
-  ButtonHTMLAttributes<HTMLButtonElement>
->`
-  appearance: none;
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  font-family: inherit;
-  color: ${palette.textMuted};
-  cursor: pointer;
-
-  &:hover {
-    color: ${palette.text};
-  }
-`
-
-export const SummaryBannerRefresh = styled.button<
-  ButtonHTMLAttributes<HTMLButtonElement>
->`
-  appearance: none;
-  background: transparent;
-  border: none;
-  color: ${palette.textMuted};
-  border-radius: ${({ theme }) => theme.components.card.borderRadius};
-  padding: 3px;
-  line-height: 1;
-  cursor: pointer;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  transition: color 120ms;
-
-  &:hover:not(:disabled) {
-    color: ${palette.text};
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 0.6;
-  }
-`
-
-/* ---------- summary-views pane ---------- */
-
-export const SummaryScopeBadge = styled.span<HTMLAttributes<HTMLSpanElement>>`
-  font-family: ${fontMono};
-  font-size: ${({ theme }) => theme.core.font.fontSize.s10};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 1px 5px;
-  border-radius: 0.02em;
-  background: ${palette.roleAccentBg};
-  color: ${palette.roleAccent};
-  flex-shrink: 0;
-`
-
-/* Scrollable pane body holding one <details> per summary view */
-export const SummaryViewsList = styled.div<HTMLAttributes<HTMLDivElement>>`
-  flex: 1;
-  overflow-y: auto;
-  padding: ${({ theme }) => theme.core.space.space100}
-    ${({ theme }) => theme.core.space.space200};
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  min-height: 0;
-`
-
-/* position: relative anchors the controls overlay to the summary row */
-export const SummaryViewSection = styled.details<
-  DetailsHTMLAttributes<HTMLDetailsElement>
->`
-  min-width: 0;
-  position: relative;
-`
-
-export const SummaryViewHeader = styled.summary<HTMLAttributes<HTMLElement>>`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.core.space.space100};
-  min-width: 0;
-  min-height: 26px;
-  /* keep clear of the absolutely-positioned controls overlay */
-  padding-right: 240px;
-  list-style: none;
-  cursor: pointer;
-  user-select: none;
-  color: ${palette.textSecondary};
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-
-  &:hover {
-    color: ${palette.text};
-  }
-`
-
-export const SummaryViewName = styled.span<HTMLAttributes<HTMLSpanElement>>`
-  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-`
-
-/* Sibling of the <summary>, overlaid on its row - interactive controls
- * must not live inside the disclosure button itself */
-export const SummaryViewControls = styled.div<HTMLAttributes<HTMLDivElement>>`
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-height: 26px;
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.core.space.space100};
-`
-
-export const SummaryCardList = styled.ul<HTMLAttributes<HTMLUListElement>>`
-  list-style: none;
-  margin: ${({ theme }) => theme.core.space.space100} 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-
-  & > li {
-    list-style: none;
-    margin: 0;
-  }
-`
-
-export const SummaryViewBadge = styled.span<HTMLAttributes<HTMLSpanElement>>`
-  font-family: ${fontMono};
-  font-size: ${({ theme }) => theme.core.font.fontSize.s10};
-  padding: 1px 5px;
-  border-radius: 0.02em;
-  background: ${palette.chipEntityBg};
-  color: ${palette.chipEntityText};
-  max-width: 160px;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`
-
-export const SummaryViewCount = styled.span<HTMLAttributes<HTMLSpanElement>>`
-  font-family: ${fontMono};
-  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  color: ${palette.textMuted};
-  flex-shrink: 0;
-`
-
-export const SummaryEmptyState = styled(Col)`
-  padding: ${({ theme }) => theme.core.space.space300};
-`
-
 /* ---------- long-term search + chip filters ---------- */
 
 export const SearchRow = styled(Row)`
@@ -591,28 +404,20 @@ export const ActiveFilters = styled(Row)`
 `
 
 export const FilterPill = styled.span<
-  HTMLAttributes<HTMLSpanElement> & { $kind?: 'topic' | 'entity' }
+  HTMLAttributes<HTMLSpanElement> & { $kind?: 'topic' }
 >`
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 2px 4px 2px 7px;
   background: ${({ $kind }) =>
-    $kind === 'topic'
-      ? palette.chipTopicBg
-      : $kind === 'entity'
-        ? palette.chipEntityBg
-        : palette.bgTertiary};
+    $kind === 'topic' ? palette.chipTopicBg : palette.bgTertiary};
   border: 1px solid ${palette.separator};
   border-radius: 12px;
   font-family: ${fontMono};
   font-size: ${({ theme }) => theme.core.font.fontSize.s12};
   color: ${({ $kind }) =>
-    $kind === 'topic'
-      ? palette.chipTopicText
-      : $kind === 'entity'
-        ? palette.chipEntityText
-        : palette.text};
+    $kind === 'topic' ? palette.chipTopicText : palette.text};
 
   em {
     color: ${palette.textMuted};
@@ -700,7 +505,7 @@ export const ErrorText = styled.p<HTMLAttributes<HTMLParagraphElement>>`
 export const Card = styled.article<HTMLAttributes<HTMLElement>>`
   background: ${palette.bgPrimary};
   border: 1px solid ${palette.border};
-  border-radius: ${({ theme }) => theme.components.card.borderRadius};
+  border-radius: 0;
   padding: 10px 11px;
   flex-shrink: 0;
 `
@@ -712,32 +517,6 @@ export const CardCompact = styled(Card)`
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-`
-
-export const SummaryCard = styled(Card)<{ $empty?: boolean }>`
-  font-size: ${({ theme }) => theme.core.font.fontSize.s14};
-  line-height: 1.45;
-
-  ${({ $empty }) =>
-    $empty &&
-    `p {
-      color: ${palette.textMuted};
-      font-style: italic;
-    }`}
-`
-
-/* Meta strip in a summary card's header, centered between the group id
- * and the refresh control */
-export const SummaryHeaderMeta = styled.span<HTMLAttributes<HTMLSpanElement>>`
-  flex: 1;
-  text-align: right;
-  font-family: ${fontMono};
-  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  color: ${palette.textMuted};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
 `
 
 export const CardMeta = styled.header<HTMLAttributes<HTMLElement>>`
@@ -837,16 +616,6 @@ export const RoleTag = styled.span<
       : palette.textSecondary};
 `
 
-export const ExtractedFlag = styled.span<
-  HTMLAttributes<HTMLSpanElement> & { $extracted: boolean }
->`
-  margin-left: auto;
-  font-family: ${fontMono};
-  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  color: ${({ $extracted }) =>
-    $extracted ? palette.successText : palette.textMuted};
-`
-
 export const TypeBadge = styled.span<
   HTMLAttributes<HTMLSpanElement> & { $type: string }
 >`
@@ -870,14 +639,30 @@ export const TypeBadge = styled.span<
   }}
 `
 
-export const ScoreBadge = styled.span<HTMLAttributes<HTMLSpanElement>>`
+export const ThresholdControl = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+
+  label {
+    font-size: ${({ theme }) => theme.core.font.fontSize.s12};
+    color: ${palette.textSecondary};
+    white-space: nowrap;
+  }
+`
+
+export const ThresholdInput = styled.input<
+  InputHTMLAttributes<HTMLInputElement>
+>`
+  width: 64px;
   font-family: ${fontMono};
   font-size: ${({ theme }) => theme.core.font.fontSize.s12};
-  padding: 1px 6px;
-  border-radius: 10px;
-  background: ${palette.semanticBadgeBg};
-  color: ${palette.dangerText};
-  cursor: help;
+  padding: 2px 6px;
+  border: 1px solid ${palette.border};
+  border-radius: 4px;
+  background: ${palette.bgSecondary};
+  color: ${palette.text};
 `
 
 export const CardFooter = styled.footer<HTMLAttributes<HTMLElement>>`
@@ -949,7 +734,7 @@ export const ChipRowChips = styled(Row)`
 `
 
 export const Chip = styled.button<
-  ButtonHTMLAttributes<HTMLButtonElement> & { $kind: 'topic' | 'entity' }
+  ButtonHTMLAttributes<HTMLButtonElement> & { $kind: 'topic' }
 >`
   display: inline-flex;
   align-items: center;
@@ -965,10 +750,8 @@ export const Chip = styled.button<
   transition:
     border-color 120ms ease,
     transform 80ms ease;
-  background: ${({ $kind }) =>
-    $kind === 'topic' ? palette.chipTopicBg : palette.chipEntityBg};
-  color: ${({ $kind }) =>
-    $kind === 'topic' ? palette.chipTopicText : palette.chipEntityText};
+  background: ${palette.chipTopicBg};
+  color: ${palette.chipTopicText};
 
   &:hover {
     border-color: currentColor;

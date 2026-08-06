@@ -32,6 +32,7 @@ export const initialState: StateAgentMemoryWorkspace = {
     data: [],
     lastRefreshTime: null,
     search: '',
+    similarityThreshold: null,
     topics: [],
     sessionIds: [],
     memoryTypes: [],
@@ -131,6 +132,12 @@ const inspectorSlice = createSlice({
     setLongTermMemorySearch: (state, { payload }: PayloadAction<string>) => {
       state.longTermMemory.search = payload
     },
+    setSimilarityThreshold: (
+      state,
+      { payload }: PayloadAction<Nullable<number>>,
+    ) => {
+      state.longTermMemory.similarityThreshold = payload
+    },
     toggleTopicFilter: (state, { payload }: PayloadAction<string>) => {
       state.longTermMemory.topics = toggleItem(
         state.longTermMemory.topics,
@@ -163,6 +170,7 @@ const inspectorSlice = createSlice({
     },
     clearLtmFilters: (state) => {
       state.longTermMemory.search = ''
+      state.longTermMemory.similarityThreshold = null
       state.longTermMemory.topics = []
       state.longTermMemory.sessionIds = []
       state.longTermMemory.memoryTypes = []
@@ -204,6 +212,7 @@ export const {
   getLongTermMemorySuccess,
   getLongTermMemoryFailure,
   setLongTermMemorySearch,
+  setSimilarityThreshold,
   toggleTopicFilter,
   toggleSessionFilter,
   toggleMemoryTypeFilter,

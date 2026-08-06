@@ -15,6 +15,7 @@ import {
 } from 'uiSrc/slices/agentMemory/endpoints'
 import {
   agentMemoryFiltersSelector,
+  agentMemoryLongTermSelector,
   discoverFiltersAction,
   fetchLongTermMemoryAction,
   fetchWorkingMemoryAction,
@@ -31,6 +32,7 @@ import { Link } from 'uiSrc/components/base/link'
 import { Text } from 'uiSrc/components/base/text'
 import agentMemoryIcon from 'uiSrc/assets/img/agent-memory/agent-memory-icon.svg'
 import { localStorageService } from 'uiSrc/services'
+import { useDebouncedEffect } from 'uiSrc/services/hooks/hooks'
 
 import Tabs from 'uiSrc/components/base/layout/tabs'
 import { AgentMemoryWorkspaceTab } from 'uiSrc/slices/interfaces/agentMemory'
@@ -38,8 +40,12 @@ import { AgentMemoryWorkspaceTab } from 'uiSrc/slices/interfaces/agentMemory'
 import FilterPills from './components/filter-pills/FilterPills'
 import WorkingMemoryPanel from './components/working-memory-panel/WorkingMemoryPanel'
 import LongTermOverviewPanel from './components/long-term-overview-panel/LongTermOverviewPanel'
+import LongTermMemoryPanel from './components/long-term-memory-panel/LongTermMemoryPanel'
+import LongTermMemoryToolbar from './components/long-term-memory-toolbar/LongTermMemoryToolbar'
 import ConfigurationPanel from './components/configuration-panel/ConfigurationPanel'
 import * as S from './AgentMemoryWorkspacePage.styles'
+
+export const SEARCH_DEBOUNCE_MS = 300
 
 const PANEL_MIN_SIZE = 20
 const PANEL_DEFAULT_SIZES = [50, 50]
@@ -48,6 +54,11 @@ const WORKSPACE_TABS = [
   {
     value: AgentMemoryWorkspaceTab.Overview,
     label: 'Overview',
+    content: null,
+  },
+  {
+    value: AgentMemoryWorkspaceTab.LongTermMemory,
+    label: 'Long-term memory',
     content: null,
   },
 ]
@@ -64,6 +75,7 @@ const AgentMemoryWorkspacePage = () => {
   const { endpointId, tab } = useParams<{ endpointId: string; tab?: string }>()
   const connectedEndpoint = useAppSelector(connectedAgentMemoryEndpointSelector)
   const filters = useAppSelector(agentMemoryFiltersSelector)
+  const longTermMemory = useAppSelector(agentMemoryLongTermSelector)
 
   const isConnected = connectedEndpoint.id === endpointId
 
@@ -87,6 +99,7 @@ const AgentMemoryWorkspacePage = () => {
     history.push(Pages.agentMemoryWorkspace(endpointId, nextTab))
   }
   const isOverviewTab = activeTab === AgentMemoryWorkspaceTab.Overview
+  const isLtmTab = activeTab === AgentMemoryWorkspaceTab.LongTermMemory
 
   // Normalize bare/unknown tab segments to the canonical overview URL.
   useEffect(() => {
@@ -148,9 +161,12 @@ const AgentMemoryWorkspacePage = () => {
       dispatch(fetchWorkingMemoryAction(endpointId))
       dispatch(fetchLongTermMemoryAction(endpointId, true))
     }
+    if (isLtmTab) {
+      dispatch(fetchLongTermMemoryAction(endpointId))
+    }
   }, [activeTab])
 
-  // Session pick scopes both Overview panes; user/namespace changes are
+  // Session pick scopes both Overview panes; owner changes are
   // orchestrated by changeScopeAction (sessions must re-list before any
   // refetch pairs the new scope with a stale session).
   useEffect(() => {
@@ -158,6 +174,39 @@ const AgentMemoryWorkspacePage = () => {
     dispatch(fetchWorkingMemoryAction(endpointId))
     dispatch(fetchLongTermMemoryAction(endpointId, true))
   }, [filters.sessionId])
+
+  // Records refetch when the explorer filters change. The search text is
+  // handled separately with a debounce.
+  useEffect(() => {
+    if (!didMountRef.current || !isConnected) return
+    dispatch(fetchLongTermMemoryAction(endpointId))
+  }, [
+    longTermMemory.similarityThreshold,
+    longTermMemory.topics,
+    longTermMemory.sessionIds,
+    longTermMemory.memoryTypes,
+    longTermMemory.userIds,
+    longTermMemory.namespaces,
+  ])
+
+  // Debounced search - the input dispatches per keystroke, but only the
+  // settled value triggers the (semantic, hence relatively expensive)
+  // long-term memory search request.
+  // didMountRef is already true when the debounced callback fires, so it
+  // can't skip the mount run - track that separately.
+  const searchDidMountRef = useRef(false)
+  useDebouncedEffect(
+    () => {
+      if (!searchDidMountRef.current) {
+        searchDidMountRef.current = true
+        return
+      }
+      if (!isConnected) return
+      dispatch(fetchLongTermMemoryAction(endpointId))
+    },
+    SEARCH_DEBOUNCE_MS,
+    [longTermMemory.search],
+  )
 
   // Keep last so the change-effects above skip their initial-mount run.
   useEffect(() => {
@@ -251,6 +300,16 @@ const AgentMemoryWorkspacePage = () => {
               minSize={PANEL_MIN_SIZE}
             >
               <LongTermOverviewPanel endpointId={endpointId} />
+            </ResizablePanel>
+          </S.PanesContainer>
+        </S.PanesArea>
+      )}
+      {isLtmTab && <LongTermMemoryToolbar />}
+      {isLtmTab && (
+        <S.PanesArea>
+          <S.PanesContainer direction="horizontal">
+            <ResizablePanel id="agent-memory-records-panel" defaultSize={100}>
+              <LongTermMemoryPanel endpointId={endpointId} />
             </ResizablePanel>
           </S.PanesContainer>
         </S.PanesArea>

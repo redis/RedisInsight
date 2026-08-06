@@ -49,6 +49,7 @@ export function fetchLongTermMemoryAction(
       // an explorer-only records filter (sessions have no namespace scope).
       const body: Record<string, unknown> = {
         text: longTermMemory.search,
+        similarityThreshold: longTermMemory.similarityThreshold ?? undefined,
         userId: longTermMemory.userIds.length
           ? undefined
           : (filters.userId ?? undefined),
