@@ -94,4 +94,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.ValueDecoder,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.AppUpdateStrategySettings]: {
+    name: KnownFeatures.AppUpdateStrategySettings,
+    storage: FeatureStorage.Database,
+  },
 };
