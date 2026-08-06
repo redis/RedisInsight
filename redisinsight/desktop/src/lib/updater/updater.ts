@@ -14,14 +14,17 @@ import {
 
 export const updateDownloadState = {
   isDownloading: false,
+  manuallyTriggered: false,
   downloadedInfo: null as UpdateDownloadedEvent | null,
   initiatingStrategy: null as AppUpdateStrategy | null,
 }
 
-export const getUpdateStrategy = (): AppUpdateStrategy =>
-  (electronStore?.get(
-    ElectronStorageItem.updateStrategy,
-  ) as AppUpdateStrategy) || AppUpdateStrategy.auto
+export const getUpdateStrategy = (): AppUpdateStrategy => {
+  const stored = electronStore?.get(ElectronStorageItem.updateStrategy)
+  return Object.values(AppUpdateStrategy).includes(stored as AppUpdateStrategy)
+    ? (stored as AppUpdateStrategy)
+    : AppUpdateStrategy.auto
+}
 
 export const sendToRenderer = (
   channel: IpcOnEvent,
@@ -39,7 +42,8 @@ export const UNPROMPTED_NOTIFICATION_DELAY = 60 * 1_000
 
 export const updateDownloaded = (updateInfo: UpdateDownloadedEvent) => {
   const delay =
-    getUpdateStrategy() === AppUpdateStrategy.notify
+    updateDownloadState.manuallyTriggered &&
+    updateDownloadState.initiatingStrategy === AppUpdateStrategy.notify
       ? 0
       : UNPROMPTED_NOTIFICATION_DELAY
   sendToRenderer(IpcOnEvent.appUpdateAvailable, updateInfo, delay)
@@ -50,7 +54,7 @@ export const sendUpdateState = (state: AppUpdateState) => {
 }
 
 export const checkForUpdate = async (url: string = '') => {
-  if (!url || process.mas) {
+  if (!url || process.mas || updateDownloadState.isDownloading) {
     return
   }
 
@@ -76,7 +80,12 @@ export const checkForUpdate = async (url: string = '') => {
   const res = await autoUpdater.checkForUpdates()
 
   if (res?.downloadPromise) {
-    await res.downloadPromise
+    updateDownloadState.isDownloading = true
+    try {
+      await res.downloadPromise
+    } finally {
+      updateDownloadState.isDownloading = false
+    }
   }
 }
 
@@ -86,6 +95,7 @@ export const startUpdateDownload = () => {
   }
 
   updateDownloadState.isDownloading = true
+  updateDownloadState.manuallyTriggered = true
   autoUpdater.downloadUpdate().catch((e) => {
     updateDownloadState.isDownloading = false
     log.error(wrapErrorMessageSensitiveData(e))
