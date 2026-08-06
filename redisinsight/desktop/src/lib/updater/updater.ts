@@ -77,8 +77,13 @@ export const checkForUpdate = async (url: string = '') => {
 }
 
 export const startUpdateDownload = () => {
+  if (updateDownloadState.isDownloading) {
+    return
+  }
+
   updateDownloadState.isDownloading = true
   autoUpdater.downloadUpdate().catch((e) => {
+    updateDownloadState.isDownloading = false
     log.error(wrapErrorMessageSensitiveData(e))
   })
 }
