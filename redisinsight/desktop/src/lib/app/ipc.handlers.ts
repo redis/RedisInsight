@@ -61,8 +61,12 @@ export const initIPCHandlers = () => {
     },
   )
 
-  ipcMain.handle(IpcInvokeEvent.skipUpdateVersion, (_event, version: string) =>
-    electronStore?.set(ElectronStorageItem.updateSkippedVersion, version),
+  ipcMain.handle(
+    IpcInvokeEvent.skipUpdateVersion,
+    (_event, version: string) => {
+      electronStore?.set(ElectronStorageItem.updateSkippedVersion, version)
+      electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+    },
   )
 
   ipcMain.handle(IpcInvokeEvent.appUpdateDownload, () => startUpdateDownload())
