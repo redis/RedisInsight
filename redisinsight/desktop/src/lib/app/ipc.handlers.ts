@@ -34,7 +34,9 @@ export const initIPCHandlers = () => {
   )
 
   ipcMain.handle(IpcInvokeEvent.getUpdateStrategy, () =>
-    process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ? null : getUpdateStrategy(),
+    process.env.RI_DISABLE_AUTO_UPGRADE === 'true' || process.mas
+      ? null
+      : getUpdateStrategy(),
   )
 
   ipcMain.handle(
