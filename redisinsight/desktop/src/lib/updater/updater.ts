@@ -58,34 +58,34 @@ export const checkForUpdate = async (url: string = '') => {
     return
   }
 
-  log.info('AppUpdater initialization')
-  log.transports.file.level = 'info'
-
+  updateDownloadState.isDownloading = true
   try {
-    autoUpdater.setFeedURL({
-      provider: 'generic',
-      url,
-    })
-  } catch (_err) {
-    const error = _err as Error
-    log.error(wrapErrorMessageSensitiveData(error))
-  }
+    log.info('AppUpdater initialization')
+    log.transports.file.level = 'info'
 
-  updateDownloadState.initiatingStrategy = getUpdateStrategy()
-  autoUpdater.forceDevUpdateConfig = !app.isPackaged
-  autoUpdater.autoDownload =
-    updateDownloadState.initiatingStrategy !== AppUpdateStrategy.notify
-  autoUpdater.autoInstallOnAppQuit = true
-
-  const res = await autoUpdater.checkForUpdates()
-
-  if (res?.downloadPromise) {
-    updateDownloadState.isDownloading = true
     try {
-      await res.downloadPromise
-    } finally {
-      updateDownloadState.isDownloading = false
+      autoUpdater.setFeedURL({
+        provider: 'generic',
+        url,
+      })
+    } catch (_err) {
+      const error = _err as Error
+      log.error(wrapErrorMessageSensitiveData(error))
     }
+
+    updateDownloadState.initiatingStrategy = getUpdateStrategy()
+    autoUpdater.forceDevUpdateConfig = !app.isPackaged
+    autoUpdater.autoDownload =
+      updateDownloadState.initiatingStrategy !== AppUpdateStrategy.notify
+    autoUpdater.autoInstallOnAppQuit = true
+
+    const res = await autoUpdater.checkForUpdates()
+
+    if (res?.downloadPromise) {
+      await res.downloadPromise
+    }
+  } finally {
+    updateDownloadState.isDownloading = false
   }
 }
 
