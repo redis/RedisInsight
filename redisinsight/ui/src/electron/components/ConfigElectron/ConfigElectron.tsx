@@ -78,12 +78,7 @@ const ConfigElectron = () => {
     }
   }
 
-  const updateAvailableAction = async (_e: any, { version }: UpdateInfo) => {
-    const strategy = await ipcGetUpdateStrategy()
-    sendEventTelemetry({
-      event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
-      eventData: { strategy },
-    })
+  const updateAvailableAction = (_e: any, { version }: UpdateInfo) => {
     dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
     dispatch(
       addInfiniteNotification(
@@ -95,6 +90,13 @@ const ConfigElectron = () => {
         }),
       ),
     )
+
+    ipcGetUpdateStrategy().then((strategy) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+        eventData: { strategy },
+      })
+    })
   }
 
   const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
@@ -104,6 +106,9 @@ const ConfigElectron = () => {
           event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
           eventData: { strategy: AppUpdateStrategy.notify },
         })
+        dispatch(
+          removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
+        )
         dispatch(
           addInfiniteNotification(
             INFINITE_MESSAGES.APP_UPDATE_FOUND(
