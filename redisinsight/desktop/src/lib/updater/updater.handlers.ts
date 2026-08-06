@@ -14,6 +14,8 @@ import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { AppUpdateStatus, ElectronStorageItem } from 'uiSrc/electron/constants'
 
 export const initAutoUpdaterHandlers = () => {
+  let pendingAvailableTimeout: ReturnType<typeof setTimeout> | null = null
+
   autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...')
   })
@@ -25,7 +27,9 @@ export const initAutoUpdaterHandlers = () => {
       return
     }
 
-    setTimeout(() => {
+    pendingAvailableTimeout = setTimeout(() => {
+      pendingAvailableTimeout = null
+
       if (updateDownloadState.downloadedInfo?.version === info.version) {
         updateDownloaded(updateDownloadState.downloadedInfo)
         return
@@ -54,11 +58,7 @@ export const initAutoUpdaterHandlers = () => {
   })
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
-
-    if (updateDownloadState.isDownloading) {
-      updateDownloadState.isDownloading = false
-      sendUpdateState({ status: AppUpdateStatus.Error })
-    }
+    updateDownloadState.isDownloading = false
   })
   autoUpdater.on('download-progress', (progressObj: any) => {
     let logMessage = `Download speed: ${progressObj.bytesPerSecond}`
@@ -73,6 +73,11 @@ export const initAutoUpdaterHandlers = () => {
     log.info('releaseName', info.releaseName)
     log.info('version', info.version)
     log.info('files', info.files)
+
+    if (pendingAvailableTimeout) {
+      clearTimeout(pendingAvailableTimeout)
+      pendingAvailableTimeout = null
+    }
 
     updateDownloadState.isDownloading = false
     updateDownloadState.downloadedInfo = info
@@ -91,7 +96,7 @@ export const initAutoUpdaterHandlers = () => {
     )
     electronStore?.set(
       ElectronStorageItem.updateDownloadedStrategy,
-      getUpdateStrategy(),
+      updateDownloadState.initiatingStrategy ?? getUpdateStrategy(),
     )
 
     updateDownloaded(info)
