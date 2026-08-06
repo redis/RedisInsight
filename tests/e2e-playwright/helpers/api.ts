@@ -36,9 +36,10 @@ export class ApiHelper {
    * Retried because creation makes the app open a Redis connection to validate
    * the target, and that connection is not always available on the first try:
    * in the Docker job the app reaches the test Redis through
-   * host.docker.internal and those connections time out for up to a minute
-   * early in a run. The app reports such a timeout as `404 Cannot POST
-   * /api/databases`, so the status is no guide to whether retrying can help.
+   * host.docker.internal, and those connections have been seen to time out for
+   * minutes at a time even while the same instances answer immediately from the
+   * host. The app reports such a timeout as `404 Cannot POST /api/databases`, so
+   * the status is no guide to whether retrying can help.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
     // 2s + 4s + 8s of backoff: the observed stalls lasted around a minute, and a
@@ -47,7 +48,7 @@ export class ApiHelper {
       maxAttempts: 4,
       delayMs: 2000,
       backoffFactor: 2,
-      errorMessage: 'Failed to create database',
+      errorMessage: 'Gave up creating database',
     });
   }
 

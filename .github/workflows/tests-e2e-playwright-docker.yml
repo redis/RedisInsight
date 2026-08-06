@@ -105,6 +105,38 @@ jobs:
             sleep 2
           done
 
+      # Measures the path the app uses (container -> host-gateway -> published
+      # port) against a host-side control, for the whole run. Database creation
+      # fails here with connection timeouts while the same instances answer
+      # immediately from the host, and this shows whether that is specific to the
+      # container path or just a loaded machine.
+      - name: Start connectivity probes
+        run: |
+          docker run -d --name conn-probe \
+            --add-host host.docker.internal:host-gateway \
+            redis:7.0.0 \
+            sh -c 'while true; do
+              s=$(date +%s%3N)
+              if timeout 5 redis-cli -h host.docker.internal -p 8100 ping >/dev/null 2>&1; then r=ok; else r=FAIL; fi
+              e=$(date +%s%3N)
+              echo "$(date -u +%T) container $r $((e-s))ms"
+              sleep 2
+            done'
+
+          # perl rather than `date +%s%3N`: the latter is GNU-only, so the probe
+          # cannot be exercised outside the runner. It costs ~40ms per sample, so
+          # the two probes' baselines are not comparable to each other - only
+          # failures and multi-second stalls are.
+          nohup bash -c 'nowms() { perl -MTime::HiRes=time -e "printf \"%d\n\", time*1000"; }
+          while true; do
+            s=$(nowms)
+            if timeout 5 bash -c "exec 3<>/dev/tcp/127.0.0.1/8100" 2>/dev/null; then r=ok; else r=FAIL; fi
+            e=$(nowms)
+            echo "$(date -u +%T) host $r $((e-s))ms"
+            sleep 2
+          done' > /tmp/host-probe.log 2>&1 &
+          echo "probes started"
+
       - name: Run Playwright tests (Chromium - Docker)
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright test --project=chromium-parallel --project=chromium-serial
@@ -126,6 +158,30 @@ jobs:
           OSS_STANDALONE_TLS_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOSTNAME_HOST: 'host.docker.internal'
+
+      - name: Collect connectivity probes
+        if: always()
+        run: |
+          dest="${{ env.E2E_DIR }}/test-results"
+          mkdir -p "$dest"
+          docker logs conn-probe > "$dest/probe-container.log" 2>&1 || true
+          cp /tmp/host-probe.log "$dest/probe-host.log" 2>/dev/null || true
+          docker rm -f conn-probe >/dev/null 2>&1 || true
+
+          summarize() {
+            local label=$1 file=$2
+            [ -s "$file" ] || { echo "$label: no samples"; return; }
+            local total fails slowest
+            total=$(wc -l < "$file")
+            fails=$(grep -c FAIL "$file" || true)
+            slowest=$(grep -oE '[0-9]+ms$' "$file" | tr -d 'ms' | sort -n | tail -1)
+            echo "$label: $total samples, $fails failed, slowest ${slowest}ms"
+          }
+          summarize "container -> host.docker.internal:8100" "$dest/probe-container.log"
+          summarize "host      -> 127.0.0.1:8100          " "$dest/probe-host.log"
+
+          echo "--- slowest 15 container samples ---"
+          grep -E 'FAIL|[0-9]{4,}ms' "$dest/probe-container.log" | head -15 || true
 
       # The app runs in a container, so its own log is the only place an API-side
       # failure is visible. `docker logs` cannot be used: the compose service sets
