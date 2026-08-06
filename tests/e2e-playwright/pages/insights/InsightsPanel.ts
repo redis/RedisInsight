@@ -26,6 +26,7 @@ export class InsightsPanel {
 
   // Tutorial page content
   readonly tutorialPageContent: Locator;
+  readonly tutorialPageCloseButton: Locator;
   readonly paginationMenuButton: Locator;
   readonly paginationMenu: Locator;
   readonly nextPageButton: Locator;
@@ -59,6 +60,7 @@ export class InsightsPanel {
 
     // Tutorial page content (when viewing a tutorial)
     this.tutorialPageContent = page.getByTestId('enablement-area__page');
+    this.tutorialPageCloseButton = page.getByTestId('enablement-area__page-close');
     this.paginationMenuButton = page.getByTestId('enablement-area__toggle-pagination-menu-btn');
     this.paginationMenu = page.getByTestId('enablement-area__pagination-menu');
     this.nextPageButton = page.getByTestId('enablement-area__next-page-btn');
@@ -152,11 +154,32 @@ export class InsightsPanel {
   }
 
   /**
-   * A single click hangs when the parent accordion is still animating and the
-   * nested header intercepts pointer events. Re-check the state before each
-   * retried click so the toggle stays idempotent.
+   * Close the open tutorial page so the tutorials tree underneath is usable
+   * again. No-op when no tutorial page is open.
+   */
+  async closeTutorialPage(): Promise<void> {
+    if (!(await this.tutorialPageContent.isVisible())) {
+      return;
+    }
+
+    await this.tutorialPageCloseButton.click();
+    await this.tutorialPageContent.waitFor({ state: 'hidden' });
+  }
+
+  /**
+   * The tutorials tree stays mounted underneath the tutorial page, so its
+   * accordion headers remain visible while a tutorial is open — but clicks on
+   * them are swallowed by the tutorial page, which sits above the tree. Closing
+   * it is the real precondition for interacting with the tree. (`force: true`
+   * would not help: it only skips the hit-target check, the mouse event is still
+   * delivered at those coordinates — i.e. to the page above.)
+   *
+   * A single click can still miss while the parent accordion is expanding, so
+   * re-check the state before each retried click to keep the toggle idempotent.
    */
   private async setAccordionExpanded(folderId: string, expanded: boolean): Promise<void> {
+    await this.closeTutorialPage();
+
     const button = this.getAccordionButton(folderId);
     await expect(button).toBeVisible();
     const target = expanded ? 'true' : 'false';
