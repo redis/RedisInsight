@@ -39,6 +39,10 @@ jobs:
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
+    # Consumable by downstream jobs via needs.e2e-electron.outputs.digest.
+    outputs:
+      digest: ${{ steps.summarize.outputs.digest }}
+
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -159,6 +163,32 @@ jobs:
           RI_ENCRYPTION_KEYTAR: 'false'
           # Disable TLS certificate validation for self-signed certs (like old tests do)
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      # Flat, secret-redacted failure list. The raw report is megabytes of nested
+      # suites with ANSI-laden messages; this is what humans and agents read.
+      - name: Summarize Playwright results
+        id: summarize
+        if: always()
+        working-directory: ${{ env.E2E_DIR }}
+        run: |
+          node scripts/summarize-results.mjs \
+            --json test-results/agent-digest.json \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'digest<<E2E_DIGEST_EOF'
+            cat test-results/agent-digest.json
+            echo 'E2E_DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # Separate from the full report so consumers fetch a few KB instead of the
+      # whole trace/video bundle.
+      - name: Upload agent digest
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-digest-electron-linux
+          path: ${{ env.E2E_DIR }}/test-results/agent-digest.json
+          retention-days: 14
 
       - name: Upload test results
         if: always()
