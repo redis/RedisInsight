@@ -2,17 +2,47 @@ import { app } from 'electron'
 import { autoUpdater, UpdateDownloadedEvent } from 'electron-updater'
 import log from 'electron-log'
 
-import { electronStore, updateDownloaded } from 'desktopSrc/lib'
+import {
+  electronStore,
+  updateDownloaded,
+  updateDownloadState,
+  sendUpdateState,
+  getUpdateStrategy,
+  UNPROMPTED_NOTIFICATION_DELAY,
+} from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
-import { ElectronStorageItem } from 'uiSrc/electron/constants'
+import { AppUpdateStatus, ElectronStorageItem } from 'uiSrc/electron/constants'
 
 export const initAutoUpdaterHandlers = () => {
   autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...')
   })
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
     log.info('Update available.')
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, true)
+
+    if (autoUpdater.autoDownload) {
+      return
+    }
+
+    setTimeout(() => {
+      const skippedVersion = electronStore?.get(
+        ElectronStorageItem.updateSkippedVersion,
+      )
+
+      if (
+        skippedVersion === info.version ||
+        updateDownloadState.isDownloading ||
+        updateDownloadState.downloadedVersion === info.version
+      ) {
+        return
+      }
+
+      sendUpdateState({
+        status: AppUpdateStatus.Available,
+        version: info.version,
+      })
+    }, UNPROMPTED_NOTIFICATION_DELAY)
   })
   autoUpdater.on('update-not-available', () => {
     log.info('Update not available.')
@@ -20,6 +50,11 @@ export const initAutoUpdaterHandlers = () => {
   })
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
+
+    if (updateDownloadState.isDownloading) {
+      updateDownloadState.isDownloading = false
+      sendUpdateState({ status: AppUpdateStatus.Error })
+    }
   })
   autoUpdater.on('download-progress', (progressObj: any) => {
     let logMessage = `Download speed: ${progressObj.bytesPerSecond}`
@@ -35,6 +70,10 @@ export const initAutoUpdaterHandlers = () => {
     log.info('version', info.version)
     log.info('files', info.files)
 
+    updateDownloadState.isDownloading = false
+    updateDownloadState.downloadedVersion = info.version
+    electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
+
     // set updateDownloaded to electron storage for Telemetry send event APPLICATION_UPDATED
     electronStore?.set(ElectronStorageItem.updateDownloaded, true)
     electronStore?.set(ElectronStorageItem.updateDownloadedForTelemetry, true)
@@ -45,6 +84,10 @@ export const initAutoUpdaterHandlers = () => {
     electronStore?.set(
       ElectronStorageItem.updatePreviousVersion,
       app.getVersion(),
+    )
+    electronStore?.set(
+      ElectronStorageItem.updateDownloadedStrategy,
+      getUpdateStrategy(),
     )
 
     updateDownloaded(info)
