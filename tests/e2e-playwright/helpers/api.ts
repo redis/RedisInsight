@@ -1,6 +1,7 @@
 import { request, APIRequestContext } from '@playwright/test';
 import { AddDatabaseConfig, DatabaseInstance, IndexSchemaField } from 'e2eSrc/types';
 import { TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
+import { retry } from './retry';
 
 /**
  * API Helper for database operations
@@ -30,9 +31,24 @@ export class ApiHelper {
   }
 
   /**
-   * Create a database via API
+   * Create a database via API.
+   *
+   * Retried because creation makes the app open a Redis connection to validate
+   * the target, and that connection is not always available on the first try:
+   * in the Docker job the app reaches the test Redis through
+   * host.docker.internal and those connections time out for up to a minute
+   * early in a run. The app reports such a timeout as `404 Cannot POST
+   * /api/databases`, so the status is no guide to whether retrying can help.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
+    return retry(() => this.postDatabase(config), {
+      maxAttempts: 3,
+      delayMs: 2000,
+      errorMessage: 'Failed to create database',
+    });
+  }
+
+  private async postDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
     const ctx = await this.getContext();
     const response = await ctx.post('/api/databases', {
       data: {
