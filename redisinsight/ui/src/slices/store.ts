@@ -57,6 +57,8 @@ import rdiPipelineReducer from './rdi/pipeline'
 import rdiDryRunJobReducer from './rdi/dryRun'
 import rdiTestConnectionsReducer from './rdi/testConnections'
 import rdiStatisticsReducer from './rdi/statistics'
+import agentMemoryEndpointsReducer from './agentMemory/endpoints'
+import agentMemoryWorkspaceReducer from './agentMemory/workspace'
 import aiAssistantReducer from './panels/aiAssistant'
 import appDbSettingsReducer from './app/db-settings'
 import tagsReducer from './instances/tags'
@@ -146,6 +148,10 @@ export const rootReducer = combineReducers({
     dryRun: rdiDryRunJobReducer,
     testConnections: rdiTestConnectionsReducer,
     statistics: rdiStatisticsReducer,
+  }),
+  agentMemory: combineReducers({
+    endpoints: agentMemoryEndpointsReducer,
+    workspace: agentMemoryWorkspaceReducer,
   }),
 })
 
