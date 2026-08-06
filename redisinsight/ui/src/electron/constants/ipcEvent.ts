@@ -7,6 +7,10 @@ enum IpcInvokeEvent {
   themeChange = 'theme:change',
   appRestart = 'app:restart',
   setSentryConsent = 'sentry:set:consent',
+  getUpdateStrategy = 'app:update:strategy:get',
+  setUpdateStrategy = 'app:update:strategy:set',
+  appUpdateDownload = 'app:update:download',
+  skipUpdateVersion = 'app:update:skip',
 }
 
 enum IpcOnEvent {
@@ -15,6 +19,7 @@ enum IpcOnEvent {
   azureOauthCallback = 'azure:oauth:callback',
   deepLinkAction = 'deep-link:action',
   appUpdateAvailable = 'app:update:available',
+  appUpdateState = 'app:update:state',
 }
 
 export { IpcInvokeEvent, IpcOnEvent }

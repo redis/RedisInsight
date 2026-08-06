@@ -4,7 +4,11 @@
 import '@sentry/electron/preload'
 import { contextBridge, ipcRenderer } from 'electron'
 import { configRenderer as config } from 'desktopSrc/config/configRenderer'
-import { IpcInvokeEvent, IpcOnEvent } from 'uiSrc/electron/constants'
+import {
+  AppUpdateState,
+  IpcInvokeEvent,
+  IpcOnEvent,
+} from 'uiSrc/electron/constants'
 import { WindowApp } from 'uiSrc/types'
 
 const ipcHandler = {
@@ -34,6 +38,9 @@ contextBridge.exposeInMainWorld('app', {
   },
   updateAvailable: (updateInfo: any) => {
     ipcRenderer.on(IpcOnEvent.appUpdateAvailable, updateInfo)
+  },
+  updateState: (callback: (event: unknown, state: AppUpdateState) => void) => {
+    ipcRenderer.on(IpcOnEvent.appUpdateState, callback)
   },
   ipc: ipcHandler,
   config: {
