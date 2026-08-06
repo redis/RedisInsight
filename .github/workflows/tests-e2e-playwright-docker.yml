@@ -75,22 +75,31 @@ jobs:
           -f tests/e2e/docker.web.docker-compose.yml \
           up --detach --force-recreate
 
-          # /api/health answers before the app can actually serve database
-          # routes: a run has been seen where it passed, then POST /api/databases
-          # returned 404 for the next ~50s and every spec needing a fresh
-          # database failed. Gate on the route the suite depends on instead.
+          # Both /api/health and GET /api/databases answer while POST
+          # /api/databases still returns 404, for roughly a minute after start.
+          # Because worker scheduling is deterministic that window always claims
+          # the same specs, which made it look spec-specific rather than timed.
+          # Probe with the write the suite actually depends on.
           npx wait-on http://localhost:5540/api/health --timeout 60000
 
-          echo "Waiting for the databases route to serve..."
+          echo "Waiting for POST /api/databases to be served..."
           for i in $(seq 1 60); do
-            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:5540/api/databases || true)
-            if [ "$code" = "200" ]; then
-              echo "✅ databases route ready after ~$((i*2))s"
+            code=$(curl -s -o /tmp/ri-probe.json -w '%{http_code}' \
+              -X POST http://localhost:5540/api/databases \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"test-readiness-probe","host":"host.docker.internal","port":8100}' || true)
+
+            if [ "$code" = "200" ] || [ "$code" = "201" ]; then
+              # Prefixed "test-" so browser.setup cleans it up if this delete fails.
+              id=$(jq -r '.id // empty' /tmp/ri-probe.json)
+              [ -n "$id" ] && curl -s -o /dev/null -X DELETE "http://localhost:5540/api/databases/$id" || true
+              echo "✅ POST /api/databases served after ~$((i*2))s"
               break
             fi
+
             if [ "$i" = "60" ]; then
-              echo "::error::databases route still returning $code after 120s"
-              docker logs e2e-ri-docker-app-1 --tail 200 || true
+              echo "::error::POST /api/databases still returning $code after 120s"
+              cat /tmp/ri-probe.json || true
               exit 1
             fi
             sleep 2
@@ -119,15 +128,27 @@ jobs:
           OSS_CLUSTER_HOSTNAME_HOST: 'host.docker.internal'
 
       # The app runs in a container, so its own log is the only place an API-side
-      # failure is visible. Without this a 404 from the app is undiagnosable.
+      # failure is visible. `docker logs` cannot be used: the compose service sets
+      # `logging: driver: none` and RI_STDOUT_LOGGER=false, so copy the log files
+      # the app writes to its home directory instead.
       - name: Capture RedisInsight container logs
         if: failure()
         run: |
-          mkdir -p "${{ env.E2E_DIR }}/test-results"
-          docker logs e2e-ri-docker-app-1 \
-            > "${{ env.E2E_DIR }}/test-results/redisinsight-container.log" 2>&1 || true
-          echo "--- last 100 lines ---"
-          tail -n 100 "${{ env.E2E_DIR }}/test-results/redisinsight-container.log" || true
+          dest="${{ env.E2E_DIR }}/test-results/container-logs"
+          mkdir -p "$dest"
+
+          docker inspect e2e-ri-docker-app-1 \
+            --format 'status={{.State.Status}} restarts={{.RestartCount}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}} startedAt={{.State.StartedAt}}' \
+            | tee "$dest/container-state.txt" || true
+
+          if docker cp e2e-ri-docker-app-1:/data/logs "$dest" 2>"$dest/copy-error.txt"; then
+            find "$dest" -type f -exec ls -l {} \;
+            echo "--- last 100 lines ---"
+            tail -n 100 "$dest"/logs/* 2>/dev/null || true
+          else
+            echo "::warning::could not copy /data/logs out of the app container"
+            cat "$dest/copy-error.txt" || true
+          fi
 
       # Flat, secret-redacted failure list. The raw report is megabytes of nested
       # suites with ANSI-laden messages; this is what humans and agents read.
