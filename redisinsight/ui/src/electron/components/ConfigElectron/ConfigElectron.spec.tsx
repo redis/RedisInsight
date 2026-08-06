@@ -63,6 +63,7 @@ describe('ConfigElectron', () => {
     window.app = {
       ...window.app,
       updateState: jest.fn(),
+      updateAvailable: jest.fn(),
     }
   })
 
@@ -74,6 +75,22 @@ describe('ConfigElectron', () => {
     render(<ConfigElectron />, { store })
 
     expect(window.app.updateState).toHaveBeenCalledWith(expect.any(Function))
+  })
+
+  describe('update-available listener', () => {
+    it('should dispatch the restart notification synchronously, not gated behind the strategy IPC call', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+
+      expect(store.getActions()).toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+      )
+      const addAction = findInfiniteNotification(store)
+      expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateAvailable)
+    })
   })
 
   describe('update-state listener', () => {
@@ -112,6 +129,17 @@ describe('ConfigElectron', () => {
       const downloadingAction = addActions[addActions.length - 1]
       expect(downloadingAction.payload.id).toBe(
         InfiniteMessagesIds.appUpdateFound,
+      )
+    })
+
+    it('should clear a pending restart-to-install toast when a newer update is found', () => {
+      triggerUpdateState({
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      expect(store.getActions()).toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
       )
     })
 
