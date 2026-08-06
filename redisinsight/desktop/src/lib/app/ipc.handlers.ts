@@ -1,10 +1,13 @@
 import { app, ipcMain, nativeTheme } from 'electron'
+import log from 'electron-log'
 import {
   electronStore,
   setConsent,
   getUpdateStrategy,
   startUpdateDownload,
+  checkForUpdate,
 } from 'desktopSrc/lib'
+import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import {
   AppUpdateStrategy,
   ElectronStorageItem,
@@ -44,6 +47,10 @@ export const initIPCHandlers = () => {
     (_event, strategy: AppUpdateStrategy) => {
       if (Object.values(AppUpdateStrategy).includes(strategy)) {
         electronStore?.set(ElectronStorageItem.updateStrategy, strategy)
+
+        checkForUpdate(
+          process.env.RI_MANUAL_UPGRADES_LINK || process.env.RI_UPGRADES_LINK,
+        ).catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
       }
     },
   )
