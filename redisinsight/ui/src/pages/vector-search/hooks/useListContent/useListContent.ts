@@ -29,7 +29,7 @@ import { localStorageService } from 'uiSrc/services'
 import { IndexListAction } from '../../components/index-list/IndexList.types'
 import { useIndexListData } from '../useIndexListData'
 
-export const useListContent = () => {
+export const useListContent = (search = '') => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -42,7 +42,17 @@ export const useListContent = () => {
     [rawIndexes],
   )
 
-  const { data, loading } = useIndexListData(indexes)
+  const { data: allRows, loading } = useIndexListData(indexes)
+  const searchTerm = search.trim().toLowerCase()
+
+  const data = useMemo(() => {
+    if (!searchTerm) return allRows
+
+    return allRows.filter((row) => row.name.toLowerCase().includes(searchTerm))
+  }, [allRows, searchTerm])
+
+  // A search over an empty list is not a filter — the list page still has no indexes to show
+  const isFiltered = !!searchTerm && allRows.length > 0
 
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
     null,
@@ -173,6 +183,7 @@ export const useListContent = () => {
   return {
     data,
     loading,
+    isFiltered,
     actions,
     onQueryClick: handleQueryClick,
     viewingIndexName,

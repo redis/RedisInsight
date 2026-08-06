@@ -1691,6 +1691,7 @@
   "vectorSearch.list.header.description": "Индексът за търсене организира данните ви, за да позволи бързо векторно, пълнотекстово, хибридно и числово търсене в Redis.",
   "vectorSearch.list.header.learnMore": "Научете повече",
   "vectorSearch.list.header.title": "Индекси за търсене",
+  "vectorSearch.list.search.placeholder": "Търсене на индекс",
   "vectorSearch.list.tooltip.docs": "Брой на текущо индексираните документи.",
   "vectorSearch.list.tooltip.fields": "Общ брой полета, дефинирани в схемата на индекса.",
   "vectorSearch.list.tooltip.prefix": "Ключовете, съвпадащи с този префикс, се индексират автоматично.",

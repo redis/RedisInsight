@@ -222,6 +222,27 @@ describe('RediSearchIndexesList', () => {
     expect(fetchKeysMock).toHaveBeenCalled()
   })
 
+  it('should filter the options by the drop-down search, keeping Create Index', async () => {
+    ;(redisearchListSelector as jest.Mock).mockReturnValue({
+      data: [stringToBuffer('products-idx'), stringToBuffer('users-idx')],
+      loading: false,
+      error: '',
+      selectedIndex: null,
+    })
+
+    renderRediSearchIndexesList(instance(mockedProps))
+
+    await userEvent.click(screen.getByTestId('select-search-mode'))
+    await userEvent.type(
+      screen.getByLabelText('Search', { selector: 'input' }),
+      'USERS',
+    )
+
+    expect(screen.getByText('users-idx')).toBeInTheDocument()
+    expect(screen.queryByText('products-idx')).not.toBeInTheDocument()
+    expect(screen.getByText('Create Index')).toBeInTheDocument()
+  })
+
   it('should load indexes after click on refresh', () => {
     ;(connectedInstanceSelector as jest.Mock).mockImplementation(() => ({
       host: '123.23.1.1',

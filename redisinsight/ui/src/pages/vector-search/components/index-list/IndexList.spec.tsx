@@ -162,6 +162,20 @@ describe('IndexList', () => {
 
       expect(screen.getByText(mockIndexListData[0].name)).toBeInTheDocument()
     })
+
+    it('should show No results found when a filter matches nothing', () => {
+      renderComponent({ data: [], loading: false, isFiltered: true })
+
+      expect(screen.getByText('No results found')).toBeInTheDocument()
+    })
+
+    it('should not claim No results found while rows are still loading', () => {
+      // a refetch means the index list changed, so the filtered rows are stale
+      renderComponent({ data: [], loading: true, isFiltered: true })
+
+      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      expect(screen.queryByText('No results found')).not.toBeInTheDocument()
+    })
   })
 
   describe('Column header tooltips', () => {
