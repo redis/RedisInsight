@@ -112,14 +112,23 @@ jobs:
       # container path or just a loaded machine.
       - name: Start connectivity probes
         run: |
+          # Samples a standalone by ip and a cluster node by its announced
+          # hostname: those are the two ways the app reaches Redis here, and they
+          # fail independently - the hostname path was broken while the ip path
+          # was perfectly healthy.
           docker run -d --name conn-probe \
             --add-host host.docker.internal:host-gateway \
+            --add-host master-hostname-7-1:host-gateway \
             redis:7.0.0 \
-            sh -c 'while true; do
+            sh -c 'probe() {
               s=$(date +%s%3N)
-              if timeout 5 redis-cli -h host.docker.internal -p 8100 ping >/dev/null 2>&1; then r=ok; else r=FAIL; fi
+              if timeout 5 redis-cli -h "$1" -p "$2" ping >/dev/null 2>&1; then r=ok; else r=FAIL; fi
               e=$(date +%s%3N)
-              echo "$(date -u +%T) container $r $((e-s))ms"
+              echo "$(date -u +%T) container $3 $r $((e-s))ms"
+            }
+            while true; do
+              probe host.docker.internal 8100 standalone
+              probe master-hostname-7-1 8210 cluster-hostname
               sleep 2
             done'
 
@@ -167,18 +176,23 @@ jobs:
           docker logs conn-probe > "$dest/probe-container.log" 2>&1 || true
           cp /tmp/host-probe.log "$dest/probe-host.log" 2>/dev/null || true
           docker rm -f conn-probe >/dev/null 2>&1 || true
+          # Stop the host loop so it does not keep sampling through the remaining steps.
+          pkill -f 'Time::HiRes' >/dev/null 2>&1 || true
 
           summarize() {
-            local label=$1 file=$2
-            [ -s "$file" ] || { echo "$label: no samples"; return; }
+            local label=$1 file=$2 filter=${3:-}
+            local samples
+            samples=$( [ -n "$filter" ] && grep " $filter " "$file" 2>/dev/null || cat "$file" 2>/dev/null )
+            [ -n "$samples" ] || { echo "$label: no samples"; return; }
             local total fails slowest
-            total=$(wc -l < "$file")
-            fails=$(grep -c FAIL "$file" || true)
-            slowest=$(grep -oE '[0-9]+ms$' "$file" | tr -d 'ms' | sort -n | tail -1)
+            total=$(printf '%s\n' "$samples" | wc -l | tr -d ' ')
+            fails=$(printf '%s\n' "$samples" | grep -c FAIL || true)
+            slowest=$(printf '%s\n' "$samples" | grep -oE '[0-9]+ms$' | tr -d 'ms' | sort -n | tail -1)
             echo "$label: $total samples, $fails failed, slowest ${slowest}ms"
           }
-          summarize "container -> host.docker.internal:8100" "$dest/probe-container.log"
-          summarize "host      -> 127.0.0.1:8100          " "$dest/probe-host.log"
+          summarize "container -> host.docker.internal:8100 " "$dest/probe-container.log" standalone
+          summarize "container -> master-hostname-7-1:8210  " "$dest/probe-container.log" cluster-hostname
+          summarize "host      -> 127.0.0.1:8100           " "$dest/probe-host.log"
 
           echo "--- slowest 15 container samples ---"
           grep -E 'FAIL|[0-9]{4,}ms' "$dest/probe-container.log" | head -15 || true
