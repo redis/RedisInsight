@@ -13,7 +13,7 @@ import {
 
 export const updateDownloadState = {
   isDownloading: false,
-  downloadedVersion: null as string | null,
+  downloadedInfo: null as UpdateDownloadedEvent | null,
 }
 
 export const getUpdateStrategy = (): AppUpdateStrategy =>

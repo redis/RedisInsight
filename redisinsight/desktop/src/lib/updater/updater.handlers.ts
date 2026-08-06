@@ -26,14 +26,18 @@ export const initAutoUpdaterHandlers = () => {
     }
 
     setTimeout(() => {
+      if (updateDownloadState.downloadedInfo?.version === info.version) {
+        updateDownloaded(updateDownloadState.downloadedInfo)
+        return
+      }
+
       const skippedVersion = electronStore?.get(
         ElectronStorageItem.updateSkippedVersion,
       )
 
       if (
         skippedVersion === info.version ||
-        updateDownloadState.isDownloading ||
-        updateDownloadState.downloadedVersion === info.version
+        updateDownloadState.isDownloading
       ) {
         return
       }
@@ -71,7 +75,7 @@ export const initAutoUpdaterHandlers = () => {
     log.info('files', info.files)
 
     updateDownloadState.isDownloading = false
-    updateDownloadState.downloadedVersion = info.version
+    updateDownloadState.downloadedInfo = info
     electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
 
     // set updateDownloaded to electron storage for Telemetry send event APPLICATION_UPDATED
