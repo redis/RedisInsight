@@ -27,6 +27,10 @@ export const initAutoUpdaterHandlers = () => {
       return
     }
 
+    if (pendingAvailableTimeout) {
+      clearTimeout(pendingAvailableTimeout)
+    }
+
     pendingAvailableTimeout = setTimeout(() => {
       pendingAvailableTimeout = null
 
@@ -39,10 +43,12 @@ export const initAutoUpdaterHandlers = () => {
         ElectronStorageItem.updateSkippedVersion,
       )
 
-      if (
-        skippedVersion === info.version ||
-        updateDownloadState.isDownloading
-      ) {
+      if (skippedVersion === info.version) {
+        electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+        return
+      }
+
+      if (updateDownloadState.isDownloading) {
         return
       }
 
@@ -100,5 +106,6 @@ export const initAutoUpdaterHandlers = () => {
     )
 
     updateDownloaded(info)
+    updateDownloadState.manuallyTriggered = false
   })
 }
