@@ -41,9 +41,12 @@ export class ApiHelper {
    * /api/databases`, so the status is no guide to whether retrying can help.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
+    // 2s + 4s + 8s of backoff: the observed stalls lasted around a minute, and a
+    // constant short delay left the total retry span shorter than the stall.
     return retry(() => this.postDatabase(config), {
-      maxAttempts: 3,
+      maxAttempts: 4,
       delayMs: 2000,
+      backoffFactor: 2,
       errorMessage: 'Failed to create database',
     });
   }
