@@ -17,9 +17,12 @@ const showNotification = (notification: InfiniteMessage) => {
     return
   }
 
+  const autoClose =
+    notification.id === InfiniteMessagesIds.appUpdateFound ? false : ONE_HOUR
+
   return riToast(notification, {
     containerId: defaultContainerId,
-    autoClose: ONE_HOUR,
+    autoClose,
   })
 }
 
