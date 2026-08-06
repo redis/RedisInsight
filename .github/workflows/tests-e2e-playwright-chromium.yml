@@ -69,10 +69,17 @@ jobs:
           npm run start:prod --prefix redisinsight/api &
           npx wait-on http://localhost:5540/api/health --timeout 120000
 
-      - name: Ensure host.docker.internal resolves on the host
+      # The API runs on the host, so it must resolve every address the Redis
+      # clusters announce: the IP-based cluster announces host.docker.internal,
+      # and the hostname-based cluster announces master-hostname-7-{1,2,3}
+      # (Docker DNS covers these only for containers on the compose network).
+      - name: Ensure cluster addresses resolve on the host
         run: |
           if ! grep -q host.docker.internal /etc/hosts; then
             echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+          if ! grep -q master-hostname-7-1 /etc/hosts; then
+            echo "127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3" | sudo tee -a /etc/hosts
           fi
 
       - name: Start Redis test environment

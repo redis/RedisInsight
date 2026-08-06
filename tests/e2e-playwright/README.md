@@ -34,6 +34,24 @@ cd tests/e2e
 docker-compose -f rte.docker-compose.yml up -d
 ```
 
+Make the addresses the Redis clusters announce resolvable on your machine (one-off).
+The leading newline matters: appending to an `/etc/hosts` whose last line has no
+trailing newline would otherwise splice the new entry onto the existing one and
+break both.
+```bash
+sudo sh -c 'printf "\n127.0.0.1 host.docker.internal\n127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3\n" >> /etc/hosts'
+```
+Check the result with `grep -n "host.docker.internal\|master-hostname" /etc/hosts` —
+each entry must be on its own line.
+
+Cluster clients connect to the addresses a cluster advertises, not the seed address
+they were given. The IP-based cluster advertises `host.docker.internal` and the
+hostname-based cluster advertises `master-hostname-7-{1,2,3}`; Docker's DNS resolves
+these only for containers on the compose network, so the API — which runs on your
+host — cannot reach them without the entries above. Skipping this step makes cluster
+tests fail when creating a database, with `500` / `errorCode 12500`
+("Server closed the connection.").
+
 ### Project-Specific Setup
 
 | Project | Setup Command | Run Tests |
