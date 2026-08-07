@@ -226,43 +226,18 @@ updates:
         update-types: ['minor']
         patterns: ['*']
 
-  # The packaged Electron app's manifest, holding three native modules. Its
-  # lockfile is the one that ships, so these have to track the copies in the api
-  # tree rather than drift from them. Declaring the entry also applies the
-  # ignore rules below to security updates, which reach this directory either
-  # way.
+  # One entry for both lockfiles. /redisinsight is the packaged Electron app's
+  # manifest and declares better-sqlite3, keytar and tunnel-ssh at the same
+  # versions as the api tree; its lockfile is the one that ships. Covering both
+  # directories here lets the shared-natives group below bump them in a single
+  # pull request, which a separate entry per directory cannot do.
   - package-ecosystem: 'npm'
-    directory: '/redisinsight'
+    directories:
+      - '/redisinsight'
+      - '/redisinsight/api'
     schedule:
       interval: 'weekly'
-    open-pull-requests-limit: 3
-    cooldown:
-      default-days: 3
-      semver-major-days: 7
-      semver-minor-days: 3
-      semver-patch-days: 1
-
-    ignore:
-      # Mirrors the api entry: the ABI is coupled to the Electron version.
-      - dependency-name: 'better-sqlite3'
-        update-types: ['version-update:semver-major']
-
-    # No devDependencies here, so the development catch-alls are omitted.
-    groups:
-      production-patch:
-        dependency-type: 'production'
-        update-types: ['patch']
-        patterns: ['*']
-      production-minor:
-        dependency-type: 'production'
-        update-types: ['minor']
-        patterns: ['*']
-
-  - package-ecosystem: 'npm'
-    directory: '/redisinsight/api'
-    schedule:
-      interval: 'weekly'
-    open-pull-requests-limit: 8
+    open-pull-requests-limit: 10
     cooldown:
       default-days: 3
       semver-major-days: 7
@@ -294,6 +269,13 @@ updates:
         update-types: ['version-update:semver-major']
 
     groups:
+      # Declared in both directories at the same version. `group-by` raises one
+      # pull request per dependency spanning both lockfiles, so the packaged app
+      # and the api tree cannot land different versions of a native module.
+      # Without it each directory gets its own pull request and they drift.
+      shared-natives:
+        group-by: 'dependency-name'
+        patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
       typescript:
         patterns: ['typescript']
       # rxjs and reflect-metadata are peers pinned to the framework major.
