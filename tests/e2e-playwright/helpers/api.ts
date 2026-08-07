@@ -33,19 +33,20 @@ export class ApiHelper {
   /**
    * Create a database via API.
    *
-   * Retried because creation makes the app open a Redis connection to validate
-   * the target, and that connection is not always available on the first try:
-   * in the Docker job the app reaches the test Redis through
-   * host.docker.internal, and those connections have been seen to time out for
-   * minutes at a time even while the same instances answer immediately from the
-   * host. The app reports such a timeout as `404 Cannot POST /api/databases`, so
-   * the status is no guide to whether retrying can help.
+   * Retried because creation makes the app open a Redis connection to validate the
+   * target, so a transient connection fault fails the whole call. The app reports
+   * such a fault as `404 Cannot POST /api/databases`, which is indistinguishable
+   * from a genuinely missing route, so the status cannot be used to decide whether
+   * retrying is worthwhile.
+   *
+   * This covers brief faults only. A sustained one needs its own cause found: the
+   * long stalls once seen in the Docker job came from the app being unable to
+   * resolve the hostnames the cluster advertises, fixed in the compose file rather
+   * than by waiting longer here.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
     let attempts = 0;
 
-    // 2s + 4s + 8s of backoff: the observed stalls lasted around a minute, and a
-    // constant short delay left the total retry span shorter than the stall.
     return retry(
       async () => {
         attempts += 1;
@@ -53,9 +54,13 @@ export class ApiHelper {
         // A create can succeed on the server and still fail the client, e.g. a
         // reset connection while reading the response. Retrying blindly would add
         // a second database, and duplicate names are allowed, so adopt the one a
-        // previous attempt left behind instead.
+        // previous attempt left behind instead. Matched on the connection details
+        // too, so a same-named database pointing elsewhere is never adopted.
         if (attempts > 1) {
-          const existing = (await this.getDatabases()).find((database) => database.name === config.name);
+          const existing = (await this.getDatabases()).find(
+            (database) =>
+              database.name === config.name && database.host === config.host && database.port === config.port,
+          );
           if (existing) return existing;
         }
 
