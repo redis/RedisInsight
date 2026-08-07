@@ -48,14 +48,21 @@ updates:
       # Held at v5; v6 is a routing rewrite.
       - dependency-name: 'react-router-dom'
         update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-router-dom'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'html-react-parser'
         update-types: ['version-update:semver-major']
-      # Virtualization stack, react-18-locked.
+      # Virtualization stack, react-18-locked. The types skew from the runtime
+      # unless they are held back too.
       - dependency-name: 'react-virtualized'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-virtualized'
         update-types: ['version-update:semver-major']
       - dependency-name: 'react-window'
         update-types: ['version-update:semver-major']
       - dependency-name: 'react-window-infinite-loader'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-window-infinite-loader'
         update-types: ['version-update:semver-major']
       - dependency-name: 'react-vtree'
         update-types: ['version-update:semver-major']
@@ -93,7 +100,7 @@ updates:
       # Group identifiers take letters, pipes, underscores and hyphens only, so
       # this cannot be named after the package.
       internationalization:
-        patterns: ['i18next', 'i18next-*', 'react-i18next']
+        patterns: ['i18next', 'i18next-cli', 'react-i18next']
       monaco:
         patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
       # Each companion package is pinned to its host's major.
@@ -266,7 +273,7 @@ updates:
             '@types/ioredis-mock',
           ]
       socketio:
-        patterns: ['socket.io', 'socket.io-*']
+        patterns: ['socket.io', 'socket.io-client', 'socket.io-mock']
       # Unit tests run on jest, integration tests on mocha/chai. babel-jest
       # ships from the jest repo and tracks its major, not Babel's.
       testing:
