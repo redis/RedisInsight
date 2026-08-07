@@ -1,19 +1,176 @@
 version: 2
 
+# Two npm entries because the root and api trees have independent lockfiles
+# (12 in total across the repo) and different locked packages. Directories not
+# listed here still receive Dependabot *security* updates, which are enabled
+# repo-wide and ignore this config.
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+    # Groups collapse the weekly run into a handful of PRs, so the limit needs
+    # headroom for the family groups plus the two catch-alls.
+    open-pull-requests-limit: 10
     cooldown:
       default-days: 3
       semver-major-days: 7
       semver-minor-days: 3
       semver-patch-days: 1
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+    # Packages whose major is a migration project rather than a bump. Bumping
+    # any of these in isolation produces a PR that cannot pass CI, so the bot
+    # should not open one; we drive these by hand. Everything else, including
+    # majors, still flows normally.
+    ignore:
+      # react/react-dom are hard-pinned via `overrides` and held at 18 by
+      # @elastic/eui (peers on react-dom ^16.12) and @testing-library/react 13
+      # (peers on ^18.0.0). The types must move with them or type-check breaks.
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@testing-library/react'
+        update-types: ['version-update:semver-major']
+      # Being migrated away from; a major would be wasted work.
+      - dependency-name: '@elastic/eui'
+        update-types: ['version-update:semver-major']
+      # Native-module ABI is coupled to the Electron version, so this moves as
+      # part of a deliberate Electron upgrade.
+      - dependency-name: 'electron'
+        update-types: ['version-update:semver-major']
+      # Held at v5; v6 is a routing rewrite.
+      - dependency-name: 'react-router-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'html-react-parser'
+        update-types: ['version-update:semver-major']
+      # Virtualization stack, all react-18-locked.
+      - dependency-name: 'react-virtualized'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-window'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-window-infinite-loader'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-vtree'
+        update-types: ['version-update:semver-major']
+      # Dev tooling whose majors change CLI/API surface used across scripts.
+      - dependency-name: 'rimraf'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'lint-staged'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@faker-js/faker'
+        update-types: ['version-update:semver-major']
+
+    # First match wins, so family groups are listed before the catch-alls. This
+    # keeps coupled packages in one PR instead of the split pairs Dependabot
+    # produces on its own (e.g. electron-builder arriving twice in one week).
+    groups:
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      electron-build:
+        patterns:
+          [
+            'electron',
+            'electron-*',
+            '@electron/*',
+            'app-builder-lib',
+            'builder-util*',
+          ]
+      storybook:
+        patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
+      build-tooling:
+        patterns:
+          [
+            'vite',
+            'vite-*',
+            '@vitejs/*',
+            'esbuild',
+            'esbuild-*',
+            'rollup',
+            'webpack',
+            'webpack-*',
+          ]
+      linting:
+        patterns:
+          [
+            'eslint',
+            'eslint-*',
+            '@typescript-eslint/*',
+            'prettier',
+            'prettier-*',
+            'lint-staged',
+          ]
+      testing:
+        patterns:
+          ['jest', 'jest-*', 'ts-jest', '@testing-library/*', '@faker-js/faker']
+      babel:
+        patterns: ['@babel/*', 'babel-*']
+      observability:
+        patterns: ['@sentry/*', '@opentelemetry/*']
+      redis-ui:
+        patterns: ['@redis-ui/*', '@redislabsdev/*']
+      types:
+        patterns: ['@types/*']
+      production:
+        dependency-type: 'production'
+        patterns: ['*']
+      development:
+        dependency-type: 'development'
+        patterns: ['*']
+
+  - package-ecosystem: 'npm'
+    directory: '/redisinsight/api'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+    open-pull-requests-limit: 5
     cooldown:
       default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 1
+
+    ignore:
+      # Native module compiled against the Electron ABI; moves with Electron.
+      - dependency-name: 'better-sqlite3'
+        update-types: ['version-update:semver-major']
+      # Framework major is a migration across every module.
+      - dependency-name: '@nestjs/*'
+        update-types: ['version-update:semver-major']
+      # Pre-1.0, so a minor carries breaking schema/driver changes.
+      - dependency-name: 'typeorm'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'rimraf'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@faker-js/faker'
+        update-types: ['version-update:semver-major']
+
+    groups:
+      nestjs:
+        patterns: ['@nestjs/*']
+      testing:
+        patterns: ['jest', 'jest-*', 'ts-jest', '@faker-js/faker', 'supertest']
+      babel:
+        patterns: ['@babel/*', 'babel-*']
+      types:
+        patterns: ['@types/*']
+      production:
+        dependency-type: 'production'
+        patterns: ['*']
+      development:
+        dependency-type: 'development'
+        patterns: ['*']
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    cooldown:
+      default-days: 3
+    groups:
+      github-actions:
+        patterns: ['*']
