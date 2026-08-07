@@ -252,5 +252,49 @@ describe('ConfigElectron', () => {
 
       expect(ipcAppUpdateDownload).toHaveBeenCalled()
     })
+
+    it('should restore a retry prompt even if the available version was falsy', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, { status: AppUpdateStatus.Available })
+      store.clearActions()
+
+      updateStateAction(null, { status: AppUpdateStatus.Error })
+
+      const addActions = store
+        .getActions()
+        .filter(
+          (action) => action.type === addInfiniteNotification.type,
+        ) as unknown as { payload: InfiniteMessage }[]
+      expect(addActions[addActions.length - 1]?.payload.id).toBe(
+        InfiniteMessagesIds.appUpdateFound,
+      )
+    })
+
+    it('should not emit close telemetry when a completed download replaces the open prompt', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+      jest.clearAllMocks()
+
+      // The user switched strategy while the prompt was open; the resulting
+      // download completes and replaces it programmatically.
+      updateAvailableAction(null, { version: '1.2.3' })
+      foundAction?.payload.onClose?.()
+
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+      })
+    })
   })
 })
