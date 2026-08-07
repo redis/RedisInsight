@@ -33,6 +33,9 @@ jobs:
       RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
 
+    outputs:
+      digest: ${{ steps.summarize.outputs.digest }}
+
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -70,9 +73,64 @@ jobs:
           docker compose -p e2e-ri-docker \
           -f tests/e2e/docker.web.docker-compose.yml \
           up --detach --force-recreate
-          # Wait for the app to be ready
-          sleep 10
+
+          # /api/health and GET /api/databases both answer while POST to the same
+          # path still 404s, so gate on the write the suite depends on.
           npx wait-on http://localhost:5540/api/health --timeout 60000
+
+          echo "Waiting for POST /api/databases to be served..."
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /tmp/ri-probe.json -w '%{http_code}' \
+              -X POST http://localhost:5540/api/databases \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"test-readiness-probe","host":"host.docker.internal","port":8100}' || true)
+
+            if [ "$code" = "200" ] || [ "$code" = "201" ]; then
+              # Prefixed "test-" so browser.setup cleans it up if this delete fails.
+              id=$(jq -r '.id // empty' /tmp/ri-probe.json)
+              [ -n "$id" ] && curl -s -o /dev/null -X DELETE "http://localhost:5540/api/databases/$id" || true
+              echo "✅ POST /api/databases served after ~$((i*2))s"
+              break
+            fi
+
+            if [ "$i" = "60" ]; then
+              echo "::error::POST /api/databases still returning $code after 120s"
+              cat /tmp/ri-probe.json || true
+              exit 1
+            fi
+            sleep 2
+          done
+
+      - name: Start connectivity probes
+        run: |
+          docker rm -f conn-probe >/dev/null 2>&1 || true
+          docker run -d --name conn-probe \
+            --add-host host.docker.internal:host-gateway \
+            --add-host master-hostname-7-1:host-gateway \
+            redis:7.0.0 \
+            sh -c 'probe() {
+              s=$(date +%s%3N)
+              if timeout 5 redis-cli -h "$1" -p "$2" ping >/dev/null 2>&1; then r=ok; else r=FAIL; fi
+              e=$(date +%s%3N)
+              echo "$(date -u +%T) container $3 $r $((e-s))ms"
+            }
+            while true; do
+              probe host.docker.internal 8100 standalone
+              probe master-hostname-7-1 8210 cluster-hostname
+              sleep 2
+            done'
+
+          # perl rather than `date +%s%3N`, which is GNU-only. It adds ~40ms per
+          # sample, so compare failures and stalls between the probes, not baselines.
+          nohup bash -c 'nowms() { perl -MTime::HiRes=time -e "printf \"%d\n\", time*1000"; }
+          while true; do
+            s=$(nowms)
+            if timeout 5 bash -c "exec 3<>/dev/tcp/127.0.0.1/8100" 2>/dev/null; then r=ok; else r=FAIL; fi
+            e=$(nowms)
+            echo "$(date -u +%T) host $r $((e-s))ms"
+            sleep 2
+          done' > /tmp/host-probe.log 2>&1 &
+          echo "probes started"
 
       - name: Run Playwright tests (Chromium - Docker)
         working-directory: ${{ env.E2E_DIR }}
@@ -95,6 +153,78 @@ jobs:
           OSS_STANDALONE_TLS_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOST: 'host.docker.internal'
           OSS_CLUSTER_HOSTNAME_HOST: 'host.docker.internal'
+
+      - name: Collect connectivity probes
+        if: always()
+        run: |
+          dest="${{ env.E2E_DIR }}/test-results"
+          mkdir -p "$dest"
+          docker logs conn-probe > "$dest/probe-container.log" 2>&1 || true
+          cp /tmp/host-probe.log "$dest/probe-host.log" 2>/dev/null || true
+          docker rm -f conn-probe >/dev/null 2>&1 || true
+          # Stop the host loop so it does not keep sampling through the remaining steps.
+          pkill -f 'Time::HiRes' >/dev/null 2>&1 || true
+
+          summarize() {
+            local label=$1 file=$2 filter=${3:-}
+            local samples
+            samples=$( [ -n "$filter" ] && grep " $filter " "$file" 2>/dev/null || cat "$file" 2>/dev/null )
+            [ -n "$samples" ] || { echo "$label: no samples"; return; }
+            local total fails slowest
+            total=$(printf '%s\n' "$samples" | wc -l | tr -d ' ')
+            fails=$(printf '%s\n' "$samples" | grep -c FAIL || true)
+            slowest=$(printf '%s\n' "$samples" | grep -oE '[0-9]+ms$' | tr -d 'ms' | sort -n | tail -1)
+            echo "$label: $total samples, $fails failed, slowest ${slowest}ms"
+          }
+          summarize "container -> host.docker.internal:8100 " "$dest/probe-container.log" standalone
+          summarize "container -> master-hostname-7-1:8210  " "$dest/probe-container.log" cluster-hostname
+          summarize "host      -> 127.0.0.1:8100           " "$dest/probe-host.log"
+
+          echo "--- slowest 15 container samples ---"
+          grep -E 'FAIL|[0-9]{4,}ms' "$dest/probe-container.log" | head -15 || true
+
+      # `docker logs` cannot be used here: the compose service sets
+      # `logging: driver: none` and RI_STDOUT_LOGGER=false.
+      - name: Capture RedisInsight container logs
+        if: failure()
+        run: |
+          dest="${{ env.E2E_DIR }}/test-results/container-logs"
+          mkdir -p "$dest"
+
+          docker inspect e2e-ri-docker-app-1 \
+            --format 'status={{.State.Status}} restarts={{.RestartCount}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}} startedAt={{.State.StartedAt}}' \
+            | tee "$dest/container-state.txt" || true
+
+          if docker cp e2e-ri-docker-app-1:/data/logs "$dest" 2>"$dest/copy-error.txt"; then
+            find "$dest" -type f -exec ls -l {} \;
+            echo "--- last 100 lines ---"
+            tail -n 100 "$dest"/logs/* 2>/dev/null || true
+          else
+            echo "::warning::could not copy /data/logs out of the app container"
+            cat "$dest/copy-error.txt" || true
+          fi
+
+      - name: Summarize Playwright results
+        id: summarize
+        if: always()
+        working-directory: ${{ env.E2E_DIR }}
+        run: |
+          node scripts/summarize-results.mjs \
+            --json test-results/agent-digest.json \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'digest<<E2E_DIGEST_EOF'
+            cat test-results/agent-digest.json
+            echo 'E2E_DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload agent digest
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-digest-docker
+          path: ${{ env.E2E_DIR }}/test-results/agent-digest.json
+          retention-days: 14
 
       - name: Upload test results
         if: always()

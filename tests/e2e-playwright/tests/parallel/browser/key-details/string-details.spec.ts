@@ -2,6 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { StringKeyFactory, TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { createKeyTracker } from 'e2eSrc/helpers';
 
 const parseTtl = (ttlText: string): number => {
   const match = ttlText.match(/\d+/);
@@ -17,6 +18,7 @@ const parseTtl = (ttlText: string): number => {
  */
 test.describe('Browser > Key Details - String', () => {
   let database: DatabaseInstance;
+  const keys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database for all tests in this file
@@ -36,15 +38,14 @@ test.describe('Browser > Key Details - String', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    // Clean up test keys created during the test
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+    await keys.cleanup(apiHelper, database.id);
   });
 
   test('should view, edit, rename a String key and show copy-on-hover', async ({ apiHelper, browserPage }) => {
     // Seed: create the String key via API
-    const keyData = StringKeyFactory.build();
+    const keyData = keys.track(StringKeyFactory.build());
     const newValue = `${keyData.value}-edited`;
-    const newKeyName = `${TEST_KEY_PREFIX}string-renamed-${Date.now()}`;
+    const newKeyName = keys.add(`${TEST_KEY_PREFIX}string-renamed-${Date.now()}`);
 
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
@@ -74,7 +75,7 @@ test.describe('Browser > Key Details - String', () => {
   });
 
   test('should view, edit TTL and have the key expire after countdown', async ({ apiHelper, browserPage }) => {
-    const keyData = StringKeyFactory.build();
+    const keyData = keys.track(StringKeyFactory.build());
 
     // Seed: create the key with no TTL
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
@@ -111,7 +112,7 @@ test.describe('Browser > Key Details - String', () => {
 
   test('should change value format between Unicode, HEX and Binary', async ({ apiHelper, browserPage }) => {
     // Seed with deterministic ASCII so HEX bytes are predictable (h=0x68, i=0x69)
-    const keyData = StringKeyFactory.build({ value: 'hi' });
+    const keyData = keys.track(StringKeyFactory.build({ value: 'hi' }));
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
     // Open the key in the details panel

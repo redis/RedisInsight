@@ -39,6 +39,9 @@ jobs:
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
+    outputs:
+      digest: ${{ steps.summarize.outputs.digest }}
+
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -114,10 +117,13 @@ jobs:
           mkdir -p tests/e2e/remote
           mkdir -p tests/e2e/rdi
 
-      - name: Ensure host.docker.internal resolves on the host
+      - name: Ensure cluster addresses resolve on the host
         run: |
           if ! grep -q host.docker.internal /etc/hosts; then
             echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+          if ! grep -q master-hostname-7-1 /etc/hosts; then
+            echo "127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3" | sudo tee -a /etc/hosts
           fi
 
       - name: Start Redis test environment
@@ -151,6 +157,28 @@ jobs:
           RI_ENCRYPTION_KEYTAR: 'false'
           # Disable TLS certificate validation for self-signed certs (like old tests do)
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Summarize Playwright results
+        id: summarize
+        if: always()
+        working-directory: ${{ env.E2E_DIR }}
+        run: |
+          node scripts/summarize-results.mjs \
+            --json test-results/agent-digest.json \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'digest<<E2E_DIGEST_EOF'
+            cat test-results/agent-digest.json
+            echo 'E2E_DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload agent digest
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-digest-electron-linux
+          path: ${{ env.E2E_DIR }}/test-results/agent-digest.json
+          retention-days: 14
 
       - name: Upload test results
         if: always()

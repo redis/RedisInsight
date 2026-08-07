@@ -1,10 +1,12 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
-import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
+import { VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { createKeyTracker } from 'e2eSrc/helpers';
 
 test.describe('Browser > Vector Set > Add Key (manual)', () => {
   let database: DatabaseInstance;
+  const vectorKeys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
@@ -23,11 +25,11 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+    await vectorKeys.cleanup(apiHelper, database.id);
   });
 
   test('should add a Vector Set key with a single element manually', async ({ browserPage }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
     const [first] = keyData.elements;
 
     await browserPage.openAddKeyDialog();
@@ -44,7 +46,7 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
   });
 
   test('should disable Add Key button until both element name and vector are filled', async ({ browserPage }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Vector Set');
@@ -58,7 +60,7 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
   });
 
   test('should cancel adding a Vector Set key', async ({ browserPage }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Vector Set');

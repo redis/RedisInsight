@@ -66,3 +66,43 @@ runs:
 
         wait_for_cluster master-plain-7-1    "IP-based cluster (8200)"
         wait_for_cluster master-hostname-7-1  "Hostname-based cluster (8210)"
+
+    - name: Wait for published Redis ports to serve
+      shell: bash
+      run: |
+        # Any RESP reply (+PONG, or -NOAUTH/-ERR) proves the server is serving.
+        redis_responds() {
+          local port=$1 reply=''
+          exec 3<>"/dev/tcp/127.0.0.1/$port" 2>/dev/null || return 1
+          printf 'PING\r\n' >&3 || { exec 3<&- 3>&-; return 1; }
+          read -r -t 5 reply <&3 || { exec 3<&- 3>&-; return 1; }
+          exec 3<&- 3>&-
+          case "$reply" in +*|-*) return 0 ;; *) return 1 ;; esac
+        }
+
+        # TLS (8104) needs a handshake before it speaks RESP, so only its socket
+        # is checked.
+        port_open() {
+          (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null
+        }
+
+        wait_for_port() {
+          local port=$1 kind=$2
+          for i in $(seq 1 60); do
+            # stderr is dropped at the call site: bash reports a refused
+            # /dev/tcp redirection itself, past the redirection in the function.
+            if [ "$kind" = tls ]; then
+              port_open "$port" 2>/dev/null && { echo "✅ $port accepting connections after ~$((i*2))s"; return 0; }
+            else
+              redis_responds "$port" 2>/dev/null && { echo "✅ $port serving after ~$((i*2))s"; return 0; }
+            fi
+            sleep 2
+          done
+          echo "::error::Redis on port $port did not become ready within 120s"
+          return 1
+        }
+
+        for port in 8100 8101 8103 8105 8108 8109 8110 8200 8210 28100; do
+          wait_for_port "$port" resp
+        done
+        wait_for_port 8104 tls

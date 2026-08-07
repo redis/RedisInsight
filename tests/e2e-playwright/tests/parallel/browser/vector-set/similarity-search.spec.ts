@@ -1,11 +1,13 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
-import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
+import { VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { createKeyTracker } from 'e2eSrc/helpers';
 import { seedVectorSet } from './helpers';
 
 test.describe('Browser > Vector Set > Similarity search', () => {
   let database: DatabaseInstance;
+  const vectorKeys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
@@ -20,11 +22,11 @@ test.describe('Browser > Vector Set > Similarity search', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+    await vectorKeys.cleanup(apiHelper, database.id);
   });
 
   test('should run similarity search by vector and show ranked results', async ({ browserPage, apiHelper }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
@@ -41,7 +43,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     browserPage,
     apiHelper,
   }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
@@ -77,7 +79,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     browserPage,
     apiHelper,
   }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.track(VectorSetKeyFactory.build());
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 

@@ -5,6 +5,11 @@ services:
   app:
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      # A container has its own hosts file, so the names the hostname-based
+      # cluster advertises are not inherited from the host.
+      - "master-hostname-7-1:host-gateway"
+      - "master-hostname-7-2:host-gateway"
+      - "master-hostname-7-3:host-gateway"
     logging:
       driver: none
     image: redisinsight:amd64

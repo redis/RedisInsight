@@ -108,10 +108,37 @@ export class KeyList {
    */
   async searchKeys(pattern: string): Promise<void> {
     await this.searchInput.fill(pattern);
+    // A fill that races a re-render silently leaves the previous pattern behind,
+    // and the waits below cannot detect it: the reset button only proves some
+    // filter is applied, and "Results:" is already on screen in the default tree
+    // view, so both pass against the results of the previous search.
+    await expect(this.searchInput).toHaveValue(pattern);
+
+    // Settle on the scan for this pattern rather than on text that is already
+    // rendered. Matched on the request body so a concurrent scan - an auto-refresh
+    // or the initial load still in flight - cannot satisfy the wait. Clicking with
+    // an unchanged pattern issues no request, so a miss here is not a failure;
+    // keep the wait short so it cannot eat the test's budget either way.
+    const scan = this.page
+      .waitForResponse(
+        (response) => {
+          if (!/\/api\/databases\/[^/]+\/keys/.test(response.url())) return false;
+          const request = response.request();
+          if (request.method() !== 'POST') return false;
+          try {
+            return request.postDataJSON()?.match === pattern;
+          } catch {
+            return false;
+          }
+        },
+        { timeout: 5000 },
+      )
+      .catch(() => undefined);
+
     await this.searchButton.click();
-    // Search can end with either "Results:" or an empty-state message; reset button confirms filter applied.
+    await scan;
+
     await expect(this.resetFilterButton).toBeVisible();
-    await expect(this.resultsCount.or(this.emptyDatabasePanel).first()).toBeVisible();
   }
 
   /**

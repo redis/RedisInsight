@@ -34,6 +34,33 @@ cd tests/e2e
 docker-compose -f rte.docker-compose.yml up -d
 ```
 
+For local runs, add these entries to `/etc/hosts` (one-off):
+
+```
+127.0.0.1 host.docker.internal
+127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3
+```
+
+The clusters advertise these addresses to clients, and the API resolves them on your
+host. Without them, cluster tests fail while creating a database with `500` /
+`errorCode 12500` ("Server closed the connection.").
+
+> **Note:** make sure they are appended as separate lines, and that the previous last
+> line of the file ends with a newline. The result should look like:
+>
+> ```
+> 127.0.0.1 host.docker.internal
+> 127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3
+> ```
+>
+> not 
+> ```
+> 127.0.0.1 existing-entry127.0.0.1 host.docker.internal <--- these should be 2 lines
+> ```
+> Verify with
+>
+> ```grep -n "host.docker.internal\|master-hostname" /etc/hosts```
+
 ### Project-Specific Setup
 
 | Project | Setup Command | Run Tests |
