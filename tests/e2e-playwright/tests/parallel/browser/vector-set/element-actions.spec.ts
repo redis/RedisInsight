@@ -1,11 +1,11 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
-import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
-import { seedVectorSet } from './helpers';
+import { createKeyTracker, seedVectorSet } from './helpers';
 
 test.describe('Browser > Vector Set > Element actions', () => {
   let database: DatabaseInstance;
+  const vectorKeys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
@@ -20,11 +20,11 @@ test.describe('Browser > Vector Set > Element actions', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+    await vectorKeys.cleanup(apiHelper, database.id);
   });
 
   test('should open element details drawer and show the vector value', async ({ browserPage, apiHelper }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.build();
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
@@ -40,7 +40,7 @@ test.describe('Browser > Vector Set > Element actions', () => {
   });
 
   test('should remove an element from the Vector Set via the row action', async ({ browserPage, apiHelper }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.build();
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 

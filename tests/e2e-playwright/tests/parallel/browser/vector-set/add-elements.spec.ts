@@ -1,12 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
-import { TEST_KEY_PREFIX, VectorSetKeyFactory, toFp32EscapedString } from 'e2eSrc/test-data/browser';
+import { toFp32EscapedString } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
-import { seedVectorSet } from './helpers';
+import { createKeyTracker, seedVectorSet } from './helpers';
 
 test.describe('Browser > Vector Set > Add Elements', () => {
   let database: DatabaseInstance;
+  const vectorKeys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
@@ -21,11 +22,11 @@ test.describe('Browser > Vector Set > Add Elements', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+    await vectorKeys.cleanup(apiHelper, database.id);
   });
 
   test('should add a new element to an existing Vector Set via the side panel', async ({ browserPage, apiHelper }) => {
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.build();
     const [first, second] = keyData.elements;
 
     await seedVectorSet(apiHelper, database.id, keyData.keyName, [keyData.elements[0]]);
@@ -47,7 +48,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     apiHelper,
   }) => {
     // FP32 vector must match the factory's 3-dim shape (3 floats / 12 bytes).
-    const keyData = VectorSetKeyFactory.build();
+    const keyData = vectorKeys.build();
     const [first] = keyData.elements;
     const fp32ElementName = `element-fp32-${faker.string.alphanumeric(6)}`;
     const fp32Vector = toFp32EscapedString([0.25, -0.5, 0.75]);
