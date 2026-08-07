@@ -192,6 +192,20 @@ describe('ConfigElectron', () => {
       })
     })
 
+    it('should remove the found notification when dismissed with X', () => {
+      triggerUpdateState({
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      const addAction = findInfiniteNotification(store)
+      addAction?.payload.onClose?.()
+
+      expect(store.getActions()).toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+      )
+    })
+
     it('should not emit close telemetry after "Update" was clicked', () => {
       triggerUpdateState({
         status: AppUpdateStatus.Available,
