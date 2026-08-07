@@ -103,6 +103,7 @@ jobs:
 
       - name: Start connectivity probes
         run: |
+          docker rm -f conn-probe >/dev/null 2>&1 || true
           docker run -d --name conn-probe \
             --add-host host.docker.internal:host-gateway \
             --add-host master-hostname-7-1:host-gateway \
