@@ -2,6 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { StringKeyFactory, ListKeyFactory, HashKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { createKeyTracker } from 'e2eSrc/helpers';
 
 const MARKDOWN_FORMAT = 'Markdown';
 
@@ -54,9 +55,7 @@ const XSS_MARKDOWN = [
  */
 test.describe('Browser > Key Details - Markdown value format', () => {
   let database: DatabaseInstance;
-  // Cleaning up by key prefix would also delete the keys of sibling tests still
-  // running against the same Redis, so each test removes only what it created.
-  let createdKeyName: string | undefined;
+  const keys = createKeyTracker();
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = StandaloneConfigFactory.build({ name: 'test-key-details-markdown-db' });
@@ -74,10 +73,7 @@ test.describe('Browser > Key Details - Markdown value format', () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    if (createdKeyName) {
-      await apiHelper.deleteKeysByPattern(database.id, createdKeyName);
-      createdKeyName = undefined;
-    }
+    await keys.cleanup(apiHelper, database.id);
   });
 
   // The format choice persists (localStorage + in-memory store) and Electron
@@ -91,9 +87,8 @@ test.describe('Browser > Key Details - Markdown value format', () => {
   });
 
   test('should render a markdown String value through the sanitized pipeline', async ({ apiHelper, browserPage }) => {
-    const keyData = StringKeyFactory.build({ value: RENDERED_MARKDOWN });
+    const keyData = keys.track(StringKeyFactory.build({ value: RENDERED_MARKDOWN }));
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
-    createdKeyName = keyData.keyName;
 
     // Open the key in the details panel.
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -137,11 +132,12 @@ test.describe('Browser > Key Details - Markdown value format', () => {
   });
 
   test('should render markdown inline in List element cells on selection', async ({ apiHelper, browserPage, page }) => {
-    const keyData = ListKeyFactory.build({
-      elements: [RENDERED_MARKDOWN, '## Second **element**'],
-    });
+    const keyData = keys.track(
+      ListKeyFactory.build({
+        elements: [RENDERED_MARKDOWN, '## Second **element**'],
+      }),
+    );
     await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
-    createdKeyName = keyData.keyName;
 
     await browserPage.keyList.searchKeys(keyData.keyName);
     await browserPage.keyList.clickKey(keyData.keyName);
@@ -156,11 +152,12 @@ test.describe('Browser > Key Details - Markdown value format', () => {
   });
 
   test('should render markdown inline in Hash value cells on selection', async ({ apiHelper, browserPage, page }) => {
-    const keyData = HashKeyFactory.build({
-      fields: [{ field: 'readme', value: RENDERED_MARKDOWN }],
-    });
+    const keyData = keys.track(
+      HashKeyFactory.build({
+        fields: [{ field: 'readme', value: RENDERED_MARKDOWN }],
+      }),
+    );
     await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
-    createdKeyName = keyData.keyName;
 
     await browserPage.keyList.searchKeys(keyData.keyName);
     await browserPage.keyList.clickKey(keyData.keyName);
@@ -174,9 +171,8 @@ test.describe('Browser > Key Details - Markdown value format', () => {
   });
 
   test('should render markdown but keep an XSS payload inert', async ({ apiHelper, browserPage, page }) => {
-    const keyData = StringKeyFactory.build({ value: XSS_MARKDOWN });
+    const keyData = keys.track(StringKeyFactory.build({ value: XSS_MARKDOWN }));
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
-    createdKeyName = keyData.keyName;
 
     // Open the key and switch to Markdown.
     await browserPage.keyList.searchKeys(keyData.keyName);
