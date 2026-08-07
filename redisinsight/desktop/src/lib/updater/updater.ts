@@ -93,14 +93,18 @@ export const checkForUpdate = async (url: string = '') => {
     }
   } finally {
     updateDownloadState.isDownloading = false
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define -- mutual recursion with drainQueuedRecheck, both hoisted function declarations
+    drainQueuedRecheck()
+  }
+}
 
-    if (queuedRecheckUrl) {
-      const nextUrl = queuedRecheckUrl
-      queuedRecheckUrl = null
-      checkForUpdate(nextUrl).catch((e) =>
-        log.error(wrapErrorMessageSensitiveData(e)),
-      )
-    }
+export function drainQueuedRecheck() {
+  if (queuedRecheckUrl) {
+    const nextUrl = queuedRecheckUrl
+    queuedRecheckUrl = null
+    checkForUpdate(nextUrl).catch((e) =>
+      log.error(wrapErrorMessageSensitiveData(e)),
+    )
   }
 }
 
@@ -113,6 +117,11 @@ export const startUpdateDownload = () => {
     return
   }
 
+  if (updateDownloadState.downloadedInfo) {
+    updateDownloaded(updateDownloadState.downloadedInfo)
+    return
+  }
+
   updateDownloadState.isDownloading = true
   updateDownloadState.manuallyTriggered = true
   autoUpdater.downloadUpdate().catch((e) => {
@@ -120,6 +129,7 @@ export const startUpdateDownload = () => {
     updateDownloadState.manuallyTriggered = false
     log.error(wrapErrorMessageSensitiveData(e))
     sendUpdateState({ status: AppUpdateStatus.Error })
+    drainQueuedRecheck()
   })
 }
 

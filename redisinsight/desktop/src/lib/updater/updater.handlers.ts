@@ -8,6 +8,7 @@ import {
   updateDownloadState,
   sendUpdateState,
   getUpdateStrategy,
+  drainQueuedRecheck,
   UNPROMPTED_NOTIFICATION_DELAY,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
@@ -101,6 +102,7 @@ export const initAutoUpdaterHandlers = () => {
 
     updateDownloadState.isDownloading = false
     updateDownloadState.downloadedInfo = info
+    drainQueuedRecheck()
     electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
 
     // set updateDownloaded to electron storage for Telemetry send event APPLICATION_UPDATED
