@@ -165,8 +165,18 @@ const walk = (suite, ancestors = []) => {
 
 if (report) walk(report)
 
+// Playwright reports worker crashes and config faults here rather than against a
+// spec, so a run can fail with no failing test. Without these the digest would
+// say "No failures" for a run that never got going.
+const globalErrors = (report?.errors || [])
+  .map((error) => firstLines(error?.message ?? error?.value ?? String(error)))
+  .filter(Boolean)
+  .slice(0, 10)
+  .map((message) => message.slice(0, MAX_ERROR_CHARS))
+
 const digest = {
   reportFound: Boolean(report),
+  globalErrors,
   run: {
     url: process.env.GITHUB_SERVER_URL
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
@@ -198,10 +208,16 @@ if (wantMarkdown) {
     '',
   ]
 
+  if (digest.globalErrors.length) {
+    lines.push('**Run-level errors** (reported outside any test):', '')
+    for (const message of digest.globalErrors) lines.push(`- ${message}`)
+    lines.push('')
+  }
+
   if (!digest.reportFound) {
     lines.push(`No report at \`${inputPath}\` - the run likely died before the reporter flushed.`)
   } else if (!digest.failures.length) {
-    lines.push('No failures.')
+    lines.push(digest.globalErrors.length ? 'No failing tests.' : 'No failures.')
   } else {
     lines.push('| Test | Location | Status | Cause |', '| --- | --- | --- | --- |')
     for (const f of digest.failures) {
