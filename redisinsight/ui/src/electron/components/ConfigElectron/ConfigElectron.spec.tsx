@@ -359,6 +359,55 @@ describe('ConfigElectron', () => {
       expect(ipcAppUpdateDownload).toHaveBeenCalled()
     })
 
+    it('should not let a stale found-toast close remove a newer version that replaced it', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+
+      // A newer version is found before the user acts on the current toast.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.4',
+      })
+
+      // The queue later dismisses the stale, still-mounted original toast;
+      // its onClose must not act on the newer prompt that replaced it.
+      foundAction?.payload.onClose?.()
+
+      const relevantActions = store
+        .getActions()
+        .filter(
+          (action) =>
+            (action.type === removeInfiniteNotification.type &&
+              action.payload === InfiniteMessagesIds.appUpdateFound) ||
+            (action.type === addInfiniteNotification.type &&
+              (action.payload as InfiniteMessage).id ===
+                InfiniteMessagesIds.appUpdateFound),
+        )
+      expect(relevantActions[relevantActions.length - 1].type).toBe(
+        addInfiniteNotification.type,
+      )
+
+      const addActions = store
+        .getActions()
+        .filter(
+          (action) => action.type === addInfiniteNotification.type,
+        ) as unknown as { payload: InfiniteMessage }[]
+      const latestFoundAction = addActions[addActions.length - 1]
+      expect(latestFoundAction.payload.variation).toBe('1.2.4')
+      cleanup()
+      render(latestFoundAction.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+      expect(ipcAppUpdateDownload).toHaveBeenCalledWith('1.2.4')
+    })
+
     it('should restore a retry prompt even if the available version was falsy', () => {
       render(<ConfigElectron />, { store })
       const updateStateAction = (window.app.updateState as jest.Mock).mock
