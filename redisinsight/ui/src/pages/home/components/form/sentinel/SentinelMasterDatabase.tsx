@@ -8,6 +8,7 @@ import { ColorText, Text } from 'uiSrc/components/base/text'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -17,12 +18,13 @@ export interface Props {
 }
 
 const SentinelMasterDatabase = (props: Props) => {
+  const { t } = useTranslation()
   const { db, isCloneMode, formik } = props
   return (
     <>
       {!!db && !isCloneMode && (
         <Text color="subdued" className={styles.sentinelCollapsedField}>
-          Database Index:
+          {t('home.form.dbInfo.field.databaseIndex')}
           <span style={{ paddingLeft: 5 }}>
             <ColorText>{db}</ColorText>
           </span>
@@ -30,12 +32,12 @@ const SentinelMasterDatabase = (props: Props) => {
       )}
       <Row gap="m" responsive>
         <FlexItem grow>
-          <FormField label="Username">
+          <FormField label={t('home.form.database.field.username')}>
             <TextInput
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
               maxLength={200}
-              placeholder="Enter Username"
+              placeholder={t('home.form.database.placeholder.username')}
               value={formik.values.sentinelMasterUsername ?? ''}
               onChange={(value) =>
                 formik.setFieldValue('sentinelMasterUsername', value)
@@ -46,14 +48,14 @@ const SentinelMasterDatabase = (props: Props) => {
         </FlexItem>
 
         <FlexItem grow>
-          <FormField label="Password">
+          <FormField label={t('home.form.database.field.password')}>
             <PasswordInput
               type="password"
               name="sentinelMasterPassword"
               id="sentinelMasterPassword"
               data-testid="sentinel-master-password"
               maxLength={200}
-              placeholder="Enter Password"
+              placeholder={t('home.form.database.placeholder.password')}
               value={
                 formik.values.sentinelMasterPassword === true
                   ? SECURITY_FIELD

@@ -11,6 +11,7 @@ import { BuildType } from 'uiSrc/constants/env'
 import { appRedirectionSelector } from 'uiSrc/slices/app/url-handling'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 
+import { ParseKeys } from 'i18next'
 import { fieldDisplayNames, SubmitBtnText } from 'uiSrc/pages/home/constants'
 import { getFormErrors } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
@@ -28,6 +29,7 @@ import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import TabsComponent from 'uiSrc/components/base/layout/tabs'
 import { Title } from 'uiSrc/components/base/text/Title'
+import i18n, { useTranslation } from 'uiSrc/i18n'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'
@@ -56,12 +58,16 @@ export interface Props {
 
 const getInitFieldsDisplayNames = ({ host, port, name }: any) => {
   if (!host || !port || !name) {
-    return pick(fieldDisplayNames, ['host', 'port', 'name'])
+    const picked = pick(fieldDisplayNames, ['host', 'port', 'name'])
+    return Object.fromEntries(
+      Object.entries(picked).map(([key, value]) => [key, i18n.t(value)]),
+    )
   }
   return {}
 }
 
 const ManualConnectionForm = (props: Props) => {
+  const { t } = useTranslation()
   const {
     formFields,
     onClose,
@@ -120,11 +126,11 @@ const ManualConnectionForm = (props: Props) => {
       connectionType === ConnectionType.Sentinel &&
       !values.sentinelMasterName
     ) {
-      errs.sentinelMasterName = fieldDisplayNames.sentinelMasterName
+      errs.sentinelMasterName = t(fieldDisplayNames.sentinelMasterName)
     }
 
     if (!values.name) {
-      errs.name = fieldDisplayNames.name
+      errs.name = t(fieldDisplayNames.name)
     }
 
     setErrors(errs)
@@ -168,12 +174,12 @@ const ManualConnectionForm = (props: Props) => {
             <IconButton
               onClick={handleClickBackClone}
               icon={ChevronLeftIcon}
-              aria-label="back"
+              aria-label={t('home.form.ariaLabel.back')}
               data-testid="back-btn"
             />
           </FlexItem>
           <FlexItem grow>
-            <Title size="L">Clone Database</Title>
+            <Title size="L">{t('home.form.manual.title.cloneDatabase')}</Title>
           </FlexItem>
         </Row>,
       )
@@ -181,12 +187,17 @@ const ManualConnectionForm = (props: Props) => {
     }
 
     if (isEditMode) {
-      setModalHeader(<Title size="L">Edit Database</Title>)
+      setModalHeader(
+        <Title size="L">{t('home.form.manual.title.editDatabase')}</Title>,
+      )
       return
     }
 
-    setModalHeader(<Title size="L">Connection settings</Title>, true)
-  }, [isEditMode, isCloneMode])
+    setModalHeader(
+      <Title size="L">{t('home.form.manual.title.connectionSettings')}</Title>,
+      true,
+    )
+  }, [isEditMode, isCloneMode, t])
 
   useEffect(() => {
     formik.resetForm()
@@ -231,7 +242,10 @@ const ManualConnectionForm = (props: Props) => {
 
   const Tabs = () => (
     <TabsComponent
-      tabs={MANUAL_FORM_TABS}
+      tabs={MANUAL_FORM_TABS.map((tab) => ({
+        ...tab,
+        label: t(tab.label as ParseKeys),
+      }))}
       value={activeTab}
       onChange={(id) => handleTabClick(id as ManualFormTab)}
       data-testid="manual-form-tabs"

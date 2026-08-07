@@ -20,6 +20,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
+import i18n, { useTranslation } from 'uiSrc/i18n'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
 import {
@@ -39,12 +40,16 @@ export interface Props {
 
 const getInitFieldsDisplayNames = ({ host, port }: any) => {
   if (!host || !port) {
-    return pick(fieldDisplayNames, ['host', 'port'])
+    const picked = pick(fieldDisplayNames, ['host', 'port'])
+    return Object.fromEntries(
+      Object.entries(picked).map(([key, value]) => [key, i18n.t(value)]),
+    )
   }
   return {}
 }
 
 const SentinelConnectionForm = (props: Props) => {
+  const { t } = useTranslation()
   const {
     initialValues = {},
     onClose,
@@ -105,7 +110,7 @@ const SentinelConnectionForm = (props: Props) => {
         icon={submitIsDisabled ? InfoIcon : undefined}
         data-testid="btn-submit"
       >
-        Discover database
+        {t('home.form.sentinel.button.discover')}
       </PrimaryButton>
     </RiTooltip>
   )
@@ -122,7 +127,7 @@ const SentinelConnectionForm = (props: Props) => {
               className="btn-cancel"
               data-testid="btn-cancel"
             >
-              Cancel
+              {t('home.form.sentinel.button.cancel')}
             </SecondaryButton>
           )}
           <SubmitButton

@@ -3,6 +3,7 @@ import { instance, mock } from 'ts-mockito'
 import { act } from '@testing-library/react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
+import i18n from 'uiSrc/i18n'
 import ManualConnectionFrom, {
   Props as ManualConnectionFromProps,
 } from 'uiSrc/pages/home/components/manual-connection/manual-connection-form/ManualConnectionForm'
@@ -50,7 +51,7 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
       data-testid="btn-submit"
       onClick={() => props.onSubmit({} as DbConnectionInfo)}
     >
-      {props.submitButtonText}
+      {props.submitButtonText && i18n.t(props.submitButtonText)}
     </button>
     <button
       type="button"
@@ -106,14 +107,14 @@ describe('ManualConnectionWrapper', () => {
   it('should have add database submit button', () => {
     render(<ManualConnectionWrapper {...instance(mockedProps)} />)
     expect(screen.getByTestId('btn-submit')).toHaveTextContent(
-      SubmitBtnText.AddDatabase,
+      i18n.t(SubmitBtnText.AddDatabase),
     )
   })
 
   it('should have edit database submit button', () => {
     render(<ManualConnectionWrapper {...instance(mockedProps)} editMode />)
     expect(screen.getByTestId('btn-submit')).toHaveTextContent(
-      SubmitBtnText.EditDatabase,
+      i18n.t(SubmitBtnText.EditDatabase),
     )
   })
 
@@ -123,7 +124,7 @@ describe('ManualConnectionWrapper', () => {
       fireEvent.click(screen.getByTestId('onClone-btn'))
     })
     expect(screen.getByTestId('btn-submit')).toHaveTextContent(
-      SubmitBtnText.CloneDatabase,
+      i18n.t(SubmitBtnText.CloneDatabase),
     )
   })
 

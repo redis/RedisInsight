@@ -1,3 +1,4 @@
+import { ParseKeys } from 'i18next'
 import { getConfig } from 'uiSrc/config'
 
 export const ADD_NEW_CA_CERT = 'ADD_NEW_CA_CERT'
@@ -13,28 +14,28 @@ export enum SshPassType {
   PrivateKey = 'privateKey',
 }
 
-export const fieldDisplayNames = {
-  port: 'Port',
-  host: 'Host',
-  name: 'Database alias',
-  selectedCaCertName: 'CA Certificate',
-  newCaCertName: 'CA Certificate Name',
-  newCaCert: 'CA certificate',
-  newTlsCertPairName: 'Client Certificate Name',
-  newTlsClientCert: 'Client Certificate',
-  newTlsClientKey: 'Private Key',
-  servername: 'Server Name',
-  sentinelMasterName: 'Primary Group Name',
-  sshHost: 'SSH Host',
-  sshPort: 'SSH Port',
-  sshPrivateKey: 'SSH Private Key',
-  sshUsername: 'SSH Username',
+export const fieldDisplayNames: Record<string, ParseKeys> = {
+  port: 'home.form.field.port',
+  host: 'home.form.field.host',
+  name: 'home.form.field.alias',
+  selectedCaCertName: 'home.form.field.selectedCaCertName',
+  newCaCertName: 'home.form.field.newCaCertName',
+  newCaCert: 'home.form.field.newCaCert',
+  newTlsCertPairName: 'home.form.field.newTlsCertPairName',
+  newTlsClientCert: 'home.form.field.newTlsClientCert',
+  newTlsClientKey: 'home.form.field.newTlsClientKey',
+  servername: 'home.form.field.servername',
+  sentinelMasterName: 'home.form.field.sentinelMasterName',
+  sshHost: 'home.form.field.sshHost',
+  sshPort: 'home.form.field.sshPort',
+  sshPrivateKey: 'home.form.field.sshPrivateKey',
+  sshUsername: 'home.form.field.sshUsername',
 }
 
 export const DEFAULT_TIMEOUT = getConfig().database.defaultConnectionTimeout
 
 export enum SubmitBtnText {
-  AddDatabase = 'Add Redis Database',
-  EditDatabase = 'Apply Changes',
-  CloneDatabase = 'Clone Database',
+  AddDatabase = 'home.form.button.addDatabase',
+  EditDatabase = 'home.form.button.editDatabase',
+  CloneDatabase = 'home.form.button.cloneDatabase',
 }
