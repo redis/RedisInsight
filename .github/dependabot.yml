@@ -9,9 +9,9 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    # Groups collapse the weekly run into a handful of PRs, so the limit needs
-    # headroom for the family groups plus the two catch-alls.
-    open-pull-requests-limit: 10
+    # Headroom for the family groups plus the four catch-alls. Groups with no
+    # available update produce no PR, so this is a ceiling, not a target.
+    open-pull-requests-limit: 15
     cooldown:
       default-days: 3
       semver-major-days: 7
@@ -35,6 +35,16 @@ updates:
       - dependency-name: '@types/react-dom'
         update-types: ['version-update:semver-major']
       - dependency-name: '@testing-library/react'
+        update-types: ['version-update:semver-major']
+      # A minor changes compiler behaviour, which shifts the per-file error
+      # counts recorded in .tscheck.rec.json (5,595 errors across 871 files).
+      # The ratchet then fails in both directions, and refreshing baselines
+      # needs a human to judge whether the new errors are real.
+      - dependency-name: 'typescript'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      # Tracks the Node version pinned in .nvmrc, not npm.
+      - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       # Being migrated away from; a major would be wasted work.
       - dependency-name: '@elastic/eui'
@@ -65,26 +75,82 @@ updates:
       - dependency-name: '@faker-js/faker'
         update-types: ['version-update:semver-major']
 
-    # First match wins, so family groups are listed before the catch-alls. This
-    # keeps coupled packages in one PR instead of the split pairs Dependabot
-    # produces on its own (e.g. electron-builder arriving twice in one week).
+    # Grouped by what must move together, not by shared name prefix. First
+    # match wins, so a group that would swallow a later group's packages is
+    # listed after it (observability before build-tooling, for instance, so
+    # @sentry/webpack-plugin is not caught by `*-webpack-plugin`).
+    #
+    # Groups that span prod and dev deliberately omit `dependency-type`: the
+    # catch-alls are split by type, so a coupled pair straddling prod/dev
+    # (ioredis + ioredis-mock, i18next + i18next-cli) could never travel
+    # together otherwise.
     groups:
       react:
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      redux:
+        patterns:
+          [
+            'redux',
+            'react-redux',
+            '@reduxjs/toolkit',
+            'redux-thunk',
+            'redux-mock-store',
+          ]
+      i18n:
+        patterns: ['i18next', 'i18next-*', 'react-i18next']
+      monaco:
+        patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
+      # The browser key list renders through these together, and each companion
+      # package is pinned to its host's major.
+      virtualization:
+        patterns:
+          [
+            'react-virtualized',
+            'react-virtualized-auto-sizer',
+            'react-window',
+            'react-window-infinite-loader',
+            'react-vtree',
+            '@types/react-virtualized',
+            '@types/react-window-infinite-loader',
+          ]
+      # Isolated so a failing tsc baselines check is attributable to the
+      # compiler rather than to one of ~50 unrelated dev deps.
+      typescript:
+        patterns: ['typescript', '@aivenio/tsc-output-parser']
+      # Runtime libraries that merely share the `electron-` prefix. Listed
+      # before electron-build so a broken electron-log cannot block a builder
+      # upgrade. New electron-* packages fall through to a catch-all.
+      electron-runtime:
+        patterns:
+          [
+            'electron-context-menu',
+            'electron-debug',
+            'electron-devtools-installer',
+            'electron-log',
+            'electron-store',
+          ]
+      # The packaging toolchain, which electron-builder releases in lockstep
+      # (electron-updater and builder-util-runtime ship with it).
       electron-build:
         patterns:
           [
             'electron',
-            'electron-*',
-            '@electron/*',
+            'electron-builder',
+            'electron-builder-notarize',
+            'electron-updater',
             'app-builder-lib',
             'builder-util*',
+            '@electron/*',
           ]
       storybook:
         patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
+      observability:
+        patterns: ['@sentry/*', '@opentelemetry/*']
+      # Both build pipelines plus the loaders and plugins pinned to a webpack
+      # major: Vite builds the renderer, webpack builds the Electron main and
+      # preload bundles.
       build-tooling:
-        patterns:
-          [
+        patterns: [
             'vite',
             'vite-*',
             '@vitejs/*',
@@ -93,6 +159,18 @@ updates:
             'rollup',
             'webpack',
             'webpack-*',
+            '*-webpack-plugin',
+            'mini-css-extract-plugin',
+            '@svgr/webpack',
+            'react-refresh',
+            # Loaders are named explicitly: a `*-loader` glob would also catch
+            # unrelated packages such as react-window-infinite-loader.
+            'css-loader',
+            'file-loader',
+            'style-loader',
+            'ts-loader',
+            'url-loader',
+            '@teamsupercell/typings-for-css-modules-loader',
           ]
       linting:
         patterns:
@@ -106,27 +184,49 @@ updates:
           ]
       testing:
         patterns:
-          ['jest', 'jest-*', 'ts-jest', '@testing-library/*', '@faker-js/faker']
+          [
+            'jest',
+            'jest-*',
+            'ts-jest',
+            '@testing-library/*',
+            '@faker-js/faker',
+            'msw',
+            'supertest',
+            'ts-mockito',
+            'fishery',
+            'identity-obj-proxy',
+          ]
       babel:
         patterns: ['@babel/*', 'babel-*']
-      observability:
-        patterns: ['@sentry/*', '@opentelemetry/*']
       redis-ui:
         patterns: ['@redis-ui/*', '@redislabsdev/*']
       types:
         patterns: ['@types/*']
-      production:
+      # Split by update-type so a patch bundle stays mergeable on green and a
+      # broken minor cannot hold unrelated patches hostage. Unlocked majors
+      # match no catch-all and so arrive individually.
+      production-patch:
         dependency-type: 'production'
+        update-types: ['patch']
         patterns: ['*']
-      development:
+      production-minor:
+        dependency-type: 'production'
+        update-types: ['minor']
+        patterns: ['*']
+      development-patch:
         dependency-type: 'development'
+        update-types: ['patch']
+        patterns: ['*']
+      development-minor:
+        dependency-type: 'development'
+        update-types: ['minor']
         patterns: ['*']
 
   - package-ecosystem: 'npm'
     directory: '/redisinsight/api'
     schedule:
       interval: 'weekly'
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 8
     cooldown:
       default-days: 3
       semver-major-days: 7
@@ -134,6 +234,11 @@ updates:
       semver-patch-days: 1
 
     ignore:
+      - dependency-name: 'typescript'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
       # Native module compiled against the Electron ABI; moves with Electron.
       - dependency-name: 'better-sqlite3'
         update-types: ['version-update:semver-major']
@@ -150,19 +255,54 @@ updates:
         update-types: ['version-update:semver-major']
 
     groups:
+      typescript:
+        patterns: ['typescript']
       nestjs:
         patterns: ['@nestjs/*']
+      # The Redis clients are the core of the product, so they get a
+      # reviewable PR of their own rather than riding in a catch-all. Spans
+      # prod and dev so ioredis-mock moves with ioredis.
+      redis-clients:
+        patterns: ['redis', 'redis-parser', 'ioredis', 'ioredis-mock']
+      socketio:
+        patterns: ['socket.io', 'socket.io-*']
+      # Unit tests run on jest, integration tests on mocha/chai.
       testing:
-        patterns: ['jest', 'jest-*', 'ts-jest', '@faker-js/faker', 'supertest']
+        patterns:
+          [
+            'jest',
+            'jest-*',
+            'ts-jest',
+            '@faker-js/faker',
+            'supertest',
+            'mocha',
+            'mocha-*',
+            '@mochajs/*',
+            'ts-mocha',
+            'chai',
+            'chai-*',
+            'nyc',
+            'nock',
+          ]
       babel:
         patterns: ['@babel/*', 'babel-*']
       types:
         patterns: ['@types/*']
-      production:
+      production-patch:
         dependency-type: 'production'
+        update-types: ['patch']
         patterns: ['*']
-      development:
+      production-minor:
+        dependency-type: 'production'
+        update-types: ['minor']
+        patterns: ['*']
+      development-patch:
         dependency-type: 'development'
+        update-types: ['patch']
+        patterns: ['*']
+      development-minor:
+        dependency-type: 'development'
+        update-types: ['minor']
         patterns: ['*']
 
   - package-ecosystem: 'github-actions'
