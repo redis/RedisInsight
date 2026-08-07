@@ -4,7 +4,7 @@ import i18n, { Trans } from 'uiSrc/i18n'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import Divider from 'uiSrc/components/divider/Divider'
 import { OAuthProviders } from 'uiSrc/components/oauth/oauth-select-plan/constants'
-import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
+import { LoaderLargeIcon, RiStarsIcon } from 'uiSrc/components/base/icons'
 
 import { CloudSuccessResult, InfiniteMessage } from 'uiSrc/slices/interfaces'
 
@@ -18,7 +18,10 @@ import {
 } from 'uiSrc/constants/links'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 
@@ -39,6 +42,7 @@ export enum InfiniteMessagesIds {
   databaseImportForbidden = 'databaseImportForbidden',
   subscriptionExists = 'subscriptionExists',
   appUpdateAvailable = 'appUpdateAvailable',
+  appUpdateFound = 'appUpdateFound',
   pipelineDeploySuccess = 'pipelineDeploySuccess',
 }
 
@@ -69,6 +73,13 @@ interface InfiniteMessagesType {
     version: string,
     onSuccess?: () => void,
   ) => InfiniteMessage
+  APP_UPDATE_FOUND: (
+    version: string,
+    onDownload: () => void,
+    onSkip: () => void,
+    onClose: () => void,
+  ) => InfiniteMessage
+  APP_UPDATE_DOWNLOADING: () => InfiniteMessage
   SUCCESS_DEPLOY_PIPELINE: () => InfiniteMessage
 }
 
@@ -280,24 +291,86 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
   }),
   APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => ({
     id: InfiniteMessagesIds.appUpdateAvailable,
+    variation: version,
+    customIcon: RiStarsIcon,
     message: i18n.t('notification.infinite.appUpdateAvailable.message'),
     description: (
       <>
-        {i18n.t('notification.infinite.appUpdateAvailable.description', {
-          version,
-        })}
+        <Trans
+          i18nKey="notification.infinite.appUpdateAvailable.description"
+          values={{ version }}
+          components={{
+            releaseNotesLink: (
+              <Link
+                external
+                target="_blank"
+                variant="inline"
+                href={EXTERNAL_LINKS.releaseNotes}
+              />
+            ),
+          }}
+        />
         <Spacer size="m" />
-        {i18n.t('notification.infinite.appUpdateAvailable.descriptionRestart')}
+        <Row justify="start">
+          <FlexItem>
+            <PrimaryButton size="small" onClick={() => onSuccess?.()}>
+              {i18n.t(
+                'notification.infinite.appUpdateAvailable.button.restart',
+              )}
+            </PrimaryButton>
+          </FlexItem>
+        </Row>
       </>
     ),
-    actions: {
-      primary: {
-        label: i18n.t(
-          'notification.infinite.appUpdateAvailable.button.restart',
-        ),
-        onClick: () => onSuccess?.(),
-      },
-    },
+  }),
+  APP_UPDATE_FOUND: (
+    version: string,
+    onDownload: () => void,
+    onSkip: () => void,
+    onClose: () => void,
+  ) => ({
+    id: InfiniteMessagesIds.appUpdateFound,
+    variation: version,
+    customIcon: RiStarsIcon,
+    onClose,
+    message: i18n.t('notification.infinite.appUpdateFound.message'),
+    description: (
+      <>
+        <Trans
+          i18nKey="notification.infinite.appUpdateFound.description"
+          values={{ version }}
+          components={{
+            releaseNotesLink: (
+              <Link
+                external
+                target="_blank"
+                variant="inline"
+                href={EXTERNAL_LINKS.releaseNotes}
+              />
+            ),
+          }}
+        />
+        <Spacer size="m" />
+        <Row justify="start" gap="s">
+          <FlexItem>
+            <PrimaryButton size="small" onClick={() => onDownload()}>
+              {i18n.t('notification.infinite.appUpdateFound.button.update')}
+            </PrimaryButton>
+          </FlexItem>
+          <FlexItem>
+            <SecondaryButton size="small" onClick={() => onSkip()}>
+              {i18n.t('notification.infinite.appUpdateFound.button.skip')}
+            </SecondaryButton>
+          </FlexItem>
+        </Row>
+      </>
+    ),
+  }),
+  APP_UPDATE_DOWNLOADING: () => ({
+    id: InfiniteMessagesIds.appUpdateFound,
+    customIcon: LoaderLargeIcon,
+    message: i18n.t('notification.infinite.appUpdateDownloading.message'),
+    showCloseButton: false,
   }),
   SUCCESS_DEPLOY_PIPELINE: () => ({
     id: InfiniteMessagesIds.pipelineDeploySuccess,

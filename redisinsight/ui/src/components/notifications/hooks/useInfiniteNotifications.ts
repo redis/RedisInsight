@@ -10,17 +10,19 @@ import { InfiniteMessagesIds } from '../components'
 import { defaultContainerId, ONE_HOUR } from '../constants'
 
 const DISPLAY_THROTTLE = 3_000 // 3 seconds - minimum time between displaying notifications
-const AUTO_DISMISS_DELAY = 5_000 // 5 seconds - wait before auto-dismissing when no notifications remain
+const AUTO_DISMISS_DELAY = 300
 
 const showNotification = (notification: InfiniteMessage) => {
   if (!notification) {
     return
   }
 
-  // Show latest notification
+  const autoClose =
+    notification.id === InfiniteMessagesIds.appUpdateFound ? false : ONE_HOUR
+
   return riToast(notification, {
     containerId: defaultContainerId,
-    autoClose: ONE_HOUR,
+    autoClose,
   })
 }
 

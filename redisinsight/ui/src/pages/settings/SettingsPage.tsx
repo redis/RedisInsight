@@ -39,6 +39,7 @@ import {
   CopyDiagnostics,
   LanguageSettings,
   ThemeSettings,
+  UpdateSettings,
   WorkbenchSettings,
 } from './components'
 import { DateTimeFormatter } from './components/general-settings'
@@ -73,6 +74,9 @@ const SettingsPage = () => {
     <>
       <ThemeSettings />
       {isLanguageEnabled && <LanguageSettings />}
+      <FeatureFlagComponent name={FeatureFlags.appUpdateStrategySettings}>
+        <UpdateSettings />
+      </FeatureFlagComponent>
       <ConsentsNotifications />
       <Divider />
       <Spacer />
