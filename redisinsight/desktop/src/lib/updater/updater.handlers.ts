@@ -48,20 +48,20 @@ export const initAutoUpdaterHandlers = () => {
       pendingAvailableTimeout = null
       pendingAvailableVersion = null
 
-      if (
-        updateDownloadState.downloadedInfo &&
-        updateDownloadState.downloadedInfo.version === info.version
-      ) {
-        updateDownloaded(updateDownloadState.downloadedInfo)
-        return
-      }
-
       const skippedVersion = electronStore?.get(
         ElectronStorageItem.updateSkippedVersion,
       )
 
       if (skippedVersion === info.version) {
         electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+        return
+      }
+
+      if (
+        updateDownloadState.downloadedInfo &&
+        updateDownloadState.downloadedInfo.version === info.version
+      ) {
+        updateDownloaded(updateDownloadState.downloadedInfo)
         return
       }
 
@@ -82,8 +82,12 @@ export const initAutoUpdaterHandlers = () => {
   })
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
+    const wasManual = updateDownloadState.manuallyTriggered
     updateDownloadState.isDownloading = false
     updateDownloadState.manuallyTriggered = false
+    if (wasManual) {
+      sendUpdateState({ status: AppUpdateStatus.Error })
+    }
     drainQueuedRecheck()
   })
   autoUpdater.on('download-progress', (progressObj: any) => {
