@@ -33,6 +33,7 @@ export const initAutoUpdaterHandlers = () => {
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, true)
 
     if (autoUpdater.autoDownload) {
+      clearPendingAvailable()
       return
     }
 
@@ -46,7 +47,10 @@ export const initAutoUpdaterHandlers = () => {
       pendingAvailableTimeout = null
       pendingAvailableVersion = null
 
-      if (updateDownloadState.downloadedInfo?.version === info.version) {
+      if (
+        updateDownloadState.downloadedInfo &&
+        updateDownloadState.downloadedInfo.version === info.version
+      ) {
         updateDownloaded(updateDownloadState.downloadedInfo)
         return
       }
