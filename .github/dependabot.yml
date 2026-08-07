@@ -1,8 +1,8 @@
 version: 2
 
-# The root and api trees have independent lockfiles, so each needs its own
-# entry. Directories absent here still receive security updates, which run
-# repo-wide and ignore this config.
+# Each tree below has its own lockfile, so each needs its own entry.
+# Directories absent here still receive security updates, which run repo-wide
+# and ignore this config.
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
@@ -223,6 +223,38 @@ updates:
         patterns: ['*']
       development-minor:
         dependency-type: 'development'
+        update-types: ['minor']
+        patterns: ['*']
+
+  # The packaged Electron app's manifest, holding three native modules. Its
+  # lockfile is the one that ships, so these have to track the copies in the api
+  # tree rather than drift from them. Declaring the entry also applies the
+  # ignore rules below to security updates, which reach this directory either
+  # way.
+  - package-ecosystem: 'npm'
+    directory: '/redisinsight'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 1
+
+    ignore:
+      # Mirrors the api entry: the ABI is coupled to the Electron version.
+      - dependency-name: 'better-sqlite3'
+        update-types: ['version-update:semver-major']
+
+    # No devDependencies here, so the development catch-alls are omitted.
+    groups:
+      production-patch:
+        dependency-type: 'production'
+        update-types: ['patch']
+        patterns: ['*']
+      production-minor:
+        dependency-type: 'production'
         update-types: ['minor']
         patterns: ['*']
 
