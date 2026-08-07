@@ -67,11 +67,6 @@ runs:
         wait_for_cluster master-plain-7-1    "IP-based cluster (8200)"
         wait_for_cluster master-hostname-7-1  "Hostname-based cluster (8210)"
 
-    # The cluster check above talks to a service over the compose network, which
-    # says nothing about the published ports the suite connects to - nor about the
-    # standalone instances, which nothing waited for at all. oss-standalone-big
-    # restores a large dump on startup, so instances can still be unresponsive
-    # while tests are already running.
     - name: Wait for published Redis ports to serve
       shell: bash
       run: |

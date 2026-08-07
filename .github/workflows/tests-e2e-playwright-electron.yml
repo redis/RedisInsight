@@ -39,7 +39,6 @@ jobs:
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
-    # Consumable by downstream jobs via needs.e2e-electron.outputs.digest.
     outputs:
       digest: ${{ steps.summarize.outputs.digest }}
 
@@ -118,11 +117,6 @@ jobs:
           mkdir -p tests/e2e/remote
           mkdir -p tests/e2e/rdi
 
-      # The Electron app's embedded API runs on the host, so it must resolve every
-      # address the Redis clusters announce: the IP-based cluster announces
-      # host.docker.internal, and the hostname-based cluster announces
-      # master-hostname-7-{1,2,3} (Docker DNS covers these only for containers
-      # on the compose network).
       - name: Ensure cluster addresses resolve on the host
         run: |
           if ! grep -q host.docker.internal /etc/hosts; then
@@ -164,8 +158,6 @@ jobs:
           # Disable TLS certificate validation for self-signed certs (like old tests do)
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
-      # Flat, secret-redacted failure list. The raw report is megabytes of nested
-      # suites with ANSI-laden messages; this is what humans and agents read.
       - name: Summarize Playwright results
         id: summarize
         if: always()
@@ -180,8 +172,6 @@ jobs:
             echo 'E2E_DIGEST_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      # Separate from the full report so consumers fetch a few KB instead of the
-      # whole trace/video bundle.
       - name: Upload agent digest
         if: always()
         uses: actions/upload-artifact@v7

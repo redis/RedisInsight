@@ -33,7 +33,6 @@ jobs:
       RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
 
-    # Consumable by downstream jobs via needs.e2e-docker.outputs.digest.
     outputs:
       digest: ${{ steps.summarize.outputs.digest }}
 
@@ -75,11 +74,8 @@ jobs:
           -f tests/e2e/docker.web.docker-compose.yml \
           up --detach --force-recreate
 
-          # Both /api/health and GET /api/databases answer while POST
-          # /api/databases still returns 404, for roughly a minute after start.
-          # Because worker scheduling is deterministic that window always claims
-          # the same specs, which made it look spec-specific rather than timed.
-          # Probe with the write the suite actually depends on.
+          # /api/health and GET /api/databases both answer while POST to the same
+          # path still 404s, so gate on the write the suite depends on.
           npx wait-on http://localhost:5540/api/health --timeout 60000
 
           echo "Waiting for POST /api/databases to be served..."
@@ -105,17 +101,8 @@ jobs:
             sleep 2
           done
 
-      # Measures the path the app uses (container -> host-gateway -> published
-      # port) against a host-side control, for the whole run. Database creation
-      # fails here with connection timeouts while the same instances answer
-      # immediately from the host, and this shows whether that is specific to the
-      # container path or just a loaded machine.
       - name: Start connectivity probes
         run: |
-          # Samples a standalone by ip and a cluster node by its announced
-          # hostname: those are the two ways the app reaches Redis here, and they
-          # fail independently - the hostname path was broken while the ip path
-          # was perfectly healthy.
           docker run -d --name conn-probe \
             --add-host host.docker.internal:host-gateway \
             --add-host master-hostname-7-1:host-gateway \
@@ -132,10 +119,8 @@ jobs:
               sleep 2
             done'
 
-          # perl rather than `date +%s%3N`: the latter is GNU-only, so the probe
-          # cannot be exercised outside the runner. It costs ~40ms per sample, so
-          # the two probes' baselines are not comparable to each other - only
-          # failures and multi-second stalls are.
+          # perl rather than `date +%s%3N`, which is GNU-only. It adds ~40ms per
+          # sample, so compare failures and stalls between the probes, not baselines.
           nohup bash -c 'nowms() { perl -MTime::HiRes=time -e "printf \"%d\n\", time*1000"; }
           while true; do
             s=$(nowms)
@@ -197,10 +182,8 @@ jobs:
           echo "--- slowest 15 container samples ---"
           grep -E 'FAIL|[0-9]{4,}ms' "$dest/probe-container.log" | head -15 || true
 
-      # The app runs in a container, so its own log is the only place an API-side
-      # failure is visible. `docker logs` cannot be used: the compose service sets
-      # `logging: driver: none` and RI_STDOUT_LOGGER=false, so copy the log files
-      # the app writes to its home directory instead.
+      # `docker logs` cannot be used here: the compose service sets
+      # `logging: driver: none` and RI_STDOUT_LOGGER=false.
       - name: Capture RedisInsight container logs
         if: failure()
         run: |
@@ -220,8 +203,6 @@ jobs:
             cat "$dest/copy-error.txt" || true
           fi
 
-      # Flat, secret-redacted failure list. The raw report is megabytes of nested
-      # suites with ANSI-laden messages; this is what humans and agents read.
       - name: Summarize Playwright results
         id: summarize
         if: always()
@@ -236,8 +217,6 @@ jobs:
             echo 'E2E_DIGEST_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      # Separate from the full report so consumers fetch a few KB instead of the
-      # whole trace/video bundle.
       - name: Upload agent digest
         if: always()
         uses: actions/upload-artifact@v7
