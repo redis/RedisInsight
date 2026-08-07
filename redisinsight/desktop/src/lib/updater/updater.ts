@@ -121,6 +121,8 @@ export const startUpdateDownload = (version?: string) => {
     updateDownloadState.downloadedInfo &&
     updateDownloadState.downloadedInfo.version === version
   ) {
+    updateDownloadState.manuallyTriggered = true
+    updateDownloadState.initiatingStrategy = getUpdateStrategy()
     updateDownloaded(updateDownloadState.downloadedInfo)
     return
   }
