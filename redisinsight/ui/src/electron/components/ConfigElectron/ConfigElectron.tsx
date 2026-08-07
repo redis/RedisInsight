@@ -104,6 +104,10 @@ const ConfigElectron = () => {
   }
 
   const showUpdateFoundToast = (version: string) => {
+    sendEventTelemetry({
+      event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+      eventData: { strategy: AppUpdateStrategy.notify },
+    })
     let resolved = false
     dispatch(
       addInfiniteNotification(
@@ -149,10 +153,6 @@ const ConfigElectron = () => {
     switch (status) {
       case AppUpdateStatus.Available:
         lastAvailableVersion = version
-        sendEventTelemetry({
-          event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
-          eventData: { strategy: AppUpdateStrategy.notify },
-        })
         dispatch(
           removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
         )
