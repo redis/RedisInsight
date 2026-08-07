@@ -90,7 +90,9 @@ updates:
             'redux-thunk',
             'redux-mock-store',
           ]
-      i18n:
+      # Group identifiers take letters, pipes, underscores and hyphens only, so
+      # this cannot be named after the package.
+      internationalization:
         patterns: ['i18next', 'i18next-*', 'react-i18next']
       monaco:
         patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
