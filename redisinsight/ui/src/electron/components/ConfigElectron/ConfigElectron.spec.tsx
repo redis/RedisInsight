@@ -267,6 +267,64 @@ describe('ConfigElectron', () => {
       expect(ipcAppUpdateDownload).toHaveBeenCalled()
     })
 
+    it('should not let a stale found-toast close resolve its replacement', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+
+      // User clicks Update; the throttled notification queue hasn't
+      // visually replaced the found toast with the downloading one yet.
+      render(foundAction?.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+      store.clearActions()
+      jest.clearAllMocks()
+
+      // The download fails immediately, before the queue swaps the toast.
+      updateStateAction(null, { status: AppUpdateStatus.Error })
+
+      // The queue later dismisses the stale, still-mounted original toast;
+      // its onClose must not act on the retry prompt that replaced it.
+      foundAction?.payload.onClose?.()
+
+      // The retry prompt (added by the Error branch) must be the last
+      // thing to happen to appUpdateFound - not removed by the stale close.
+      const relevantActions = store
+        .getActions()
+        .filter(
+          (action) =>
+            (action.type === removeInfiniteNotification.type &&
+              action.payload === InfiniteMessagesIds.appUpdateFound) ||
+            (action.type === addInfiniteNotification.type &&
+              (action.payload as InfiniteMessage).id ===
+                InfiniteMessagesIds.appUpdateFound),
+        )
+      expect(relevantActions[relevantActions.length - 1].type).toBe(
+        addInfiniteNotification.type,
+      )
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+      })
+
+      const addActions = store
+        .getActions()
+        .filter(
+          (action) => action.type === addInfiniteNotification.type,
+        ) as unknown as { payload: InfiniteMessage }[]
+      const retryAction = addActions[addActions.length - 1]
+      cleanup()
+      render(retryAction.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+      expect(ipcAppUpdateDownload).toHaveBeenCalled()
+    })
+
     it('should restore a retry prompt even if the available version was falsy', () => {
       render(<ConfigElectron />, { store })
       const updateStateAction = (window.app.updateState as jest.Mock).mock

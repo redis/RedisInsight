@@ -37,7 +37,9 @@ const ConfigElectron = () => {
   let isCheckedUpdates = false
   let hasShownFoundToast = false
   let lastAvailableVersion = ''
-  let foundToastResolved = false
+  // Reassigned per toast so a stale, already-replaced toast's onClose can't
+  // resolve (or unresolve) the toast that replaced it.
+  let foundToastResolvedRef = { current: false }
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
 
@@ -82,7 +84,7 @@ const ConfigElectron = () => {
   }
 
   const updateAvailableAction = (_e: any, { version }: UpdateInfo) => {
-    foundToastResolved = true
+    foundToastResolvedRef.current = true
     dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
     dispatch(
       addInfiniteNotification(
@@ -108,14 +110,15 @@ const ConfigElectron = () => {
       event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
       eventData: { strategy: AppUpdateStrategy.notify },
     })
-    foundToastResolved = false
+    const resolvedRef = { current: false }
+    foundToastResolvedRef = resolvedRef
     dispatch(
       addInfiniteNotification(
         INFINITE_MESSAGES.APP_UPDATE_FOUND(
           version,
           () => {
-            if (foundToastResolved) return
-            foundToastResolved = true
+            if (resolvedRef.current) return
+            resolvedRef.current = true
             sendEventTelemetry({
               event: TelemetryEvent.UPDATE_NOTIFICATION_DOWNLOAD_CLICKED,
             })
@@ -127,8 +130,8 @@ const ConfigElectron = () => {
             ipcAppUpdateDownload(version)
           },
           () => {
-            if (foundToastResolved) return
-            foundToastResolved = true
+            if (resolvedRef.current) return
+            resolvedRef.current = true
             sendEventTelemetry({
               event: TelemetryEvent.UPDATE_NOTIFICATION_SKIPPED,
             })
@@ -138,8 +141,8 @@ const ConfigElectron = () => {
             ipcSkipUpdateVersion(version)
           },
           () => {
-            if (!foundToastResolved) {
-              foundToastResolved = true
+            if (!resolvedRef.current) {
+              resolvedRef.current = true
               sendEventTelemetry({
                 event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
               })
