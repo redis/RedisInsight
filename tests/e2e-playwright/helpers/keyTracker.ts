@@ -24,10 +24,24 @@ export const createKeyTracker = () => {
     },
 
     async cleanup(apiHelper: ApiHelper, databaseId: string): Promise<void> {
+      const pending = keyNames.splice(0);
+      const unresolved: string[] = [];
+      let failure: unknown;
+
       // Names carry a faker suffix, so each is a glob matching only itself.
-      for (const keyName of keyNames.splice(0)) {
-        await apiHelper.deleteKeysByPattern(databaseId, keyName);
+      for (const keyName of pending) {
+        try {
+          await apiHelper.deleteKeysByPattern(databaseId, keyName);
+        } catch (error) {
+          // Keep the key tracked so a later cleanup can still remove it, and
+          // attempt the rest rather than leaking everything after the first fault.
+          unresolved.push(keyName);
+          failure = failure ?? error;
+        }
       }
+
+      keyNames.push(...unresolved);
+      if (failure) throw failure;
     },
   };
 };

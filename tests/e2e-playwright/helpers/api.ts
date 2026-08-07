@@ -42,14 +42,32 @@ export class ApiHelper {
    * the status is no guide to whether retrying can help.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
+    let attempts = 0;
+
     // 2s + 4s + 8s of backoff: the observed stalls lasted around a minute, and a
     // constant short delay left the total retry span shorter than the stall.
-    return retry(() => this.postDatabase(config), {
-      maxAttempts: 4,
-      delayMs: 2000,
-      backoffFactor: 2,
-      errorMessage: 'Gave up creating database',
-    });
+    return retry(
+      async () => {
+        attempts += 1;
+
+        // A create can succeed on the server and still fail the client, e.g. a
+        // reset connection while reading the response. Retrying blindly would add
+        // a second database, and duplicate names are allowed, so adopt the one a
+        // previous attempt left behind instead.
+        if (attempts > 1) {
+          const existing = (await this.getDatabases()).find((database) => database.name === config.name);
+          if (existing) return existing;
+        }
+
+        return this.postDatabase(config);
+      },
+      {
+        maxAttempts: 4,
+        delayMs: 2000,
+        backoffFactor: 2,
+        errorMessage: 'Gave up creating database',
+      },
+    );
   }
 
   private async postDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
