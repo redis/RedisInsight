@@ -15,6 +15,7 @@ import {
   AZURE_OAUTH_DEEPLINK_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
   AZURE_OAUTH_WEB_CALLBACK_ENDPOINT,
+  AZURE_TENANT_GUID_REGEX,
   AzureAuthStatus,
   AzureOAuthRedirectType,
   AzureRedisTokenEvents,
@@ -49,6 +50,12 @@ const generateCodeChallenge = (verifier: string): string =>
  * Generate a random UUID for state parameter.
  */
 const generateUuid = (): string => crypto.randomUUID();
+
+/**
+ * Compare tenant ids, which AAD reports in either casing.
+ */
+const isSameTenant = (a?: string, b?: string): boolean =>
+  !!a && !!b && a.toLowerCase() === b.toLowerCase();
 
 /**
  * Service for handling Azure Entra ID authentication.
@@ -379,10 +386,12 @@ export class AzureAuthService {
       // the record for that realm so silent refresh targets the right tenant
       // (falling back to any record for the account otherwise).
       const forAccount = (a: AccountInfo) => a.homeAccountId === accountId;
-      const account =
-        (tenantId &&
-          accounts.find((a) => forAccount(a) && a.tenantId === tenantId)) ||
-        accounts.find(forAccount);
+      const realmAccount =
+        tenantId &&
+        accounts.find(
+          (a) => forAccount(a) && isSameTenant(a.tenantId, tenantId),
+        );
+      const account = realmAccount || accounts.find(forAccount);
       if (!account) {
         this.logger.warn(`Account not found: ${accountId}`);
         return null;
@@ -392,13 +401,39 @@ export class AzureAuthService {
       // authority. Without it, MSAL resolves to the account's home tenant.
       const authority = tenantId ? buildAzureAuthority(tenantId) : undefined;
 
+      // MSAL resolves a cached access token by the realm of the account it is
+      // given and consults the request authority only on a cache miss, so a
+      // record from another realm yields that realm's token. Skipping the cache
+      // leaves the authority to decide which tenant issues the token.
+      const forceRefresh = Boolean(tenantId) && !realmAccount;
+
       const result = await pca.acquireTokenSilent({
         account,
         scopes: [scope],
         ...(authority && { authority }),
+        ...(forceRefresh && { forceRefresh }),
       });
 
       if (!result?.accessToken || !result?.expiresOn || !result?.account) {
+        return null;
+      }
+
+      // A tenant given as a domain has no realm to compare against; there the
+      // request authority alone pins the issuing tenant.
+      const requestedRealm =
+        tenantId && AZURE_TENANT_GUID_REGEX.test(tenantId) ? tenantId : null;
+
+      // The target resource rejects a token from another realm, so report it as
+      // no token: callers then offer interactive re-authentication against the
+      // right tenant instead of an opaque auth error.
+      if (
+        requestedRealm &&
+        !isSameTenant(result.account.tenantId, requestedRealm)
+      ) {
+        this.logger.warn(
+          `Discarding token issued for tenant ${result.account.tenantId} ` +
+            `while tenant ${tenantId} was requested`,
+        );
         return null;
       }
 

@@ -389,7 +389,8 @@ describe('AzureAuthService', () => {
     });
 
     it('should emit token acquired event on successful acquisition', async () => {
-      const mockAccount = createMockAccount();
+      const tenantId = faker.string.uuid();
+      const mockAccount = { ...createMockAccount(), tenantId };
       const mockExpiresOn = new Date();
       const mockAccessToken = faker.string.alphanumeric(100);
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
@@ -399,7 +400,6 @@ describe('AzureAuthService', () => {
         account: mockAccount,
       } as any);
 
-      const tenantId = faker.string.uuid();
       await service.getRedisTokenByAccountId(
         mockAccount.homeAccountId,
         tenantId,
@@ -428,8 +428,8 @@ describe('AzureAuthService', () => {
     });
 
     it('should acquire silently against the tenant authority when tenantId provided', async () => {
-      const mockAccount = createMockAccount();
       const tenantId = faker.string.uuid();
+      const mockAccount = { ...createMockAccount(), tenantId };
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockResolvedValue({
         accessToken: faker.string.alphanumeric(100),
@@ -500,6 +500,203 @@ describe('AzureAuthService', () => {
         }),
       );
     });
+
+    it('should not force a refresh when the requested realm is cached', async () => {
+      const tenantId = faker.string.uuid();
+      const mockAccount = { ...createMockAccount(), tenantId };
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: mockAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(
+        mockAccount.homeAccountId,
+        tenantId,
+      );
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          forceRefresh: true,
+        }),
+      );
+    });
+  });
+
+  describe('getRedisTokenByAccountId cross-tenant safety', () => {
+    const homeTenantId = faker.string.uuid();
+    const otherTenantId = faker.string.uuid();
+    const homeAccountId = faker.string.uuid();
+    let homeRealmAccount: ReturnType<typeof createMockAccount>;
+
+    beforeEach(() => {
+      // Signed into the home tenant only: connecting to a database there leaves
+      // a live token for that realm in the cache.
+      homeRealmAccount = {
+        ...createMockAccount(),
+        homeAccountId,
+        tenantId: homeTenantId,
+      };
+      mockTokenCache.getAllAccounts.mockResolvedValue([homeRealmAccount]);
+    });
+
+    it('should force a refresh when the requested tenant has no cached realm', async () => {
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: { ...homeRealmAccount, tenantId: otherTenantId },
+      } as any);
+
+      await service.getRedisTokenByAccountId(homeAccountId, otherTenantId);
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${otherTenantId}`,
+          forceRefresh: true,
+        }),
+      );
+    });
+
+    it('should reject a token issued for a realm other than the requested tenant', async () => {
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        otherTenantId,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should not emit the token acquired event for a wrong-realm token', async () => {
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(homeAccountId, otherTenantId);
+
+      expect(mockEventEmitter.emit).not.toHaveBeenCalled();
+    });
+
+    it('should return the token when the realm matches the requested tenant', async () => {
+      const otherRealmAccount = {
+        ...homeRealmAccount,
+        tenantId: otherTenantId,
+        localAccountId: faker.string.uuid(),
+      };
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: otherRealmAccount,
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        otherTenantId,
+      );
+
+      expect(result?.token).toEqual(mockAccessToken);
+      expect(result?.account).toEqual(otherRealmAccount);
+    });
+
+    it('should not reject a home-realm token when no tenant is requested', async () => {
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(homeAccountId);
+
+      expect(result?.token).toEqual(mockAccessToken);
+    });
+
+    it('should leave acquisition untouched when no tenant is requested', async () => {
+      // A database with no recorded tenantId has no realm to target, so neither
+      // the authority nor the forced refresh applies.
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(homeAccountId);
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          authority: expect.anything(),
+          forceRefresh: expect.anything(),
+        }),
+      );
+    });
+
+    it('should accept a token when the tenant is requested as a domain', async () => {
+      // The import and login DTOs accept a tenant domain, which MSAL reports as
+      // the canonical realm GUID.
+      const tenantDomain = 'contoso.onmicrosoft.com';
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: { ...homeRealmAccount, tenantId: otherTenantId },
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        tenantDomain,
+      );
+
+      expect(result?.token).toEqual(mockAccessToken);
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantDomain}`,
+          forceRefresh: true,
+        }),
+      );
+    });
+
+    it('should match the requested realm regardless of GUID casing', async () => {
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      const result = await service.getRedisTokenByAccountId(
+        homeAccountId,
+        homeTenantId.toUpperCase(),
+      );
+
+      expect(result?.token).toEqual(mockAccessToken);
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({ account: homeRealmAccount }),
+      );
+    });
+
+    it('should reject a wrong-realm management token as well', async () => {
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: homeRealmAccount,
+      } as any);
+
+      const result = await service.getManagementTokenByAccountId(
+        homeAccountId,
+        otherTenantId,
+      );
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('getManagementTokenByAccountId', () => {
@@ -546,8 +743,8 @@ describe('AzureAuthService', () => {
     });
 
     it('should acquire silently against the tenant authority when tenantId provided', async () => {
-      const mockAccount = createMockAccount();
       const tenantId = faker.string.uuid();
+      const mockAccount = { ...createMockAccount(), tenantId };
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockResolvedValue({
         accessToken: faker.string.alphanumeric(100),
