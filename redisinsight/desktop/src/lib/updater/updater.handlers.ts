@@ -83,6 +83,8 @@ export const initAutoUpdaterHandlers = () => {
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
     updateDownloadState.isDownloading = false
+    updateDownloadState.manuallyTriggered = false
+    drainQueuedRecheck()
   })
   autoUpdater.on('download-progress', (progressObj: any) => {
     let logMessage = `Download speed: ${progressObj.bytesPerSecond}`
