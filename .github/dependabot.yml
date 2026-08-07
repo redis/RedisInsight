@@ -75,10 +75,20 @@ updates:
       - dependency-name: '@faker-js/faker'
         update-types: ['version-update:semver-major']
 
-    # Grouped by what must move together, not by shared name prefix. First
-    # match wins, so a group that would swallow a later group's packages is
-    # listed after it (observability before build-tooling, for instance, so
-    # @sentry/webpack-plugin is not caught by `*-webpack-plugin`).
+    # Grouped by what must move together, not by shared name prefix.
+    #
+    # Membership is decided by *pattern specificity*, not by declaration
+    # order. The docs say "included in the first group that it matches", but
+    # the updater scores patterns (exact name 1000, wildcards penalised by
+    # length, bare `*` 1) and assigns each dependency to its highest-scoring
+    # match. See dependabot/dependabot-core#13044 and #14576. Two consequences:
+    #
+    #   - Every catch-all below carries `patterns: ['*']` so it scores 1 and
+    #     always loses to a named group. A catch-all that omits `patterns`
+    #     entirely wins the comparison instead and silently swallows the named
+    #     groups, which is the bug reported in #14576.
+    #   - Prefer exact names over wildcards where two groups could overlap;
+    #     an exact match at 1000 beats any wildcard deterministically.
     #
     # Groups that span prod and dev deliberately omit `dependency-type`: the
     # catch-alls are split by type, so a coupled pair straddling prod/dev
@@ -117,9 +127,11 @@ updates:
       # compiler rather than to one of ~50 unrelated dev deps.
       typescript:
         patterns: ['typescript', '@aivenio/tsc-output-parser']
-      # Runtime libraries that merely share the `electron-` prefix. Listed
-      # before electron-build so a broken electron-log cannot block a builder
-      # upgrade. New electron-* packages fall through to a catch-all.
+      # Runtime libraries that merely share the `electron-` prefix, kept apart
+      # from the packaging toolchain so a broken electron-log cannot block a
+      # builder upgrade. Named exactly rather than via `electron-*`, which
+      # would collide with electron-build. New electron-* packages fall
+      # through to a catch-all.
       electron-runtime:
         patterns:
           [
@@ -128,9 +140,12 @@ updates:
             'electron-devtools-installer',
             'electron-log',
             'electron-store',
+            '@types/electron-store',
           ]
       # The packaging toolchain, which electron-builder releases in lockstep
-      # (electron-updater and builder-util-runtime ship with it).
+      # (electron-updater and builder-util-runtime ship with it). node-abi maps
+      # Electron versions to native ABI versions, so it has to track the
+      # Electron bump for native rebuilds to resolve.
       electron-build:
         patterns:
           [
@@ -141,6 +156,7 @@ updates:
             'app-builder-lib',
             'builder-util*',
             '@electron/*',
+            'node-abi',
           ]
       storybook:
         patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
@@ -183,8 +199,7 @@ updates:
             'lint-staged',
           ]
       testing:
-        patterns:
-          [
+        patterns: [
             'jest',
             'jest-*',
             'ts-jest',
@@ -195,6 +210,10 @@ updates:
             'ts-mockito',
             'fishery',
             'identity-obj-proxy',
+            # These track their host package's major, so they travel with it
+            # rather than with the rest of @types/*.
+            '@types/jest',
+            '@types/supertest',
           ]
       babel:
         patterns: ['@babel/*', 'babel-*']
@@ -257,24 +276,38 @@ updates:
     groups:
       typescript:
         patterns: ['typescript']
+      # rxjs and reflect-metadata are NestJS peer dependencies pinned to the
+      # framework major, so they cannot move independently of it.
       nestjs:
-        patterns: ['@nestjs/*']
+        patterns: ['@nestjs/*', 'rxjs', 'reflect-metadata']
       # The Redis clients are the core of the product, so they get a
       # reviewable PR of their own rather than riding in a catch-all. Spans
       # prod and dev so ioredis-mock moves with ioredis.
       redis-clients:
-        patterns: ['redis', 'redis-parser', 'ioredis', 'ioredis-mock']
+        patterns:
+          [
+            'redis',
+            'redis-parser',
+            'ioredis',
+            'ioredis-mock',
+            '@types/ioredis-mock',
+          ]
       socketio:
         patterns: ['socket.io', 'socket.io-*']
-      # Unit tests run on jest, integration tests on mocha/chai.
+      # Unit tests run on jest, integration tests on mocha/chai. babel-jest is
+      # released from the jest repo and tracks its major, so it belongs here
+      # rather than with the Babel presets.
       testing:
         patterns:
           [
             'jest',
             'jest-*',
             'ts-jest',
+            'babel-jest',
+            '@types/jest',
             '@faker-js/faker',
             'supertest',
+            '@types/supertest',
             'mocha',
             'mocha-*',
             '@mochajs/*',
