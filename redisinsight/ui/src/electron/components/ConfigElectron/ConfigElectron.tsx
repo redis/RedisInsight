@@ -109,6 +109,7 @@ const ConfigElectron = () => {
       event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
       eventData: { strategy: AppUpdateStrategy.notify },
     })
+    foundToastResolvedRef.current = true
     const resolvedRef = { current: false }
     foundToastResolvedRef = resolvedRef
     dispatch(
