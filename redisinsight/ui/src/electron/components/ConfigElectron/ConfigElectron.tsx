@@ -139,9 +139,13 @@ const ConfigElectron = () => {
           },
           () => {
             if (!foundToastResolved) {
+              foundToastResolved = true
               sendEventTelemetry({
                 event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
               })
+              dispatch(
+                removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+              )
             }
           },
         ),
