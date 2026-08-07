@@ -10,9 +10,11 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const NotFoundErrorPage = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const config = getConfig()
   const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
@@ -41,24 +43,24 @@ const NotFoundErrorPage = () => {
             </FlexItem>
             <FlexItem grow>
               <Title size="XXL">
-                Whoops!
-                <br />
-                This Page Is an Empty Set
+                <Trans i18nKey="notFound.title" components={{ br: <br /> }} />
               </Title>
               <Text component="div">
                 <p
                   className={styles.errorSubtext}
                   style={{ marginBottom: '.8rem' }}
                 >
-                  We searched every shard, <br />
-                  But couldn&apos;t find the page you&apos;re after.
+                  <Trans
+                    i18nKey="notFound.description"
+                    components={{ br: <br /> }}
+                  />
                 </p>
                 <PrimaryButton
                   size="s"
                   onClick={onDbButtonClick}
                   data-testid="not-found-db-list-button"
                 >
-                  Databases page
+                  {t('notFound.button.databases')}
                 </PrimaryButton>
               </Text>
             </FlexItem>

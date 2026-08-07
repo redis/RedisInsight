@@ -5,6 +5,7 @@ import {
   ExportAction,
   DeleteAction,
 } from 'uiSrc/components/item-list/components'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   handleDeleteInstances,
@@ -12,15 +13,14 @@ import {
 } from './methods/handlers'
 import { Instance } from 'uiSrc/slices/interfaces'
 
-const actionMessage = (action: string, length: number) =>
-  `Selected ${length} items will be ${action} from RedisInsight:`
-
 type BulkItemsActionsProps = {
   items: Instance[]
   onClose: () => void
 }
 
 const BulkItemsActions = ({ items, onClose }: BulkItemsActionsProps) => {
+  const { t } = useTranslation()
+
   if (!items.length) {
     return null
   }
@@ -36,7 +36,9 @@ const BulkItemsActions = ({ items, onClose }: BulkItemsActionsProps) => {
             handleExportInstances(items, withSecrets)
             onClose()
           }}
-          subTitle={actionMessage('exported', items.length)}
+          subTitle={t('home.databaseList.bulkActions.export.subtitle', {
+            count: items.length,
+          })}
         />,
         <DeleteAction<Instance>
           selection={items}
@@ -44,7 +46,9 @@ const BulkItemsActions = ({ items, onClose }: BulkItemsActionsProps) => {
             handleDeleteInstances(items)
             onClose()
           }}
-          subTitle={actionMessage('deleted', items.length)}
+          subTitle={t('home.databaseList.bulkActions.delete.subtitle', {
+            count: items.length,
+          })}
         />,
       ]}
     />
