@@ -17,8 +17,8 @@
  *   node scripts/summarize-results.mjs [--input <results.json>] [--json <out>] [--markdown]
  */
 
-import { readFileSync, writeFileSync } from 'fs'
-import { relative, resolve } from 'path'
+import { mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { dirname, relative, resolve } from 'path'
 
 const MAX_FAILURES = 50
 const MAX_ERROR_CHARS = 400
@@ -182,6 +182,10 @@ const digest = {
 }
 
 if (jsonOut) {
+  // The callers run under `if: always()`, so a build or startup step can fail
+  // before Playwright creates test-results. Writing there is how the "no report"
+  // digest reaches an early-failure run.
+  mkdirSync(dirname(resolve(jsonOut)), { recursive: true })
   writeFileSync(jsonOut, `${JSON.stringify(digest, null, 2)}\n`)
 }
 
