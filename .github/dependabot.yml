@@ -58,6 +58,8 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/react-virtualized'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'react-virtualized-auto-sizer'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'react-window'
         update-types: ['version-update:semver-major']
       - dependency-name: 'react-window-infinite-loader'
@@ -247,6 +249,9 @@ updates:
       # A framework major is a migration across every module.
       - dependency-name: '@nestjs/*'
         update-types: ['version-update:semver-major']
+      # NestJS peers on rxjs ^7, so a v8 lands outside the supported range.
+      - dependency-name: 'rxjs'
+        update-types: ['version-update:semver-major']
       # Pre-1.0, so a minor carries breaking schema and driver changes.
       - dependency-name: 'typeorm'
         update-types:
@@ -295,6 +300,7 @@ updates:
             'chai-*',
             'nyc',
             'nock',
+            'fishery',
           ]
       babel:
         patterns: ['@babel/*', 'babel-*']
