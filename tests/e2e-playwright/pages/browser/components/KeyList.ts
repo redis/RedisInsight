@@ -114,13 +114,23 @@ export class KeyList {
     // view, so both pass against the results of the previous search.
     await expect(this.searchInput).toHaveValue(pattern);
 
-    // Settle on the scan the search triggers rather than on text that is already
-    // rendered. Clicking with an unchanged pattern issues no request, so a miss
-    // here is not a failure - keep the wait short so it cannot eat the test's
-    // budget when no scan happens.
+    // Settle on the scan for this pattern rather than on text that is already
+    // rendered. Matched on the request body so a concurrent scan - an auto-refresh
+    // or the initial load still in flight - cannot satisfy the wait. Clicking with
+    // an unchanged pattern issues no request, so a miss here is not a failure;
+    // keep the wait short so it cannot eat the test's budget either way.
     const scan = this.page
       .waitForResponse(
-        (response) => /\/api\/databases\/[^/]+\/keys/.test(response.url()) && response.request().method() === 'POST',
+        (response) => {
+          if (!/\/api\/databases\/[^/]+\/keys/.test(response.url())) return false;
+          const request = response.request();
+          if (request.method() !== 'POST') return false;
+          try {
+            return request.postDataJSON()?.match === pattern;
+          } catch {
+            return false;
+          }
+        },
         { timeout: 5000 },
       )
       .catch(() => undefined);
