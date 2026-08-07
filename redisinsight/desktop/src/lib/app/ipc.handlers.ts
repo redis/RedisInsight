@@ -69,5 +69,7 @@ export const initIPCHandlers = () => {
     },
   )
 
-  ipcMain.handle(IpcInvokeEvent.appUpdateDownload, () => startUpdateDownload())
+  ipcMain.handle(IpcInvokeEvent.appUpdateDownload, (_event, version: string) =>
+    startUpdateDownload(version),
+  )
 }

@@ -108,7 +108,7 @@ export function drainQueuedRecheck() {
   }
 }
 
-export const startUpdateDownload = () => {
+export const startUpdateDownload = (version?: string) => {
   if (
     process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ||
     process.mas ||
@@ -117,7 +117,10 @@ export const startUpdateDownload = () => {
     return
   }
 
-  if (updateDownloadState.downloadedInfo) {
+  if (
+    updateDownloadState.downloadedInfo &&
+    updateDownloadState.downloadedInfo.version === version
+  ) {
     updateDownloaded(updateDownloadState.downloadedInfo)
     return
   }
