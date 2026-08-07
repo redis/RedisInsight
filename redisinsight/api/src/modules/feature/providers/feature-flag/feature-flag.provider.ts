@@ -117,6 +117,10 @@ export class FeatureFlagProvider {
         this.settingsService,
       ),
     );
+    this.strategies.set(
+      KnownFeatures.AppUpdateStrategySettings,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
   }
 
   getStrategy(name: string): FeatureFlagStrategy {
