@@ -8,8 +8,8 @@ export const ipcSetUpdateStrategy = async (strategy: AppUpdateStrategy) => {
   await window.app?.ipc?.invoke(IpcInvokeEvent.setUpdateStrategy, strategy)
 }
 
-export const ipcAppUpdateDownload = async () => {
-  await window.app?.ipc?.invoke(IpcInvokeEvent.appUpdateDownload)
+export const ipcAppUpdateDownload = async (version: string) => {
+  await window.app?.ipc?.invoke(IpcInvokeEvent.appUpdateDownload, version)
 }
 
 export const ipcSkipUpdateVersion = async (version: string) => {

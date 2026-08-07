@@ -102,7 +102,6 @@ export const initAutoUpdaterHandlers = () => {
 
     updateDownloadState.isDownloading = false
     updateDownloadState.downloadedInfo = info
-    drainQueuedRecheck()
     electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
 
     // set updateDownloaded to electron storage for Telemetry send event APPLICATION_UPDATED
@@ -123,5 +122,6 @@ export const initAutoUpdaterHandlers = () => {
 
     updateDownloaded(info)
     updateDownloadState.manuallyTriggered = false
+    drainQueuedRecheck()
   })
 }
