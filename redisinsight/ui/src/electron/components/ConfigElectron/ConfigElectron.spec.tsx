@@ -7,7 +7,7 @@ import {
   screen,
   fireEvent,
 } from 'uiSrc/utils/test-utils'
-import { AppUpdateStatus } from 'uiSrc/electron/constants'
+import { AppUpdateStatus, AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import {
   addInfiniteNotification,
@@ -230,8 +230,14 @@ describe('ConfigElectron', () => {
         version: '1.2.3',
       })
       store.clearActions()
+      jest.clearAllMocks()
 
       updateStateAction(null, { status: AppUpdateStatus.Error })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+        eventData: { strategy: AppUpdateStrategy.notify },
+      })
 
       const addActions = store
         .getActions()
