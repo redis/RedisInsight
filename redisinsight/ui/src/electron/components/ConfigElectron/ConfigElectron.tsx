@@ -35,6 +35,10 @@ import { useTranslation } from 'uiSrc/i18n'
 
 const ConfigElectron = () => {
   let isCheckedUpdates = false
+  // Lets a failed download restore the found-prompt with a working Update
+  // button, rather than leaving the user with no retry path until the next
+  // periodic check (up to 84h away).
+  let lastAvailableVersion: string | undefined
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
 
@@ -99,9 +103,52 @@ const ConfigElectron = () => {
     })
   }
 
+  const showUpdateFoundToast = (version: string) => {
+    let resolved = false
+    dispatch(
+      addInfiniteNotification(
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(
+          version,
+          () => {
+            if (resolved) return
+            resolved = true
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_DOWNLOAD_CLICKED,
+            })
+            dispatch(
+              addInfiniteNotification(
+                INFINITE_MESSAGES.APP_UPDATE_DOWNLOADING(),
+              ),
+            )
+            ipcAppUpdateDownload()
+          },
+          () => {
+            if (resolved) return
+            resolved = true
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_SKIPPED,
+            })
+            dispatch(
+              removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+            )
+            ipcSkipUpdateVersion(version)
+          },
+          () => {
+            if (!resolved) {
+              sendEventTelemetry({
+                event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+              })
+            }
+          },
+        ),
+      ),
+    )
+  }
+
   const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
     switch (status) {
-      case AppUpdateStatus.Available: {
+      case AppUpdateStatus.Available:
+        lastAvailableVersion = version
         sendEventTelemetry({
           event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
           eventData: { strategy: AppUpdateStrategy.notify },
@@ -109,49 +156,8 @@ const ConfigElectron = () => {
         dispatch(
           removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
         )
-        let resolved = false
-        dispatch(
-          addInfiniteNotification(
-            INFINITE_MESSAGES.APP_UPDATE_FOUND(
-              version ?? '',
-              () => {
-                if (resolved) return
-                resolved = true
-                sendEventTelemetry({
-                  event: TelemetryEvent.UPDATE_NOTIFICATION_DOWNLOAD_CLICKED,
-                })
-                dispatch(
-                  addInfiniteNotification(
-                    INFINITE_MESSAGES.APP_UPDATE_DOWNLOADING(),
-                  ),
-                )
-                ipcAppUpdateDownload()
-              },
-              () => {
-                if (resolved) return
-                resolved = true
-                sendEventTelemetry({
-                  event: TelemetryEvent.UPDATE_NOTIFICATION_SKIPPED,
-                })
-                dispatch(
-                  removeInfiniteNotification(
-                    InfiniteMessagesIds.appUpdateFound,
-                  ),
-                )
-                ipcSkipUpdateVersion(version ?? '')
-              },
-              () => {
-                if (!resolved) {
-                  sendEventTelemetry({
-                    event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
-                  })
-                }
-              },
-            ),
-          ),
-        )
+        showUpdateFoundToast(version ?? '')
         break
-      }
       case AppUpdateStatus.Error:
         dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
         dispatch(
@@ -161,6 +167,11 @@ const ConfigElectron = () => {
             variant: 'danger',
           }),
         )
+        // Restore the retry prompt - otherwise a transient failure leaves
+        // the user with no way to try again until the next periodic check.
+        if (lastAvailableVersion) {
+          showUpdateFoundToast(lastAvailableVersion)
+        }
         break
       default:
         break
