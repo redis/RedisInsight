@@ -206,6 +206,40 @@ describe('ConfigElectron', () => {
       )
     })
 
+    it('should not resurface a dismissed version on the next periodic check, but should announce a newer one', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+      foundAction?.payload.onClose?.()
+
+      store.clearActions()
+      jest.clearAllMocks()
+
+      // Main resends 'available' for the same version on the next
+      // periodic check - it must stay hidden until the next app launch.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      expect(store.getActions()).toHaveLength(0)
+
+      // A genuinely newer version is still announced.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.4',
+      })
+
+      const addAction = findInfiniteNotification(store)
+      expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
+    })
+
     it('should not emit close telemetry after "Update" was clicked', () => {
       triggerUpdateState({
         status: AppUpdateStatus.Available,
