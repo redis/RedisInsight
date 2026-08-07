@@ -37,8 +37,7 @@ const ConfigElectron = () => {
   let isCheckedUpdates = false
   let hasShownFoundToast = false
   let lastAvailableVersion = ''
-  // Reassigned per toast so a stale, already-replaced toast's onClose can't
-  // resolve (or unresolve) the toast that replaced it.
+  let dismissedVersion: string | null = null
   let foundToastResolvedRef = { current: false }
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
@@ -143,6 +142,7 @@ const ConfigElectron = () => {
           () => {
             if (!resolvedRef.current) {
               resolvedRef.current = true
+              dismissedVersion = version
               sendEventTelemetry({
                 event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
               })
@@ -159,6 +159,9 @@ const ConfigElectron = () => {
   const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
     switch (status) {
       case AppUpdateStatus.Available:
+        if (version && version === dismissedVersion) {
+          return
+        }
         hasShownFoundToast = true
         lastAvailableVersion = version ?? ''
         dispatch(
