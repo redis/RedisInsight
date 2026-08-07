@@ -53,8 +53,15 @@ export const sendUpdateState = (state: AppUpdateState) => {
   sendToRenderer(IpcOnEvent.appUpdateState, state)
 }
 
+let queuedRecheckUrl: string | null = null
+
 export const checkForUpdate = async (url: string = '') => {
-  if (!url || process.mas || updateDownloadState.isDownloading) {
+  if (!url || process.mas) {
+    return
+  }
+
+  if (updateDownloadState.isDownloading) {
+    queuedRecheckUrl = url
     return
   }
 
@@ -86,6 +93,14 @@ export const checkForUpdate = async (url: string = '') => {
     }
   } finally {
     updateDownloadState.isDownloading = false
+
+    if (queuedRecheckUrl) {
+      const nextUrl = queuedRecheckUrl
+      queuedRecheckUrl = null
+      checkForUpdate(nextUrl).catch((e) =>
+        log.error(wrapErrorMessageSensitiveData(e)),
+      )
+    }
   }
 }
 
