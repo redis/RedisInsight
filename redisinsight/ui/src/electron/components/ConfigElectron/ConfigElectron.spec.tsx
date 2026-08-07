@@ -219,5 +219,32 @@ describe('ConfigElectron', () => {
       const messageAction = findMessageNotification(store)
       expect(messageAction?.payload.variant).toBe('danger')
     })
+
+    it('should restore a working retry prompt after a download failure', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      store.clearActions()
+
+      updateStateAction(null, { status: AppUpdateStatus.Error })
+
+      const addActions = store
+        .getActions()
+        .filter(
+          (action) => action.type === addInfiniteNotification.type,
+        ) as unknown as { payload: InfiniteMessage }[]
+      const retryAction = addActions[addActions.length - 1]
+      expect(retryAction.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
+
+      render(retryAction.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+      expect(ipcAppUpdateDownload).toHaveBeenCalled()
+    })
   })
 })
