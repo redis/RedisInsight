@@ -11,10 +11,10 @@ updates:
     # Ceiling for the groups below, not a target.
     open-pull-requests-limit: 15
     cooldown:
+      # Patches and minors inherit default-days, which matches min-release-age
+      # in .npmrc. A shorter window proposes versions that npm will not resolve.
       default-days: 3
       semver-major-days: 7
-      semver-minor-days: 3
-      semver-patch-days: 1
 
     # Majors that are migrations rather than bumps. Minors and patches for
     # these still flow.
@@ -239,10 +239,10 @@ updates:
       interval: 'weekly'
     open-pull-requests-limit: 10
     cooldown:
+      # Patches and minors inherit default-days, which matches min-release-age
+      # in .npmrc. A shorter window proposes versions that npm will not resolve.
       default-days: 3
       semver-major-days: 7
-      semver-minor-days: 3
-      semver-patch-days: 1
 
     ignore:
       - dependency-name: 'typescript'
