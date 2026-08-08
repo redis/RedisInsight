@@ -1,19 +1,348 @@
 version: 2
 
+# Each tree below has its own lockfile, so each needs its own entry.
+# Directories absent here still receive security updates, which run repo-wide
+# and ignore this config.
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+    # Ceiling for the groups below, not a target.
+    open-pull-requests-limit: 15
     cooldown:
+      # Patches and minors inherit default-days, which matches min-release-age
+      # in .npmrc. A shorter window proposes versions that npm will not resolve.
       default-days: 3
       semver-major-days: 7
-      semver-minor-days: 3
-      semver-patch-days: 1
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+    # Majors that are migrations rather than bumps. Minors and patches for
+    # these still flow.
+    ignore:
+      # Held at 18 by @elastic/eui (peers on react-dom ^16.12) and
+      # @testing-library/react 13 (peers on ^18.0.0), and pinned via overrides.
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@testing-library/react'
+        update-types: ['version-update:semver-major']
+      # A minor shifts the per-file error counts in .tscheck.rec.json, and the
+      # ratchet fails whether counts rise or fall.
+      - dependency-name: 'typescript'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      # Tracks the Node version in .nvmrc, not npm.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # Migrating away from this, so a major is wasted work.
+      - dependency-name: '@elastic/eui'
+        update-types: ['version-update:semver-major']
+      # Native-module ABI is coupled to the Electron version.
+      - dependency-name: 'electron'
+        update-types: ['version-update:semver-major']
+      # Held at v5; v6 is a routing rewrite.
+      - dependency-name: 'react-router-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-router-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'html-react-parser'
+        update-types: ['version-update:semver-major']
+      # Virtualization stack, react-18-locked. The types skew from the runtime
+      # unless they are held back too.
+      - dependency-name: 'react-virtualized'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-virtualized'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-virtualized-auto-sizer'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-window'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-window-infinite-loader'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-window-infinite-loader'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-vtree'
+        update-types: ['version-update:semver-major']
+      # Majors change CLI surface used across scripts.
+      - dependency-name: 'rimraf'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'lint-staged'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@faker-js/faker'
+        update-types: ['version-update:semver-major']
+
+    # Grouped by what must move together, not by shared name prefix.
+    #
+    # Membership goes to the highest-scoring pattern match rather than to the
+    # first group declared: an exact name outranks a wildcard, which outranks a
+    # bare `*`. Every catch-all therefore declares `patterns: ['*']`. A
+    # catch-all that omits `patterns` outranks the named groups and swallows
+    # them.
+    #
+    # Groups spanning prod and dev omit `dependency-type` so a coupled pair
+    # split across the two, such as ioredis and ioredis-mock, can still travel
+    # together.
+    groups:
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      redux:
+        patterns:
+          [
+            'redux',
+            'react-redux',
+            '@reduxjs/toolkit',
+            'redux-thunk',
+            'redux-mock-store',
+          ]
+      # Group identifiers take letters, pipes, underscores and hyphens only, so
+      # this cannot be named after the package.
+      internationalization:
+        patterns: ['i18next', 'i18next-cli', 'react-i18next']
+      monaco:
+        patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
+      # Each companion package is pinned to its host's major.
+      virtualization:
+        patterns:
+          [
+            'react-virtualized',
+            'react-virtualized-auto-sizer',
+            'react-window',
+            'react-window-infinite-loader',
+            'react-vtree',
+            '@types/react-virtualized',
+            '@types/react-window-infinite-loader',
+          ]
+      # Isolated so a failing tsc baselines check points at the compiler.
+      typescript:
+        patterns: ['typescript', '@aivenio/tsc-output-parser']
+      # Runtime libraries sharing the `electron-` prefix, kept out of the
+      # packaging toolchain. Named exactly to avoid colliding with it.
+      electron-runtime:
+        patterns:
+          [
+            'electron-context-menu',
+            'electron-debug',
+            'electron-devtools-installer',
+            'electron-log',
+            'electron-store',
+            '@types/electron-store',
+          ]
+      # electron-builder releases electron-updater and builder-util-runtime in
+      # lockstep; node-abi maps Electron versions to native ABI versions.
+      electron-build:
+        patterns:
+          [
+            'electron',
+            'electron-builder',
+            'electron-builder-notarize',
+            'electron-updater',
+            'app-builder-lib',
+            'builder-util*',
+            '@electron/*',
+            'node-abi',
+          ]
+      storybook:
+        patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
+      observability:
+        patterns: ['@sentry/*', '@opentelemetry/*']
+      # Vite builds the renderer, webpack the Electron main and preload
+      # bundles, alongside the loaders and plugins pinned to a webpack major.
+      build-tooling:
+        patterns: [
+            'vite',
+            'vite-*',
+            '@vitejs/*',
+            'esbuild',
+            'esbuild-*',
+            'rollup',
+            'webpack',
+            'webpack-*',
+            '*-webpack-plugin',
+            'mini-css-extract-plugin',
+            '@svgr/webpack',
+            'react-refresh',
+            # Named exactly: a `*-loader` glob also catches unrelated packages
+            # such as react-window-infinite-loader.
+            'css-loader',
+            'file-loader',
+            'style-loader',
+            'ts-loader',
+            'url-loader',
+            '@teamsupercell/typings-for-css-modules-loader',
+          ]
+      linting:
+        patterns:
+          [
+            'eslint',
+            'eslint-*',
+            '@typescript-eslint/*',
+            'prettier',
+            'prettier-*',
+            'lint-staged',
+          ]
+      testing:
+        patterns: [
+            'jest',
+            'jest-*',
+            'ts-jest',
+            '@testing-library/*',
+            '@faker-js/faker',
+            'msw',
+            'supertest',
+            'ts-mockito',
+            'fishery',
+            'identity-obj-proxy',
+            # Track their host's major, so they travel with it.
+            '@types/jest',
+            '@types/supertest',
+          ]
+      babel:
+        patterns: ['@babel/*', 'babel-*']
+      redis-ui:
+        patterns: ['@redis-ui/*', '@redislabsdev/*']
+      types:
+        patterns: ['@types/*']
+      # Split by update-type so a broken minor cannot hold patches back.
+      # Unlocked majors match no catch-all and arrive individually.
+      production-patch:
+        dependency-type: 'production'
+        update-types: ['patch']
+        patterns: ['*']
+      production-minor:
+        dependency-type: 'production'
+        update-types: ['minor']
+        patterns: ['*']
+      development-patch:
+        dependency-type: 'development'
+        update-types: ['patch']
+        patterns: ['*']
+      development-minor:
+        dependency-type: 'development'
+        update-types: ['minor']
+        patterns: ['*']
+
+  # One entry for both lockfiles. /redisinsight is the packaged Electron app's
+  # manifest and declares better-sqlite3, keytar and tunnel-ssh at the same
+  # versions as the api tree; its lockfile is the one that ships. Covering both
+  # directories here lets the shared-natives group below bump them in a single
+  # pull request, which a separate entry per directory cannot do.
+  - package-ecosystem: 'npm'
+    directories:
+      - '/redisinsight'
+      - '/redisinsight/api'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+    open-pull-requests-limit: 10
+    cooldown:
+      # Patches and minors inherit default-days, which matches min-release-age
+      # in .npmrc. A shorter window proposes versions that npm will not resolve.
+      default-days: 3
+      semver-major-days: 7
+
+    ignore:
+      - dependency-name: 'typescript'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # Native module compiled against the Electron ABI.
+      - dependency-name: 'better-sqlite3'
+        update-types: ['version-update:semver-major']
+      # A framework major is a migration across every module.
+      - dependency-name: '@nestjs/*'
+        update-types: ['version-update:semver-major']
+      # NestJS peers on rxjs ^7, so a v8 lands outside the supported range.
+      - dependency-name: 'rxjs'
+        update-types: ['version-update:semver-major']
+      # Pre-1.0, so a minor carries breaking schema and driver changes.
+      - dependency-name: 'typeorm'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'rimraf'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@faker-js/faker'
+        update-types: ['version-update:semver-major']
+
+    groups:
+      # Declared in both directories at the same version. `group-by` raises one
+      # pull request per dependency spanning both lockfiles, so the packaged app
+      # and the api tree cannot land different versions of a native module.
+      # Without it each directory gets its own pull request and they drift.
+      shared-natives:
+        group-by: 'dependency-name'
+        patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
+      typescript:
+        patterns: ['typescript']
+      # rxjs and reflect-metadata are peers pinned to the framework major.
+      nestjs:
+        patterns: ['@nestjs/*', 'rxjs', 'reflect-metadata']
+      # Spans prod and dev so ioredis-mock moves with ioredis.
+      redis-clients:
+        patterns:
+          [
+            'redis',
+            'redis-parser',
+            'ioredis',
+            'ioredis-mock',
+            '@types/ioredis-mock',
+          ]
+      socketio:
+        patterns: ['socket.io', 'socket.io-client', 'socket.io-mock']
+      # Unit tests run on jest, integration tests on mocha/chai. babel-jest
+      # ships from the jest repo and tracks its major, not Babel's.
+      testing:
+        patterns:
+          [
+            'jest',
+            'jest-*',
+            'ts-jest',
+            'babel-jest',
+            '@types/jest',
+            '@faker-js/faker',
+            'supertest',
+            '@types/supertest',
+            'mocha',
+            'mocha-*',
+            '@mochajs/*',
+            'ts-mocha',
+            'chai',
+            'chai-*',
+            'nyc',
+            'nock',
+            'fishery',
+          ]
+      babel:
+        patterns: ['@babel/*', 'babel-*']
+      types:
+        patterns: ['@types/*']
+      production-patch:
+        dependency-type: 'production'
+        update-types: ['patch']
+        patterns: ['*']
+      production-minor:
+        dependency-type: 'production'
+        update-types: ['minor']
+        patterns: ['*']
+      development-patch:
+        dependency-type: 'development'
+        update-types: ['patch']
+        patterns: ['*']
+      development-minor:
+        dependency-type: 'development'
+        update-types: ['minor']
+        patterns: ['*']
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
     cooldown:
       default-days: 3
+    groups:
+      github-actions:
+        patterns: ['*']
