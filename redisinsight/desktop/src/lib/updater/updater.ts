@@ -123,15 +123,12 @@ export const startUpdateDownload = (version?: string) => {
     updateDownloadState.manuallyTriggered = true
     updateDownloadState.initiatingStrategy = getUpdateStrategy()
     updateDownloaded(updateDownloadState.downloadedInfo)
+    updateDownloadState.manuallyTriggered = false
     return
   }
 
   updateDownloadState.isDownloading = true
   updateDownloadState.manuallyTriggered = true
-  // The 'error' event (updater.handlers.ts) is the authoritative failure
-  // signal and already finalizes state/notifies on any download failure -
-  // don't duplicate that here, it would double-send the error state and
-  // can reset isDownloading after a queued recheck already claimed it.
   autoUpdater
     .downloadUpdate()
     .catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
