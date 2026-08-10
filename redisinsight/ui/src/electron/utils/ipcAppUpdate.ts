@@ -1,8 +1,19 @@
-import { AppUpdateStrategy, IpcInvokeEvent } from 'uiSrc/electron/constants'
+import {
+  AppUpdateStrategy,
+  ElectronStorageItem,
+  IpcInvokeEvent,
+} from 'uiSrc/electron/constants'
 
 export const ipcGetUpdateStrategy =
   async (): Promise<AppUpdateStrategy | null> =>
     (await window.app?.ipc?.invoke(IpcInvokeEvent.getUpdateStrategy)) ?? null
+
+export const ipcGetUpdateDownloadedStrategy =
+  async (): Promise<AppUpdateStrategy> =>
+    (await window.app?.ipc?.invoke(
+      IpcInvokeEvent.getStoreValue,
+      ElectronStorageItem.updateDownloadedStrategy,
+    )) ?? AppUpdateStrategy.auto
 
 export const ipcSetUpdateStrategy = async (strategy: AppUpdateStrategy) => {
   await window.app?.ipc?.invoke(IpcInvokeEvent.setUpdateStrategy, strategy)

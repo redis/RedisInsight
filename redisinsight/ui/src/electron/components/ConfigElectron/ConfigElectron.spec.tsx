@@ -7,12 +7,7 @@ import {
   screen,
   fireEvent,
 } from 'uiSrc/utils/test-utils'
-import {
-  AppUpdateStatus,
-  AppUpdateStrategy,
-  ElectronStorageItem,
-  IpcInvokeEvent,
-} from 'uiSrc/electron/constants'
+import { AppUpdateStatus, AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import {
   addInfiniteNotification,
@@ -49,12 +44,14 @@ jest.mock('uiSrc/electron/utils', () => ({
   ipcSendEvents: jest.fn(),
   ipcAppUpdateDownload: jest.fn(),
   ipcSkipUpdateVersion: jest.fn(),
+  ipcGetUpdateDownloadedStrategy: jest.fn(),
 }))
 
 const { sendEventTelemetry } = require('uiSrc/telemetry')
 const {
   ipcAppUpdateDownload,
   ipcSkipUpdateVersion,
+  ipcGetUpdateDownloadedStrategy,
 } = require('uiSrc/electron/utils')
 
 let store: typeof mockedStore
@@ -63,6 +60,7 @@ describe('ConfigElectron', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
+    ipcGetUpdateDownloadedStrategy.mockResolvedValue(AppUpdateStrategy.auto)
     store = cloneDeep(mockedStore)
     store.clearActions()
     window.app = {
@@ -102,16 +100,11 @@ describe('ConfigElectron', () => {
       const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
         .mock.calls[0][0]
 
-      const invoke = jest.fn().mockResolvedValue(AppUpdateStrategy.notify)
-      window.app.ipc = { invoke } as typeof window.app.ipc
+      ipcGetUpdateDownloadedStrategy.mockResolvedValue(AppUpdateStrategy.notify)
 
       updateAvailableAction(null, { version: '1.2.3' })
       await Promise.resolve()
 
-      expect(invoke).toHaveBeenCalledWith(
-        IpcInvokeEvent.getStoreValue,
-        ElectronStorageItem.updateDownloadedStrategy,
-      )
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
         eventData: { strategy: AppUpdateStrategy.notify },
