@@ -132,8 +132,8 @@
     "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.6",
-    "@babel/preset-env": "^7.25.4",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
     "@faker-js/faker": "^8.4.1",
     "@hey-api/openapi-ts": "0.97.3",
     "@mochajs/json-file-reporter": "^1.3.0",
