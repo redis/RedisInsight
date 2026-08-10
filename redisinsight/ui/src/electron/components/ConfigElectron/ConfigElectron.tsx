@@ -39,7 +39,9 @@ const ConfigElectron = () => {
   let lastAvailableVersion = ''
   let dismissedVersion: string | null = null
   let dismissedRestartVersion: string | null = null
+  let lastRestartVersion: string | null = null
   let foundToastResolvedRef = { current: false }
+  let restartResolvedRef = { current: false }
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
 
@@ -87,8 +89,21 @@ const ConfigElectron = () => {
     if (version && version === dismissedRestartVersion) {
       return
     }
+    if (
+      version &&
+      version === lastRestartVersion &&
+      !restartResolvedRef.current
+    ) {
+      return
+    }
     foundToastResolvedRef.current = true
     dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
+
+    restartResolvedRef.current = true
+    const resolvedRestartRef = { current: false }
+    restartResolvedRef = resolvedRestartRef
+    lastRestartVersion = version ?? null
+
     dispatch(
       addInfiniteNotification(
         INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
@@ -100,6 +115,8 @@ const ConfigElectron = () => {
             ipcAppRestart()
           },
           () => {
+            if (resolvedRestartRef.current) return
+            resolvedRestartRef.current = true
             dismissedRestartVersion = version
             dispatch(
               removeInfiniteNotification(

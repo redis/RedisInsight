@@ -129,6 +129,60 @@ describe('ConfigElectron', () => {
       const newAddAction = findInfiniteNotification(store)
       expect(newAddAction?.payload.variation).toBe('1.2.4')
     })
+
+    it('should leave a still-open restart toast alone when the same version resends', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      store.clearActions()
+
+      // Main resends the same still-pending restart prompt on the next
+      // periodic check; the open, unactioned toast must not be re-created.
+      updateAvailableAction(null, { version: '1.2.3' })
+
+      expect(store.getActions()).toHaveLength(0)
+    })
+
+    it('should not let a stale restart toast close remove a newer version that replaced it', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      const restartAction = findInfiniteNotification(store)
+
+      // A newer version finishes downloading before the user acts on the
+      // current restart prompt (e.g. a settings-triggered recheck).
+      updateAvailableAction(null, { version: '1.2.4' })
+
+      // The queue later dismisses the stale, still-mounted original toast;
+      // its onClose must not act on the newer prompt that replaced it.
+      restartAction?.payload.onClose?.()
+
+      const relevantActions = store
+        .getActions()
+        .filter(
+          (action) =>
+            (action.type === removeInfiniteNotification.type &&
+              action.payload === InfiniteMessagesIds.appUpdateAvailable) ||
+            (action.type === addInfiniteNotification.type &&
+              (action.payload as InfiniteMessage).id ===
+                InfiniteMessagesIds.appUpdateAvailable),
+        )
+      expect(relevantActions[relevantActions.length - 1].type).toBe(
+        addInfiniteNotification.type,
+      )
+
+      const addActions = store
+        .getActions()
+        .filter(
+          (action) => action.type === addInfiniteNotification.type,
+        ) as unknown as { payload: InfiniteMessage }[]
+      const latestRestartAction = addActions[addActions.length - 1]
+      expect(latestRestartAction.payload.variation).toBe('1.2.4')
+    })
   })
 
   describe('update-state listener', () => {
