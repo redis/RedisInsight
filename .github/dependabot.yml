@@ -87,10 +87,16 @@ updates:
     # Groups spanning prod and dev omit `dependency-type` so a coupled pair
     # split across the two, such as ioredis and ioredis-mock, can still travel
     # together.
+    #
+    # Every group is limited to patch and minor, so a major matches no group and
+    # arrives on its own. A major is a migration to evaluate in isolation, not
+    # something to bundle with unrelated bumps.
     groups:
       react:
+        update-types: ['patch', 'minor']
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
       redux:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'redux',
@@ -102,11 +108,14 @@ updates:
       # Group identifiers take letters, pipes, underscores and hyphens only, so
       # this cannot be named after the package.
       internationalization:
+        update-types: ['patch', 'minor']
         patterns: ['i18next', 'i18next-cli', 'react-i18next']
       monaco:
+        update-types: ['patch', 'minor']
         patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
       # Each companion package is pinned to its host's major.
       virtualization:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'react-virtualized',
@@ -119,10 +128,12 @@ updates:
           ]
       # Isolated so a failing tsc baselines check points at the compiler.
       typescript:
+        update-types: ['patch', 'minor']
         patterns: ['typescript', '@aivenio/tsc-output-parser']
       # Runtime libraries sharing the `electron-` prefix, kept out of the
       # packaging toolchain. Named exactly to avoid colliding with it.
       electron-runtime:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'electron-context-menu',
@@ -135,6 +146,7 @@ updates:
       # electron-builder releases electron-updater and builder-util-runtime in
       # lockstep; node-abi maps Electron versions to native ABI versions.
       electron-build:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'electron',
@@ -147,12 +159,15 @@ updates:
             'node-abi',
           ]
       storybook:
+        update-types: ['patch', 'minor']
         patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
       observability:
+        update-types: ['patch', 'minor']
         patterns: ['@sentry/*', '@opentelemetry/*']
       # Vite builds the renderer, webpack the Electron main and preload
       # bundles, alongside the loaders and plugins pinned to a webpack major.
       build-tooling:
+        update-types: ['patch', 'minor']
         patterns: [
             'vite',
             'vite-*',
@@ -176,6 +191,7 @@ updates:
             '@teamsupercell/typings-for-css-modules-loader',
           ]
       linting:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'eslint',
@@ -186,6 +202,7 @@ updates:
             'lint-staged',
           ]
       testing:
+        update-types: ['patch', 'minor']
         patterns: [
             'jest',
             'jest-*',
@@ -202,13 +219,15 @@ updates:
             '@types/supertest',
           ]
       babel:
+        update-types: ['patch', 'minor']
         patterns: ['@babel/*', 'babel-*']
       redis-ui:
+        update-types: ['patch', 'minor']
         patterns: ['@redis-ui/*', '@redislabsdev/*']
       types:
+        update-types: ['patch', 'minor']
         patterns: ['@types/*']
-      # Split by update-type so a broken minor cannot hold patches back.
-      # Unlocked majors match no catch-all and arrive individually.
+      # Split further so a broken minor cannot hold patches back.
       production-patch:
         dependency-type: 'production'
         update-types: ['patch']
@@ -273,16 +292,23 @@ updates:
       # pull request per dependency spanning both lockfiles, so the packaged app
       # and the api tree cannot land different versions of a native module.
       # Without it each directory gets its own pull request and they drift.
+      #
+      # Majors stay in this group rather than falling through, because a major
+      # arriving outside it would be one pull request per directory again. One
+      # pull request per dependency already keeps these evaluable on their own.
       shared-natives:
         group-by: 'dependency-name'
         patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
       typescript:
+        update-types: ['patch', 'minor']
         patterns: ['typescript']
       # rxjs and reflect-metadata are peers pinned to the framework major.
       nestjs:
+        update-types: ['patch', 'minor']
         patterns: ['@nestjs/*', 'rxjs', 'reflect-metadata']
       # Spans prod and dev so ioredis-mock moves with ioredis.
       redis-clients:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'redis',
@@ -292,10 +318,12 @@ updates:
             '@types/ioredis-mock',
           ]
       socketio:
+        update-types: ['patch', 'minor']
         patterns: ['socket.io', 'socket.io-client', 'socket.io-mock']
       # Unit tests run on jest, integration tests on mocha/chai. babel-jest
       # ships from the jest repo and tracks its major, not Babel's.
       testing:
+        update-types: ['patch', 'minor']
         patterns:
           [
             'jest',
@@ -317,8 +345,10 @@ updates:
             'fishery',
           ]
       babel:
+        update-types: ['patch', 'minor']
         patterns: ['@babel/*', 'babel-*']
       types:
+        update-types: ['patch', 'minor']
         patterns: ['@types/*']
       production-patch:
         dependency-type: 'production'
