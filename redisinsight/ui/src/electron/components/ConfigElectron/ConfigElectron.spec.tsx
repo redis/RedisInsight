@@ -202,6 +202,35 @@ describe('ConfigElectron', () => {
       const latestRestartAction = addActions[addActions.length - 1]
       expect(latestRestartAction.payload.variation).toBe('1.2.4')
     })
+
+    it('should not falsely session-dismiss a restart toast replaced by a newer found toast', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      const restartAction = findInfiniteNotification(store)
+
+      // A newer version is found while the restart-to-install toast for
+      // 1.2.3 is still open.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.4',
+      })
+
+      // The queue's programmatic dismiss of the now-stale restart toast
+      // must not falsely mark 1.2.3 as session-dismissed.
+      restartAction?.payload.onClose?.()
+
+      store.clearActions()
+      updateAvailableAction(null, { version: '1.2.3' })
+
+      const addAction = findInfiniteNotification(store)
+      expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateAvailable)
+      expect(addAction?.payload.variation).toBe('1.2.3')
+    })
   })
 
   describe('update-state listener', () => {

@@ -205,6 +205,7 @@ const ConfigElectron = () => {
         if (foundGuard.shouldSkip(version)) {
           return
         }
+        restartGuard.resolveCurrent()
         dispatch(
           removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
         )
