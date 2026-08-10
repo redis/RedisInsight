@@ -60,9 +60,6 @@
     "supertest": {
       "form-data": "^4.0.4"
     },
-    "@nestjs/cli": {
-      "glob": "11.1.0"
-    },
     "@nestjs/swagger": {
       "js-yaml": "^4.3.0"
     },
