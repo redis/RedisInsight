@@ -33,15 +33,38 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { useTranslation } from 'uiSrc/i18n'
 
+const createToastGuard = () => {
+  let dismissedVersion: string | null = null
+  let lastVersion: string | null = null
+  let resolvedRef = { current: false }
+
+  return {
+    get lastVersion() {
+      return lastVersion
+    },
+    shouldSkip: (version?: string) =>
+      !!version &&
+      (version === dismissedVersion ||
+        (version === lastVersion && !resolvedRef.current)),
+    resolveCurrent: () => {
+      resolvedRef.current = true
+    },
+    beginShowing: (version?: string) => {
+      resolvedRef.current = true
+      resolvedRef = { current: false }
+      lastVersion = version ?? null
+      return resolvedRef
+    },
+    dismiss: (version?: string) => {
+      dismissedVersion = version ?? null
+    },
+  }
+}
+
 const ConfigElectron = () => {
   let isCheckedUpdates = false
-  let hasShownFoundToast = false
-  let lastAvailableVersion = ''
-  let dismissedVersion: string | null = null
-  let dismissedRestartVersion: string | null = null
-  let lastRestartVersion: string | null = null
-  let foundToastResolvedRef = { current: false }
-  let restartResolvedRef = { current: false }
+  const foundGuard = createToastGuard()
+  const restartGuard = createToastGuard()
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
 
@@ -86,24 +109,13 @@ const ConfigElectron = () => {
   }
 
   const updateAvailableAction = (_e: any, { version }: UpdateInfo) => {
-    if (version && version === dismissedRestartVersion) {
+    if (restartGuard.shouldSkip(version)) {
       return
     }
-    if (
-      version &&
-      version === lastRestartVersion &&
-      !restartResolvedRef.current
-    ) {
-      return
-    }
-    foundToastResolvedRef.current = true
+    foundGuard.resolveCurrent()
     dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
 
-    restartResolvedRef.current = true
-    const resolvedRestartRef = { current: false }
-    restartResolvedRef = resolvedRestartRef
-    lastRestartVersion = version ?? null
-
+    const resolvedRef = restartGuard.beginShowing(version)
     dispatch(
       addInfiniteNotification(
         INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
@@ -115,9 +127,9 @@ const ConfigElectron = () => {
             ipcAppRestart()
           },
           () => {
-            if (resolvedRestartRef.current) return
-            resolvedRestartRef.current = true
-            dismissedRestartVersion = version
+            if (resolvedRef.current) return
+            resolvedRef.current = true
+            restartGuard.dismiss(version)
             dispatch(
               removeInfiniteNotification(
                 InfiniteMessagesIds.appUpdateAvailable,
@@ -141,9 +153,7 @@ const ConfigElectron = () => {
       event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
       eventData: { strategy: AppUpdateStrategy.notify },
     })
-    foundToastResolvedRef.current = true
-    const resolvedRef = { current: false }
-    foundToastResolvedRef = resolvedRef
+    const resolvedRef = foundGuard.beginShowing(version)
     dispatch(
       addInfiniteNotification(
         INFINITE_MESSAGES.APP_UPDATE_FOUND(
@@ -175,7 +185,7 @@ const ConfigElectron = () => {
           () => {
             if (!resolvedRef.current) {
               resolvedRef.current = true
-              dismissedVersion = version
+              foundGuard.dismiss(version)
               sendEventTelemetry({
                 event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
               })
@@ -192,24 +202,15 @@ const ConfigElectron = () => {
   const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
     switch (status) {
       case AppUpdateStatus.Available:
-        if (version && version === dismissedVersion) {
+        if (foundGuard.shouldSkip(version)) {
           return
         }
-        if (
-          version &&
-          version === lastAvailableVersion &&
-          !foundToastResolvedRef.current
-        ) {
-          return
-        }
-        hasShownFoundToast = true
-        lastAvailableVersion = version ?? ''
         dispatch(
           removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
         )
-        showUpdateFoundToast(lastAvailableVersion)
+        showUpdateFoundToast(version ?? '')
         break
-      case AppUpdateStatus.Error:
+      case AppUpdateStatus.Error: {
         dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
         dispatch(
           addMessageNotification({
@@ -218,10 +219,12 @@ const ConfigElectron = () => {
             variant: 'danger',
           }),
         )
-        if (hasShownFoundToast) {
-          showUpdateFoundToast(lastAvailableVersion)
+        const lastFoundVersion = foundGuard.lastVersion
+        if (lastFoundVersion !== null) {
+          showUpdateFoundToast(lastFoundVersion)
         }
         break
+      }
       default:
         break
     }
