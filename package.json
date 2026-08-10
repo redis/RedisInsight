@@ -298,7 +298,7 @@
     "html-react-parser": "^1.2.4",
     "i18next": "^23.16",
     "java-object-serialization": "^0.1.2",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^5.2.3",
     "json-bigint": "^1.0.0",
     "json-dup-key-validator": "^1.0.3",
     "jszip": "^3.10.1",
