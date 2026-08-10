@@ -12,7 +12,7 @@ import { defaultContainerId, ONE_HOUR } from '../constants'
 const DISPLAY_THROTTLE = 3_000 // 3 seconds - minimum time between displaying notifications
 const AUTO_DISMISS_DELAY = 300
 
-const PERSISTENT_NOTIFICATION_IDS = [
+const PERSISTENT_NOTIFICATION_IDS: string[] = [
   InfiniteMessagesIds.appUpdateFound,
   InfiniteMessagesIds.appUpdateAvailable,
 ]
