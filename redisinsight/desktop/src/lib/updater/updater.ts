@@ -6,7 +6,6 @@ import { getWindows } from 'desktopSrc/lib/window'
 import { electronStore } from 'desktopSrc/lib/store/store'
 import {
   AppUpdateState,
-  AppUpdateStatus,
   ElectronStorageItem,
   IpcOnEvent,
   AppUpdateStrategy,
@@ -129,13 +128,13 @@ export const startUpdateDownload = (version?: string) => {
 
   updateDownloadState.isDownloading = true
   updateDownloadState.manuallyTriggered = true
-  autoUpdater.downloadUpdate().catch((e) => {
-    updateDownloadState.isDownloading = false
-    updateDownloadState.manuallyTriggered = false
-    log.error(wrapErrorMessageSensitiveData(e))
-    sendUpdateState({ status: AppUpdateStatus.Error })
-    drainQueuedRecheck()
-  })
+  // The 'error' event (updater.handlers.ts) is the authoritative failure
+  // signal and already finalizes state/notifies on any download failure -
+  // don't duplicate that here, it would double-send the error state and
+  // can reset isDownloading after a queued recheck already claimed it.
+  autoUpdater
+    .downloadUpdate()
+    .catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
 }
 
 export const initAutoUpdateChecks = (url = '', interval = 84 * 3600 * 1000) => {
