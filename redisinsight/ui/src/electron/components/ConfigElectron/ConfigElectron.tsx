@@ -38,6 +38,7 @@ const ConfigElectron = () => {
   let hasShownFoundToast = false
   let lastAvailableVersion = ''
   let dismissedVersion: string | null = null
+  let dismissedRestartVersion: string | null = null
   let foundToastResolvedRef = { current: false }
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
@@ -83,16 +84,30 @@ const ConfigElectron = () => {
   }
 
   const updateAvailableAction = (_e: any, { version }: UpdateInfo) => {
+    if (version && version === dismissedRestartVersion) {
+      return
+    }
     foundToastResolvedRef.current = true
     dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
     dispatch(
       addInfiniteNotification(
-        INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, () => {
-          sendEventTelemetry({
-            event: TelemetryEvent.UPDATE_NOTIFICATION_RESTART_CLICKED,
-          })
-          ipcAppRestart()
-        }),
+        INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
+          version,
+          () => {
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_RESTART_CLICKED,
+            })
+            ipcAppRestart()
+          },
+          () => {
+            dismissedRestartVersion = version
+            dispatch(
+              removeInfiniteNotification(
+                InfiniteMessagesIds.appUpdateAvailable,
+              ),
+            )
+          },
+        ),
       ),
     )
 
@@ -161,6 +176,13 @@ const ConfigElectron = () => {
     switch (status) {
       case AppUpdateStatus.Available:
         if (version && version === dismissedVersion) {
+          return
+        }
+        if (
+          version &&
+          version === lastAvailableVersion &&
+          !foundToastResolvedRef.current
+        ) {
           return
         }
         hasShownFoundToast = true

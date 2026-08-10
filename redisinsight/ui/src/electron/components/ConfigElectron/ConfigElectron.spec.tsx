@@ -91,6 +91,44 @@ describe('ConfigElectron', () => {
       const addAction = findInfiniteNotification(store)
       expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateAvailable)
     })
+
+    it('should remove the restart notification from the store when dismissed with X', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      const addAction = findInfiniteNotification(store)
+      addAction?.payload.onClose?.()
+
+      expect(store.getActions()).toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
+      )
+    })
+
+    it('should not resurface a dismissed restart version on the next periodic completion', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      const addAction = findInfiniteNotification(store)
+      addAction?.payload.onClose?.()
+
+      store.clearActions()
+
+      // Main resends appUpdateAvailable for the same version on a later
+      // periodic check that still finds it already downloaded.
+      updateAvailableAction(null, { version: '1.2.3' })
+
+      expect(store.getActions()).toHaveLength(0)
+
+      // A genuinely newer version is still announced.
+      updateAvailableAction(null, { version: '1.2.4' })
+
+      const newAddAction = findInfiniteNotification(store)
+      expect(newAddAction?.payload.variation).toBe('1.2.4')
+    })
   })
 
   describe('update-state listener', () => {
@@ -141,6 +179,34 @@ describe('ConfigElectron', () => {
       expect(store.getActions()).toContainEqual(
         removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
       )
+    })
+
+    it('should leave a still-open found toast alone when the same version resends', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+      store.clearActions()
+      jest.clearAllMocks()
+
+      // Main resends the same still-pending version on the next periodic
+      // check; the open, unactioned toast must not be re-created.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+
+      expect(store.getActions()).toHaveLength(0)
+
+      render(foundAction?.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+      expect(ipcAppUpdateDownload).toHaveBeenCalled()
     })
 
     it('should skip the version when clicking "Skip this version"', () => {

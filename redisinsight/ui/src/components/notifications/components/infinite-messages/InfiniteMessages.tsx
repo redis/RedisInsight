@@ -72,6 +72,7 @@ interface InfiniteMessagesType {
   APP_UPDATE_AVAILABLE: (
     version: string,
     onSuccess?: () => void,
+    onClose?: () => void,
   ) => InfiniteMessage
   APP_UPDATE_FOUND: (
     version: string,
@@ -289,10 +290,15 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
     ),
     customIcon: LoaderLargeIcon,
   }),
-  APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => ({
+  APP_UPDATE_AVAILABLE: (
+    version: string,
+    onSuccess?: () => void,
+    onClose?: () => void,
+  ) => ({
     id: InfiniteMessagesIds.appUpdateAvailable,
     variation: version,
     customIcon: RiStarsIcon,
+    onClose,
     message: i18n.t('notification.infinite.appUpdateAvailable.message'),
     description: (
       <>
