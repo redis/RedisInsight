@@ -1,6 +1,10 @@
 import { applyDecorators, HttpCode } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ApiResponseOptions } from '@nestjs/swagger/dist/decorators/api-response.decorator';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiResponseOptions,
+} from '@nestjs/swagger';
 import config, { Config } from 'src/utils/config';
 import { BuildType } from 'src/modules/server/models/server';
 
