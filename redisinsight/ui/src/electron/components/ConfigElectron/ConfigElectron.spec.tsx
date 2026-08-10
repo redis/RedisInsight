@@ -7,7 +7,12 @@ import {
   screen,
   fireEvent,
 } from 'uiSrc/utils/test-utils'
-import { AppUpdateStatus, AppUpdateStrategy } from 'uiSrc/electron/constants'
+import {
+  AppUpdateStatus,
+  AppUpdateStrategy,
+  ElectronStorageItem,
+  IpcInvokeEvent,
+} from 'uiSrc/electron/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import {
   addInfiniteNotification,
@@ -90,6 +95,27 @@ describe('ConfigElectron', () => {
       )
       const addAction = findInfiniteNotification(store)
       expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateAvailable)
+    })
+
+    it('should report the persisted downloaded strategy for displayed telemetry, not the live setting', async () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      const invoke = jest.fn().mockResolvedValue(AppUpdateStrategy.notify)
+      window.app.ipc = { invoke } as typeof window.app.ipc
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      await Promise.resolve()
+
+      expect(invoke).toHaveBeenCalledWith(
+        IpcInvokeEvent.getStoreValue,
+        ElectronStorageItem.updateDownloadedStrategy,
+      )
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+        eventData: { strategy: AppUpdateStrategy.notify },
+      })
     })
 
     it('should remove the restart notification from the store when dismissed with X', () => {

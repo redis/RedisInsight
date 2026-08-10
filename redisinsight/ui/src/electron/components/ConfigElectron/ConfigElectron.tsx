@@ -6,7 +6,9 @@ import {
   AppUpdateState,
   AppUpdateStatus,
   AppUpdateStrategy,
+  ElectronStorageItem,
   IParsedDeepLink,
+  IpcInvokeEvent,
 } from 'uiSrc/electron/constants'
 import {
   appServerInfoSelector,
@@ -16,7 +18,6 @@ import {
   ipcAppRestart,
   ipcAppUpdateDownload,
   ipcCheckUpdates,
-  ipcGetUpdateStrategy,
   ipcSendEvents,
   ipcSkipUpdateVersion,
 } from 'uiSrc/electron/utils'
@@ -140,12 +141,17 @@ const ConfigElectron = () => {
       ),
     )
 
-    ipcGetUpdateStrategy().then((strategy) => {
-      sendEventTelemetry({
-        event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
-        eventData: { strategy },
+    window.app?.ipc
+      ?.invoke(
+        IpcInvokeEvent.getStoreValue,
+        ElectronStorageItem.updateDownloadedStrategy,
+      )
+      ?.then((strategy: AppUpdateStrategy | undefined) => {
+        sendEventTelemetry({
+          event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+          eventData: { strategy: strategy ?? AppUpdateStrategy.auto },
+        })
       })
-    })
   }
 
   const showUpdateFoundToast = (version: string) => {
