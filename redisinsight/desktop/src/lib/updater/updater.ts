@@ -6,6 +6,7 @@ import { getWindows } from 'desktopSrc/lib/window'
 import { electronStore } from 'desktopSrc/lib/store/store'
 import {
   AppUpdateState,
+  AppUpdateStatus,
   ElectronStorageItem,
   IpcOnEvent,
   AppUpdateStrategy,
@@ -108,11 +109,12 @@ export function drainQueuedRecheck() {
 }
 
 export const startUpdateDownload = (version?: string) => {
-  if (
-    process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ||
-    process.mas ||
-    updateDownloadState.isDownloading
-  ) {
+  if (process.env.RI_DISABLE_AUTO_UPGRADE === 'true' || process.mas) {
+    return
+  }
+
+  if (updateDownloadState.isDownloading) {
+    sendUpdateState({ status: AppUpdateStatus.Error })
     return
   }
 
