@@ -1,49 +1,54 @@
 version: 2
 
-# Each tree below has its own lockfile, so each needs its own entry.
-# Directories absent here still receive security updates, which run repo-wide
-# and ignore this config.
+# Dependabot configuration: which manifests are watched, how updates are
+# bundled into pull requests, and what is left alone.
+#
+# Each entry below covers manifests that have their own lockfile. Directories
+# absent from this file still receive security updates, which run repo-wide and
+# ignore this configuration.
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
-    # Ceiling for the groups below, not a target.
+    # A group only opens a pull request when it has an update available, so this
+    # is a cap for a busy week rather than an expected number.
     open-pull-requests-limit: 15
     cooldown:
-      # Patches and minors inherit default-days, which matches min-release-age
-      # in .npmrc. A shorter window proposes versions that npm will not resolve.
+      # Days to wait after a release before proposing it. .npmrc sets
+      # min-release-age=3, which stops npm resolving anything newer than that,
+      # so a shorter window here would propose versions nobody can install.
       default-days: 3
-      semver-major-days: 7
 
     ignore:
-      # No majors anywhere. A major is a breaking change that needs a branch, a
-      # full test run and an owner, so it belongs in a ticket rather than an
-      # unsolicited pull request. The weekly dependency audit reports which
-      # majors are available so they can be triaged deliberately.
+      # No major updates, anywhere. A major is a breaking change that needs a
+      # branch, a full test run and someone to own it, so it belongs in planned
+      # work rather than an unsolicited pull request. Patches and minors still
+      # flow for every package.
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
-      # Minors are breaking here too: one shifts the per-file error counts in
-      # .tscheck.rec.json, and the ratchet fails whether counts rise or fall.
+      # CI records a TypeScript error count per file in .tscheck.rec.json and
+      # fails if any count changes in either direction. A compiler minor moves
+      # those counts, so it needs the baselines refreshed by hand.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-minor']
 
-    # Grouped by what must move together, not by shared name prefix.
+    # Groups bundle related updates into one pull request, by what has to move
+    # together rather than by shared name prefix.
     #
-    # Membership goes to the highest-scoring pattern match rather than to the
-    # first group declared: an exact name outranks a wildcard, which outranks a
-    # bare `*`. Every catch-all therefore declares `patterns: ['*']`. A
-    # catch-all that omits `patterns` outranks the named groups and swallows
-    # them.
+    # A dependency lands in its most specific matching group, not the first one
+    # declared: an exact name beats a wildcard, which beats a bare `*`. The
+    # fallback groups therefore declare `patterns: ['*']` so they score lowest.
+    # A fallback that omits `patterns` outranks the named groups and swallows
+    # them instead.
     #
-    # Groups spanning prod and dev omit `dependency-type` so a coupled pair
-    # split across the two, such as ioredis and ioredis-mock, can still travel
-    # together.
+    # A group covering both runtime and development dependencies leaves out
+    # `dependency-type`, so a pair split across the two, such as ioredis and
+    # ioredis-mock, can still travel together.
     #
-    # Every group is limited to patch and minor as well. That overlaps with the
-    # blanket major ignore on purpose: the ignore is the policy, and the filter
-    # keeps the groups correct on their own terms, so narrowing the policy to
-    # named packages later cannot quietly start bundling migrations.
+    # Each group also filters to patch and minor. That repeats the blanket major
+    # rule above on purpose: if the rule is ever narrowed to named packages, the
+    # groups still will not bundle a breaking change.
     groups:
       react:
         update-types: ['patch', 'minor']
@@ -58,15 +63,16 @@ updates:
             'redux-thunk',
             'redux-mock-store',
           ]
-      # Group identifiers take letters, pipes, underscores and hyphens only, so
-      # this cannot be named after the package.
+      # Group names take letters, pipes, underscores and hyphens only, so this
+      # one cannot be named after the package it covers.
       internationalization:
         update-types: ['patch', 'minor']
         patterns: ['i18next', 'i18next-cli', 'react-i18next']
       monaco:
         update-types: ['patch', 'minor']
         patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
-      # Each companion package is pinned to its host's major.
+      # The browser key list renders through these together, and the auto-sizer
+      # and infinite-loader companions are pinned to their host's major.
       virtualization:
         update-types: ['patch', 'minor']
         patterns:
@@ -79,12 +85,14 @@ updates:
             '@types/react-virtualized',
             '@types/react-window-infinite-loader',
           ]
-      # Isolated so a failing tsc baselines check points at the compiler.
+      # On its own, so a failing type-check points at the compiler rather than
+      # at one of the other development dependencies.
       typescript:
         update-types: ['patch', 'minor']
         patterns: ['typescript', '@aivenio/tsc-output-parser']
-      # Runtime libraries sharing the `electron-` prefix, kept out of the
-      # packaging toolchain. Named exactly to avoid colliding with it.
+      # Runtime libraries that only share the `electron-` prefix, kept apart
+      # from the packaging toolchain below. Named exactly so the two groups
+      # cannot claim each other's packages.
       electron-runtime:
         update-types: ['patch', 'minor']
         patterns:
@@ -96,8 +104,9 @@ updates:
             'electron-store',
             '@types/electron-store',
           ]
-      # electron-builder releases electron-updater and builder-util-runtime in
-      # lockstep; node-abi maps Electron versions to native ABI versions.
+      # The packaging toolchain. electron-builder releases electron-updater and
+      # builder-util-runtime in lockstep, and node-abi maps Electron versions to
+      # native module ABI versions.
       electron-build:
         update-types: ['patch', 'minor']
         patterns:
@@ -117,8 +126,9 @@ updates:
       observability:
         update-types: ['patch', 'minor']
         patterns: ['@sentry/*', '@opentelemetry/*']
-      # Vite builds the renderer, webpack the Electron main and preload
-      # bundles, alongside the loaders and plugins pinned to a webpack major.
+      # Two build pipelines: Vite builds the renderer, webpack builds the
+      # Electron main and preload bundles. The loaders and plugins are pinned to
+      # a webpack major, so they move with it.
       build-tooling:
         update-types: ['patch', 'minor']
         patterns: [
@@ -134,8 +144,8 @@ updates:
             'mini-css-extract-plugin',
             '@svgr/webpack',
             'react-refresh',
-            # Named exactly: a `*-loader` glob also catches unrelated packages
-            # such as react-window-infinite-loader.
+            # Loaders are listed by name: a `*-loader` glob also catches
+            # unrelated packages such as react-window-infinite-loader.
             'css-loader',
             'file-loader',
             'style-loader',
@@ -167,7 +177,8 @@ updates:
             'ts-mockito',
             'fishery',
             'identity-obj-proxy',
-            # Track their host's major, so they travel with it.
+            # These follow their host package's major, so they belong here
+            # rather than with the other @types packages.
             '@types/jest',
             '@types/supertest',
           ]
@@ -180,7 +191,8 @@ updates:
       types:
         update-types: ['patch', 'minor']
         patterns: ['@types/*']
-      # Split further so a broken minor cannot hold patches back.
+      # Fallbacks for whatever the groups above do not match, split by patch and
+      # minor so a broken minor cannot hold unrelated patches back.
       production-patch:
         dependency-type: 'production'
         update-types: ['patch']
@@ -198,11 +210,11 @@ updates:
         update-types: ['minor']
         patterns: ['*']
 
-  # One entry for both lockfiles. /redisinsight is the packaged Electron app's
+  # One entry for two lockfiles. /redisinsight is the packaged desktop app's
   # manifest and declares better-sqlite3, keytar and tunnel-ssh at the same
-  # versions as the api tree; its lockfile is the one that ships. Covering both
-  # directories here lets the shared-natives group below bump them in a single
-  # pull request, which a separate entry per directory cannot do.
+  # versions as the api tree, and its lockfile is the one that ships. Covering
+  # both directories from here lets the shared-natives group below update them
+  # in a single pull request, which separate entries cannot do.
   - package-ecosystem: 'npm'
     directories:
       - '/redisinsight'
@@ -211,16 +223,13 @@ updates:
       interval: 'weekly'
     open-pull-requests-limit: 10
     cooldown:
-      # Patches and minors inherit default-days, which matches min-release-age
-      # in .npmrc. A shorter window proposes versions that npm will not resolve.
       default-days: 3
-      semver-major-days: 7
 
     ignore:
-      # Same policy as the root entry: majors are tickets, not pull requests.
+      # Same policy as the root entry.
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
-      # Minors that break as hard as a major would.
+      # As above: a compiler minor moves the recorded error counts.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-minor']
       # Pre-1.0, so a minor carries breaking schema and driver changes.
@@ -228,25 +237,24 @@ updates:
         update-types: ['version-update:semver-minor']
 
     groups:
-      # Declared in both directories at the same version. `group-by` raises one
-      # pull request per dependency spanning both lockfiles, so the packaged app
-      # and the api tree cannot land different versions of a native module.
-      # Without it each directory gets its own pull request and they drift.
-      #
-      # No update-types filter here. `group-by` already yields one pull request
-      # per dependency, and anything falling outside this group would arrive as
-      # one pull request per directory, which is the drift it prevents.
+      # Declared in both directories at the same version. `group-by` raises a
+      # single pull request per dependency spanning both lockfiles, so the
+      # packaged app and the api tree cannot end up on different versions of a
+      # native module. No update-types filter, because anything falling outside
+      # this group would arrive as one pull request per directory again.
       shared-natives:
         group-by: 'dependency-name'
         patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
       typescript:
         update-types: ['patch', 'minor']
         patterns: ['typescript']
-      # rxjs and reflect-metadata are peers pinned to the framework major.
+      # rxjs and reflect-metadata are NestJS peer dependencies, pinned to the
+      # framework's major.
       nestjs:
         update-types: ['patch', 'minor']
         patterns: ['@nestjs/*', 'rxjs', 'reflect-metadata']
-      # Spans prod and dev so ioredis-mock moves with ioredis.
+      # Covers runtime and development together so ioredis-mock moves with
+      # ioredis.
       redis-clients:
         update-types: ['patch', 'minor']
         patterns:
@@ -260,8 +268,8 @@ updates:
       socketio:
         update-types: ['patch', 'minor']
         patterns: ['socket.io', 'socket.io-client', 'socket.io-mock']
-      # Unit tests run on jest, integration tests on mocha/chai. babel-jest
-      # ships from the jest repo and tracks its major, not Babel's.
+      # Unit tests run on jest, integration tests on mocha and chai. babel-jest
+      # ships from the jest repository and follows its major, not Babel's.
       testing:
         update-types: ['patch', 'minor']
         patterns:
@@ -307,6 +315,9 @@ updates:
         update-types: ['minor']
         patterns: ['*']
 
+  # Actions are versioned through their major tag, so here the majors are the
+  # upgrades worth taking and are deliberately not ignored. One group keeps a
+  # week's action bumps in a single pull request.
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
