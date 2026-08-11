@@ -258,7 +258,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
 
   return (
     <AutoSizer>
-      {({ height, width }) => (
+      {({ height, width }: { height: number; width: number }) => (
         <div data-testid="virtual-tree" style={{ position: 'relative' }}>
           {nodes.current.length > 0 && (
             <>

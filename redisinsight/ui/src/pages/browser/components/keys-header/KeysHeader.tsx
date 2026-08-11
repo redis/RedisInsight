@@ -375,7 +375,7 @@ const KeysHeader = (props: Props) => {
   return (
     <div className={styles.content} ref={rootDivRef}>
       <AutoSizer disableHeight>
-        {({ width }) => (
+        {({ width }: { width: number }) => (
           <Row justify="between" style={{ width }}>
             <FlexItem>
               <KeysSummary

@@ -22,6 +22,11 @@ const PROTRUDING_OFFSET = 2
 const MIDDLE_SCREEN_RESOLUTION = 460
 const SMALL_SCREEN_RESOLUTION = 360
 const MIN_ROW_HEIGHT = 17
+// The panel is resizable, so its height can be fractional, which makes
+// scrollOffset fractional too. Comparing that against a rounded scrollHeight
+// never matches exactly, so allow a pixel of slack when deciding we are at the
+// bottom.
+const SCROLL_BOTTOM_THRESHOLD = 1
 
 const MonitorOutputList = (props: Props) => {
   const { compressed, items = [], width = 0, height = 0 } = props
@@ -75,8 +80,9 @@ const MonitorOutputList = (props: Props) => {
     }
 
     if (
-      e.scrollOffset + outerRef.current.offsetHeight ===
-      outerRef.current.scrollHeight
+      outerRef.current.scrollHeight -
+        (e.scrollOffset + outerRef.current.offsetHeight) <=
+      SCROLL_BOTTOM_THRESHOLD
     ) {
       autoScrollRef.current = true
       return

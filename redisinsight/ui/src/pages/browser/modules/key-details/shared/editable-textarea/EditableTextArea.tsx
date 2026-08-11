@@ -158,7 +158,7 @@ const EditableTextArea = (props: Props) => {
       disableHeight
       onResize={() => setTimeout(updateTextAreaHeight, 0)}
     >
-      {({ width }) => (
+      {({ width }: { width: number }) => (
         <div style={{ width }}>
           <StopPropagation>
             <InlineItemEditor

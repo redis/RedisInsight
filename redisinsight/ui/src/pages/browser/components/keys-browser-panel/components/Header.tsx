@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <AutoSizer disableHeight>
-      {({ width }) => (
+      {({ width }: { width: number }) => (
         <Row align="center" justify="between" style={{ width }}>
           <Row gap="m" align="center" grow={false}>
             <FlexItem>
