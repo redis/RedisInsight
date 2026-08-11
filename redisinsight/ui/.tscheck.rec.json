@@ -202,7 +202,7 @@
   "src/components/virtual-grid/VirtualGrid.tsx": {
     "TS18048": 1,
     "TS2339": 8,
-    "TS2345": 3,
+    "TS2345": 1,
     "TS2769": 1,
     "TS7031": 1
   },
@@ -213,9 +213,6 @@
     "TS2345": 1,
     "TS2698": 1,
     "TS2769": 4
-  },
-  "src/components/virtual-list/VirtualList.tsx": {
-    "TS18048": 1
   },
   "src/components/virtual-table/VirtualTable.tsx": {
     "TS2322": 2,
@@ -374,10 +371,6 @@
   },
   "src/pages/browser/components/add-key/AddKeyZset/AddKeyZset.tsx": {
     "TS2322": 2
-  },
-  "src/pages/browser/components/bulk-actions/BulkDelete/BulkDeleteContent/BulkDeleteContent.tsx": {
-    "TS18048": 1,
-    "TS2769": 1
   },
   "src/pages/browser/components/key-list/KeyList.spec.tsx": {
     "TS2322": 9,

@@ -71,7 +71,7 @@ const BulkDeleteContent = () => {
       </div>
       <div className={styles.list}>
         <AutoSizer>
-          {({ width, height }) => (
+          {({ width, height }: { width: number; height: number }) => (
             <List
               ref={listRef}
               outerRef={outerRef}

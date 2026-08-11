@@ -98,7 +98,7 @@ const Monitor = (props: Props) => {
           <div className={styles.content}>
             {!!items?.length && (
               <AutoSizer>
-                {({ width, height }) => (
+                {({ width, height }: { width: number; height: number }) => (
                   <MonitorOutputList
                     width={width || 0}
                     height={height || 0}
