@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
+import { useTranslation } from 'uiSrc/i18n'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
@@ -25,6 +26,7 @@ const RecommendationVoting = ({
   live = false,
   containerClass = '',
 }: Props) => {
+  const { t } = useTranslation()
   const config = useAppSelector(userSettingsConfigSelector)
   const [popover, setPopover] = useState<string>('')
 
@@ -35,7 +37,7 @@ const RecommendationVoting = ({
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
-      <Text size="m">Is this useful?</Text>
+      <Text size="m">{t('tips.voting.question')}</Text>
       <div className="voteContent">
         {Object.values(Vote).map((option) => (
           <VoteOption
