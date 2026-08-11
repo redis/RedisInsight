@@ -149,6 +149,31 @@ describe('ConfigElectron', () => {
       expect(newAddAction?.payload.variation).toBe('1.2.4')
     })
 
+    it('should not session-dismiss a version after Restart is clicked, even if the toast is later dismissed', () => {
+      render(<ConfigElectron />, { store })
+      const updateAvailableAction = (window.app.updateAvailable as jest.Mock)
+        .mock.calls[0][0]
+
+      updateAvailableAction(null, { version: '1.2.3' })
+      const restartAction = findInfiniteNotification(store)
+
+      render(restartAction?.payload.description as React.ReactElement)
+      fireEvent.click(screen.getByRole('button', { name: /Restart/ }))
+
+      // quitAndInstall didn't actually quit (e.g. a platform-specific
+      // failure); the toast is later dismissed by unrelated queue churn.
+      restartAction?.payload.onClose?.()
+
+      store.clearActions()
+      updateAvailableAction(null, { version: '1.2.3' })
+
+      const newAddAction = findInfiniteNotification(store)
+      expect(newAddAction?.payload.id).toBe(
+        InfiniteMessagesIds.appUpdateAvailable,
+      )
+      expect(newAddAction?.payload.variation).toBe('1.2.3')
+    })
+
     it('should leave a still-open restart toast alone when the same version resends', () => {
       render(<ConfigElectron />, { store })
       const updateAvailableAction = (window.app.updateAvailable as jest.Mock)

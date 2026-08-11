@@ -121,6 +121,7 @@ const ConfigElectron = () => {
         INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
           version,
           () => {
+            resolvedRef.current = true
             sendEventTelemetry({
               event: TelemetryEvent.UPDATE_NOTIFICATION_RESTART_CLICKED,
             })
