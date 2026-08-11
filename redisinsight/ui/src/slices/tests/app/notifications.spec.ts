@@ -499,6 +499,30 @@ describe('slices', () => {
         state.notificationCenter,
       )
     })
+
+    it('should not replace the notification when variation is unchanged, and should preserve the array reference', () => {
+      const notification = { id: 'id', variation: 'v1', Inner: 'first' }
+      const currentState = {
+        ...initialState,
+        infiniteMessages: [notification],
+      }
+      const duplicateNotification = {
+        id: 'id',
+        variation: 'v1',
+        Inner: 'second',
+      }
+
+      // Act
+      const nextState = reducer(
+        currentState,
+        addInfiniteNotification(duplicateNotification),
+      )
+
+      // Assert - array AND element references are stable, so useSelector
+      // consumers don't re-render, and the toast doesn't remount
+      expect(nextState.infiniteMessages).toBe(currentState.infiniteMessages)
+      expect(nextState.infiniteMessages[0]).toBe(notification)
+    })
   })
 
   describe('removeInfiniteNotification', () => {

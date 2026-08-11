@@ -5,6 +5,7 @@ import CloudSettings from './cloud-settings'
 import GeneralSettings from './general-settings'
 import ThemeSettings from './theme-settings'
 import LanguageSettings from './language-settings'
+import UpdateSettings from './update-settings'
 import { CopyDiagnostics } from './copy-diagnostics/CopyDiagnostics'
 
 export {
@@ -15,5 +16,6 @@ export {
   GeneralSettings,
   ThemeSettings,
   LanguageSettings,
+  UpdateSettings,
   CopyDiagnostics,
 }

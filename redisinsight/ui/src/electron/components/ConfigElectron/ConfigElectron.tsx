@@ -2,32 +2,80 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { UpdateInfo } from 'electron-updater'
-import { IParsedDeepLink } from 'uiSrc/electron/constants'
+import {
+  AppUpdateState,
+  AppUpdateStatus,
+  AppUpdateStrategy,
+  IParsedDeepLink,
+} from 'uiSrc/electron/constants'
 import {
   appServerInfoSelector,
   appElectronInfoSelector,
 } from 'uiSrc/slices/app/info'
 import {
   ipcAppRestart,
+  ipcAppUpdateDownload,
   ipcCheckUpdates,
+  ipcGetUpdateDownloadedStrategy,
   ipcSendEvents,
+  ipcSkipUpdateVersion,
 } from 'uiSrc/electron/utils'
 import { ipcDeleteDownloadedVersion } from 'uiSrc/electron/utils/ipcDeleteStoreValues'
-import { addInfiniteNotification } from 'uiSrc/slices/app/notifications'
-import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
+import {
+  addInfiniteNotification,
+  addMessageNotification,
+  removeInfiniteNotification,
+} from 'uiSrc/slices/app/notifications'
+import {
+  INFINITE_MESSAGES,
+  InfiniteMessagesIds,
+} from 'uiSrc/components/notifications/components'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
+
+const createToastGuard = () => {
+  let dismissedVersion: string | null = null
+  let lastVersion: string | null = null
+  let resolvedRef = { current: false }
+
+  return {
+    get lastVersion() {
+      return lastVersion
+    },
+    shouldSkip: (version?: string) =>
+      !!version &&
+      (version === dismissedVersion ||
+        (version === lastVersion && !resolvedRef.current)),
+    resolveCurrent: () => {
+      resolvedRef.current = true
+    },
+    beginShowing: (version?: string) => {
+      resolvedRef.current = true
+      resolvedRef = { current: false }
+      lastVersion = version ?? null
+      return resolvedRef
+    },
+    dismiss: (version?: string) => {
+      dismissedVersion = version ?? null
+    },
+  }
+}
 
 const ConfigElectron = () => {
   let isCheckedUpdates = false
+  const foundGuard = createToastGuard()
+  const restartGuard = createToastGuard()
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
 
   const dispatch = useAppDispatch()
   const history = useHistory()
+  const { t } = useTranslation()
 
   useEffect(() => {
     window.app?.deepLinkAction?.(deepLinkAction)
     window.app?.updateAvailable?.(updateAvailableAction)
+    window.app?.updateState?.(updateStateAction)
   }, [])
 
   // Keyed on serverInfo only: must run once per load (consumes one-shot
@@ -61,17 +109,127 @@ const ConfigElectron = () => {
   }
 
   const updateAvailableAction = (_e: any, { version }: UpdateInfo) => {
-    sendEventTelemetry({ event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED })
+    if (restartGuard.shouldSkip(version)) {
+      return
+    }
+    foundGuard.resolveCurrent()
+    dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
+
+    const resolvedRef = restartGuard.beginShowing(version)
     dispatch(
       addInfiniteNotification(
-        INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, () => {
-          sendEventTelemetry({
-            event: TelemetryEvent.UPDATE_NOTIFICATION_RESTART_CLICKED,
-          })
-          ipcAppRestart()
-        }),
+        INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
+          version,
+          () => {
+            resolvedRef.current = true
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_RESTART_CLICKED,
+            })
+            ipcAppRestart()
+          },
+          () => {
+            if (resolvedRef.current) return
+            resolvedRef.current = true
+            restartGuard.dismiss(version)
+            dispatch(
+              removeInfiniteNotification(
+                InfiniteMessagesIds.appUpdateAvailable,
+              ),
+            )
+          },
+        ),
       ),
     )
+
+    ipcGetUpdateDownloadedStrategy().then((strategy) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+        eventData: { strategy },
+      })
+    })
+  }
+
+  const showUpdateFoundToast = (version: string) => {
+    sendEventTelemetry({
+      event: TelemetryEvent.UPDATE_NOTIFICATION_DISPLAYED,
+      eventData: { strategy: AppUpdateStrategy.notify },
+    })
+    const resolvedRef = foundGuard.beginShowing(version)
+    dispatch(
+      addInfiniteNotification(
+        INFINITE_MESSAGES.APP_UPDATE_FOUND(
+          version,
+          () => {
+            if (resolvedRef.current) return
+            resolvedRef.current = true
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_DOWNLOAD_CLICKED,
+            })
+            dispatch(
+              addInfiniteNotification(
+                INFINITE_MESSAGES.APP_UPDATE_DOWNLOADING(),
+              ),
+            )
+            ipcAppUpdateDownload(version)
+          },
+          () => {
+            if (resolvedRef.current) return
+            resolvedRef.current = true
+            sendEventTelemetry({
+              event: TelemetryEvent.UPDATE_NOTIFICATION_SKIPPED,
+            })
+            dispatch(
+              removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+            )
+            ipcSkipUpdateVersion(version)
+          },
+          () => {
+            if (!resolvedRef.current) {
+              resolvedRef.current = true
+              foundGuard.dismiss(version)
+              sendEventTelemetry({
+                event: TelemetryEvent.UPDATE_NOTIFICATION_CLOSED,
+              })
+              dispatch(
+                removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+              )
+            }
+          },
+        ),
+      ),
+    )
+  }
+
+  const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
+    switch (status) {
+      case AppUpdateStatus.Available:
+        if (foundGuard.shouldSkip(version)) {
+          return
+        }
+        restartGuard.resolveCurrent()
+        dispatch(
+          removeInfiniteNotification(InfiniteMessagesIds.appUpdateAvailable),
+        )
+        showUpdateFoundToast(version ?? '')
+        break
+      case AppUpdateStatus.Error: {
+        dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
+        dispatch(
+          addMessageNotification({
+            title: t('notification.error.appUpdateFailed.title'),
+            message: t('notification.error.appUpdateFailed.message'),
+            variant: 'danger',
+          }),
+        )
+        const lastFoundVersion = foundGuard.lastVersion
+        if (lastFoundVersion !== null) {
+          showUpdateFoundToast(lastFoundVersion)
+        }
+        break
+      }
+      default:
+        break
+    }
   }
 
   return null
