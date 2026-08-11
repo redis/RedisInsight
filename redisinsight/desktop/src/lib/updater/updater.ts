@@ -131,9 +131,16 @@ export const startUpdateDownload = (version?: string) => {
 
   updateDownloadState.isDownloading = true
   updateDownloadState.manuallyTriggered = true
-  autoUpdater
-    .downloadUpdate()
-    .catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
+  autoUpdater.downloadUpdate().catch((e) => {
+    log.error(wrapErrorMessageSensitiveData(e))
+    if (!updateDownloadState.manuallyTriggered) {
+      return
+    }
+    updateDownloadState.isDownloading = false
+    updateDownloadState.manuallyTriggered = false
+    sendUpdateState({ status: AppUpdateStatus.Error })
+    drainQueuedRecheck()
+  })
 }
 
 export const initAutoUpdateChecks = (url = '', interval = 84 * 3600 * 1000) => {
