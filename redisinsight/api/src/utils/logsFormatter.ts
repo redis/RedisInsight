@@ -68,8 +68,9 @@ export const sanitizeErrors = <T>(
   return clone;
 };
 
-export const prepareLogsData = format((info, opts: SanitizeOptions = {}) => {
-  return sanitizeErrors(info, opts);
+// logform types the format options as `unknown`, so narrow them here.
+export const prepareLogsData = format((info, opts?: unknown) => {
+  return sanitizeErrors(info, (opts as SanitizeOptions) ?? {});
 });
 
 export const prettyFileFormat = format.printf((info) => {
