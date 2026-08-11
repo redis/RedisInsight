@@ -24,7 +24,10 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import { sortRecommendations } from 'uiSrc/utils/recommendation'
+import {
+  getTranslatedTipTitle,
+  sortRecommendations,
+} from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -194,7 +197,11 @@ const Recommendations = () => {
                 <RiAccordion
                   id={name}
                   key={`${name}-accordion`}
-                  label={renderLabel(redisStack, title, id)}
+                  label={renderLabel(
+                    redisStack,
+                    getTranslatedTipTitle(name, title),
+                    id,
+                  )}
                   actions={renderButtonContent(badges, id)}
                   className={styles.accordion}
                   defaultOpen
