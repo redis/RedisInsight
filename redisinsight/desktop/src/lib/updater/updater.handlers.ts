@@ -2,24 +2,93 @@ import { app } from 'electron'
 import { autoUpdater, UpdateDownloadedEvent } from 'electron-updater'
 import log from 'electron-log'
 
-import { electronStore, updateDownloaded } from 'desktopSrc/lib'
+import {
+  electronStore,
+  updateDownloaded,
+  updateDownloadState,
+  sendUpdateState,
+  getUpdateStrategy,
+  drainQueuedRecheck,
+  UNPROMPTED_NOTIFICATION_DELAY,
+} from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
-import { ElectronStorageItem } from 'uiSrc/electron/constants'
+import { AppUpdateStatus, ElectronStorageItem } from 'uiSrc/electron/constants'
 
 export const initAutoUpdaterHandlers = () => {
+  let pendingAvailableTimeout: ReturnType<typeof setTimeout> | null = null
+  let pendingAvailableVersion: string | null = null
+
+  const clearPendingAvailable = () => {
+    if (pendingAvailableTimeout) {
+      clearTimeout(pendingAvailableTimeout)
+      pendingAvailableTimeout = null
+      pendingAvailableVersion = null
+    }
+  }
+
   autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...')
   })
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
     log.info('Update available.')
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, true)
+
+    if (autoUpdater.autoDownload) {
+      clearPendingAvailable()
+      return
+    }
+
+    if (pendingAvailableTimeout && pendingAvailableVersion === info.version) {
+      return
+    }
+
+    clearPendingAvailable()
+    pendingAvailableVersion = info.version
+    pendingAvailableTimeout = setTimeout(() => {
+      pendingAvailableTimeout = null
+      pendingAvailableVersion = null
+
+      const skippedVersion = electronStore?.get(
+        ElectronStorageItem.updateSkippedVersion,
+      )
+
+      if (skippedVersion === info.version) {
+        electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+        return
+      }
+
+      if (
+        updateDownloadState.downloadedInfo &&
+        updateDownloadState.downloadedInfo.version === info.version
+      ) {
+        updateDownloaded(updateDownloadState.downloadedInfo)
+        return
+      }
+
+      if (updateDownloadState.isDownloading) {
+        return
+      }
+
+      sendUpdateState({
+        status: AppUpdateStatus.Available,
+        version: info.version,
+      })
+    }, UNPROMPTED_NOTIFICATION_DELAY)
   })
   autoUpdater.on('update-not-available', () => {
     log.info('Update not available.')
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, false)
+    clearPendingAvailable()
   })
   autoUpdater.on('error', (err: Error) => {
     log.info(`Error in auto-updater. ${wrapErrorMessageSensitiveData(err)}`)
+    const wasManual = updateDownloadState.manuallyTriggered
+    updateDownloadState.isDownloading = false
+    updateDownloadState.manuallyTriggered = false
+    if (wasManual) {
+      sendUpdateState({ status: AppUpdateStatus.Error })
+    }
+    drainQueuedRecheck()
   })
   autoUpdater.on('download-progress', (progressObj: any) => {
     let logMessage = `Download speed: ${progressObj.bytesPerSecond}`
@@ -35,6 +104,12 @@ export const initAutoUpdaterHandlers = () => {
     log.info('version', info.version)
     log.info('files', info.files)
 
+    clearPendingAvailable()
+
+    updateDownloadState.isDownloading = false
+    updateDownloadState.downloadedInfo = info
+    electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
+
     // set updateDownloaded to electron storage for Telemetry send event APPLICATION_UPDATED
     electronStore?.set(ElectronStorageItem.updateDownloaded, true)
     electronStore?.set(ElectronStorageItem.updateDownloadedForTelemetry, true)
@@ -46,7 +121,13 @@ export const initAutoUpdaterHandlers = () => {
       ElectronStorageItem.updatePreviousVersion,
       app.getVersion(),
     )
+    electronStore?.set(
+      ElectronStorageItem.updateDownloadedStrategy,
+      updateDownloadState.initiatingStrategy ?? getUpdateStrategy(),
+    )
 
     updateDownloaded(info)
+    updateDownloadState.manuallyTriggered = false
+    drainQueuedRecheck()
   })
 }

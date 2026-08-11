@@ -5,7 +5,16 @@ import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
 import { whatsNewFeed } from 'uiSrc/utils'
 import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { TelemetryEvent } from 'uiSrc/telemetry'
+import { AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { ipcCheckUpdates, ipcSendEvents } from '../ipcCheckUpdates'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const { sendEventTelemetry } = jest.requireMock('uiSrc/telemetry')
 
 const serverInfoMock = (appVersion: string): GetServerInfoResponse =>
   ({ appVersion }) as unknown as GetServerInfoResponse
@@ -82,5 +91,25 @@ describe('ipcSendEvents', () => {
     ipcSendEvents({ appVersion: appVersionMock })
 
     expect(invokeMock).toBeCalled()
+  })
+
+  it('should default the strategy to auto for a legacy download with no stored strategy', async () => {
+    invokeMock
+      .mockReturnValueOnce(true) // isUpdateDownloadedForTelemetry
+      .mockReturnValueOnce(false) // isUpdateAvailable
+      .mockReturnValueOnce('2.0.0') // newVer
+      .mockReturnValueOnce('1.0.0') // prevVer
+      .mockReturnValueOnce(undefined) // updateDownloadedStrategy - never written by a pre-feature build
+
+    await ipcSendEvents(serverInfoMock('2.0.0'))
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: TelemetryEvent.APPLICATION_UPDATED,
+        eventData: expect.objectContaining({
+          strategy: AppUpdateStrategy.auto,
+        }),
+      }),
+    )
   })
 })
