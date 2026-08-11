@@ -10,6 +10,7 @@ import {
 import {
   getOriginalErrorCause,
   logDataToPlain,
+  prepareLogsData,
   sanitizeError,
   sanitizeErrors,
 } from './logsFormatter';
@@ -274,6 +275,64 @@ describe('logsFormatter', () => {
             circular: '[Circular]',
           },
         ],
+      });
+    });
+  });
+
+  describe('prepareLogsData', () => {
+    it('should sanitize errors in the log and omit stacks when sensitive data is omitted', () => {
+      const formatter = prepareLogsData({ omitSensitiveData: true });
+
+      expect(
+        formatter.transform(
+          { level: 'error', message: 'Failed', error: simpleError },
+          formatter.options,
+        ),
+      ).toEqual({
+        level: 'error',
+        message: 'Failed',
+        error: {
+          type: 'Error',
+          message: simpleError.message,
+        },
+      });
+    });
+
+    it('should keep stacks when sensitive data is not omitted', () => {
+      const formatter = prepareLogsData({});
+
+      expect(
+        formatter.transform(
+          { level: 'error', message: 'Failed', error: simpleError },
+          formatter.options,
+        ),
+      ).toEqual({
+        level: 'error',
+        message: 'Failed',
+        error: {
+          type: 'Error',
+          message: simpleError.message,
+          stack: simpleError.stack,
+        },
+      });
+    });
+
+    it('should keep stacks when no options are passed', () => {
+      const formatter = prepareLogsData();
+
+      expect(
+        formatter.transform(
+          { level: 'error', message: 'Failed', error: simpleError },
+          formatter.options,
+        ),
+      ).toEqual({
+        level: 'error',
+        message: 'Failed',
+        error: {
+          type: 'Error',
+          message: simpleError.message,
+          stack: simpleError.stack,
+        },
       });
     });
   });
