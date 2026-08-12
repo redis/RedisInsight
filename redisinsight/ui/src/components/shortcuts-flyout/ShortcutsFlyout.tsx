@@ -27,8 +27,10 @@ const ShortcutsFlyout = () => {
       id: 'description',
       accessorKey: 'descriptionKey',
       enableSorting: false,
-      cell: ({ row }: { row: { original: Shortcut } }) =>
-        t(row.original.descriptionKey),
+      cell: ({ row }: { row: { original: Shortcut } }) => {
+        const description = t(row.original.descriptionKey)
+        return <span title={description}>{description}</span>
+      },
     },
     {
       header: t('shortcuts.column.shortcut'),
