@@ -328,7 +328,7 @@
     "react-router-dom": "^5.3.4",
     "react-virtualized": "^9.22.2",
     "react-virtualized-auto-sizer": "^1.0.26",
-    "react-vtree": "^3.0.0-beta.3",
+    "react-vtree": "^3.0.0",
     "react-window": "^1.8.11",
     "react-window-infinite-loader": "^1.0.10",
     "redux": "^5.0.1",
