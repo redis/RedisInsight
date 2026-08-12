@@ -1,7 +1,25 @@
 name: E2E Playwright Tests (v2)
 
+# E2E is expensive, so it does not run on every pull request. These are the only
+# cases where it runs:
+#
+#   1. Dependabot opens a dependency PR. Its branch is `dependabot/**`, and the
+#      push that creates that branch starts this workflow.
+#   2. Dependabot rebases a dependency PR. That is another push to the same
+#      branch, so the run restarts on the new commit.
+#   3. Someone adds `e2e-tests` or `run-all-tests` to a PR.
+#   4. The nightly schedule, at 00:00 UTC.
+#   5. Someone starts it by hand from the Actions tab.
+#
+# `skip-e2e` on a PR overrides cases 1, 2 and 3. It stops a run already going and
+# keeps later ones off.
+#
+# Opening a PR or pushing to it does not start E2E unless the branch is
+# `dependabot/**`. Case 3 is how you ask for it, and removing then re-adding the
+# label is how you rerun it.
+
 on:
-  # Manual trigger
+  # Case 5.
   workflow_dispatch:
     inputs:
       environment:
@@ -15,47 +33,104 @@ on:
         type: boolean
         default: false
 
-  # Trigger on PR with label (remove and re-add label to rerun)
+  # Cases 1 and 2. The branch name is the only way to limit this to Dependabot: a
+  # `pull_request` trigger cannot filter on who opened the PR, so it would start a
+  # run on every PR in the repo just to work out that it is not wanted.
+  push:
+    branches: ['dependabot/**']
+
+  # Case 3, and `skip-e2e`.
   pull_request:
     types: [labeled]
 
-  # Nightly schedule (0 AM UTC)
+  # Case 4.
   schedule:
     - cron: '0 0 * * *'
 
-# Cancel in-progress runs for the same PR/branch
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # One run per branch at a time. A new push replaces the one already going,
+  # which is what case 2 needs.
+  #
+  # The key is the branch rather than the PR so that a push (cases 1 and 2) and a
+  # label (case 3) on the same PR land in the same group. That is what lets
+  # `skip-e2e` stop a run a push started.
+  #
+  # The `-noop-<run id>` on the end puts labels this workflow ignores in a group
+  # of their own, where they cancel nothing. Without it every label added to a PR
+  # would kill the run: the group is worked out before any job `if` is read, so
+  # skipping the jobs is too late. Dependabot adds `dependencies` and `javascript`
+  # twice each within two seconds, so this matters on every dependency PR.
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}${{
+    github.event.action == 'labeled' &&
+    !contains(fromJSON('["e2e-tests","run-all-tests","skip-e2e"]'), github.event.label.name)
+    && format('-noop-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
-  # Check if workflow should run (for PR label trigger)
+  # Works out which case this event is, and whether it runs anything.
   check-trigger:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
     steps:
+      # A push event carries no PR, so the labels have to be fetched to honour
+      # `skip-e2e` in cases 1 and 2.
+      - name: Read labels for the pushed branch
+        id: pushed-pr
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          labels=$(gh pr list --head "$BRANCH" --state open --json labels \
+            --jq '[.[0].labels[].name] | join(",")' || true)
+          echo "labels=$labels" >> "$GITHUB_OUTPUT"
+
       - name: Check trigger conditions
         id: check
         env:
           EVENT_NAME: ${{ github.event_name }}
-          HAS_E2E_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}
-          HAS_RUN_ALL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
-          HAS_DEPENDENCIES_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}
+          ACTION: ${{ github.event.action }}
+          LABEL_ADDED: ${{ github.event.label.name }}
+          PUSHED_PR_LABELS: ${{ steps.pushed-pr.outputs.labels }}
+          HAS_SKIP_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
         run: |
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
-          elif [[ "$EVENT_NAME" == "schedule" ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
-          elif [[ "$EVENT_NAME" == "pull_request" ]]; then
-            if [[ "$HAS_E2E_LABEL" == "true" || "$HAS_RUN_ALL_LABEL" == "true" || "$HAS_DEPENDENCIES_LABEL" == "true" ]]; then
-              echo "should_run=true" >> $GITHUB_OUTPUT
-            else
-              echo "should_run=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "should_run=false" >> $GITHUB_OUTPUT
-          fi
+          # Case 3. The same list appears in the concurrency group above, next to
+          # `skip-e2e`. Changing one without the other breaks quietly.
+          OPT_IN_LABELS='e2e-tests run-all-tests'
+
+          should_run=false
+          case "$EVENT_NAME" in
+            workflow_dispatch | schedule)
+              # Cases 4 and 5, always.
+              should_run=true
+              ;;
+            push)
+              # Cases 1 and 2. The branch filter has already narrowed this to
+              # dependency branches, so `skip-e2e` is the only thing left to check.
+              if [[ ",$PUSHED_PR_LABELS," != *",skip-e2e,"* ]]; then
+                should_run=true
+              fi
+              ;;
+            pull_request)
+              if [[ "$HAS_SKIP_LABEL" == "true" ]]; then
+                # `skip-e2e` wins, even when an opt-in label arrives after it.
+                should_run=false
+              elif [[ "$ACTION" == "labeled" ]]; then
+                # Case 3. Every other label reaches this point too, in its own
+                # concurrency group, and leaves should_run false.
+                for label in $OPT_IN_LABELS; do
+                  [[ "$LABEL_ADDED" == "$label" ]] && should_run=true
+                done
+              fi
+              ;;
+          esac
+          echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
 
   # Lint and type-check E2E code
   lint:
@@ -168,4 +243,3 @@ jobs:
                   - title: "Electron (Linux)"
                     value: "${{ needs.e2e-electron.result }}"
                     short: true
-

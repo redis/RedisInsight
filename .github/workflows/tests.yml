@@ -1,6 +1,21 @@
 name: ✅ Tests
 
+# Runs on every pull request. Which suites run is decided per PR from the changed
+# files plus these labels: `run-all-tests`, `run-frontend-tests`,
+# `run-backend-tests`, `run-integration-tests`.
+#
+# Three cases:
+#
+#   1. A PR is opened, or a commit is pushed to it. Any run already going is
+#      replaced.
+#   2. One of the four labels above is added, to widen what the PR runs.
+#   3. Any other label is added. Nothing runs. This case exists only so that
+#      labels aimed elsewhere, such as `e2e-tests` or Dependabot's own
+#      `dependencies` and `javascript`, cannot disturb case 1. See the
+#      concurrency note below.
+
 on:
+  # Cases 1, 2 and 3.
   pull_request:
     types: [opened, synchronize, reopened, labeled]
 
@@ -39,13 +54,33 @@ on:
         default: false
         type: boolean
 
-# One in-flight run per PR; a new commit cancels the previous run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # One run per PR at a time. A new commit replaces the one already going, which
+  # is case 1.
+  #
+  # The `-noop-<run id>` on the end puts case 3 in a group of its own, where it
+  # cancels nothing. Without it, any label added to a PR would kill the run and
+  # start the whole suite again: the group is worked out before any job `if` is
+  # read, so skipping the jobs is too late. Dependabot adds `dependencies` and
+  # `javascript` twice each within two seconds of opening a PR, so without this
+  # every dependency PR loses the run that opening it started.
+  #
+  # The label list is repeated on the `changes` and `lint` jobs below. Changing
+  # one without the others breaks quietly.
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}${{
+    github.event.action == 'labeled' &&
+    !contains(fromJSON('["run-all-tests","run-frontend-tests","run-backend-tests","run-integration-tests"]'), github.event.label.name)
+    && format('-noop-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
+  # Skipped in case 3, which is what makes that run do nothing. Every job after
+  # this one skips with it, through `needs`.
   changes:
+    if: >-
+      github.event.action != 'labeled' ||
+      contains(fromJSON('["run-all-tests","run-frontend-tests","run-backend-tests","run-integration-tests"]'), github.event.label.name)
     permissions:
       contents: read
       pull-requests: read
@@ -168,6 +203,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   lint:
+    # No `needs`, so it cannot inherit the skip from `changes` and repeats the
+    # same condition to stay out of case 3.
+    if: >-
+      github.event.action != 'labeled' ||
+      contains(fromJSON('["run-all-tests","run-frontend-tests","run-backend-tests","run-integration-tests"]'), github.event.label.name)
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
@@ -240,12 +280,15 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: ${{ always() && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    # `always()` runs this even when every test job skips, so it needs its own
+    # guard to stay out of case 3 and not delete deployments for a run that does
+    # no work.
+    if: ${{ always() && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     permissions:
       actions: write
       contents: read
       deployments: write
-    needs: [frontend-tests, backend-tests, integration-tests]
+    needs: [changes, frontend-tests, backend-tests, integration-tests]
 
   # Remove artifacts from github actions
   remove-artifacts:
