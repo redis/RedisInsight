@@ -14,7 +14,7 @@ export const splitWithPrefixThreshold = (
   dPattern: string,
   pLength: number,
 ): string[] => {
-  if (!pLength || name.length < pLength) {
+  if (!pLength) {
     return name.split(new RegExp(dPattern, 'g'))
   }
   const prefix = name.substring(0, pLength)
@@ -39,7 +39,7 @@ export const constructKeysToTree = (props: Props): any[] => {
     dPattern: string,
     pLength: number,
   ): string[] => {
-    if (!pLength || name.length < pLength) {
+    if (!pLength) {
       return name.split(new RegExp(dPattern, 'g'))
     }
     const prefix = name.substring(0, pLength)

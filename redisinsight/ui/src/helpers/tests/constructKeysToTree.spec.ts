@@ -67,8 +67,8 @@ describe('splitWithPrefixThreshold', () => {
     expect(splitWithPrefixThreshold('ab:cd', ':', 5)).toEqual(['ab:cd'])
   })
 
-  it('prefixLength longer than name length falls through to plain split', () => {
-    expect(splitWithPrefixThreshold('ab:cd', ':', 10)).toEqual(['ab', 'cd'])
+  it('prefixLength longer than name length — key treated as single segment', () => {
+    expect(splitWithPrefixThreshold('ab:cd', ':', 10)).toEqual(['ab:cd'])
   })
 
   it('prefixLength covers no delimiters — behaves like plain split', () => {
