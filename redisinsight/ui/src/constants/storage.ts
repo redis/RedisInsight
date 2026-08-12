@@ -17,7 +17,7 @@ enum BrowserStorageItem {
   wbCommandsHistory = 'command_execution',
   treeViewDelimiter = 'treeViewDelimiter',
   treeViewSort = 'treeViewSort',
-  treeViewPrefixLength = 'treeViewPrefixLength',
+  treeViewPrefixLength = 'treeViewDelimiterPrefixLength',
   autoRefreshRate = 'autoRefreshRate',
   bulkActionDeleteId = 'bulkActionDeleteId',
   dbConfig = 'dbConfig_',
