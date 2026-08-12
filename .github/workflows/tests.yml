@@ -280,12 +280,15 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: ${{ always() && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    # `always()` runs this even when every test job skips, so it needs its own
+    # guard to stay out of case 3 and not delete deployments for a run that does
+    # no work.
+    if: ${{ always() && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     permissions:
       actions: write
       contents: read
       deployments: write
-    needs: [frontend-tests, backend-tests, integration-tests]
+    needs: [changes, frontend-tests, backend-tests, integration-tests]
 
   # Remove artifacts from github actions
   remove-artifacts:
