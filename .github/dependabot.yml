@@ -11,6 +11,11 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+      day: 'monday'
+      # Overnight, so the batch and the CI it starts finish before the working
+      # day. Without a day and time GitHub picks, which lands it mid-afternoon.
+      time: '02:00'
+      timezone: 'Europe/Sofia'
     # A group only opens a pull request when it has an update available, so this
     # is a cap for a busy week rather than an expected number.
     open-pull-requests-limit: 15
@@ -188,6 +193,9 @@ updates:
       - '/redisinsight/api'
     schedule:
       interval: 'weekly'
+      day: 'monday'
+      time: '02:00'
+      timezone: 'Europe/Sofia'
     open-pull-requests-limit: 10
     # Same reason as the root entry.
     rebase-strategy: 'disabled'
@@ -270,6 +278,9 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+      day: 'monday'
+      time: '02:00'
+      timezone: 'Europe/Sofia'
     cooldown:
       default-days: 3
     groups:
