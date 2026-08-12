@@ -184,7 +184,7 @@ const Job = (props: Props) => {
                   content={
                     KEYBOARD_SHORTCUTS?.rdi?.openDedicatedEditor && (
                       <div>
-                        <Text size="s">{`${KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor?.description}\u00A0\u00A0`}</Text>
+                        <Text size="s">{`${t(KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor.descriptionKey)}\u00A0\u00A0`}</Text>
                         <KeyboardShortcut
                           separator={KEYBOARD_SHORTCUTS?._separator}
                           items={
