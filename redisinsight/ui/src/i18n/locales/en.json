@@ -561,6 +561,8 @@
   "browser.addKey.form.value.label": "Value",
   "browser.addKey.form.value.placeholder": "Enter Value",
   "browser.addKey.hash.ttlPlaceholder": "Enter TTL",
+  "browser.addKey.jsonCloudAd": "You can also create a <cloudLink>free Redis Cloud database</cloudLink> with built-in JSON support.",
+  "browser.addKey.jsonNotSupported": "This database does not support the JSON data structure. Learn more about JSON support <docsLink>here</docsLink>.",
   "browser.addKey.keyType": "Key Type",
   "browser.addKey.requiresVersion": "Requires Redis {{version}}+",
   "browser.addKey.selectKeyType": "Select key type",

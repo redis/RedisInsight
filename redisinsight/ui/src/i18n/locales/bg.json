@@ -561,6 +561,8 @@
   "browser.addKey.form.value.label": "Стойност",
   "browser.addKey.form.value.placeholder": "Въведете стойност",
   "browser.addKey.hash.ttlPlaceholder": "Въведете TTL",
+  "browser.addKey.jsonCloudAd": "Можете също да създадете <cloudLink>безплатна база данни в Redis Cloud</cloudLink> с вградена поддръжка на JSON.",
+  "browser.addKey.jsonNotSupported": "Тази база данни не поддържа структурата от данни JSON. Научете повече за поддръжката на JSON <docsLink>тук</docsLink>.",
   "browser.addKey.keyType": "Тип ключ",
   "browser.addKey.requiresVersion": "Изисква Redis {{version}}+",
   "browser.addKey.selectKeyType": "Изберете тип ключ",
