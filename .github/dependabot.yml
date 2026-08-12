@@ -14,6 +14,10 @@ updates:
     # A group only opens a pull request when it has an update available, so this
     # is a cap for a busy week rather than an expected number.
     open-pull-requests-limit: 15
+    # Every pull request from this entry edits the same lockfile, so merging one
+    # conflicts the rest. Automatic rebasing would push a commit to each and run
+    # their pipelines again. Use `@dependabot rebase` on the one being merged.
+    rebase-strategy: 'disabled'
     cooldown:
       # Days to wait after a release before proposing it. .npmrc sets
       # min-release-age=3, which stops npm resolving anything newer than that,
@@ -222,6 +226,8 @@ updates:
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 10
+    # Same reason as the root entry.
+    rebase-strategy: 'disabled'
     cooldown:
       default-days: 3
 
