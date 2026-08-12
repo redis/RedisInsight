@@ -9,6 +9,20 @@ interface Props {
   prefixLength?: number
 }
 
+export const splitWithPrefixThreshold = (
+  name: string,
+  dPattern: string,
+  pLength: number,
+): string[] => {
+  if (!pLength || name.length < pLength) {
+    return name.split(new RegExp(dPattern, 'g'))
+  }
+  const prefix = name.substring(0, pLength)
+  const rest = name.substring(pLength)
+  const restParts = rest.split(new RegExp(dPattern, 'g'))
+  return [prefix + restParts[0], ...restParts.slice(1)]
+}
+
 export const constructKeysToTree = (props: Props): any[] => {
   const {
     items: keys,
@@ -18,19 +32,6 @@ export const constructKeysToTree = (props: Props): any[] => {
     prefixLength = 0,
   } = props
 
-  const splitWithPrefixThreshold = (
-    name: string,
-    dPattern: string,
-    pLength: number,
-  ): string[] => {
-    if (!pLength || name.length <= pLength) {
-      return name.split(new RegExp(dPattern, 'g'))
-    }
-    const prefix = name.substring(0, pLength)
-    const rest = name.substring(pLength)
-    const restParts = rest.split(new RegExp(dPattern, 'g'))
-    return [prefix + restParts[0], ...restParts.slice(1)]
-  }
   const keysSymbol = `keys${delimiterPattern}keys`
   const tree: any = {}
 
@@ -38,7 +39,11 @@ export const constructKeysToTree = (props: Props): any[] => {
     // eslint-disable-next-line prefer-object-spread
     let currentNode: any = tree
     const { nameString: name = '' } = key
-    const nameSplitted = splitWithPrefixThreshold(name, delimiterPattern, prefixLength)
+    const nameSplitted = splitWithPrefixThreshold(
+      name,
+      delimiterPattern,
+      prefixLength,
+    )
     const lastIndex = nameSplitted.length - 1
 
     nameSplitted.forEach((value: any, index: number) => {

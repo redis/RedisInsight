@@ -4,6 +4,7 @@ import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 
+import { splitWithPrefixThreshold } from 'uiSrc/helpers'
 import { bufferToString, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
@@ -91,12 +92,24 @@ const VirtualTree = (props: VirtualTreeProps) => {
       nodes.current = []
       elements.current = {}
       rerender({})
-      runWebworker?.({ items: [], delimiterPattern, delimiters, sorting, prefixLength })
+      runWebworker?.({
+        items: [],
+        delimiterPattern,
+        delimiters,
+        sorting,
+        prefixLength,
+      })
       return
     }
 
     setConstructingTree(true)
-    runWebworker?.({ items, delimiterPattern, delimiters, sorting, prefixLength })
+    runWebworker?.({
+      items,
+      delimiterPattern,
+      delimiters,
+      sorting,
+      prefixLength,
+    })
   }, [items, delimiterPattern, prefixLength])
 
   const handleUpdateSelected = useCallback(
@@ -193,8 +206,12 @@ const VirtualTree = (props: VirtualTreeProps) => {
         type: node.type,
         fullName: node.fullName,
         shortName: node.nameString
-          ?.split(new RegExp(delimiterPattern, 'g'))
-          .pop(),
+          ? splitWithPrefixThreshold(
+              node.nameString,
+              delimiterPattern,
+              prefixLength,
+            ).pop()
+          : undefined,
         delimiters,
         nestingLevel,
         deleting,
@@ -254,7 +271,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
         }
       }
     },
-    [statusSelected, statusOpen, rerenderState, visibleColumns],
+    [statusSelected, statusOpen, rerenderState, visibleColumns, prefixLength],
   )
 
   return (

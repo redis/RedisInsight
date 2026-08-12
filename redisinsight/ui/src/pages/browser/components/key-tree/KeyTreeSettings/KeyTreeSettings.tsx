@@ -71,7 +71,9 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
   const [pendingInput, setPendingInput] = useState('')
-  const [prefixLength, setPrefixLength] = useState<number>(treeViewDelimiterPrefixLength)
+  const [prefixLength, setPrefixLength] = useState<number>(
+    treeViewDelimiterPrefixLength,
+  )
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -193,12 +195,17 @@ const KeyTreeSettings = ({ loading }: Props) => {
         <FlexItem>
           <FormField
             layout="horizontal"
-            label={t('browser.tree.settings.prefixLength', 'Ignore separator in first N chars')}
+            label={t(
+              'browser.tree.settings.prefixLength',
+              'Ignore separator in first N chars',
+            )}
           >
             <NumericInput
               min={0}
               value={prefixLength}
-              onChange={(next) => setPrefixLength(Math.max(0, Math.round(Number(next ?? 0))))}
+              onChange={(next) =>
+                setPrefixLength(Math.max(0, Math.round(Number(next ?? 0))))
+              }
               data-testid="prefix-length-input"
             />
           </FormField>

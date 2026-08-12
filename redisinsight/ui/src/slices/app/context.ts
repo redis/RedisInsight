@@ -201,10 +201,7 @@ const appContextSlice = createSlice({
         payload,
       )
     },
-    setBrowserTreePrefixLength: (
-      state,
-      { payload }: { payload: number },
-    ) => {
+    setBrowserTreePrefixLength: (state, { payload }: { payload: number }) => {
       state.dbConfig.treeViewDelimiterPrefixLength = payload
       setDBConfigStorageField(
         state.contextInstanceId,

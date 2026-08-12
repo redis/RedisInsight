@@ -15,7 +15,7 @@ import {
   resetBrowserTree,
   setBrowserTreeNodesOpen,
 } from 'uiSrc/slices/app/context'
-import { constructKeysToTree } from 'uiSrc/helpers'
+import { constructKeysToTree, splitWithPrefixThreshold } from 'uiSrc/helpers'
 import VirtualTree from 'uiSrc/pages/browser/components/virtual-tree'
 import TreeViewSVG from 'uiSrc/assets/img/icons/treeview.svg'
 import { bufferToString, comboBoxToArray, Nullable } from 'uiSrc/utils'
@@ -68,8 +68,11 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const { openNodes } = useAppSelector(appContextBrowserTree)
-  const { treeViewDelimiter, treeViewSort: sorting, treeViewDelimiterPrefixLength } =
-    useAppSelector(appContextDbConfig)
+  const {
+    treeViewDelimiter,
+    treeViewSort: sorting,
+    treeViewDelimiterPrefixLength,
+  } = useAppSelector(appContextDbConfig)
   const { nameString: selectedKeyName = null } =
     useAppSelector(selectedKeyDataSelector) ?? {}
 
@@ -105,18 +108,23 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   // open all parents for selected key
   const openSelectedKey = (selectedKeyName: Nullable<string> = '') => {
     if (selectedKeyName) {
-      const parts = selectedKeyName.split(delimiterPattern)
-      const parents = parts.map(
-        (_, index) =>
-          parts.slice(0, index + 1).join(delimiterPattern) + delimiterPattern,
+      const parts = splitWithPrefixThreshold(
+        selectedKeyName,
+        delimiterPattern,
+        treeViewDelimiterPrefixLength ?? 0,
       )
-
-      // remove key name from parents
-      parents.pop()
+      // Reconstruct parent fullName values matching how formatTreeData builds them:
+      // fullName = previousKey + name (no trailing delimiter)
+      const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
+      const parents: string[] = []
+      for (let i = 0; i < parts.length - 1; i++) {
+        parents.push(
+          i === 0 ? parts[0] : parents[i - 1] + delimiterView + parts[i],
+        )
+      }
 
       if (parents.length === 0) return
 
-      // Use functional update to avoid stale closure issues
       setStatusOpen((prevState) => {
         const newOpenNodes = { ...prevState }
         parents.forEach((parent) => {
@@ -146,7 +154,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
   useEffect(() => {
     openSelectedKey(selectedKeyName)
-  }, [selectedKeyName])
+  }, [selectedKeyName, treeViewDelimiterPrefixLength])
 
   const onLoadMoreItems = (props: {
     startIndex: number
