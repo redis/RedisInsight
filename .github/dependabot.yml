@@ -37,50 +37,49 @@ updates:
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-minor']
 
-    # Groups bundle related updates into one pull request, by what has to move
-    # together rather than by shared name prefix.
+    # Groups bundle related updates into one pull request. A group opens at most
+    # one pull request, so the number of groups here sets how many arrive in a
+    # week. They are split by what has to move together, and by what a reviewer
+    # checks: a failing `electron` group points at packaging, a failing
+    # `frontend` group points at the renderer.
     #
     # A dependency lands in its most specific matching group, not the first one
     # declared: an exact name beats a wildcard, which beats a bare `*`. The
-    # fallback groups therefore declare `patterns: ['*']` so they score lowest.
-    # A fallback that omits `patterns` outranks the named groups and swallows
-    # them instead.
+    # catch-all therefore declares `patterns: ['*']` so it scores lowest. A
+    # catch-all that omits `patterns` outranks the named groups and swallows them
+    # instead.
     #
     # A group covering both runtime and development dependencies leaves out
-    # `dependency-type`, so a pair split across the two, such as ioredis and
-    # ioredis-mock, can still travel together.
+    # `dependency-type`, so a pair split across the two can still travel
+    # together.
     #
-    # Each group also filters to patch and minor. That repeats the blanket major
-    # rule above on purpose: if the rule is ever narrowed to named packages, the
-    # groups still will not bundle a breaking change.
+    # Only the catch-all omits `update-types`. An update matching no group opens
+    # its own pull request, and a prerelease reaching its release version counts
+    # as a major, so a patch-and-minor filter there would let those escape.
     groups:
-      react:
+      # The renderer: anything whose upgrade shows up as a visual or behavioural
+      # change in the UI.
+      frontend:
         update-types: ['patch', 'minor']
-        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
-      redux:
-        update-types: ['patch', 'minor']
-        patterns:
-          [
+        patterns: [
+            'react',
+            'react-dom',
+            '@types/react',
+            '@types/react-dom',
             'redux',
             'react-redux',
             '@reduxjs/toolkit',
             'redux-thunk',
             'redux-mock-store',
-          ]
-      # Group names take letters, pipes, underscores and hyphens only, so this
-      # one cannot be named after the package it covers.
-      internationalization:
-        update-types: ['patch', 'minor']
-        patterns: ['i18next', 'i18next-cli', 'react-i18next']
-      monaco:
-        update-types: ['patch', 'minor']
-        patterns: ['monaco-editor', 'monaco-yaml', 'react-monaco-editor']
-      # The browser key list renders through these together, and the auto-sizer
-      # and infinite-loader companions are pinned to their host's major.
-      virtualization:
-        update-types: ['patch', 'minor']
-        patterns:
-          [
+            'i18next',
+            'i18next-cli',
+            'react-i18next',
+            'monaco-editor',
+            'monaco-yaml',
+            'react-monaco-editor',
+            # The browser key list renders through these together, and the
+            # auto-sizer and infinite-loader companions are pinned to their
+            # host's major.
             'react-virtualized',
             'react-virtualized-auto-sizer',
             'react-window',
@@ -88,30 +87,14 @@ updates:
             'react-vtree',
             '@types/react-virtualized',
             '@types/react-window-infinite-loader',
+            '@redis-ui/*',
+            '@redislabsdev/*',
           ]
-      # On its own, so a failing type-check points at the compiler rather than
-      # at one of the other development dependencies.
-      typescript:
-        update-types: ['patch', 'minor']
-        patterns: ['typescript', '@aivenio/tsc-output-parser']
-      # Runtime libraries that only share the `electron-` prefix, kept apart
-      # from the packaging toolchain below. Named exactly so the two groups
-      # cannot claim each other's packages.
-      electron-runtime:
-        update-types: ['patch', 'minor']
-        patterns:
-          [
-            'electron-context-menu',
-            'electron-debug',
-            'electron-devtools-installer',
-            'electron-log',
-            'electron-store',
-            '@types/electron-store',
-          ]
-      # The packaging toolchain. electron-builder releases electron-updater and
-      # builder-util-runtime in lockstep, and node-abi maps Electron versions to
-      # native module ABI versions.
-      electron-build:
+      # The packaging toolchain and the Electron runtime libraries. electron-builder
+      # releases electron-updater and builder-util-runtime in lockstep, and node-abi
+      # maps Electron versions to native module ABI versions. Kept separate because
+      # a failure here needs an installed app to reproduce.
+      electron:
         update-types: ['patch', 'minor']
         patterns:
           [
@@ -123,17 +106,17 @@ updates:
             'builder-util*',
             '@electron/*',
             'node-abi',
+            'electron-context-menu',
+            'electron-debug',
+            'electron-devtools-installer',
+            'electron-log',
+            'electron-store',
+            '@types/electron-store',
           ]
-      storybook:
-        update-types: ['patch', 'minor']
-        patterns: ['storybook', '@storybook/*', 'eslint-plugin-storybook']
-      observability:
-        update-types: ['patch', 'minor']
-        patterns: ['@sentry/*', '@opentelemetry/*']
-      # Two build pipelines: Vite builds the renderer, webpack builds the
-      # Electron main and preload bundles. The loaders and plugins are pinned to
-      # a webpack major, so they move with it.
-      build-tooling:
+      # Two build pipelines plus the linters and the compiler. Vite builds the
+      # renderer, webpack builds the Electron main and preload bundles. Breakage
+      # here stops the build rather than changing behaviour.
+      tooling:
         update-types: ['patch', 'minor']
         patterns: [
             'vite',
@@ -156,21 +139,25 @@ updates:
             'ts-loader',
             'url-loader',
             '@teamsupercell/typings-for-css-modules-loader',
-          ]
-      linting:
-        update-types: ['patch', 'minor']
-        patterns:
-          [
+            'typescript',
+            '@aivenio/tsc-output-parser',
             'eslint',
             'eslint-*',
             '@typescript-eslint/*',
             'prettier',
             'prettier-*',
             'lint-staged',
+            '@babel/*',
+            'babel-*',
+            'storybook',
+            '@storybook/*',
           ]
+      # Test tooling only. A failure here is usually the test runner rather than
+      # the application, so it stays out of `tooling`.
       testing:
         update-types: ['patch', 'minor']
-        patterns: [
+        patterns:
+          [
             'jest',
             'jest-*',
             'ts-jest',
@@ -181,37 +168,13 @@ updates:
             'ts-mockito',
             'fishery',
             'identity-obj-proxy',
-            # These follow their host package's major, so they belong here
-            # rather than with the other @types packages.
             '@types/jest',
             '@types/supertest',
           ]
-      babel:
-        update-types: ['patch', 'minor']
-        patterns: ['@babel/*', 'babel-*']
-      redis-ui:
-        update-types: ['patch', 'minor']
-        patterns: ['@redis-ui/*', '@redislabsdev/*']
-      types:
-        update-types: ['patch', 'minor']
-        patterns: ['@types/*']
-      # Fallbacks for whatever the groups above do not match, split by patch and
-      # minor so a broken minor cannot hold unrelated patches back.
-      production-patch:
-        dependency-type: 'production'
-        update-types: ['patch']
-        patterns: ['*']
-      production-minor:
-        dependency-type: 'production'
-        update-types: ['minor']
-        patterns: ['*']
-      development-patch:
-        dependency-type: 'development'
-        update-types: ['patch']
-        patterns: ['*']
-      development-minor:
-        dependency-type: 'development'
-        update-types: ['minor']
+      # Everything the groups above do not match, including @types/* and the
+      # observability packages. No `update-types`, so nothing can escape into a
+      # pull request of its own.
+      everything-else:
         patterns: ['*']
 
   # One entry for two lockfiles. /redisinsight is the packaged desktop app's
@@ -251,29 +214,26 @@ updates:
       shared-natives:
         group-by: 'dependency-name'
         patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
-      typescript:
-        update-types: ['patch', 'minor']
-        patterns: ['typescript']
-      # rxjs and reflect-metadata are NestJS peer dependencies, pinned to the
-      # framework's major.
-      nestjs:
-        update-types: ['patch', 'minor']
-        patterns: ['@nestjs/*', 'rxjs', 'reflect-metadata']
-      # Covers runtime and development together so ioredis-mock moves with
-      # ioredis.
-      redis-clients:
+      # The API and everything it talks to. rxjs and reflect-metadata are NestJS
+      # peer dependencies pinned to the framework's major, and ioredis-mock moves
+      # with ioredis, so this group leaves out `dependency-type`.
+      backend:
         update-types: ['patch', 'minor']
         patterns:
           [
+            '@nestjs/*',
+            'rxjs',
+            'reflect-metadata',
             'redis',
             'redis-parser',
             'ioredis',
             'ioredis-mock',
             '@types/ioredis-mock',
+            'socket.io',
+            'socket.io-client',
+            'socket.io-mock',
+            'typescript',
           ]
-      socketio:
-        update-types: ['patch', 'minor']
-        patterns: ['socket.io', 'socket.io-client', 'socket.io-mock']
       # Unit tests run on jest, integration tests on mocha and chai. babel-jest
       # ships from the jest repository and follows its major, not Babel's.
       testing:
@@ -298,27 +258,9 @@ updates:
             'nock',
             'fishery',
           ]
-      babel:
-        update-types: ['patch', 'minor']
-        patterns: ['@babel/*', 'babel-*']
-      types:
-        update-types: ['patch', 'minor']
-        patterns: ['@types/*']
-      production-patch:
-        dependency-type: 'production'
-        update-types: ['patch']
-        patterns: ['*']
-      production-minor:
-        dependency-type: 'production'
-        update-types: ['minor']
-        patterns: ['*']
-      development-patch:
-        dependency-type: 'development'
-        update-types: ['patch']
-        patterns: ['*']
-      development-minor:
-        dependency-type: 'development'
-        update-types: ['minor']
+      # Everything the groups above do not match, including @types/* and Babel.
+      # No `update-types`, so nothing can escape into a pull request of its own.
+      everything-else:
         patterns: ['*']
 
   # Actions are versioned through their major tag, so here the majors are the
