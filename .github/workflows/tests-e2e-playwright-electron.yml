@@ -29,8 +29,10 @@ jobs:
       E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
       E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
       E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
-      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
-      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      # Not a secret: dependabot[bot] runs cannot read Actions secrets, and this
+      # only encrypts credentials for this job's throwaway Redis containers.
+      E2E_RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
+      RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
       # Environment variables needed for Electron/AppImage on Linux (from repository variables)
       DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS || 'unix:path=/dev/null' }}
@@ -153,7 +155,7 @@ jobs:
           # Electron uses HTTPS (with TLS certificates)
           RI_ELECTRON_API_URL: 'https://localhost:5530'
           RI_SOCKETS_CORS: 'true'
-          RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+          RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
           RI_ENCRYPTION_KEYTAR: 'false'
           # Disable TLS certificate validation for self-signed certs (like old tests do)
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
