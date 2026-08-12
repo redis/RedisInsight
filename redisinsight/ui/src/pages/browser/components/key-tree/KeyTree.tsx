@@ -68,7 +68,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const { openNodes } = useAppSelector(appContextBrowserTree)
-  const { treeViewDelimiter, treeViewSort: sorting } =
+  const { treeViewDelimiter, treeViewSort: sorting, treeViewDelimiterPrefixLength } =
     useAppSelector(appContextDbConfig)
   const { nameString: selectedKeyName = null } =
     useAppSelector(selectedKeyDataSelector) ?? {}
@@ -254,6 +254,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
           loadingIcon={TreeViewSVG}
           delimiters={delimiters}
           delimiterPattern={delimiterPattern}
+          prefixLength={treeViewDelimiterPrefixLength ?? 0}
           sorting={sorting}
           deleting={deleting}
           statusSelected={selectedKeyName}

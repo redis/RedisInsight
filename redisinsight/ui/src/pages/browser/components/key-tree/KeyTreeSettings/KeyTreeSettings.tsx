@@ -14,10 +14,12 @@ import {
   appContextDbConfig,
   resetBrowserTree,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   setBrowserTreeSort,
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 import { useTranslation } from 'uiSrc/i18n'
+import { NumericInput } from 'uiSrc/components/base/inputs'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -63,11 +65,13 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const {
     treeViewDelimiter = [DEFAULT_DELIMITER],
     treeViewSort = DEFAULT_TREE_SORTING,
+    treeViewDelimiterPrefixLength = 0,
   } = useAppSelector(appContextDbConfig)
   const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
   const [pendingInput, setPendingInput] = useState('')
+  const [prefixLength, setPrefixLength] = useState<number>(treeViewDelimiterPrefixLength)
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -80,6 +84,10 @@ const KeyTreeSettings = ({ loading }: Props) => {
   useEffect(() => {
     setDelimiters(treeViewDelimiter)
   }, [treeViewDelimiter])
+
+  useEffect(() => {
+    setPrefixLength(treeViewDelimiterPrefixLength)
+  }, [treeViewDelimiterPrefixLength])
 
   const onButtonClick = () =>
     setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
@@ -94,7 +102,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setSorting(treeViewSort)
     setDelimiters(treeViewDelimiter)
     setPendingInput('')
-  }, [treeViewSort, treeViewDelimiter])
+    setPrefixLength(treeViewDelimiterPrefixLength)
+  }, [treeViewSort, treeViewDelimiter, treeViewDelimiterPrefixLength])
 
   const button = (
     <TreeViewSettingsButton
@@ -146,6 +155,11 @@ const KeyTreeSettings = ({ loading }: Props) => {
       dispatch(resetBrowserTree())
     }
 
+    if (prefixLength !== treeViewDelimiterPrefixLength) {
+      dispatch(setBrowserTreePrefixLength(prefixLength))
+      dispatch(resetBrowserTree())
+    }
+
     setIsPopoverOpen(false)
   }
 
@@ -175,6 +189,19 @@ const KeyTreeSettings = ({ loading }: Props) => {
             onInputChange={setPendingInput}
             data-testid="delimiter-combobox"
           />
+        </FlexItem>
+        <FlexItem>
+          <FormField
+            layout="horizontal"
+            label={t('browser.tree.settings.prefixLength', 'Ignore separator in first N chars')}
+          >
+            <NumericInput
+              min={0}
+              value={prefixLength}
+              onChange={(next) => setPrefixLength(Math.max(0, Math.round(Number(next ?? 0))))}
+              data-testid="prefix-length-input"
+            />
+          </FormField>
         </FlexItem>
         <FlexItem>
           <FormField

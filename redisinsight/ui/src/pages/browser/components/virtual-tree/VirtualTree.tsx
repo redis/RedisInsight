@@ -34,6 +34,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
     items,
     delimiterPattern,
     delimiters,
+    prefixLength = 0,
     loadingIcon = 'empty',
     statusOpen = {},
     statusSelected,
@@ -90,13 +91,13 @@ const VirtualTree = (props: VirtualTreeProps) => {
       nodes.current = []
       elements.current = {}
       rerender({})
-      runWebworker?.({ items: [], delimiterPattern, delimiters, sorting })
+      runWebworker?.({ items: [], delimiterPattern, delimiters, sorting, prefixLength })
       return
     }
 
     setConstructingTree(true)
-    runWebworker?.({ items, delimiterPattern, delimiters, sorting })
-  }, [items, delimiterPattern])
+    runWebworker?.({ items, delimiterPattern, delimiters, sorting, prefixLength })
+  }, [items, delimiterPattern, prefixLength])
 
   const handleUpdateSelected = useCallback(
     (name: RedisString) => {
