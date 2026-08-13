@@ -182,7 +182,7 @@
     "css-loader": "^5.0.1",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "csv-parser": "^3.2.1",
-    "csv-stringify": "^6.8.1",
+    "csv-stringify": "^6.8.3",
     "deep-object-diff": "^1.1.9",
     "dotenv": "^16.4.5",
     "electron": "^43.3.0",
@@ -244,7 +244,7 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-mockito": "^2.6.1",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "tsx": "^4.19.2",
@@ -263,7 +263,7 @@
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0",
-    "whatwg-fetch": "^3.6.2"
+    "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
