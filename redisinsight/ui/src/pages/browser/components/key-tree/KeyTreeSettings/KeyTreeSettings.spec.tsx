@@ -5,6 +5,7 @@ import { DEFAULT_DELIMITER, SortOrder } from 'uiSrc/constants'
 import {
   resetBrowserTree,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   setBrowserTreeSort,
 } from 'uiSrc/slices/app/context'
 import {
@@ -263,6 +264,33 @@ describe('KeyTreeDelimiter', () => {
 
     // Should not dispatch any actions since no changes were made
     expect(store.getActions()).toEqual([])
+  })
+
+  it('"setBrowserTreePrefixLength" and "resetBrowserTree" should be called after Apply with a new prefix length', async () => {
+    render(<KeyTreeSettings {...instance(mockedProps)} />)
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TREE_SETTINGS_TRIGGER_BTN))
+    })
+
+    await waitForRiPopoverVisible()
+
+    fireEvent.change(screen.getByTestId('prefix-length-input'), {
+      target: { value: '5' },
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(APPLY_BTN))
+    })
+
+    const expectedActions = [
+      setBrowserTreePrefixLength(5),
+      resetBrowserTree(),
+    ]
+
+    expect(clearStoreActions(store.getActions())).toEqual(
+      clearStoreActions(expectedActions),
+    )
   })
 
   it('should clear pending input after successful Apply', async () => {

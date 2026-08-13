@@ -994,6 +994,8 @@
   "browser.tree.settings.button.apply": "Приложи",
   "browser.tree.settings.button.cancel": "Отказ",
   "browser.tree.settings.delimiter": "Разделител",
+  "browser.tree.settings.prefixLength": "Игнориране на разделителя в първите N знака",
+  "browser.tree.settings.prefixLengthHint": "Знаците преди позиция N се третират като префикс — разделителите в него се игнорират. Задайте 0, за да изключите. Големи стойности изравняват дървото.",
   "browser.tree.settings.sortBy": "Сортиране по",
   "browser.tree.settings.sortOption": "Име на ключ {{order}}",
   "browser.vectorSet.addElements": "Добавяне на елементи",

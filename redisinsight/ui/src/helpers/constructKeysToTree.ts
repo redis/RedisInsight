@@ -9,20 +9,6 @@ interface Props {
   prefixLength?: number
 }
 
-export const splitWithPrefixThreshold = (
-  name: string,
-  dPattern: string,
-  pLength: number,
-): string[] => {
-  if (!pLength) {
-    return name.split(new RegExp(dPattern, 'g'))
-  }
-  const prefix = name.substring(0, pLength)
-  const rest = name.substring(pLength)
-  const restParts = rest.split(new RegExp(dPattern, 'g'))
-  return [prefix + restParts[0], ...restParts.slice(1)]
-}
-
 export const constructKeysToTree = (props: Props): any[] => {
   const {
     items: keys,
@@ -33,7 +19,8 @@ export const constructKeysToTree = (props: Props): any[] => {
   } = props
 
   // Redeclared locally so it is captured when this function is stringified
-  // into a Web Worker Blob by useDisposableWebworker.
+  // into a Web Worker Blob by useDisposableWebworker. Keep in sync with
+  // uiSrc/helpers/splitWithPrefixThreshold.
   const splitWithPrefixThreshold = (
     name: string,
     dPattern: string,

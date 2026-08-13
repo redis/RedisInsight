@@ -36,6 +36,8 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 
+const MAX_PREFIX_LENGTH = 512
+
 const StyledCol = styled(Col)`
   width: 300px;
 `
@@ -199,12 +201,24 @@ const KeyTreeSettings = ({ loading }: Props) => {
               'browser.tree.settings.prefixLength',
               'Ignore separator in first N chars',
             )}
+            infoIconProps={{
+              content: t(
+                'browser.tree.settings.prefixLengthHint',
+                'Characters before position N are treated as a prefix — separators within that prefix are ignored. Set to 0 to disable. Large values flatten the tree.',
+              ),
+            }}
           >
             <NumericInput
               min={0}
+              max={MAX_PREFIX_LENGTH}
               value={prefixLength}
               onChange={(next) =>
-                setPrefixLength(Math.max(0, Math.round(Number(next ?? 0))))
+                setPrefixLength(
+                  Math.min(
+                    MAX_PREFIX_LENGTH,
+                    Math.max(0, Math.round(Number(next ?? 0))),
+                  ),
+                )
               }
               data-testid="prefix-length-input"
             />

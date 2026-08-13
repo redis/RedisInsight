@@ -4,8 +4,8 @@ import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 
-import { splitWithPrefixThreshold } from 'uiSrc/helpers'
 import { bufferToString, Nullable } from 'uiSrc/utils'
+import { splitWithPrefixThreshold } from 'uiSrc/helpers'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
 import { RedisString } from 'uiSrc/slices/interfaces'
@@ -205,13 +205,14 @@ const VirtualTree = (props: VirtualTreeProps) => {
         size: node.size,
         type: node.type,
         fullName: node.fullName,
-        shortName: node.nameString
-          ? splitWithPrefixThreshold(
-              node.nameString,
-              delimiterPattern,
-              prefixLength,
-            ).pop()
-          : undefined,
+        shortName:
+          node.nameString != null
+            ? splitWithPrefixThreshold(
+                node.nameString,
+                delimiterPattern,
+                prefixLength,
+              ).pop()
+            : undefined,
         delimiters,
         nestingLevel,
         deleting,

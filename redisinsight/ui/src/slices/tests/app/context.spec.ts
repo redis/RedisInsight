@@ -28,6 +28,7 @@ import reducer, {
   resetBrowserTree,
   appContextBrowserTree,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   setBrowserIsNotRendered,
   setBrowserRedisearchScrollPosition,
   updateKeyDetailsSizes,
@@ -463,13 +464,14 @@ describe('slices', () => {
   })
 
   describe('setDbConfig', () => {
-    it('should properly set db config', () => {
+    it('should properly set db config including treeViewDelimiterPrefixLength', () => {
       // Arrange
       const data = {
         slowLogDurationUnit: 'msec',
         treeViewDelimiter: [{ label: ':-' }],
         treeViewSort: SortOrder.DESC,
         showHiddenRecommendations: true,
+        treeViewDelimiterPrefixLength: 3,
       }
 
       const state = {
@@ -551,6 +553,31 @@ describe('slices', () => {
 
       // Act
       const nextState = reducer(initialState, setBrowserTreeSort(sorting))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        app: { context: nextState },
+      })
+
+      expect(appContextDbConfig(rootState)).toEqual(state)
+    })
+  })
+
+  describe('setBrowserTreePrefixLength', () => {
+    it('should properly set browser tree prefix length', () => {
+      // Arrange
+      const prefixLength = 5
+
+      const state = {
+        ...initialState.dbConfig,
+        treeViewDelimiterPrefixLength: prefixLength,
+      }
+
+      // Act
+      const nextState = reducer(
+        initialState,
+        setBrowserTreePrefixLength(prefixLength),
+      )
 
       // Assert
       const rootState = Object.assign(initialStateDefault, {
