@@ -1,74 +1,57 @@
 version: 2
 
-# Dependabot configuration: which manifests are watched, how updates are
-# bundled into pull requests, and what is left alone.
-#
-# Each entry below covers manifests that have their own lockfile. Directories
-# absent from this file still receive security updates, which run repo-wide and
-# ignore this configuration.
+# One entry per lockfile. Directories absent from this file still get security
+# updates: those run repo-wide and ignore this configuration.
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
       day: 'monday'
-      # Overnight, so the batch and the CI it starts finish before the working
-      # day. Without a day and time GitHub picks, which lands it mid-afternoon.
+      # Overnight, so the batch and its CI finish before the working day.
       time: '02:00'
       timezone: 'Europe/Sofia'
-    # A group only opens a pull request when it has an update available, so this
-    # is a cap for a busy week rather than an expected number.
+    # A cap for a busy week, not an expected number.
     open-pull-requests-limit: 15
-    # Every pull request from this entry edits the same lockfile, so merging one
-    # conflicts the rest. Automatic rebasing would push a commit to each and run
-    # their pipelines again. Use `@dependabot rebase` on the one being merged.
+    # Every pull request here edits the same lockfile, so an automatic rebase of
+    # the whole set follows each merge. Use `@dependabot rebase` when merging.
     rebase-strategy: 'disabled'
     cooldown:
-      # Days to wait after a release before proposing it. .npmrc sets
-      # min-release-age=3, which stops npm resolving anything newer than that,
-      # so a shorter window here would propose versions nobody can install.
+      # Matches min-release-age=3 in .npmrc; anything newer cannot be installed.
       default-days: 3
 
     ignore:
-      # No major updates, anywhere. A major is a breaking change that needs a
-      # branch, a full test run and someone to own it, so it belongs in planned
-      # work rather than an unsolicited pull request. Patches and minors still
-      # flow for every package.
+      # A major needs an owner and a full test run, so it belongs in planned work.
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
-      # CI records a TypeScript error count per file in .tscheck.rec.json and
-      # fails if any count changes in either direction. A compiler minor moves
-      # those counts, so it needs the baselines refreshed by hand.
+      # A compiler minor moves the error counts in .tscheck.rec.json, which CI
+      # compares exactly. The baselines need refreshing by hand.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-minor']
-      # An upgrade needs manual visual work, such as colors and paddings, so the
-      # design system moves by hand. Patch and minor are named rather than
-      # ignoring the package outright: a bare `dependency-name` would also
-      # suppress security updates for it.
+      # An upgrade needs manual visual work on colors and paddings.
+      #
+      # Every rule below names its update types. A bare `dependency-name` would
+      # also suppress security updates for the package.
       - dependency-name: '@redis-ui/*'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
-      # Pre-1.0, so a minor carries breaking editor API changes. The same bump
-      # has twice failed lint, type-check and the Linux build.
+      # Pre-1.0: a minor changes the editor API. Twice failed type-check and the
+      # Linux build.
       - dependency-name: 'monaco-editor'
         update-types: ['version-update:semver-minor']
-      # Follows the monaco-editor API, and pre-1.0 for the same reason.
+      # Follows the monaco-editor API.
       - dependency-name: 'react-monaco-editor'
         update-types: ['version-update:semver-minor']
-      # Pinned to a prerelease. 3.0.0 changes the tree typings, and leaving a
-      # prerelease for its release counts as neither patch, minor nor major, so
-      # the blanket major rule above does not hold it back. Pinned by version
-      # instead, until someone takes the upgrade with the code changes it needs.
+      # Held on a prerelease by a patch in patches/. Leaving a prerelease for its
+      # release is neither patch, minor nor major, so only a version pin catches it.
       - dependency-name: 'react-vtree'
         versions: ['>= 3.0.0']
-      # Held at 9.22.5. 9.22.6 fails the frontend tests, and the components that
-      # render through it need work before it can move.
+      # Held at 9.22.5: 9.22.6 fails the frontend tests.
       - dependency-name: 'react-virtualized'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
-      # A patch in patches/ is keyed to the exact version, so any bump either
-      # fails postinstall or drops the patch. Moving these means regenerating the
-      # patch and relaxing the rule here.
+      # A patch in patches/ is keyed to the exact version. Moving these means
+      # regenerating the patch and relaxing the rule together.
       - dependency-name: 'monaco-yaml'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
@@ -76,28 +59,14 @@ updates:
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
 
-    # Groups bundle related updates into one pull request. A group opens at most
-    # one pull request, so the number of groups here sets how many arrive in a
-    # week. They are split by what has to move together, and by what a reviewer
-    # checks: a failing `electron` group points at packaging, a failing
-    # `frontend` group points at the renderer.
+    # A group opens at most one pull request, so the number of groups sets how
+    # many arrive in a week. Grouped by what a failure points at.
     #
-    # A dependency lands in its most specific matching group, not the first one
-    # declared: an exact name beats a wildcard, which beats a bare `*`. The
-    # catch-all therefore declares `patterns: ['*']` so it scores lowest. A
-    # catch-all that omits `patterns` outranks the named groups and swallows them
-    # instead.
-    #
-    # A group covering both runtime and development dependencies leaves out
-    # `dependency-type`, so a pair split across the two can still travel
-    # together.
-    #
-    # Only the catch-all omits `update-types`. An update matching no group opens
-    # its own pull request, and a prerelease reaching its release version counts
-    # as a major, so a patch-and-minor filter there would let those escape.
+    # A dependency lands in its most specific matching group: an exact name beats
+    # a wildcard, which beats `*`. A catch-all that omits `patterns` outranks the
+    # named groups and swallows them.
     groups:
-      # The renderer: anything whose upgrade shows up as a visual or behavioural
-      # change in the UI.
+      # Shows up as a visual or behavioural change in the UI.
       frontend:
         update-types: ['patch', 'minor']
         patterns: [
@@ -116,9 +85,7 @@ updates:
             'monaco-editor',
             'monaco-yaml',
             'react-monaco-editor',
-            # The browser key list renders through these together, and the
-            # auto-sizer and infinite-loader companions are pinned to their
-            # host's major.
+            # The browser key list renders through these together.
             'react-virtualized',
             'react-virtualized-auto-sizer',
             'react-window',
@@ -127,10 +94,10 @@ updates:
             '@types/react-virtualized',
             '@types/react-window-infinite-loader',
           ]
-      # The packaging toolchain and the Electron runtime libraries. electron-builder
-      # releases electron-updater and builder-util-runtime in lockstep, and node-abi
-      # maps Electron versions to native module ABI versions. Kept separate because
-      # a failure here needs an installed app to reproduce.
+      # Packaging plus the Electron runtime libraries. electron-builder releases
+      # electron-updater and builder-util-runtime in lockstep, and node-abi maps
+      # Electron versions to native module ABIs. A failure needs an installed app
+      # to reproduce.
       electron:
         update-types: ['patch', 'minor']
         patterns:
@@ -150,9 +117,8 @@ updates:
             'electron-store',
             '@types/electron-store',
           ]
-      # Two build pipelines plus the linters and the compiler. Vite builds the
-      # renderer, webpack builds the Electron main and preload bundles. Breakage
-      # here stops the build rather than changing behaviour.
+      # Vite builds the renderer, webpack the Electron main and preload bundles.
+      # Breakage stops the build rather than changing behaviour.
       tooling:
         update-types: ['patch', 'minor']
         patterns: [
@@ -168,8 +134,8 @@ updates:
             'mini-css-extract-plugin',
             '@svgr/webpack',
             'react-refresh',
-            # Loaders are listed by name: a `*-loader` glob also catches
-            # unrelated packages such as react-window-infinite-loader.
+            # Named individually: a `*-loader` glob also catches
+            # react-window-infinite-loader.
             'css-loader',
             'file-loader',
             'style-loader',
@@ -189,8 +155,7 @@ updates:
             'storybook',
             '@storybook/*',
           ]
-      # Test tooling only. A failure here is usually the test runner rather than
-      # the application, so it stays out of `tooling`.
+      # A failure here is usually the runner, not the application.
       testing:
         update-types: ['patch', 'minor']
         patterns:
@@ -208,17 +173,14 @@ updates:
             '@types/jest',
             '@types/supertest',
           ]
-      # Everything the groups above do not match, including @types/* and the
-      # observability packages. No `update-types`, so nothing can escape into a
-      # pull request of its own.
+      # No `update-types`: an update matching no group would open its own pull
+      # request, and a prerelease reaching its release counts as a major.
       everything-else:
         patterns: ['*']
 
-  # One entry for two lockfiles. /redisinsight is the packaged desktop app's
-  # manifest and declares better-sqlite3, keytar and tunnel-ssh at the same
-  # versions as the api tree, and its lockfile is the one that ships. Covering
-  # both directories from here lets the shared-natives group below update them
-  # in a single pull request, which separate entries cannot do.
+  # Two lockfiles in one entry. /redisinsight ships the packaged app's lockfile
+  # and declares the same native modules as the api tree, so covering both here
+  # lets shared-natives update them together. Separate entries cannot.
   - package-ecosystem: 'npm'
     directories:
       - '/redisinsight'
@@ -260,17 +222,14 @@ updates:
           ['version-update:semver-patch', 'version-update:semver-minor']
 
     groups:
-      # Declared in both directories at the same version. `group-by` raises a
-      # single pull request per dependency spanning both lockfiles, so the
-      # packaged app and the api tree cannot end up on different versions of a
-      # native module. No update-types filter, because anything falling outside
-      # this group would arrive as one pull request per directory again.
+      # `group-by` raises one pull request per dependency spanning both
+      # lockfiles, so the two trees cannot drift onto different versions. No
+      # update-types filter: anything outside this group arrives per directory.
       shared-natives:
         group-by: 'dependency-name'
         patterns: ['better-sqlite3', 'keytar', 'tunnel-ssh']
-      # The API and everything it talks to. rxjs and reflect-metadata are NestJS
-      # peer dependencies pinned to the framework's major, and ioredis-mock moves
-      # with ioredis, so this group leaves out `dependency-type`.
+      # rxjs and reflect-metadata are NestJS peers pinned to its major. No
+      # `dependency-type`, so ioredis-mock can travel with ioredis.
       backend:
         update-types: ['patch', 'minor']
         patterns:
@@ -288,8 +247,8 @@ updates:
             'socket.io-mock',
             'typescript',
           ]
-      # Unit tests run on jest, integration tests on mocha and chai. babel-jest
-      # ships from the jest repository and follows its major, not Babel's.
+      # Unit tests on jest, integration on mocha and chai. babel-jest follows
+      # jest's major, not Babel's.
       testing:
         update-types: ['patch', 'minor']
         patterns:
@@ -312,14 +271,12 @@ updates:
             'nock',
             'fishery',
           ]
-      # Everything the groups above do not match, including @types/* and Babel.
-      # No `update-types`, so nothing can escape into a pull request of its own.
+      # No `update-types`, for the same reason as the root entry.
       everything-else:
         patterns: ['*']
 
-  # Actions are versioned through their major tag, so here the majors are the
-  # upgrades worth taking and are deliberately not ignored. One group keeps a
-  # week's action bumps in a single pull request.
+  # Actions are versioned by major tag, so majors are the upgrades worth taking
+  # and are deliberately not ignored here.
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
