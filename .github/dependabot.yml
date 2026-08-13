@@ -207,16 +207,16 @@ updates:
       - dependency-name: 'typeorm'
         update-types: ['version-update:semver-minor']
       # A minor on the Redis clients has broken lint, type-check and both builds.
-      # Patches still flow.
-      - dependency-name: 'ioredis'
-        update-types: ['version-update:semver-minor']
       - dependency-name: 'ioredis-mock'
         update-types: ['version-update:semver-minor']
       - dependency-name: 'redis'
         update-types: ['version-update:semver-minor']
       # A patch in redisinsight/api/patches/ is keyed to the exact version, so
-      # any bump either fails postinstall or drops the patch. Moving this means
-      # regenerating the patch and relaxing the rule here.
+      # any bump either fails postinstall or drops the patch. Moving these means
+      # regenerating the patch and relaxing the rule together.
+      - dependency-name: 'ioredis'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
       - dependency-name: 'redis-parser'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
