@@ -66,6 +66,15 @@ updates:
       - dependency-name: 'react-virtualized'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
+      # A patch in patches/ is keyed to the exact version, so any bump either
+      # fails postinstall or drops the patch. Moving these means regenerating the
+      # patch and relaxing the rule here.
+      - dependency-name: 'monaco-yaml'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
+      - dependency-name: '@elastic/eui'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
 
     # Groups bundle related updates into one pull request. A group opens at most
     # one pull request, so the number of groups here sets how many arrive in a
@@ -243,6 +252,12 @@ updates:
         update-types: ['version-update:semver-minor']
       - dependency-name: 'redis'
         update-types: ['version-update:semver-minor']
+      # A patch in redisinsight/api/patches/ is keyed to the exact version, so
+      # any bump either fails postinstall or drops the patch. Moving this means
+      # regenerating the patch and relaxing the rule here.
+      - dependency-name: 'redis-parser'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
 
     groups:
       # Declared in both directories at the same version. `group-by` raises a
