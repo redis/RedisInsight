@@ -122,9 +122,9 @@
   "devDependencies": {
     "@aivenio/tsc-output-parser": "2.1.1",
     "@babel/plugin-proposal-decorators": "^7.29.7",
-    "@babel/preset-env": "^7.23.2",
-    "@babel/preset-react": "^7.28.5",
-    "@babel/preset-typescript": "^7.23.2",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@electron/rebuild": "^4.2.0",
     "@faker-js/faker": "^8.4.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
