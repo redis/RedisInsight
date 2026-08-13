@@ -283,10 +283,7 @@ describe('KeyTreeDelimiter', () => {
       fireEvent.click(screen.getByTestId(APPLY_BTN))
     })
 
-    const expectedActions = [
-      setBrowserTreePrefixLength(5),
-      resetBrowserTree(),
-    ]
+    const expectedActions = [setBrowserTreePrefixLength(5), resetBrowserTree()]
 
     expect(clearStoreActions(store.getActions())).toEqual(
       clearStoreActions(expectedActions),
