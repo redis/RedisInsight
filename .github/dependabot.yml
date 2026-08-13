@@ -61,6 +61,11 @@ updates:
       # instead, until someone takes the upgrade with the code changes it needs.
       - dependency-name: 'react-vtree'
         versions: ['>= 3.0.0']
+      # Held at 9.22.5. 9.22.6 fails the frontend tests, and the components that
+      # render through it need work before it can move.
+      - dependency-name: 'react-virtualized'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
 
     # Groups bundle related updates into one pull request. A group opens at most
     # one pull request, so the number of groups here sets how many arrive in a
@@ -229,6 +234,14 @@ updates:
         update-types: ['version-update:semver-minor']
       # Pre-1.0, so a minor carries breaking schema and driver changes.
       - dependency-name: 'typeorm'
+        update-types: ['version-update:semver-minor']
+      # A minor on the Redis clients has broken lint, type-check and both builds.
+      # Patches still flow.
+      - dependency-name: 'ioredis'
+        update-types: ['version-update:semver-minor']
+      - dependency-name: 'ioredis-mock'
+        update-types: ['version-update:semver-minor']
+      - dependency-name: 'redis'
         update-types: ['version-update:semver-minor']
 
     groups:
