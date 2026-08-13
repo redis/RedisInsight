@@ -41,6 +41,26 @@ updates:
       # those counts, so it needs the baselines refreshed by hand.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-minor']
+      # An upgrade needs manual visual work, such as colors and paddings, so the
+      # design system moves by hand. Patch and minor are named rather than
+      # ignoring the package outright: a bare `dependency-name` would also
+      # suppress security updates for it.
+      - dependency-name: '@redis-ui/*'
+        update-types:
+          ['version-update:semver-patch', 'version-update:semver-minor']
+      # Pre-1.0, so a minor carries breaking editor API changes. The same bump
+      # has twice failed lint, type-check and the Linux build.
+      - dependency-name: 'monaco-editor'
+        update-types: ['version-update:semver-minor']
+      # Follows the monaco-editor API, and pre-1.0 for the same reason.
+      - dependency-name: 'react-monaco-editor'
+        update-types: ['version-update:semver-minor']
+      # Pinned to a prerelease. 3.0.0 changes the tree typings, and leaving a
+      # prerelease for its release counts as neither patch, minor nor major, so
+      # the blanket major rule above does not hold it back. Pinned by version
+      # instead, until someone takes the upgrade with the code changes it needs.
+      - dependency-name: 'react-vtree'
+        versions: ['>= 3.0.0']
 
     # Groups bundle related updates into one pull request. A group opens at most
     # one pull request, so the number of groups here sets how many arrive in a
@@ -92,8 +112,6 @@ updates:
             'react-vtree',
             '@types/react-virtualized',
             '@types/react-window-infinite-loader',
-            '@redis-ui/*',
-            '@redislabsdev/*',
           ]
       # The packaging toolchain and the Electron runtime libraries. electron-builder
       # releases electron-updater and builder-util-runtime in lockstep, and node-abi
