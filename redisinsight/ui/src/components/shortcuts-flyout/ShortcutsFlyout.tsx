@@ -11,23 +11,29 @@ import {
 } from 'uiSrc/components/base/layout/drawer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { useTranslation } from 'uiSrc/i18n'
 
-import { SHORTCUTS, ShortcutGroup, separator } from './schema'
+import { SHORTCUTS, Shortcut, ShortcutGroup, separator } from './schema'
 
 const ShortcutsFlyout = () => {
   const { isShortcutsFlyoutOpen, server } = useAppSelector(appInfoSelector)
+  const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
 
-  const tableColumns: ColumnDefinition<any>[] = [
+  const tableColumns: ColumnDefinition<Shortcut>[] = [
     {
-      header: 'Description',
+      header: t('shortcuts.column.description'),
       id: 'description',
-      accessorKey: 'description',
+      accessorKey: 'descriptionKey',
       enableSorting: false,
+      cell: ({ row }: { row: { original: Shortcut } }) => {
+        const description = t(row.original.descriptionKey)
+        return <span title={description}>{description}</span>
+      },
     },
     {
-      header: 'Shortcut',
+      header: t('shortcuts.column.shortcut'),
       id: 'keys',
       accessorKey: 'keys',
       enableSorting: false,
@@ -39,10 +45,10 @@ const ShortcutsFlyout = () => {
     },
   ]
 
-  const ShortcutsTable = ({ name, items }: ShortcutGroup) => (
+  const ShortcutsTable = ({ name, nameKey, items }: ShortcutGroup) => (
     <div key={name} data-testid={`shortcuts-table-${name}`}>
       <Title size="XS" data-test-subj={`shortcuts-section-${name}`}>
-        {name}
+        {t(nameKey)}
       </Title>
       <Spacer size="m" />
       <Table columns={tableColumns} data={items} defaultSorting={[]} />
@@ -55,9 +61,9 @@ const ShortcutsFlyout = () => {
       open={isShortcutsFlyoutOpen}
       onOpenChange={(isOpen) => dispatch(setShortcutsFlyoutState(isOpen))}
       data-test-subj="shortcuts-flyout"
-      title="Shortcuts"
+      title={t('shortcuts.title')}
     >
-      <DrawerHeader title="Shortcuts" />
+      <DrawerHeader title={t('shortcuts.title')} />
       <DrawerBody>
         {SHORTCUTS.filter(
           ({ excludeFor }) =>
