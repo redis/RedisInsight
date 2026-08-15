@@ -65,6 +65,9 @@ describe('ApiRdiClient', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedAxios.isAxiosError.mockImplementation((error: unknown) =>
+      Boolean((error as { isAxiosError?: boolean })?.isAxiosError),
+    );
     client = new ApiRdiClient(mockRdiClientMetadata, mockRdi);
   });
 
