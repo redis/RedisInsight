@@ -21,11 +21,17 @@ on:
     types: [labeled]
 
 concurrency:
-  # The group `tests.yml` uses, so a label supersedes the run a push started
-  # rather than doubling it. Changing it in one file without the other splits the
-  # two into separate groups, and both runs then go ahead.
-  group: tests-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  # A group of its own, deliberately not the one `tests.yml` uses. A group is
+  # worked out before any job `if` is read, so a run started by a label with no
+  # suite behind it would cancel the run a push started before finding out it has
+  # nothing to do.
+  #
+  # Cancelling is off for the same reason: Dependabot adds several labels within
+  # seconds, and a cancelled check does not count as passing for branch
+  # protection the way a skipped one does. These runs skip in seconds, so letting
+  # them queue costs nothing.
+  group: tests-on-demand-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
 
 jobs:
   suites:

@@ -56,9 +56,10 @@ on:
 concurrency:
   # One run per PR at a time. A new commit replaces the one already going.
   #
-  # `tests-on-demand.yml` uses this same group so that a label supersedes the run
-  # a push started instead of doubling it. The prefix is spelled out rather than
-  # taken from `github.workflow`, which differs between the two workflows.
+  # `tests-on-demand.yml` keeps out of this group on purpose, so that a label it
+  # has no suite for cannot cancel a run in progress here. The prefix is spelled
+  # out rather than taken from `github.workflow`, which reads as the calling
+  # workflow's name when this one is called.
   group: tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
