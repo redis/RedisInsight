@@ -1,0 +1,34 @@
+name: ✅ Tests (on demand)
+
+# Starts the test suites the moment a label asks for them, instead of waiting for
+# the next push.
+#
+# `run-all-tests`, `run-frontend-tests`, `run-backend-tests` and
+# `run-integration-tests` each widen what a pull request runs. `tests.yml` reads
+# the pull request's whole label set on every run, so a label keeps applying to
+# later pushes on its own. All this workflow removes is the wait.
+#
+# `pull_request` cannot filter on which label was added, so every label starts a
+# run here and `suites` decides whether there is anything to do. A skipped
+# `uses:` job reports one check, where the same label reaching `tests.yml`
+# directly would report one per job in it. That is why the `labeled` trigger
+# lives here and not there: Dependabot adds `dependencies` and `javascript` twice
+# each within two seconds of opening a PR, and none of those four events has any
+# test to run.
+
+on:
+  pull_request:
+    types: [labeled]
+
+concurrency:
+  # The group `tests.yml` uses, so a label supersedes the run a push started
+  # rather than doubling it. Changing it in one file without the other splits the
+  # two into separate groups, and both runs then go ahead.
+  group: tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  suites:
+    if: contains(fromJSON('["run-all-tests","run-frontend-tests","run-backend-tests","run-integration-tests"]'), github.event.label.name)
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
