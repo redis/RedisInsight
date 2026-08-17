@@ -102,8 +102,11 @@ jobs:
               - 'jest-resolver.js'
               - 'configs/**'
               - 'scripts/**'
-              - '.github/workflows/**'
-              - '.github/actions/**'
+              # Dropped on this throwaway branch only, so that carrying the CI
+              # change itself does not put every suite in the run and hide the
+              # backend-only shape under test. Never merge this.
+              # - '.github/workflows/**'
+              # - '.github/actions/**'
 
   # Compute per-consumer "should this run" decisions from changes, labels,
   # pre-release input, and manual dispatch. One job, one source of truth.
