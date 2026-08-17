@@ -153,7 +153,7 @@
     "chai-deep-equal-ignore-undefined": "^1.2.0",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "fishery": "^2.3.1",
     "ioredis-mock": "^8.9.2",
     "jest": "^29.7.0",
