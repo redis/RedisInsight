@@ -1,17 +1,11 @@
 name: ✅ Tests
 
-# Runs on every pull request. Which suites run is decided per PR from the changed
-# files plus these labels: `run-all-tests`, `run-frontend-tests`,
-# `run-backend-tests`, `run-integration-tests`.
+# Runs on every pull request. The changed files pick the suites; the
+# `run-*-tests` labels can widen that.
 #
-# A PR being opened, or a commit pushed to it, starts a run and replaces any run
-# already going. The changed files decide which suites it runs.
-#
-# The labels are read here so that one stays in effect for later pushes, but they
-# do not start a run: no label reaches this workflow. `tests-on-demand.yml` owns
-# that trigger and runs the named suite on its own, which keeps labels aimed
-# elsewhere, such as `e2e-tests` or Dependabot's `dependencies` and `javascript`,
-# from producing a second `All required checks pass` on the same commit.
+# Do not add `labeled` here. `tests-on-demand.yml` owns that trigger. A label
+# reaching this workflow reports a second `All required checks pass` on the same
+# commit, green while the real suite is still running.
 
 on:
   pull_request:
@@ -53,7 +47,7 @@ on:
         type: boolean
 
 concurrency:
-  # One run per PR at a time. A new commit replaces the one already going.
+  # One run per PR. A new commit replaces the one in progress.
   group: tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
@@ -273,17 +267,12 @@ jobs:
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts
 
-  # One check to read in place of the whole list. Green when nothing it waits on
-  # failed or was cancelled; a skipped job passes, because a suite gated off by
-  # the changed files is a decision rather than a problem. On a red run the step
-  # names which jobs are at fault, and their own checks hold the logs.
+  # The one check to read, and the one to require on protected branches. Red if
+  # any job below failed or was cancelled. A skipped job passes: skipping is a
+  # decision made from the changed files.
   #
-  # This is the check to require on protected branches. A job listed here blocks a
-  # merge when it fails; a job left out does not, so a new suite needs adding to
-  # the list to count.
-  #
-  # The housekeeping jobs stay out on purpose. Coverage, deployment cleanup and
-  # artifact removal say nothing about whether the code is sound.
+  # A job left out of `needs` cannot block a merge, so add new suites here.
+  # Coverage and cleanup are out on purpose.
   required-checks-passed:
     name: All required checks pass
     if: always()
