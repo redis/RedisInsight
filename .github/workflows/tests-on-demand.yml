@@ -1,0 +1,53 @@
+name: ✅ Tests (on demand)
+
+# Runs a suite that a pull request's own changes did not call for. A backend-only
+# PR skips the frontend tests; `run-frontend-tests` is how someone asks for them
+# anyway, and the other way round.
+#
+# `run-all-tests` asks for all three.
+#
+# The suites are called straight from here rather than through `tests.yml`, so
+# nothing in this workflow reports a check that `tests.yml` also reports. The
+# merge gate, `All required checks pass`, belongs to `tests.yml` alone and is
+# never produced by a label.
+#
+# `pull_request` cannot filter on which label was added, so every label starts a
+# run and the three jobs below decide whether any of them has work. Dependabot
+# adds `dependencies` and `javascript` twice each when it opens a PR, and those
+# four events land here rather than on the suite.
+
+on:
+  pull_request:
+    types: [labeled]
+
+concurrency:
+  # Keyed by label as well as PR, so asking for the frontend suite does not stop
+  # the backend suite someone asked for a moment earlier.
+  #
+  # Cancelling is off: Dependabot's labels arrive within seconds of each other,
+  # and a cancelled check does not count as passing for branch protection the way
+  # a skipped one does. These runs finish in seconds, so queueing costs nothing.
+  group: tests-on-demand-${{ github.event.pull_request.number }}-${{ github.event.label.name }}
+  cancel-in-progress: false
+
+jobs:
+  frontend:
+    if: contains(fromJSON('["run-all-tests","run-frontend-tests"]'), github.event.label.name)
+    uses: ./.github/workflows/tests-frontend.yml
+    secrets: inherit
+
+  backend:
+    if: contains(fromJSON('["run-all-tests","run-backend-tests"]'), github.event.label.name)
+    uses: ./.github/workflows/tests-backend.yml
+    secrets: inherit
+
+  integration:
+    if: contains(fromJSON('["run-all-tests","run-integration-tests"]'), github.event.label.name)
+    uses: ./.github/workflows/tests-integration.yml
+    secrets: inherit
+    permissions:
+      actions: write
+      contents: read
+      checks: write
+    with:
+      short_rte_list: true
