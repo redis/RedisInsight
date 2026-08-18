@@ -55,7 +55,9 @@ const createMockPostImplementation = (
 const axiosError = (status: number, message = 'Request failed') => ({
   isAxiosError: true,
   message,
-  status,
+  response: {
+    status,
+  },
 });
 
 describe('ApiRdiClient', () => {
@@ -63,6 +65,9 @@ describe('ApiRdiClient', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedAxios.isAxiosError.mockImplementation((error: unknown) =>
+      Boolean((error as { isAxiosError?: boolean })?.isAxiosError),
+    );
     client = new ApiRdiClient(mockRdiClientMetadata, mockRdi);
   });
 
@@ -743,7 +748,10 @@ describe('ApiRdiClient', () => {
 
     it('should set dummy authorization headers in dev mode when login is disabled', async () => {
       mockedAxios.post.mockRejectedValueOnce({
-        status: 404,
+        isAxiosError: true,
+        response: {
+          status: 404,
+        },
       });
 
       await client.connect();
