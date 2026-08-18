@@ -4,19 +4,21 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import Tabs from 'uiSrc/components/base/layout/tabs'
-import { tabs } from './constants'
+import { useTranslation } from 'uiSrc/i18n'
+import { getTabs } from './constants'
 
 const HomeTabs = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const { pathname } = useLocation()
   const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const filteredTabs = useMemo(
     () =>
-      tabs.filter(
+      getTabs(t).filter(
         (tab) => !tab.featureFlag || featureFlags?.[tab.featureFlag]?.flag,
       ),
-    [featureFlags],
+    [featureFlags, t],
   )
 
   const activeTab =
