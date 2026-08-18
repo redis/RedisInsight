@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type { Maybe } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components/base'
 import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { useTranslation } from 'uiSrc/i18n'
 
@@ -44,6 +44,7 @@ const RedisClusterDatabases = ({
   loading,
 }: Props) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const [items, setItems] = useState<InstanceRedisCluster[]>([])
   const [message, setMessage] = useState(t('cluster.loadingMsg'))
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)

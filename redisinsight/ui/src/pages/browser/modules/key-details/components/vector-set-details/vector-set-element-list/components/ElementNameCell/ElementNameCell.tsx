@@ -6,7 +6,6 @@ import {
   createTooltipContent,
   formattingBuffer,
 } from 'uiSrc/utils'
-import { TEXT_FAILED_CONVENT_FORMATTER } from 'uiSrc/constants'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { Row } from 'uiSrc/components/base/layout/flex'
@@ -51,7 +50,9 @@ export const ElementNameCell = ({
         title={
           isValid
             ? t('browser.vectorSet.list.elementColumn')
-            : TEXT_FAILED_CONVENT_FORMATTER(viewFormat)
+            : t('browser.keyDetails.failedConvertFormatter', {
+                format: viewFormat,
+              })
         }
         tooltipContent={tooltipContent}
         position="bottom"

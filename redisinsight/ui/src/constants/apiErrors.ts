@@ -1,4 +1,5 @@
 import { secondsToMinutes } from 'uiSrc/utils/transformers/formatDate'
+import i18n from 'uiSrc/i18n'
 
 enum ApiErrors {
   SentinelParamsRequired = 'SENTINEL_PARAMS_REQUIRED',
@@ -17,18 +18,16 @@ export const ApiEncryptionErrors: string[] = [
 ]
 
 export const AI_CHAT_ERRORS = {
-  default: () => 'An error occurred. Try again or restart the session.',
-  unexpected: () => 'An unexpected error occurred. Try again later.',
-  timeout: () => 'Timeout occurred. Try again later.',
-  rateLimit: (limit?: number) => {
-    let error = 'Exceeded rate limit.'
-    if (limit) {
-      error += ` Try again in ${secondsToMinutes(limit)}.`
-    }
-
-    return error
-  },
-  tokenLimit: () => 'Conversation is too long. Restart the session.',
+  default: () => i18n.t('browser.aiChat.error.default'),
+  unexpected: () => i18n.t('browser.aiChat.error.unexpected'),
+  timeout: () => i18n.t('browser.aiChat.error.timeout'),
+  rateLimit: (limit?: number) =>
+    limit
+      ? i18n.t('browser.aiChat.error.rateLimitWithTime', {
+          time: secondsToMinutes(limit),
+        })
+      : i18n.t('browser.aiChat.error.rateLimit'),
+  tokenLimit: () => i18n.t('browser.aiChat.error.tokenLimit'),
 }
 
 export default ApiErrors

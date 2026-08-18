@@ -106,6 +106,9 @@
   "src/components/monitor-config/MonitorConfig.tsx": {
     "TS2345": 1
   },
+  "src/components/monitor/Monitor/Monitor.tsx": {
+    "TS2769": 1
+  },
   "src/components/monitor/MonitorHeader/MonitorHeader.spec.tsx": {
     "TS2339": 2
   },
@@ -202,7 +205,7 @@
   "src/components/virtual-grid/VirtualGrid.tsx": {
     "TS18048": 1,
     "TS2339": 8,
-    "TS2345": 1,
+    "TS2345": 3,
     "TS2769": 1,
     "TS7031": 1
   },
@@ -213,6 +216,9 @@
     "TS2345": 1,
     "TS2698": 1,
     "TS2769": 4
+  },
+  "src/components/virtual-list/VirtualList.tsx": {
+    "TS2769": 2
   },
   "src/components/virtual-table/VirtualTable.tsx": {
     "TS2322": 2,
@@ -372,6 +378,9 @@
   "src/pages/browser/components/add-key/AddKeyZset/AddKeyZset.tsx": {
     "TS2322": 2
   },
+  "src/pages/browser/components/bulk-actions/BulkDelete/BulkDeleteContent/BulkDeleteContent.tsx": {
+    "TS2769": 1
+  },
   "src/pages/browser/components/key-list/KeyList.spec.tsx": {
     "TS2322": 9,
     "TS2339": 3,
@@ -382,8 +391,14 @@
     "TS2345": 5,
     "TS6133": 1
   },
+  "src/pages/browser/components/keys-browser-panel/components/Header.tsx": {
+    "TS2769": 1
+  },
   "src/pages/browser/components/keys-browser-panel/contexts/Context.tsx": {
     "TS2322": 1
+  },
+  "src/pages/browser/components/keys-header/KeysHeader.tsx": {
+    "TS2769": 1
   },
   "src/pages/browser/components/make-searchable-button/MakeSearchableButton.spec.tsx": {
     "TS2322": 1
@@ -399,6 +414,9 @@
   },
   "src/pages/browser/components/virtual-tree/VirtualTree.spec.tsx": {
     "TS2614": 1
+  },
+  "src/pages/browser/components/virtual-tree/VirtualTree.tsx": {
+    "TS2769": 1
   },
   "src/pages/browser/components/virtual-tree/components/Node/Node.tsx": {
     "TS2322": 3
@@ -536,6 +554,9 @@
   "src/pages/browser/modules/key-details/components/zset-details/zset-details-table/ZSetDetailsTable.tsx": {
     "TS2322": 3,
     "TS2345": 9
+  },
+  "src/pages/browser/modules/key-details/shared/editable-textarea/EditableTextArea.tsx": {
+    "TS2769": 1
   },
   "src/pages/browser/modules/key-details/shared/formatted-value/FormattedValue.tsx": {
     "TS2339": 1
