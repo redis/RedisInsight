@@ -8,6 +8,10 @@ name: ✅ Tests (on demand)
 #
 # `pull_request` cannot filter by label, so every label starts a run and the jobs
 # below decide if there is work. Dependabot's labels land here and skip.
+#
+# Nothing here runs on `always()`. A run that skips every job must do nothing at
+# all: most runs are labels this workflow has no interest in. The deployment
+# records these suites leave behind are cleared by the next run of `tests.yml`.
 
 on:
   pull_request:
@@ -45,14 +49,3 @@ jobs:
       checks: write
     with:
       short_rte_list: true
-
-  # The suites above leave the same deployment records a run of `tests.yml` does,
-  # so clean up after them here too. `always()` because only one suite runs.
-  clean:
-    uses: ./.github/workflows/clean-deployments.yml
-    if: ${{ always() && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
-    permissions:
-      actions: write
-      contents: read
-      deployments: write
-    needs: [frontend, backend, integration]
