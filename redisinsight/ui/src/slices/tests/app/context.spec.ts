@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
-import { KeyTypes, SortOrder } from 'uiSrc/constants'
+import { BrowserStorageItem, KeyTypes, SortOrder } from 'uiSrc/constants'
+import { localStorageService } from 'uiSrc/services'
 import { stringToBuffer } from 'uiSrc/utils'
 
 import {
@@ -564,9 +565,13 @@ describe('slices', () => {
   })
 
   describe('setBrowserTreePrefixLength', () => {
-    it('should properly set browser tree prefix length', () => {
+    it('should persist prefix length to storage and restore it via setDbConfig', () => {
       // Arrange
       const prefixLength = 5
+      const contextInstanceId = 'instanceId'
+      localStorageService.remove(
+        BrowserStorageItem.dbConfig + contextInstanceId,
+      )
 
       const state = {
         ...initialState.dbConfig,
@@ -575,7 +580,7 @@ describe('slices', () => {
 
       // Act
       const nextState = reducer(
-        initialState,
+        { ...initialState, contextInstanceId },
         setBrowserTreePrefixLength(prefixLength),
       )
 
@@ -585,6 +590,19 @@ describe('slices', () => {
       })
 
       expect(appContextDbConfig(rootState)).toEqual(state)
+
+      // storage write must land under the field name setDbConfig hydrates from
+      const stored = localStorageService.get(
+        BrowserStorageItem.dbConfig + contextInstanceId,
+      )
+      expect(stored).toMatchObject({
+        treeViewDelimiterPrefixLength: prefixLength,
+      })
+
+      const restoredState = reducer(initialState, setDbConfig(stored))
+      expect(restoredState.dbConfig.treeViewDelimiterPrefixLength).toEqual(
+        prefixLength,
+      )
     })
   })
 
