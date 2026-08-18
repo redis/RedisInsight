@@ -331,7 +331,9 @@ describe('HashDetailsTable', () => {
         screen.getByTestId(
           `remove-hash-button-${MOCK_TRUNCATED_STRING_VALUE}-tooltip`,
         ),
-      ).toHaveTextContent('This action is disabled because the key or value is too large to process within Redis Insight.')
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
     })
 
     it('should disable editing value when entry value is truncated', async () => {
@@ -355,7 +357,9 @@ describe('HashDetailsTable', () => {
 
       expect(
         screen.getByTestId('hash_edit-tooltip-regular-field'),
-      ).toHaveTextContent('This action is disabled because the key or value is too large to process within Redis Insight.')
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
 
       fireEvent.click(editButton)
       expect(
@@ -389,7 +393,9 @@ describe('HashDetailsTable', () => {
 
       expect(
         screen.getByTestId(`hash_edit-tooltip-${MOCK_TRUNCATED_STRING_VALUE}`),
-      ).toHaveTextContent('This action is disabled because the key or value is too large to process within Redis Insight.')
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
 
       fireEvent.click(editButton)
       expect(
@@ -425,7 +431,9 @@ describe('HashDetailsTable', () => {
         screen.getByTestId(
           `hash-ttl_edit-tooltip-${MOCK_TRUNCATED_STRING_VALUE}`,
         ),
-      ).toHaveTextContent('This action is disabled because the key or value is too large to process within Redis Insight.')
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
     })
   })
 })
