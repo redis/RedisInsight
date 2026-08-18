@@ -3,24 +3,20 @@ name: ✅ Tests (on demand)
 # Runs a suite the changed files did not ask for: the frontend tests on a
 # backend-only PR, say. `run-all-tests` runs all three.
 #
-# Suites are called directly, not through `tests.yml`, so no check here shares a
-# name with one from there and the merge gate stays in `tests.yml`.
+# Suites are called directly, not through `tests.yml`, so the merge gate and its
+# check names stay there.
 #
-# `pull_request` cannot filter by label, so every label starts a run and the jobs
-# below decide if there is work. Dependabot's labels land here and skip.
-#
-# Nothing here runs on `always()`. A run that skips every job must do nothing at
-# all: most runs are labels this workflow has no interest in. The deployment
-# records these suites leave behind are cleared by the next run of `tests.yml`.
+# Every label starts a run here: `pull_request` cannot filter by label. Most are
+# labels this ignores. Those runs must do nothing, so no job uses `always()`.
 
 on:
   pull_request:
     types: [labeled]
 
 concurrency:
-  # Keyed by label so one request does not cancel another, and deliberately not
-  # the group `tests.yml` uses: a label must never cancel a suite in progress.
-  # Cancelling is off because a cancelled check does not pass branch protection.
+  # Keyed by label so requests do not cancel each other. Never share the group
+  # `tests.yml` uses: a label must not cancel a suite in progress. Cancelling is
+  # off because a cancelled check does not pass branch protection.
   group: tests-on-demand-${{ github.event.pull_request.number }}-${{ github.event.label.name }}
   cancel-in-progress: false
 
@@ -35,8 +31,8 @@ jobs:
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
 
-  # Off for forks, as in `tests.yml`: no secrets there, and the `production`
-  # environment these tests deploy to only accepts branches from this repo.
+  # Off for forks, as in `tests.yml`. Forks get no secrets, and `production` only
+  # accepts branches from this repo.
   integration:
     if: >-
       github.event.pull_request.head.repo.fork != true &&
