@@ -44,4 +44,7 @@ jobs:
       contents: read
       checks: write
     with:
-      short_rte_list: true
+      # Full RTE list on release PRs, as `should-run` does.
+      short_rte_list: >-
+        ${{ !(startsWith(github.head_ref, 'release/') || github.head_ref == 'latest' ||
+        startsWith(github.base_ref, 'release/') || github.base_ref == 'latest') }}
