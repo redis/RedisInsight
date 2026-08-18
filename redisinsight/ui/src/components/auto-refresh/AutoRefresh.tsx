@@ -17,12 +17,12 @@ import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   DEFAULT_REFRESH_RATE,
   DURATION_FIRST_REFRESH_TIME,
   getTextByRefreshTime,
   MINUTE,
-  NOW,
 } from './utils'
 
 import styles from './styles.module.scss'
@@ -114,10 +114,13 @@ const AutoRefresh = ({
   defaultRefreshRate,
   enableAutoRefreshDefault = false,
 }: Props) => {
+  const { t } = useTranslation()
   let intervalText: NodeJS.Timeout
   let intervalRefresh: NodeJS.Timeout
 
-  const [refreshMessage, setRefreshMessage] = useState(NOW)
+  const [refreshMessage, setRefreshMessage] = useState(() =>
+    t('autoRefresh.time.now'),
+  )
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [refreshRate, setRefreshRate] = useState<string>(
     defaultRefreshRate || '',
@@ -197,17 +200,18 @@ const AutoRefresh = ({
 
   const updateLastRefresh = () => {
     const delta = getLastRefreshDelta(lastRefreshTime)
-    const text = getTextByRefreshTime(delta, lastRefreshTime ?? 0)
+    const text = getTextByRefreshTime(delta, lastRefreshTime ?? 0, t)
     lastRefreshTime && setRefreshMessage(text)
   }
 
   const updateAutoRefreshText = (refreshRate: string) => {
     enableAutoRefresh &&
       setRefreshRateMessage(
-        // more than 1 minute
         +refreshRate > MINUTE
-          ? `${Math.floor(+refreshRate / MINUTE)} min`
-          : `${refreshRate} s`,
+          ? t('autoRefresh.unit.minutes', {
+              value: Math.floor(+refreshRate / MINUTE),
+            })
+          : t('autoRefresh.unit.seconds', { value: refreshRate }),
       )
   }
 
@@ -257,7 +261,9 @@ const AutoRefresh = ({
             component="span"
             data-testid={getDataTestid('refresh-message-label')}
           >
-            {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
+            {enableAutoRefresh
+              ? t('autoRefresh.label.autoRefresh')
+              : t('autoRefresh.label.lastRefresh')}
           </ColorText>
         </FlexItem>
       )}
@@ -279,7 +285,7 @@ const AutoRefresh = ({
         <Row align="center" gap="none">
           <FlexItem>
             <RiTooltip
-              title={!disabled && 'Last Refresh'}
+              title={!disabled && t('autoRefresh.tooltip.lastRefresh')}
               className={styles.tooltip}
               position="top"
               content={disabled ? disabledRefreshButtonMessage : refreshMessage}
@@ -317,7 +323,7 @@ const AutoRefresh = ({
                   disabled={disabled}
                   size="XS"
                   icon={ChevronDownIcon}
-                  aria-label="Auto-refresh config popover"
+                  aria-label={t('autoRefresh.ariaLabel')}
                   className={cx(styles.anchorBtn, {
                     [styles.anchorBtnOpen]: isPopoverOpen,
                   })}
@@ -327,21 +333,23 @@ const AutoRefresh = ({
               }
             >
               <SwitchInput
-                title="Auto Refresh"
+                title={t('autoRefresh.switch.title')}
                 checked={enableAutoRefresh}
                 onCheckedChange={onChangeEnableAutoRefresh}
                 className={styles.switchOption}
                 data-testid={getDataTestid('auto-refresh-switch')}
               />
               <div className={styles.inputContainer}>
-                <div className={styles.inputLabel}>Refresh rate:</div>
+                <div className={styles.inputLabel}>
+                  {t('autoRefresh.refreshRate.label')}
+                </div>
                 {!editingRate && (
                   <ColorText
                     className={styles.refreshRateText}
                     onClick={() => setEditingRate(true)}
                     data-testid={getDataTestid('refresh-rate')}
                   >
-                    {`${refreshRate} s`}
+                    {t('autoRefresh.unit.seconds', { value: refreshRate })}
                     <div className={styles.refreshRatePencil}>
                       <RiIcon type="EditIcon" />
                     </div>
@@ -364,7 +372,7 @@ const AutoRefresh = ({
                         onApply={(value) => handleApplyAutoRefreshRate(value)}
                       />
                     </div>
-                    <ColorText>{' s'}</ColorText>
+                    <ColorText>{t('autoRefresh.unit.secondsSuffix')}</ColorText>
                   </>
                 )}
               </div>
