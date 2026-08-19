@@ -5,12 +5,13 @@ import { Link } from 'uiSrc/components/base/link/Link'
 
 export interface Props {
   url: string
-  text: string
+  text?: string
   source?: OAuthSocialSource
+  children?: React.ReactNode
 }
 
 const CloudLink = (props: Props) => {
-  const { url, text, source = OAuthSocialSource.Tutorials } = props
+  const { url, text, source = OAuthSocialSource.Tutorials, children } = props
   return (
     <OAuthSsoHandlerDialog>
       {(ssoCloudHandlerClick) => (
@@ -26,7 +27,7 @@ const CloudLink = (props: Props) => {
           href={url}
           data-testid="guide-free-database-link"
         >
-          {text}
+          {text ?? children}
         </Link>
       )}
     </OAuthSsoHandlerDialog>

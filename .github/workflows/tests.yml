@@ -1,8 +1,15 @@
 name: ✅ Tests
 
+# Runs on every pull request. The changed files pick the suites; the
+# `run-*-tests` labels can widen that.
+#
+# Do not add `labeled` here. `tests-on-demand.yml` owns that trigger. A label
+# reaching this workflow reports a second `All required checks pass` on the same
+# commit, green while the real suite is still running.
+
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened]
 
   workflow_dispatch:
     inputs:
@@ -39,9 +46,9 @@ on:
         default: false
         type: boolean
 
-# One in-flight run per PR; a new commit cancels the previous run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # One run per PR. A new commit replaces the one in progress.
+  group: tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -240,12 +247,14 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: ${{ always() && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    # `always()` runs this even when every test job skips, so it needs its own
+    # guard against deleting deployments for a run that did no work.
+    if: ${{ always() && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     permissions:
       actions: write
       contents: read
       deployments: write
-    needs: [frontend-tests, backend-tests, integration-tests]
+    needs: [changes, frontend-tests, backend-tests, integration-tests]
 
   # Remove artifacts from github actions
   remove-artifacts:
@@ -257,3 +266,41 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts
+
+  # The one check to read, and the one to require on protected branches. Red if
+  # any job below failed or was cancelled. A skipped job passes: skipping is a
+  # decision made from the changed files.
+  #
+  # A job left out of `needs` cannot block a merge, so add new suites here.
+  # Coverage and cleanup are out on purpose.
+  required-checks-passed:
+    name: All required checks pass
+    if: always()
+    needs:
+      - changes
+      - should-run
+      - lint
+      - type-check
+      - docker-build
+      - frontend-tests
+      - backend-tests
+      - integration-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the jobs this waits on
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          failing=$(jq -r '
+            to_entries[]
+            | select(.value.result != "success" and .value.result != "skipped")
+            | "  \(.key): \(.value.result)"
+          ' <<< "$NEEDS_JSON")
+
+          if [ -n "$failing" ]; then
+            echo "These jobs did not pass:"
+            echo "$failing"
+            exit 1
+          fi
+
+          echo "Every job passed or was skipped."

@@ -91,7 +91,10 @@ export class ApiRdiClient extends RdiClient {
       return response.data.access_token;
     } catch (e) {
       // If /login endpoint is not found we assume that RDI is in dev mode
-      if (e.status === HttpStatus.NOT_FOUND) {
+      if (
+        axios.isAxiosError(e) &&
+        e.response?.status === HttpStatus.NOT_FOUND
+      ) {
         return this.loginDev();
       }
 
@@ -247,11 +250,10 @@ export class ApiRdiClient extends RdiClient {
             { ...config.sources[source] },
           );
           sources[source] = response.data;
-        } catch (error: any) {
+        } catch (error: unknown) {
           // Older versions of RDI (below 1.6.0) don't support testing sources connections
           // RDI returns 405 Method Not Allowed for non existing endpoints
-          const status = error?.status;
-          if (status === 405) {
+          if (axios.isAxiosError(error) && error.response?.status === 405) {
             sources[source] = {
               connected: false,
               error:
