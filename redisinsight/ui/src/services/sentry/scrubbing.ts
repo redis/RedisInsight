@@ -364,6 +364,16 @@ export const applyFingerprint = <T extends Event>(
   return event
 }
 
+/** Set `user.id`, keeping the rest of `user`. Without an id, event unchanged. */
+const identifyEvent = <T extends Event>(
+  event: T,
+  installationId?: string,
+): T => {
+  if (!installationId) return event
+
+  return { ...event, user: { ...event.user, id: installationId } }
+}
+
 /**
  * Single entry point for both layers' `beforeSend`: drop known noise, then
  * scrub, then apply the consent tier, then fingerprint. Returns `null` to drop
@@ -372,10 +382,13 @@ export const applyFingerprint = <T extends Event>(
 export const finalizeSentryEvent = <T extends Event>(
   event: T,
   analyticsGranted: boolean,
+  installationId?: string,
 ): T | null => {
   if (shouldDropEvent(event)) return null
   const scrubbed = scrubEvent(event)
-  const tiered = analyticsGranted ? scrubbed : minimizeEvent(scrubbed)
+  const tiered = analyticsGranted
+    ? identifyEvent(scrubbed, installationId)
+    : minimizeEvent(scrubbed)
   // Fingerprint from the original event — minimizeEvent has blanked the message.
   return applyFingerprint(tiered, event)
 }
