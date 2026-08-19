@@ -118,7 +118,7 @@ const AutoRefresh = ({
   let intervalText: NodeJS.Timeout
   let intervalRefresh: NodeJS.Timeout
 
-  const [refreshMessage, setRefreshMessage] = useState(() =>
+  const [refreshMessage, setRefreshMessage] = useState<string>(() =>
     t('autoRefresh.time.now'),
   )
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
