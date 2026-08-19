@@ -3,6 +3,7 @@ import log from 'electron-log'
 import {
   electronStore,
   setConsent,
+  setInstallationId,
   getUpdateStrategy,
   startUpdateDownload,
   checkForUpdate,
@@ -34,6 +35,10 @@ export const initIPCHandlers = () => {
 
   ipcMain.handle(IpcInvokeEvent.setSentryConsent, (_event, granted: boolean) =>
     setConsent(!!granted),
+  )
+
+  ipcMain.handle(IpcInvokeEvent.setSentryInstallationId, (_event, id: string) =>
+    setInstallationId(id),
   )
 
   ipcMain.handle(IpcInvokeEvent.getUpdateStrategy, () =>

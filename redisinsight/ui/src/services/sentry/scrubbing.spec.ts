@@ -13,6 +13,9 @@ import {
   shouldDropEvent,
 } from './scrubbing'
 
+/** Stand-in for the installation id. */
+const INSTALLATION_ID = 'b8f1c0de-1234-4a5b-9c8d-0e1f2a3b4c5d'
+
 /** Build an event with a single exception value + stack frames. */
 const errorEvent = (
   value: string,
@@ -477,5 +480,43 @@ describe('finalizeSentryEvent', () => {
     // Message is blanked by minimize, but fingerprint is read from the original.
     expect(result!.exception!.values![0].value).toBe('')
     expect(result!.fingerprint).toEqual([FAILED_TO_OPEN_FINGERPRINT])
+  })
+
+  it('attaches the installation id when analytics is granted', () => {
+    const result = finalizeSentryEvent(
+      errorEvent('boom'),
+      true,
+      INSTALLATION_ID,
+    )
+
+    expect(result!.user).toEqual({ id: INSTALLATION_ID })
+  })
+
+  it('keeps the event unattributed when the installation id is not known yet', () => {
+    const result = finalizeSentryEvent(errorEvent('boom'), true)
+
+    expect(result!.user?.id).toBeUndefined()
+  })
+
+  it('never attaches the installation id without consent', () => {
+    const result = finalizeSentryEvent(
+      errorEvent('boom'),
+      false,
+      INSTALLATION_ID,
+    )
+
+    expect(result!.user).toEqual({ id: NON_TRACKING_ANONYMOUS_ID })
+  })
+
+  it('attaches the installation id without restoring the scrubbed ip address', () => {
+    const event: Event = {
+      ...errorEvent('boom'),
+      user: { id: 'stale', ip_address: '10.1.2.3' },
+    }
+
+    const result = finalizeSentryEvent(event, true, INSTALLATION_ID)
+
+    expect(result!.user!.id).toBe(INSTALLATION_ID)
+    expect(result!.user!.ip_address).toBeUndefined()
   })
 })

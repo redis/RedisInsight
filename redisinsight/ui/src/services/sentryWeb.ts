@@ -1,7 +1,10 @@
 import * as Sentry from '@sentry/react'
 
 import { getConfig } from 'uiSrc/config'
-import { checkIsAnalyticsGranted } from 'uiSrc/telemetry/checkAnalytics'
+import {
+  checkIsAnalyticsGranted,
+  getInstallationId,
+} from 'uiSrc/telemetry/checkAnalytics'
 import { finalizeSentryEvent } from 'uiSrc/services/sentry'
 
 const riConfig = getConfig()
@@ -32,7 +35,11 @@ export const initSentry = (): void => {
       beforeBreadcrumb: (breadcrumb) =>
         checkIsAnalyticsGranted() ? breadcrumb : null,
       beforeSend(event) {
-        return finalizeSentryEvent(event, checkIsAnalyticsGranted())
+        return finalizeSentryEvent(
+          event,
+          checkIsAnalyticsGranted(),
+          getInstallationId(),
+        )
       },
     })
   } catch (e) {
