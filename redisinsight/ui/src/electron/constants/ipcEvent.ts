@@ -7,6 +7,7 @@ enum IpcInvokeEvent {
   themeChange = 'theme:change',
   appRestart = 'app:restart',
   setSentryConsent = 'sentry:set:consent',
+  setSentryInstallationId = 'sentry:set:installation-id',
   getUpdateStrategy = 'app:update:strategy:get',
   setUpdateStrategy = 'app:update:strategy:set',
   appUpdateDownload = 'app:update:download',

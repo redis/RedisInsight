@@ -12,6 +12,7 @@ enum ElectronStorageItem {
   themeSource = 'themeSource',
   bounds = 'bounds',
   analyticsConsent = 'analyticsConsent',
+  analyticsInstallationId = 'analyticsInstallationId',
 }
 
 export default ElectronStorageItem

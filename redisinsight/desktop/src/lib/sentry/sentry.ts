@@ -15,9 +15,18 @@ let consentGranted = false
 
 let crashReporterStarted = false
 
+/** The API's server id, synced from the renderer; identifies the installation. */
+let installationId: string | undefined
+
 /** Cached consent, so the main process can pick the tier at boot. */
 const readCachedConsent = (): boolean =>
   electronStore?.get(ElectronStorageItem.analyticsConsent) === true
+
+/** Cached id, so events raised before the renderer syncs are still attributed. */
+const readCachedInstallationId = (): string | undefined => {
+  const cached = electronStore?.get(ElectronStorageItem.analyticsInstallationId)
+  return typeof cached === 'string' && cached ? cached : undefined
+}
 
 /** Parse a Sentry DSN: https://{PUBLIC_KEY}@{HOST}/{PROJECT_ID}. */
 const parseDsn = (
@@ -88,6 +97,7 @@ export const initSentry = (): void => {
   }
 
   consentGranted = readCachedConsent()
+  installationId = readCachedInstallationId()
 
   try {
     Sentry.init({
@@ -112,7 +122,7 @@ export const initSentry = (): void => {
       // Breadcrumbs can carry sensitive data; keep only with consent.
       beforeBreadcrumb: (breadcrumb) => (consentGranted ? breadcrumb : null),
       beforeSend(event) {
-        return finalizeSentryEvent(event, consentGranted)
+        return finalizeSentryEvent(event, consentGranted, installationId)
       },
     })
 
@@ -139,6 +149,18 @@ export const setConsent = (granted: boolean): void => {
   consentGranted = granted
   electronStore?.set(ElectronStorageItem.analyticsConsent, granted)
 
+  // No identifier outlives the permission for it.
+  if (granted) {
+    if (installationId) {
+      electronStore?.set(
+        ElectronStorageItem.analyticsInstallationId,
+        installationId,
+      )
+    }
+  } else {
+    electronStore?.delete(ElectronStorageItem.analyticsInstallationId)
+  }
+
   if (!initialized) {
     return
   }
@@ -160,4 +182,20 @@ export const setConsent = (granted: boolean): void => {
   }
 
   log.info(`[Sentry] Consent updated: ${granted}`)
+}
+
+/**
+ * Sync the installation id from the renderer. Written to disk only under
+ * consent. `id` crosses IPC, so its type is checked at runtime.
+ */
+export const setInstallationId = (id: string): void => {
+  if (typeof id !== 'string' || !id || id === installationId) {
+    return
+  }
+
+  installationId = id
+
+  if (consentGranted) {
+    electronStore?.set(ElectronStorageItem.analyticsInstallationId, id)
+  }
 }
