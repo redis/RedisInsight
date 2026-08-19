@@ -31,7 +31,7 @@ const HomeTabs = () => {
     sendEventTelemetry({
       event: TelemetryEvent.INSTANCES_TAB_CHANGED,
       eventData: {
-        tab: tab.label,
+        tab: tab.value,
       },
     })
 
