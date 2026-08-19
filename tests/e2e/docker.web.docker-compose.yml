@@ -20,6 +20,12 @@ services:
       RI_SERVER_TLS_CERT: $RI_SERVER_TLS_CERT
       RI_SERVER_TLS_KEY: $RI_SERVER_TLS_KEY
       RI_STDOUT_LOGGER: 'false'
+      # The image bakes in whatever NODE_ENV the build job could resolve, and a
+      # fork PR gets no environment variables, so that value is empty there. An
+      # empty NODE_ENV selects the development config, which ignores
+      # RI_APP_FOLDER_ABSOLUTE_PATH and puts the database somewhere the
+      # container cannot write. Pin it so the suite does not depend on the build.
+      NODE_ENV: staging
     volumes:
       - rihomedir:/data
       - tmp:/tmp
