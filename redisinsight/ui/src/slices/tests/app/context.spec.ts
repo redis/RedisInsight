@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
-import { KeyTypes, SortOrder } from 'uiSrc/constants'
+import { BrowserStorageItem, KeyTypes, SortOrder } from 'uiSrc/constants'
+import { localStorageService } from 'uiSrc/services'
 import { stringToBuffer } from 'uiSrc/utils'
 
 import {
@@ -28,6 +29,7 @@ import reducer, {
   resetBrowserTree,
   appContextBrowserTree,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   setBrowserIsNotRendered,
   setBrowserRedisearchScrollPosition,
   updateKeyDetailsSizes,
@@ -463,13 +465,14 @@ describe('slices', () => {
   })
 
   describe('setDbConfig', () => {
-    it('should properly set db config', () => {
+    it('should properly set db config including treeViewDelimiterPrefixLength', () => {
       // Arrange
       const data = {
         slowLogDurationUnit: 'msec',
         treeViewDelimiter: [{ label: ':-' }],
         treeViewSort: SortOrder.DESC,
         showHiddenRecommendations: true,
+        treeViewDelimiterPrefixLength: 3,
       }
 
       const state = {
@@ -558,6 +561,48 @@ describe('slices', () => {
       })
 
       expect(appContextDbConfig(rootState)).toEqual(state)
+    })
+  })
+
+  describe('setBrowserTreePrefixLength', () => {
+    it('should persist prefix length to storage and restore it via setDbConfig', () => {
+      // Arrange
+      const prefixLength = 5
+      const contextInstanceId = 'instanceId'
+      localStorageService.remove(
+        BrowserStorageItem.dbConfig + contextInstanceId,
+      )
+
+      const state = {
+        ...initialState.dbConfig,
+        treeViewDelimiterPrefixLength: prefixLength,
+      }
+
+      // Act
+      const nextState = reducer(
+        { ...initialState, contextInstanceId },
+        setBrowserTreePrefixLength(prefixLength),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        app: { context: nextState },
+      })
+
+      expect(appContextDbConfig(rootState)).toEqual(state)
+
+      // storage write must land under the field name setDbConfig hydrates from
+      const stored = localStorageService.get(
+        BrowserStorageItem.dbConfig + contextInstanceId,
+      )
+      expect(stored).toMatchObject({
+        treeViewDelimiterPrefixLength: prefixLength,
+      })
+
+      const restoredState = reducer(initialState, setDbConfig(stored))
+      expect(restoredState.dbConfig.treeViewDelimiterPrefixLength).toEqual(
+        prefixLength,
+      )
     })
   })
 

@@ -1000,6 +1000,8 @@
   "browser.tree.settings.button.apply": "Apply",
   "browser.tree.settings.button.cancel": "Cancel",
   "browser.tree.settings.delimiter": "Delimiter",
+  "browser.tree.settings.prefixLength": "Ignore separator in first N chars",
+  "browser.tree.settings.prefixLengthHint": "Characters before position N are treated as a prefix — separators within that prefix are ignored. Set to 0 to disable. Large values flatten the tree.",
   "browser.tree.settings.sortBy": "Sort by",
   "browser.tree.settings.sortOption": "Key name {{order}}",
   "browser.vectorSet.addElements": "Add Elements",

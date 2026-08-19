@@ -5,6 +5,7 @@ import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { bufferToString, Nullable } from 'uiSrc/utils'
+import { splitWithPrefixThreshold } from 'uiSrc/helpers'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
 import { RedisString } from 'uiSrc/slices/interfaces'
@@ -34,6 +35,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
     items,
     delimiterPattern,
     delimiters,
+    prefixLength = 0,
     loadingIcon = 'empty',
     statusOpen = {},
     statusSelected,
@@ -90,13 +92,25 @@ const VirtualTree = (props: VirtualTreeProps) => {
       nodes.current = []
       elements.current = {}
       rerender({})
-      runWebworker?.({ items: [], delimiterPattern, delimiters, sorting })
+      runWebworker?.({
+        items: [],
+        delimiterPattern,
+        delimiters,
+        sorting,
+        prefixLength,
+      })
       return
     }
 
     setConstructingTree(true)
-    runWebworker?.({ items, delimiterPattern, delimiters, sorting })
-  }, [items, delimiterPattern])
+    runWebworker?.({
+      items,
+      delimiterPattern,
+      delimiters,
+      sorting,
+      prefixLength,
+    })
+  }, [items, delimiterPattern, prefixLength])
 
   const handleUpdateSelected = useCallback(
     (name: RedisString) => {
@@ -191,9 +205,14 @@ const VirtualTree = (props: VirtualTreeProps) => {
         size: node.size,
         type: node.type,
         fullName: node.fullName,
-        shortName: node.nameString
-          ?.split(new RegExp(delimiterPattern, 'g'))
-          .pop(),
+        shortName:
+          node.nameString != null
+            ? splitWithPrefixThreshold(
+                node.nameString,
+                delimiterPattern,
+                prefixLength,
+              ).pop()
+            : undefined,
         delimiters,
         nestingLevel,
         deleting,
@@ -253,7 +272,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
         }
       }
     },
-    [statusSelected, statusOpen, rerenderState, visibleColumns],
+    [statusSelected, statusOpen, rerenderState, visibleColumns, prefixLength],
   )
 
   return (
