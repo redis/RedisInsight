@@ -78,7 +78,31 @@ const UPDATE_HINT = updateHintArg || `update the baseline at ${recFileArg}`
 // run, which would silently erase the baseline.
 const TSC_FINISHED_STATUSES = new Set([0, 1, 2])
 
-function runTsc(project: string): string {
+function refuseRun(reason: string, stderr: string): never {
+  console.error('_'.repeat(80))
+  console.error(`✗ tsc ${reason}.`)
+
+  if (/heap out of memory|Allocation failed/.test(stderr)) {
+    console.error('')
+    console.error('It ran out of memory. Give it a bigger heap and retry:')
+    console.error('')
+    console.error('   NODE_OPTIONS=--max-old-space-size=8192 <command>')
+  }
+
+  console.error('')
+  console.error(`The baseline at ${recFileArg} is left untouched.`)
+  console.error('_'.repeat(80))
+
+  throw new Error(
+    `tsc ${reason}, so its output says nothing about the real error count`,
+  )
+}
+
+function runTsc(project: string): {
+  stdout: string
+  stderr: string
+  status: number
+} {
   // Resolve tsc the way the shell would from this package, since the api
   // pins its own typescript.
   const requireFromCwd = createRequire(path.join(process.cwd(), 'noop.js'))
@@ -106,29 +130,25 @@ function runTsc(project: string): string {
   if (signal || status === null || !TSC_FINISHED_STATUSES.has(status)) {
     const cause = signal ? `was killed by ${signal}` : `exited with ${status}`
 
-    console.error('_'.repeat(80))
-    console.error(`✗ tsc ${cause} before reporting any diagnostics.`)
-
-    if (/heap out of memory|Allocation failed/.test(stderr)) {
-      console.error('')
-      console.error('It ran out of memory. Give it a bigger heap and retry:')
-      console.error('')
-      console.error('   NODE_OPTIONS=--max-old-space-size=8192 <command>')
-    }
-
-    console.error('')
-    console.error(`The baseline at ${recFileArg} is left untouched.`)
-    console.error('_'.repeat(80))
-
-    throw new Error(
-      `tsc ${cause}, so its output says nothing about the real error count`,
-    )
+    refuseRun(`${cause} before reporting any diagnostics`, stderr)
   }
 
-  return stdout
+  return { stdout, stderr, status }
 }
 
-const tsErrorsAsJson: TsError[] = parse(runTsc(projectArg)) as TsError[]
+const tscRun = runTsc(projectArg)
+const tsErrorsAsJson: TsError[] = parse(tscRun.stdout) as TsError[]
+
+// A non-zero status means tsc had something to report, so an empty result
+// means it crashed before listing anything rather than finding nothing. An
+// uncaught compiler exception looks exactly like this: status 1, a stack
+// trace on stderr, and no diagnostics at all.
+if (tscRun.status !== 0 && !tsErrorsAsJson.length) {
+  refuseRun(
+    `exited with ${tscRun.status} without reporting a single diagnostic`,
+    tscRun.stderr,
+  )
+}
 
 function getNewSnapshot() {
   let totalErrorCount = 0
