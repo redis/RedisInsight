@@ -37,6 +37,7 @@ const redisCloud = '/redis-cloud'
 const sentinel = '/sentinel'
 const azure = '/azure'
 const rdi = '/integrate'
+const agentMemory = '/agent-memory'
 
 // Query-param keys used to deep-link into the home page's edit-database dialog
 // and (optionally) reveal one of its fields.
@@ -89,4 +90,10 @@ export const Pages = {
   rdiPipelineJobs: (rdiInstance: string, jobName: string) =>
     `${rdi}/${rdiInstance}/${PageNames.rdiPipelineManagement}/${PageNames.rdiPipelineJobs}/${jobName}`,
   rdiStatistics: (rdiInstance: string) => `${rdi}/${rdiInstance}/statistics`,
+  // agent memory pages
+  agentMemory,
+  agentMemoryWorkspace: (endpointId: string, tab?: string) =>
+    tab
+      ? `${agentMemory}/${endpointId}/${tab}`
+      : `${agentMemory}/${endpointId}`,
 }

@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "features": {
     "appUpdateStrategySettings": {
       "flag": true,
@@ -32,6 +32,11 @@
           "cond": "neq"
         }
       ]
+    },
+    "agentMemory": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": []
     },
     "insightsRecommendations": {
       "flag": true,
