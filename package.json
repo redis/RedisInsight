@@ -242,7 +242,7 @@
     "terser-webpack-plugin": "^5.6.1",
     "text-encoding": "^0.7.0",
     "ts-jest": "^29.2.5",
-    "ts-loader": "^9.6.2",
+    "ts-loader": "9.5.1",
     "ts-mockito": "^2.6.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^3.9.0",
