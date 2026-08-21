@@ -11,4 +11,4 @@
  * Keep the export name in sync with the real module: the
  * `orchestrion/index.js` barrel re-exports it by name.
  */
-export function registerDiagnosticsChannelInjection() {}
+export function registerDiagnosticsChannelInjection(): void {}
