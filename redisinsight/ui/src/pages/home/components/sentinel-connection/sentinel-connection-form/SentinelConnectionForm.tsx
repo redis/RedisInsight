@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
 import * as keys from 'uiSrc/constants/keys'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { fieldDisplayNames } from 'uiSrc/pages/home/constants'
 import { getFormErrors, getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
@@ -50,6 +50,7 @@ const getInitFieldsDisplayNames = ({ host, port }: any) => {
 
 const SentinelConnectionForm = (props: Props) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const {
     initialValues = {},
     onClose,

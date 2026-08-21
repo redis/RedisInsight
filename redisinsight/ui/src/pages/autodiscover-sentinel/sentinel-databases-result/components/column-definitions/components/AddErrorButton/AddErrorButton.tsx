@@ -3,7 +3,7 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip } from 'uiSrc/components'
 import { ApiStatusCode } from 'uiSrc/constants'
 import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { useTranslation } from 'uiSrc/i18n'
@@ -18,6 +18,7 @@ export const AddErrorButton = ({
   onAddInstance = () => {},
 }: AddErrorButtonProps) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const isDisabled = !alias
   if (
     typeof error === 'object' &&

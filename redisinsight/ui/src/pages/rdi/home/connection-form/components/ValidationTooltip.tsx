@@ -1,8 +1,9 @@
 import { FormikErrors } from 'formik'
 import React from 'react'
 
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import { ConnectionFormValues } from '../ConnectionForm'
 
 export interface Props {
@@ -12,6 +13,8 @@ export interface Props {
 }
 
 const ValidationTooltip = ({ isValid, errors, children }: Props) => {
+  const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const tooltipContent = (
     <ul data-testid="validation-errors-list">
       {Object.values(errors).map((value) => (

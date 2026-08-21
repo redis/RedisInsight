@@ -1,11 +1,7 @@
 import React from 'react'
 import { mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
-import {
-  KeyValueCompressor,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-} from 'uiSrc/constants'
+import { KeyValueCompressor } from 'uiSrc/constants'
 import { listDataSelector } from 'uiSrc/slices/browser/list'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { anyToBuffer } from 'uiSrc/utils'
@@ -178,7 +174,7 @@ describe('ListDetailsTable', () => {
 
       expect(editBtn).toBeDisabled()
       expect(screen.getByTestId('list_edit-tooltip-0')).toHaveTextContent(
-        TEXT_DISABLED_COMPRESSED_VALUE,
+        'Cannot edit the decompressed value',
       )
       expect(queryByTestId('list_value-editor-0')).not.toBeInTheDocument()
     })
@@ -212,7 +208,7 @@ describe('ListDetailsTable', () => {
 
       expect(editBtn).toBeDisabled()
       expect(screen.getByTestId('list_edit-tooltip-0')).toHaveTextContent(
-        TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
       )
 
       fireEvent.click(editBtn)
