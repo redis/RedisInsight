@@ -19,6 +19,7 @@ import { FeaturesConfigEntity } from 'src/modules/feature/entities/features-conf
 import { CloudDatabaseDetailsEntity } from 'src/modules/cloud/database/entities/cloud-database-details.entity';
 import { CloudCapiKeyEntity } from 'src/modules/cloud/capi-key/entity/cloud-capi-key.entity';
 import { RdiEntity } from 'src/modules/rdi/entities/rdi.entity';
+import { AgentMemoryEndpointEntity } from 'src/modules/agent-memory/entities/agent-memory-endpoint.entity';
 import { AiQueryMessageEntity } from 'src/modules/ai/query/entities/ai-query.message.entity';
 import { CloudSessionEntity } from 'src/modules/cloud/session/entities/cloud.session.entity';
 import { DatabaseSettingsEntity } from 'src/modules/database-settings/entities/database-setting.entity';
@@ -54,6 +55,7 @@ const ormConfig = {
     CloudDatabaseDetailsEntity,
     CloudCapiKeyEntity,
     RdiEntity,
+    AgentMemoryEndpointEntity,
     AiQueryMessageEntity,
     CloudSessionEntity,
     DatabaseSettingsEntity,
