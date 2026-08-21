@@ -1,6 +1,9 @@
 import { diff } from 'deep-object-diff'
 import stringify from 'json-stable-stringify'
+import { parse } from '@aivenio/tsc-output-parser'
+import { spawnSync } from 'child_process'
 import fs from 'fs'
+import { createRequire } from 'module'
 import path from 'path'
 
 const OVERWRITE = 'overwrite'
@@ -33,9 +36,18 @@ interface ErrorInfo {
   >
 }
 
-const command = process.argv[2]
-const recFileArg = process.argv[3]
-const updateHintArg = process.argv[4]
+const argv = process.argv.slice(2)
+const projectFlagIndex = argv.indexOf('--project')
+const projectArg =
+  projectFlagIndex === -1 ? undefined : argv[projectFlagIndex + 1]
+const positionalArgs =
+  projectFlagIndex === -1
+    ? argv
+    : [...argv.slice(0, projectFlagIndex), ...argv.slice(projectFlagIndex + 2)]
+
+const command = positionalArgs[0]
+const recFileArg = positionalArgs[1]
+const updateHintArg = positionalArgs[2]
 
 if (
   !SUPPORTED_COMMANDS.includes(command as (typeof SUPPORTED_COMMANDS)[number])
@@ -53,10 +65,90 @@ if (!recFileArg) {
   )
 }
 
+if (!projectArg) {
+  throw new Error('Pass the tsconfig to check as `--project <file>`')
+}
+
 const REC_FILE_PATH = path.resolve(process.cwd(), recFileArg)
 const UPDATE_HINT = updateHintArg || `update the baseline at ${recFileArg}`
 
-const tsErrorsAsJson: TsError[] = JSON.parse(fs.readFileSync(0, 'utf-8'))
+// tsc exits 0 when it finds nothing and 1 or 2 when it reports diagnostics.
+// Any other status means it died before listing them - 134 for an
+// out-of-memory abort - and its empty output must never be read as a clean
+// run, which would silently erase the baseline.
+const TSC_FINISHED_STATUSES = new Set([0, 1, 2])
+
+function refuseRun(reason: string, stderr: string): never {
+  console.error('_'.repeat(80))
+  console.error(`✗ tsc ${reason}.`)
+
+  if (/heap out of memory|Allocation failed/.test(stderr)) {
+    console.error('')
+    console.error('It ran out of memory. Give it a bigger heap and retry:')
+    console.error('')
+    console.error('   NODE_OPTIONS=--max-old-space-size=8192 <command>')
+  }
+
+  console.error('')
+  console.error(`The baseline at ${recFileArg} is left untouched.`)
+  console.error('_'.repeat(80))
+
+  throw new Error(
+    `tsc ${reason}, so its output says nothing about the real error count`,
+  )
+}
+
+function runTsc(project: string): {
+  stdout: string
+  stderr: string
+  status: number
+} {
+  // Resolve tsc the way the shell would from this package, since the api
+  // pins its own typescript.
+  const requireFromCwd = createRequire(path.join(process.cwd(), 'noop.js'))
+  const { status, signal, stdout, stderr, error } = spawnSync(
+    process.execPath,
+    [
+      requireFromCwd.resolve('typescript/bin/tsc'),
+      '--project',
+      project,
+      '--noEmit',
+      '--pretty',
+      'false',
+    ],
+    { encoding: 'utf-8', maxBuffer: 1 << 28 },
+  )
+
+  if (error) {
+    throw new Error(`Could not start tsc: ${error.message}`)
+  }
+
+  if (stderr) {
+    console.error(stderr)
+  }
+
+  if (signal || status === null || !TSC_FINISHED_STATUSES.has(status)) {
+    const cause = signal ? `was killed by ${signal}` : `exited with ${status}`
+
+    refuseRun(`${cause} before reporting any diagnostics`, stderr)
+  }
+
+  return { stdout, stderr, status }
+}
+
+const tscRun = runTsc(projectArg)
+const tsErrorsAsJson: TsError[] = parse(tscRun.stdout) as TsError[]
+
+// A non-zero status means tsc had something to report, so an empty result
+// means it crashed before listing anything rather than finding nothing. An
+// uncaught compiler exception looks exactly like this: status 1, a stack
+// trace on stderr, and no diagnostics at all.
+if (tscRun.status !== 0 && !tsErrorsAsJson.length) {
+  refuseRun(
+    `exited with ${tscRun.status} without reporting a single diagnostic`,
+    tscRun.stderr,
+  )
+}
 
 function getNewSnapshot() {
   let totalErrorCount = 0
