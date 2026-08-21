@@ -115,6 +115,7 @@ export interface StateAgentMemoryWorkspace {
     data: LongTermMemoryRecord[]
     lastRefreshTime: Nullable<number>
     search: string
+    similarityThreshold: Nullable<number>
     topics: string[]
     sessionIds: string[]
     memoryTypes: string[]
