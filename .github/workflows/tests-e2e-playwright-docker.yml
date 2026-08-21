@@ -63,6 +63,20 @@ jobs:
         run: |
           docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
 
+      # An empty NODE_ENV makes the app fall back to its development config and
+      # exit before it can write a log, which reads as a startup timeout further
+      # down. The compose file pins the value, so this only reports what the
+      # image itself carries.
+      - name: Report image NODE_ENV
+        run: |
+          node_env=$(docker image inspect redisinsight:amd64 \
+            --format '{{range .Config.Env}}{{println .}}{{end}}' \
+            | grep '^NODE_ENV=' || true)
+          echo "image carries ${node_env:-no NODE_ENV}"
+          if [ -z "$node_env" ] || [ "$node_env" = "NODE_ENV=" ]; then
+            echo "::warning::Image built without NODE_ENV; compose pins it to staging for this run"
+          fi
+
       - name: Start Redis test environment
         uses: ./.github/actions/redis-test-env-up
         with:
