@@ -259,7 +259,7 @@
     "vite-plugin-istanbul": "^7.2.1",
     "vite-plugin-react-click-to-component": "^3.0.0",
     "vite-plugin-svgr": "^4.2.0",
-    "webpack": "^5.109.2",
+    "webpack": "5.104.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0",
