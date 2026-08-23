@@ -13,10 +13,14 @@ import {
   AgentMemoryConfiguration,
   AgentMemoryScopeFilter,
   DiscoveryFiltersResponse,
+  LongTermMemoryRecord,
   LongTermMemorySearchResponse,
   WorkingMemoryResponse,
 } from 'src/modules/agent-memory/agent-memory.types';
-import { SearchLongTermMemoryDto } from 'src/modules/agent-memory/dto';
+import {
+  SearchLongTermMemoryDto,
+  UpdateLongTermMemoryDto,
+} from 'src/modules/agent-memory/dto';
 import { AGENT_MEMORY_IDLE_THRESHOLD } from 'src/modules/agent-memory/constants';
 
 export abstract class AgentMemoryClient {
@@ -91,6 +95,12 @@ export abstract class AgentMemoryClient {
   abstract searchLongTermMemory(
     dto: SearchLongTermMemoryDto,
   ): Promise<LongTermMemorySearchResponse>;
+
+  /** Apply a partial update to one long-term memory record */
+  abstract updateLongTermMemory(
+    memoryId: string,
+    update: UpdateLongTermMemoryDto,
+  ): Promise<LongTermMemoryRecord>;
 
   abstract deleteLongTermMemories(ids: string[]): Promise<void>;
 

@@ -6,6 +6,9 @@ type IrisSearchRequest = NonNullable<
   Parameters<IrisAgentMemoryClient['searchLongTermMemory']>[0]
 >;
 type IrisFilter = NonNullable<IrisSearchRequest['filter']>;
+type IrisUpdateRequest = NonNullable<
+  Parameters<IrisAgentMemoryClient['updateLongTermMemory']>[1]
+>;
 type IrisMessageRole = Parameters<
   IrisAgentMemoryClient['addSessionEvent']
 >[0]['role'];
@@ -19,10 +22,14 @@ import {
   AgentMemoryNewMessage,
   AgentMemoryScopeFilter,
   DiscoveryFiltersResponse,
+  LongTermMemoryRecord,
   LongTermMemorySearchResponse,
   WorkingMemoryResponse,
 } from 'src/modules/agent-memory/agent-memory.types';
-import { SearchLongTermMemoryDto } from 'src/modules/agent-memory/dto';
+import {
+  SearchLongTermMemoryDto,
+  UpdateLongTermMemoryDto,
+} from 'src/modules/agent-memory/dto';
 import {
   AGENT_MEMORY_TIMEOUT,
   CLOUD_EVENT_ROLES,
@@ -195,6 +202,25 @@ export class CloudAgentMemoryClient extends AgentMemoryClient {
     );
     const items = (data?.items ?? []).map(fromCloudMemory);
     return { memories: items, total: items.length };
+  }
+
+  async updateLongTermMemory(
+    memoryId: string,
+    update: UpdateLongTermMemoryDto,
+  ): Promise<LongTermMemoryRecord> {
+    const body: IrisUpdateRequest = {};
+    if (update.text !== undefined) body.text = update.text;
+    if (update.memoryType !== undefined) body.memoryType = update.memoryType;
+    if (update.topics !== undefined) body.topics = update.topics;
+    if (update.namespace !== undefined) body.namespace = update.namespace;
+    // The normalized record exposes ownerId as userId.
+    if (update.userId !== undefined) body.ownerId = update.userId;
+    if (update.sessionId !== undefined) body.sessionId = update.sessionId;
+
+    const data = await this.sdkCall(() =>
+      this.sdk.updateLongTermMemory(memoryId, body),
+    );
+    return fromCloudMemory(data);
   }
 
   async deleteLongTermMemories(ids: string[]): Promise<void> {

@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseInterceptors,
@@ -18,6 +19,7 @@ import { AgentMemoryDataService } from 'src/modules/agent-memory/agent-memory-da
 import {
   AgentMemoryConfiguration,
   DiscoveryFiltersResponse,
+  LongTermMemoryRecord,
   LongTermMemorySearchResponse,
   WorkingMemoryResponse,
 } from 'src/modules/agent-memory/agent-memory.types';
@@ -26,6 +28,7 @@ import {
   AddSessionEventDto,
   DeleteLongTermMemoriesDto,
   SearchLongTermMemoryDto,
+  UpdateLongTermMemoryDto,
 } from 'src/modules/agent-memory/dto';
 import { RequestAgentMemoryClientMetadata } from 'src/modules/agent-memory/decorators';
 
@@ -105,6 +108,19 @@ export class AgentMemoryDataController {
     @Body() dto: SearchLongTermMemoryDto,
   ): Promise<LongTermMemorySearchResponse> {
     return this.service.searchLongTermMemory(metadata, dto);
+  }
+
+  @Patch('/long-term-memory/:memoryId')
+  @ApiEndpoint({
+    description: 'Update a long-term memory record',
+    responses: [{ status: 200 }],
+  })
+  async updateLongTermMemory(
+    @RequestAgentMemoryClientMetadata() metadata: AgentMemoryClientMetadata,
+    @Param('memoryId') memoryId: string,
+    @Body() dto: UpdateLongTermMemoryDto,
+  ): Promise<LongTermMemoryRecord> {
+    return this.service.updateLongTermMemory(metadata, memoryId, dto);
   }
 
   @Delete('/long-term-memory')
