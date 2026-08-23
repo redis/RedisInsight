@@ -55,6 +55,12 @@ const configuration: webpack.Configuration = {
       NODE_ENV: 'production',
     }),
 
+    // See the stub for why this module cannot be bundled as-is.
+    new webpack.NormalModuleReplacementPlugin(
+      /@sentry[/\\]server-utils[/\\]build[/\\]esm[/\\]orchestrion[/\\]runtime[/\\]register\.js$/,
+      resolve(__dirname, 'stubs/sentryOrchestrionRegister.ts'),
+    ),
+
     new webpack.IgnorePlugin({
       checkResource(resource) {
         const lazyImports = [
