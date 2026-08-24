@@ -58,7 +58,7 @@ const configuration: webpack.Configuration = {
     // See the stub for why this module cannot be bundled as-is.
     new webpack.NormalModuleReplacementPlugin(
       /@sentry[/\\]server-utils[/\\]build[/\\]esm[/\\]orchestrion[/\\]runtime[/\\]register\.js$/,
-      resolve(__dirname, 'stubs/sentryOrchestrionRegister.ts'),
+      resolve(__dirname, 'stubs/sentryOrchestrionRegister.js'),
     ),
 
     new webpack.IgnorePlugin({
