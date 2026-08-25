@@ -220,6 +220,11 @@ updates:
       - dependency-name: 'redis-parser'
         update-types:
           ['version-update:semver-patch', 'version-update:semver-minor']
+      # From 23.2 the shipped .d.ts uses `const` type parameters, which need
+      # TypeScript 5. The api compiles on 4.9, so a minor breaks type-check,
+      # the Linux build and the Docker build.
+      - dependency-name: 'quicktype-core'
+        update-types: ['version-update:semver-minor']
 
     groups:
       # `group-by` raises one pull request per dependency spanning both
