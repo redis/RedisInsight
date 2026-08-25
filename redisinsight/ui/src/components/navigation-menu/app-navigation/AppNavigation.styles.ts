@@ -27,7 +27,7 @@ export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
   }
 
   border-bottom: ${({ theme, $borderLess }) =>
-      $borderLess ? '0' : theme.components.tabs.variants.default.tabsLine.size}
+    $borderLess ? '0' : theme.components.tabs.variants.default.tabsLine.size}
     solid
     ${({ theme }) => theme.components.tabs.variants.default.tabsLine.color};
 `

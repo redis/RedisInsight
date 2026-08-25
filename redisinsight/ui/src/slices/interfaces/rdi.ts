@@ -110,9 +110,7 @@ export interface IStatisticsInfoSection {
 }
 
 export type IStatisticsSection =
-  | IStatisticsTableSection
-  | IStatisticsBlocksSection
-  | IStatisticsInfoSection
+  IStatisticsTableSection | IStatisticsBlocksSection | IStatisticsInfoSection
 
 export interface IRdiStatisticsData {
   sections: IStatisticsSection[]

@@ -168,15 +168,13 @@ export const scrubEvent = <T extends Event>(event: T): T => {
     event.request = request
   }
   if (event.breadcrumbs) {
-    event.breadcrumbs = event.breadcrumbs.map(
-      (breadcrumb): Breadcrumb => ({
-        ...breadcrumb,
-        message: scrubSecretsInText(breadcrumb.message),
-        data: scrubSecretsDeep(
-          scrubSensitiveData(breadcrumb.data),
-        ) as Breadcrumb['data'],
-      }),
-    )
+    event.breadcrumbs = event.breadcrumbs.map((breadcrumb): Breadcrumb => ({
+      ...breadcrumb,
+      message: scrubSecretsInText(breadcrumb.message),
+      data: scrubSecretsDeep(
+        scrubSensitiveData(breadcrumb.data),
+      ) as Breadcrumb['data'],
+    }))
   }
 
   normalizeFrames(event)

@@ -2,8 +2,10 @@ import { ToolTipPositions } from '@elastic/eui'
 import React from 'react'
 import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 
-export interface Props
-  extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {
+export interface Props extends Omit<
+  RiTooltipProps,
+  'children' | 'delay' | 'position'
+> {
   value: string | JSX.Element
   tooltipContent: string | JSX.Element
   expanded?: boolean

@@ -30,8 +30,9 @@ export const SortButton = styled.button<
   ${({ $isActive, theme }) =>
     $isActive &&
     css`
-      background-color: ${theme?.semantic?.color?.background?.neutral500 ||
-      'rgba(0, 0, 0, 0.1)'};
+      background-color: ${
+        theme?.semantic?.color?.background?.neutral500 || 'rgba(0, 0, 0, 0.1)'
+      };
       color: ${theme?.semantic?.color?.icon?.primary600 || 'inherit'};
     `}
 `

@@ -3,12 +3,7 @@ import { ReactNode } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 
 export type EuiColorNames =
-  | 'inherit'
-  | 'default'
-  | 'primary'
-  | 'danger'
-  | 'warning'
-  | 'success'
+  'inherit' | 'default' | 'primary' | 'danger' | 'warning' | 'success'
 
 interface LoaderBarProps {
   color?: string

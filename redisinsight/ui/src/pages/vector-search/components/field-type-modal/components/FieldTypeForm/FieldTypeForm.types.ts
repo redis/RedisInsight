@@ -17,8 +17,7 @@ export type VectorFlatFieldFormValues = VectorFlatFieldOptions
 export type VectorHnswFieldFormValues = VectorHnswFieldOptions
 
 export type VectorFieldFormValues =
-  | VectorFlatFieldFormValues
-  | VectorHnswFieldFormValues
+  VectorFlatFieldFormValues | VectorHnswFieldFormValues
 
 export type FieldTypeFormValues = BaseFieldFormValues &
   TextFieldFormValues &
