@@ -10,5 +10,10 @@
  *
  * Keep the export name in sync with the real module: the
  * `orchestrion/index.js` barrel re-exports it by name.
+ *
+ * This file has to stay plain JavaScript. `NormalModuleReplacementPlugin`
+ * swaps the resource only after webpack has picked loaders for the module it
+ * replaces, and that module sits in `node_modules`, so it gets none. Any
+ * TypeScript syntax here reaches the JS parser and fails to build.
  */
-export function registerDiagnosticsChannelInjection(): void {}
+export function registerDiagnosticsChannelInjection() {}
