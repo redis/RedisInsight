@@ -11,8 +11,10 @@ const PopoverContentWrapper = styled(Col)`
   max-width: 300px;
 `
 
-export interface ConfirmationPopoverProps
-  extends Omit<RiPopoverProps, 'children' | 'title'> {
+export interface ConfirmationPopoverProps extends Omit<
+  RiPopoverProps,
+  'children' | 'title'
+> {
   title?: JSX.Element | string
   message?: JSX.Element | string
   appendInfo?: JSX.Element | string | null

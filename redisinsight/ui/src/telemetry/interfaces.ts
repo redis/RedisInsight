@@ -52,7 +52,9 @@ export interface IModuleSummary {
 }
 
 export type RedisModulesKeyType = keyof typeof RedisModules
-export interface IRedisModulesSummary
-  extends Record<keyof typeof RedisModules, IModuleSummary> {
+export interface IRedisModulesSummary extends Record<
+  keyof typeof RedisModules,
+  IModuleSummary
+> {
   customModules: AdditionalRedisModule[]
 }

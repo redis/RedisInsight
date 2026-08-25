@@ -23,15 +23,13 @@ const findInfiniteNotification = (store: typeof mockedStore) =>
   store
     .getActions()
     .find((action) => action.type === addInfiniteNotification.type) as
-    | { payload: InfiniteMessage }
-    | undefined
+    { payload: InfiniteMessage } | undefined
 
 const findMessageNotification = (store: typeof mockedStore) =>
   store
     .getActions()
     .find((action) => action.type === addMessageNotification.type) as
-    | { payload: IMessage }
-    | undefined
+    { payload: IMessage } | undefined
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),

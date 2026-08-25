@@ -14,8 +14,7 @@ import { AttributeEditor } from '../attribute-editor'
 import { UseVectorSetElementFormResult } from '../hooks/useVectorSetElementForm/useVectorSetElementForm.types'
 import { getVectorFieldInfo } from './utils'
 
-export interface VectorSetElementFormFieldsProps
-  extends UseVectorSetElementFormResult {
+export interface VectorSetElementFormFieldsProps extends UseVectorSetElementFormResult {
   loading: boolean
 }
 

@@ -4,8 +4,10 @@ import { TooltipProvider, Tooltip, TooltipProps } from '@redis-ui/components'
 import { HoverContent } from './HoverContent'
 import styled from 'styled-components'
 
-export interface RiTooltipProps
-  extends Omit<TooltipProps, 'placement' | 'openDelayDuration'> {
+export interface RiTooltipProps extends Omit<
+  TooltipProps,
+  'placement' | 'openDelayDuration'
+> {
   title?: React.ReactNode
   position?: TooltipProps['placement']
   delay?: TooltipProps['openDelayDuration']

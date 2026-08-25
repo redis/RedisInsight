@@ -36,7 +36,9 @@ const PatternsInfo = ({ channels }: PatternsInfoProps) => {
             {channels
               ?.trim()
               .split(' ')
-              .map((ch) => <Text key={`${ch}`}>{ch}</Text>)}
+              .map((ch) => (
+                <Text key={`${ch}`}>{ch}</Text>
+              ))}
           </>
         }
       >

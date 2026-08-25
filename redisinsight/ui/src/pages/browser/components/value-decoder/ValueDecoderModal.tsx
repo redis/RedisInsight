@@ -265,9 +265,9 @@ export const ValueDecoderModal = ({
                       summary={summary}
                       matchesCurrentKey={Boolean(
                         keyName &&
-                          normalized.keyPatterns.some((pattern) =>
-                            matchKeyPattern(pattern, keyName),
-                          ),
+                        normalized.keyPatterns.some((pattern) =>
+                          matchKeyPattern(pattern, keyName),
+                        ),
                       )}
                     />
                   )

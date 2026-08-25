@@ -323,13 +323,13 @@ export const StyledItemInnerButton = styled.button<
   ${listItemInnerStyles.base}
   ${({ $size = 'm' }) => listItemInnerStyles.size[$size]}
     ${({ $isActive = false }) =>
-    $isActive && listItemInnerStyles.variants.isActive}
+      $isActive && listItemInnerStyles.variants.isActive}
     ${({ $isDisabled = false }) =>
-    $isDisabled && listItemInnerStyles.variants.isDisabled}
+      $isDisabled && listItemInnerStyles.variants.isDisabled}
     ${({ $isDisabled = false, $color = 'text' }) =>
-    !$isDisabled && listItemInnerStyles.colors[$color]}
+      !$isDisabled && listItemInnerStyles.colors[$color]}
     ${({ $isDisabled = false, $isClickable = false }) =>
-    !$isDisabled && $isClickable && listItemInnerStyles.variants.isClickable}
+      !$isDisabled && $isClickable && listItemInnerStyles.variants.isClickable}
 `
 
 export const StyledItemInnerSpan = styled.span<
@@ -338,13 +338,13 @@ export const StyledItemInnerSpan = styled.span<
   ${listItemInnerStyles.base}
   ${({ $size = 'm' }) => listItemInnerStyles.size[$size]}
     ${({ $isActive = false }) =>
-    $isActive && listItemInnerStyles.variants.isActive}
+      $isActive && listItemInnerStyles.variants.isActive}
     ${({ $isDisabled = false }) =>
-    $isDisabled && listItemInnerStyles.variants.isDisabled}
+      $isDisabled && listItemInnerStyles.variants.isDisabled}
     ${({ $isDisabled = false, $color = 'text' }) =>
-    !$isDisabled && listItemInnerStyles.colors[$color]}
+      !$isDisabled && listItemInnerStyles.colors[$color]}
     ${({ $isDisabled = false, $isClickable = false }) =>
-    !$isDisabled && $isClickable && listItemInnerStyles.variants.isClickable}
+      !$isDisabled && $isClickable && listItemInnerStyles.variants.isClickable}
 `
 
 const listItemLabelStyles = {

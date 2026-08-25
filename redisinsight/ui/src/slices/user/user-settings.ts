@@ -204,12 +204,7 @@ export function updateUserConfigSettingsAction(
 }
 
 type ToggleAnalyticsReasonType =
-  | 'none'
-  | 'oauth-agreement'
-  | 'google'
-  | 'github'
-  | 'sso'
-  | 'user'
+  'none' | 'oauth-agreement' | 'google' | 'github' | 'sso' | 'user'
 
 export function enableUserAnalyticsAction(
   reason: ToggleAnalyticsReasonType = 'none',

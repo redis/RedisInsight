@@ -247,7 +247,7 @@ export const DATABASE_LIST_OPTIONS_TEXT = Object.freeze({
 })
 
 export enum PersistencePolicy {
-  'none' = 'none',
+  none = 'none',
   'aof-every-1-second' = 'Append-only file (AOF) every 1 second',
   'aof-every-write' = 'Append-only file (AOF) every write',
   'snapshot-every-1-hour' = 'Redis database backup (RDB) every 1 hour',
@@ -489,8 +489,7 @@ export interface ModifiedSentinelMaster extends CreateSentinelDatabaseDto {
 }
 
 export interface ModifiedGetListElementsResponse
-  extends GetListElementsDto,
-    GetListElementsResponse {
+  extends GetListElementsDto, GetListElementsResponse {
   elements: { index: number; element: RedisResponseBuffer }[]
   key?: RedisString
   searchedIndex: Nullable<number>

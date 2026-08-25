@@ -1,11 +1,7 @@
 import React from 'react'
 
 export type FeaturesHighlightingType =
-  | 'plain'
-  | 'tooltip'
-  | 'popover'
-  | 'dialog'
-  | 'tooltip-badge'
+  'plain' | 'tooltip' | 'popover' | 'dialog' | 'tooltip-badge'
 
 interface BuildHighlightingFeature {
   type: FeaturesHighlightingType

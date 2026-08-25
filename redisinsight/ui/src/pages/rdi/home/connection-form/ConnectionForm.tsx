@@ -28,8 +28,10 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { useTranslation } from 'uiSrc/i18n'
 import ValidationTooltip from './components/ValidationTooltip'
 
-export interface AppendInfoProps
-  extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {
+export interface AppendInfoProps extends Omit<
+  RiTooltipProps,
+  'children' | 'delay' | 'position'
+> {
   position?: RiTooltipProps['position']
 }
 

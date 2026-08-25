@@ -286,11 +286,7 @@ export const VALID_GROW_VALUES = [
 ] as const
 
 export type PaddingType =
-  | keyof typeof flexItemStyles.padding
-  | null
-  | undefined
-  | true
-  | false
+  keyof typeof flexItemStyles.padding | null | undefined | true | false
 
 export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
   PropsWithChildren &

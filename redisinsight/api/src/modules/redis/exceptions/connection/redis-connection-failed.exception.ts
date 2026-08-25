@@ -15,8 +15,7 @@ export const RedisConnectionFailedStatusCode = HttpStatus.FAILED_DEPENDENCY;
 export class RedisConnectionFailedException extends HttpException {
   constructor(
     message:
-      | string
-      | Record<string, any> = ERROR_MESSAGES.REDIS_CONNECTION_FAILED,
+      string | Record<string, any> = ERROR_MESSAGES.REDIS_CONNECTION_FAILED,
     options?: HttpExceptionOptions,
   ) {
     let response: Record<string, any>;

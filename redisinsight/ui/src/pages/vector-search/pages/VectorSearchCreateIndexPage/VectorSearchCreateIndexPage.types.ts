@@ -26,5 +26,4 @@ export interface ExistingDataLocationState {
 }
 
 export type CreateIndexLocationState =
-  | SampleDataLocationState
-  | ExistingDataLocationState
+  SampleDataLocationState | ExistingDataLocationState

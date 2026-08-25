@@ -240,7 +240,7 @@ const isFieldValid = (
     if (field.sizeSource === 'field') {
       return Boolean(
         field.sizeFieldRef &&
-          priorNumeric.some((item) => item.id === field.sizeFieldRef),
+        priorNumeric.some((item) => item.id === field.sizeFieldRef),
       )
     }
     return isPositiveIntegerSize(field.size)
