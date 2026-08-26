@@ -1,4 +1,4 @@
-import { last, min as minBy, reject } from 'lodash'
+import { last, minBy, reject } from 'lodash'
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 

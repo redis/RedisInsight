@@ -22,11 +22,6 @@
   "../../node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
     "TS6133": 1
   },
-  "../api-client/core/queryKeySerializer.gen.ts": {
-    "TS2339": 1,
-    "TS2345": 1,
-    "TS2488": 1
-  },
   "../desktop/preload.ts": {
     "TS2307": 1
   },
@@ -48,10 +43,6 @@
     "TS2339": 5,
     "TS7016": 1
   },
-  "src/components/charts/bar-chart/BarChart.spec.tsx": {
-    "TS2554": 1,
-    "TS7031": 1
-  },
   "src/components/cli/components/cli-input/CliAutocomplete/CliAutocomplete.stories.tsx": {
     "TS2322": 3
   },
@@ -61,12 +52,6 @@
   },
   "src/components/config/Config.spec.tsx": {
     "TS2339": 14
-  },
-  "src/components/consents-settings/ConsentsNotifications/ConsentsNotifications.tsx": {
-    "TS7053": 1
-  },
-  "src/components/consents-settings/ConsentsPrivacy/ConsentsPrivacy.tsx": {
-    "TS7053": 1
   },
   "src/components/consents-settings/ConsentsSettings.tsx": {
     "TS2339": 1
