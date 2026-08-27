@@ -10,13 +10,19 @@ name: E2E Playwright Tests (v2)
 #   3. Someone adds `e2e-tests` or `run-all-tests` to a PR.
 #   4. The nightly schedule, at 00:00 UTC.
 #   5. Someone starts it by hand from the Actions tab.
+#   6. A PR enters the merge queue for `main`, and its head commit has no
+#      successful E2E run yet. This is the merge gate: `E2E tests passed` is a
+#      required check, so nothing reaches `main` without E2E behind it.
 #
 # `skip-e2e` on a PR overrides cases 1, 2 and 3. It stops a run already going and
-# keeps later ones off.
+# keeps later ones off. It does not apply to case 6 — a label must not be able to
+# waive the merge gate.
 #
 # Opening a PR or pushing to it does not start E2E unless the branch is
 # `dependabot/**`. Case 3 is how you ask for it, and removing then re-adding the
-# label is how you rerun it.
+# label is how you rerun it. Cases 1-3 and 5 all publish the `E2E tests passed`
+# check on the PR's head commit, which is what case 6 looks for to decide it has
+# nothing left to do.
 
 on:
   # Case 5.
@@ -47,9 +53,14 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+  # Case 6. Fires for every merge queue entry; `check-trigger` decides whether
+  # the entry needs a run or already has one.
+  merge_group:
+
 concurrency:
   # One run per branch at a time. A new push replaces the one already going,
-  # which is what case 2 needs.
+  # which is what case 2 needs. Merge queue entries (case 6) each get a ref of
+  # their own, so they never cancel one another or a PR's own run.
   #
   # The key is the branch rather than the PR so that a push (cases 1 and 2) and a
   # label (case 3) on the same PR land in the same group. That is what lets
@@ -74,9 +85,93 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+      # Reading the E2E check on a queued PR's head commit (case 6).
+      checks: read
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
+      skip_reason: ${{ steps.check.outputs.skip_reason }}
     steps:
+      # Case 6. A merge queue entry has no PR in its payload, but its ref is
+      # `gh-readonly-queue/<base>/pr-<number>-<sha>`, so the number comes from
+      # there. Anything unexpected leaves both outputs empty, and the run goes
+      # ahead: failing open here would merge untested code.
+      - name: Look for an E2E run on the queued PR's head commit
+        id: queued-pr
+        if: github.event_name == 'merge_group'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+          # Must match the `name:` of the `e2e-passed` job below. That job
+          # publishes the check this reads; renaming one without the other
+          # means every queue entry reruns E2E from scratch.
+          GATE_CHECK_NAME: E2E tests passed
+        run: |
+          pr_number=$(sed -nE 's|.*/pr-([0-9]+)-[0-9a-f]+$|\1|p' <<< "$REF_NAME")
+          if [[ -z "$pr_number" ]]; then
+            echo "Could not read a PR number from '$REF_NAME' — running E2E."
+            exit 0
+          fi
+          echo "Merge queue entry for PR #$pr_number."
+
+          head_sha=$(gh api "repos/$GH_REPO/pulls/$pr_number" --jq '.head.sha' || true)
+          if [[ -z "$head_sha" ]]; then
+            echo "Could not read the head commit of PR #$pr_number — running E2E."
+            exit 0
+          fi
+
+          # A skipped or failed check must not count, so match the conclusion
+          # too. `--paginate` because a commit can carry many checks, and it
+          # prints one count per page, hence the sum.
+          #
+          # `|| true` keeps a flaky API call from failing the step: no answer
+          # means no known passing run, which runs E2E rather than blocking the
+          # merge on an unrelated hiccup. The step runs under `pipefail`, so the
+          # guard has to sit inside the substitution.
+          passed=$( { gh api "repos/$GH_REPO/commits/$head_sha/check-runs" --paginate \
+            --jq '[.check_runs[] | select(.name == env.GATE_CHECK_NAME and .conclusion == "success")] | length' \
+            || true; } | awk '{ total += $1 } END { print total + 0 }')
+
+          if [[ "${passed:-0}" -gt 0 ]]; then
+            echo "already_passed=true" >> "$GITHUB_OUTPUT"
+            echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+            echo "PR #$pr_number already has '$GATE_CHECK_NAME' on $head_sha."
+          else
+            echo "No '$GATE_CHECK_NAME' on $head_sha — running E2E."
+          fi
+
+      # Nothing E2E covers can change without one of these paths changing, so a
+      # docs-only or workflow-comment-only PR does not need three suites and two
+      # builds to prove it. Checked per PR, not per merge group: every entry in a
+      # batch passes through here with its own number.
+      - name: Check the queued PR for changes E2E can see
+        id: queued-paths
+        if: github.event_name == 'merge_group' && steps.queued-pr.outputs.already_passed != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          pr_number=$(sed -nE 's|.*/pr-([0-9]+)-[0-9a-f]+$|\1|p' <<< "$REF_NAME")
+          [[ -z "$pr_number" ]] && exit 0
+
+          files=$(gh api "repos/$GH_REPO/pulls/$pr_number/files" --paginate \
+            --jq '.[].filename' || true)
+          if [[ -z "$files" ]]; then
+            echo "Could not list the files of PR #$pr_number — running E2E."
+            exit 0
+          fi
+
+          # Application code, the E2E suite itself, the test environment, the
+          # build inputs, and the workflows that run all of it.
+          if grep -qE '^(redisinsight/|tests/e2e|package(-lock)?\.json|\.nvmrc|Dockerfile|\.dockerignore|configs/|scripts/|\.github/(workflows|actions|build)/)' <<< "$files"; then
+            echo "PR #$pr_number touches paths E2E covers."
+          else
+            echo "no_relevant_changes=true" >> "$GITHUB_OUTPUT"
+            echo "PR #$pr_number touches nothing E2E covers:"
+            sed 's/^/  /' <<< "$files"
+          fi
+
       # A push event carries no PR, so the labels have to be fetched to honour
       # `skip-e2e` in cases 1 and 2.
       - name: Read labels for the pushed branch
@@ -99,16 +194,31 @@ jobs:
           LABEL_ADDED: ${{ github.event.label.name }}
           PUSHED_PR_LABELS: ${{ steps.pushed-pr.outputs.labels }}
           HAS_SKIP_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
+          MQ_ALREADY_PASSED: ${{ steps.queued-pr.outputs.already_passed }}
+          MQ_NO_RELEVANT_CHANGES: ${{ steps.queued-paths.outputs.no_relevant_changes }}
+          MQ_HEAD_SHA: ${{ steps.queued-pr.outputs.head_sha }}
         run: |
           # Case 3. The same list appears in the concurrency group above, next to
           # `skip-e2e`. Changing one without the other breaks quietly.
           OPT_IN_LABELS='e2e-tests run-all-tests'
 
           should_run=false
+          skip_reason=''
           case "$EVENT_NAME" in
             workflow_dispatch | schedule)
               # Cases 4 and 5, always.
               should_run=true
+              ;;
+            merge_group)
+              # Case 6. Run unless the two steps above found a reason not to.
+              # `skip-e2e` is deliberately not consulted here.
+              if [[ "$MQ_ALREADY_PASSED" == "true" ]]; then
+                skip_reason="E2E already passed on the PR head commit ($MQ_HEAD_SHA)."
+              elif [[ "$MQ_NO_RELEVANT_CHANGES" == "true" ]]; then
+                skip_reason='The PR changes nothing E2E covers.'
+              else
+                should_run=true
+              fi
               ;;
             push)
               # Cases 1 and 2. The branch filter has already narrowed this to
@@ -130,7 +240,15 @@ jobs:
               fi
               ;;
           esac
-          echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "should_run=$should_run"
+            echo "skip_reason=$skip_reason"
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ -n "$skip_reason" ]]; then
+            echo "Not running E2E: $skip_reason"
+          fi
 
   # Lint and type-check E2E code
   lint:
@@ -190,6 +308,65 @@ jobs:
     with:
       environment: ${{ inputs.environment || 'staging' }}
       debug: ${{ inputs.debug || false }}
+
+  # The one E2E check to read, and the one to require on `main`. On a merge queue
+  # entry it is green either because the suites just passed on the queue's branch
+  # or because `check-trigger` found a passing run on the PR head commit.
+  #
+  # On cases 1-5 it publishes that same passing run, which is what a later queue
+  # entry looks for. So it must not go green when nothing ran: a skipped job
+  # reports `skipped`, not `success`, and the lookup ignores it.
+  #
+  # A job left out of `needs` cannot block a merge, so add new suites here.
+  e2e-passed:
+    # Renaming this also means changing GATE_CHECK_NAME in `check-trigger`.
+    name: E2E tests passed
+    # Queue entries always report. Everything else reports only when it ran.
+    if: ${{ always() && (github.event_name == 'merge_group' || needs.check-trigger.outputs.should_run == 'true') }}
+    needs:
+      - check-trigger
+      - lint
+      - e2e-dev-chromium
+      - build-docker
+      - e2e-docker
+      - build-linux
+      - e2e-electron
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the jobs this waits on
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHECK_TRIGGER_RESULT: ${{ needs.check-trigger.result }}
+          SHOULD_RUN: ${{ needs.check-trigger.outputs.should_run }}
+          SKIP_REASON: ${{ needs.check-trigger.outputs.skip_reason }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          # The skip path needs `check-trigger` to have actually reached a
+          # decision. Without this, a crashed `check-trigger` leaves SHOULD_RUN
+          # empty and the gate would wave the merge through.
+          if [[ "$EVENT_NAME" == "merge_group" \
+             && "$CHECK_TRIGGER_RESULT" == "success" \
+             && "$SHOULD_RUN" != "true" ]]; then
+            echo "E2E did not need to run for this merge queue entry."
+            echo "${SKIP_REASON:-No reason recorded.}"
+            exit 0
+          fi
+
+          # Unlike the unit/integration gate, a skip is a failure here: every
+          # job below was meant to run, so a skip means the graph broke.
+          failing=$(jq -r '
+            to_entries[]
+            | select(.value.result != "success")
+            | "  \(.key): \(.value.result)"
+          ' <<< "$NEEDS_JSON")
+
+          if [ -n "$failing" ]; then
+            echo "These jobs did not pass:"
+            echo "$failing"
+            exit 1
+          fi
+
+          echo "Every E2E job passed."
 
   # Alert on any non-success nightly result (incl. 'cancelled' from a timeout).
   notify-slack:
