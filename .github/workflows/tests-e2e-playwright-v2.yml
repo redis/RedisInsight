@@ -95,6 +95,11 @@ jobs:
       # `gh-readonly-queue/<base>/pr-<number>-<sha>`, so the number comes from
       # there. Anything unexpected leaves both outputs empty, and the run goes
       # ahead: failing open here would merge untested code.
+      #
+      # This reads one PR, so the queue's maximum group size has to stay at 1.
+      # A batched group names only its newest PR in the ref, so a batch could
+      # skip E2E on the strength of a different PR's passing run. Raising the
+      # group size means reworking this step to cover every PR in the group.
       - name: Look for an E2E run on the queued PR's head commit
         id: queued-pr
         if: github.event_name == 'merge_group'
