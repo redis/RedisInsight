@@ -44,7 +44,11 @@ export const constructKeysToTree = (props: Props): any[] => {
 
     // Delimiters before the prefix threshold or inside the hash tag are not
     // split points, so the hash tag stays in a single tree node.
+    // The scan starts at the prefix threshold: a match rejected for starting
+    // inside the prefix must not consume an overlapping match that follows it.
+    // The `match.index >= pLength` guard below is kept as an explicit invariant.
     const regex = new RegExp(dPattern, 'g')
+    regex.lastIndex = pLength
     const parts: string[] = []
     let partStart = 0
     let match = regex.exec(name)

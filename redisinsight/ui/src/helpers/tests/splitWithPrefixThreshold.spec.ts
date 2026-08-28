@@ -66,4 +66,25 @@ describe('splitWithPrefixThreshold', () => {
       '}',
     ])
   })
+  // A rejected match must not consume an overlapping eligible one: `/aa/g`
+  // matches at index 0, which the prefix threshold rejects, and the real
+  // match at index 1 must still be found.
+  it('finds an overlapping delimiter match after the prefix threshold', () => {
+    expect(splitWithPrefixThreshold('aaa{x}:z', 'aa', 1)).toEqual([
+      'a',
+      '{x}:z',
+    ])
+  })
+
+  it('keeps prefix behaviour when the threshold lands on a delimiter', () => {
+    expect(splitWithPrefixThreshold('{a:b}:c:d', COLON, 5)).toEqual([
+      '{a:b}',
+      'c',
+      'd',
+    ])
+    expect(splitWithPrefixThreshold('{a:b}:c:d', COLON, 6)).toEqual([
+      '{a:b}:c',
+      'd',
+    ])
+  })
 })

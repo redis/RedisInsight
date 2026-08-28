@@ -232,4 +232,19 @@ describe('constructKeysToTree with hash tags', () => {
     expect(nodes[0].nameString).toBe('{tenant:x}:app')
     expect(nodes[0].children[0].isLeaf).toBe(true)
   })
+  it('finds an overlapping delimiter match after the prefix threshold', () => {
+    const nodes = buildTree(['aaa{x}:z'], 1, 'aa')
+
+    expect(nodes[0].nameString).toBe('a')
+    expect(nodes[0].isLeaf).toBeUndefined()
+    expect(nodes[0].children).toHaveLength(1)
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
+
+  it('keeps prefix behaviour when the threshold lands on a delimiter', () => {
+    const nodes = buildTree(['{a:b}:c:d'], 6)
+
+    expect(nodes[0].nameString).toBe('{a:b}:c')
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
 })
