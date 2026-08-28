@@ -1772,6 +1772,7 @@
   "settings.general.theme.option.light": "Светла тема",
   "settings.general.theme.option.system": "Същата като системната",
   "settings.general.theme.title": "Цветова тема",
+  "settings.general.updates.button.check": "Провери за актуализации сега",
   "settings.general.updates.label": "Изберете как да получавате нови версии:",
   "settings.general.updates.option.auto": "Изтегляй и инсталирай автоматично",
   "settings.general.updates.option.notify": "Питай ме преди да изтеглиш новата версия",

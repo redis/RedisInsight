@@ -1772,6 +1772,7 @@
   "settings.general.theme.option.light": "Light Theme",
   "settings.general.theme.option.system": "Match System",
   "settings.general.theme.title": "Color Theme",
+  "settings.general.updates.button.check": "Check for updates now",
   "settings.general.updates.label": "Specifies how Redis Insight handles new versions:",
   "settings.general.updates.option.auto": "Download and install automatically",
   "settings.general.updates.option.notify": "Ask me before downloading",
