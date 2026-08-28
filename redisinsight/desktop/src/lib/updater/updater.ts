@@ -17,6 +17,8 @@ export const updateDownloadState = {
   manuallyTriggered: false,
   downloadedInfo: null as UpdateDownloadedEvent | null,
   initiatingStrategy: null as AppUpdateStrategy | null,
+  isManualCheck: false,
+  lastAvailableVersion: null as string | null,
 }
 
 export const getUpdateStrategy = (): AppUpdateStrategy => {
@@ -93,6 +95,7 @@ export const checkForUpdate = async (url: string = '') => {
     }
   } finally {
     updateDownloadState.isDownloading = false
+    updateDownloadState.isManualCheck = false
     // eslint-disable-next-line @typescript-eslint/no-use-before-define -- mutual recursion with drainQueuedRecheck, both hoisted function declarations
     drainQueuedRecheck()
   }
@@ -141,6 +144,45 @@ export const startUpdateDownload = (version?: string) => {
     sendUpdateState({ status: AppUpdateStatus.Error })
     drainQueuedRecheck()
   })
+}
+
+export const triggerManualUpdateCheck = async (
+  url: string = process.env.RI_MANUAL_UPGRADES_LINK ||
+    process.env.RI_UPGRADES_LINK ||
+    '',
+): Promise<AppUpdateState> => {
+  if (
+    !url ||
+    process.env.RI_DISABLE_AUTO_UPGRADE === 'true' ||
+    process.mas ||
+    updateDownloadState.isDownloading
+  ) {
+    return { status: AppUpdateStatus.Error }
+  }
+
+  updateDownloadState.isManualCheck = true
+
+  try {
+    await checkForUpdate(url)
+  } catch (e) {
+    log.error(wrapErrorMessageSensitiveData(e as Error))
+    sendUpdateState({ status: AppUpdateStatus.Error })
+    return { status: AppUpdateStatus.Error }
+  }
+
+  if (!electronStore?.get(ElectronStorageItem.isUpdateAvailable)) {
+    return { status: AppUpdateStatus.NotAvailable }
+  }
+
+  electronStore?.delete(ElectronStorageItem.updateSkippedVersion)
+
+  const state: AppUpdateState = {
+    status: AppUpdateStatus.Available,
+    version: updateDownloadState.lastAvailableVersion ?? undefined,
+    manual: true,
+  }
+  sendUpdateState(state)
+  return state
 }
 
 export const initAutoUpdateChecks = (url = '', interval = 84 * 3600 * 1000) => {

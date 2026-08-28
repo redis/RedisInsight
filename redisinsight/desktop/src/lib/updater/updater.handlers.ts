@@ -31,9 +31,10 @@ export const initAutoUpdaterHandlers = () => {
   })
   autoUpdater.on('update-available', (info) => {
     log.info('Update available.')
+    updateDownloadState.lastAvailableVersion = info.version
     electronStore?.set(ElectronStorageItem.isUpdateAvailable, true)
 
-    if (autoUpdater.autoDownload) {
+    if (autoUpdater.autoDownload || updateDownloadState.isManualCheck) {
       clearPendingAvailable()
       return
     }
