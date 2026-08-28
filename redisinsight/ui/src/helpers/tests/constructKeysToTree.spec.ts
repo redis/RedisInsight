@@ -3,6 +3,7 @@ import {
   delimiterMock,
 } from './constructKeysToTreeMockResult'
 import { constructKeysToTree } from '../constructKeysToTree'
+import { splitWithPrefixThreshold } from '../splitWithPrefixThreshold'
 import { KeyTypes } from 'uiSrc/constants'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 
@@ -133,5 +134,102 @@ describe('constructKeysToTree with prefixLength', () => {
     expect(nodes).toHaveLength(1)
     expect(nodes[0].isLeaf).toBe(true)
     expect(nodes[0].nameString).toBe('abcdef')
+  })
+})
+
+// These exercise the copy of splitWithPrefixThreshold that is inlined into
+// constructKeysToTree for the Web Worker, not the exported helper.
+describe('constructKeysToTree with hash tags', () => {
+  const buildTree = (names: string[], prefixLength = 0, delimiter = ':') =>
+    removeIds(
+      constructKeysToTree({
+        items: names.map((nameString) => ({
+          nameString,
+          type: KeyTypes.Hash,
+          ttl: -1,
+          size: 0,
+        })) as unknown as IKeyPropTypes[],
+        delimiterPattern: delimiter,
+        delimiters: [delimiter],
+        prefixLength,
+      }),
+    )
+
+  it('keeps keys with different hash tags in separate folders', () => {
+    const nodes = buildTree([
+      '{portal2:co}:something',
+      '{portal2:tb}:something',
+    ])
+
+    expect(nodes.map((node: any) => node.nameString)).toEqual([
+      '{portal2:co}',
+      '{portal2:tb}',
+    ])
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
+
+  it('groups keys sharing a hash tag under one folder', () => {
+    const nodes = buildTree(['{portal2:co}:something', '{portal2:co}:other'])
+
+    expect(nodes).toHaveLength(1)
+    expect(nodes[0].nameString).toBe('{portal2:co}')
+    expect(nodes[0].keyCount).toBe(2)
+    // leaf nameString is the full key name; VirtualTree derives the visible
+    // label from it with splitWithPrefixThreshold(...).pop()
+    expect(
+      nodes[0].children.map((child: any) => child.nameString).sort(),
+    ).toEqual(['{portal2:co}:other', '{portal2:co}:something'])
+    expect(
+      nodes[0].children
+        .map((child: any) =>
+          splitWithPrefixThreshold(child.nameString, ':', 0).pop(),
+        )
+        .sort(),
+    ).toEqual(['other', 'something'])
+  })
+
+  it('leaves keys without a usable hash tag untouched', () => {
+    expect(buildTree(['{user}:1:2'])[0].nameString).toBe('{user}')
+    expect(buildTree(['foo{}:bar:baz'])[0].nameString).toBe('foo{}')
+    expect(buildTree(['foo{bar:baz'])[0].nameString).toBe('foo{bar')
+    expect(buildTree(['foo}bar{baz:qux'])[0].nameString).toBe('foo}bar{baz')
+    expect(buildTree(['user:1:name'])[0].nameString).toBe('user')
+  })
+
+  it('treats only the first brace pair as a hash tag', () => {
+    const nodes = buildTree(['a{b:c}:d:{e:f}'])
+
+    expect(nodes[0].nameString).toBe('a{b:c}')
+    expect(nodes[0].children[0].nameString).toBe('d')
+    expect(nodes[0].children[0].children[0].nameString).toBe('{e')
+  })
+
+  it('ignores every configured delimiter inside a hash tag', () => {
+    const nodes = removeIds(
+      constructKeysToTree({
+        items: [
+          { nameString: '{a:b_c}:d_e', type: KeyTypes.Hash, ttl: -1, size: 0 },
+        ] as unknown as IKeyPropTypes[],
+        delimiterPattern: ':|_',
+        delimiters: [':', '_'],
+      }),
+    )
+
+    expect(nodes[0].nameString).toBe('{a:b_c}')
+    expect(nodes[0].children[0].nameString).toBe('d')
+  })
+
+  it('keeps the hash tag together when a prefix length is set', () => {
+    const nodes = buildTree(['{portal2:co}:something'], 5)
+
+    expect(nodes[0].nameString).toBe('{portal2:co}')
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
+
+  it('lets a prefix length extend the first folder past the hash tag', () => {
+    const nodes = buildTree(['{tenant:x}:app:resource'], 11)
+
+    expect(nodes[0].nameString).toBe('{tenant:x}:app')
+    expect(nodes[0].children[0].isLeaf).toBe(true)
   })
 })
