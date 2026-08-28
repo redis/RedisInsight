@@ -162,7 +162,10 @@ export const triggerManualUpdateCheck = async (
     process.mas ||
     updateDownloadState.isDownloading
   ) {
-    const state: AppUpdateState = { status: AppUpdateStatus.Error }
+    const state: AppUpdateState = {
+      status: AppUpdateStatus.Error,
+      manual: true,
+    }
     sendUpdateState(state)
     return state
   }
@@ -173,8 +176,12 @@ export const triggerManualUpdateCheck = async (
     await checkForUpdate(url)
   } catch (e) {
     log.error(wrapErrorMessageSensitiveData(e as Error))
-    sendUpdateState({ status: AppUpdateStatus.Error })
-    return { status: AppUpdateStatus.Error }
+    const state: AppUpdateState = {
+      status: AppUpdateStatus.Error,
+      manual: true,
+    }
+    sendUpdateState(state)
+    return state
   }
 
   if (!electronStore?.get(ElectronStorageItem.isUpdateAvailable)) {

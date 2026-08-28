@@ -466,6 +466,28 @@ describe('ConfigElectron', () => {
       expect(addAction?.payload.variation).toBe('1.2.3')
     })
 
+    it('should not re-show a still-open found toast even for a manual check', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      store.clearActions()
+
+      // The toast for 1.2.3 is still open and unresolved; re-announcing it
+      // manually must not touch it, or its live buttons would be orphaned.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+        manual: true,
+      })
+
+      expect(store.getActions()).toHaveLength(0)
+    })
+
     it('should not emit close telemetry after "Update" was clicked', () => {
       triggerUpdateState({
         status: AppUpdateStatus.Available,
@@ -490,6 +512,32 @@ describe('ConfigElectron', () => {
       expect(store.getActions()).toContainEqual(
         removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
       )
+      const messageAction = findMessageNotification(store)
+      expect(messageAction?.payload.variant).toBe('danger')
+    })
+
+    it('should not touch the found toast when a manual check fails', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      store.clearActions()
+      jest.clearAllMocks()
+
+      updateStateAction(null, { status: AppUpdateStatus.Error, manual: true })
+
+      expect(store.getActions()).not.toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+      )
+      expect(
+        store
+          .getActions()
+          .filter((action) => action.type === addInfiniteNotification.type),
+      ).toHaveLength(0)
       const messageAction = findMessageNotification(store)
       expect(messageAction?.payload.variant).toBe('danger')
     })

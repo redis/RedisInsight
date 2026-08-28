@@ -83,6 +83,7 @@ const UpdateSettings = () => {
         options={options}
         value={strategy}
         onChange={onChange}
+        aria-label={t('settings.general.updates.label')}
         data-testid="select-update-strategy"
       />
       <Spacer size="xl" />

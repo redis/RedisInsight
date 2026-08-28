@@ -9,6 +9,7 @@ import {
   checkForUpdate,
   triggerManualUpdateCheck,
   getTray,
+  getTrayInstance,
   MenuBuilder,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
@@ -63,7 +64,9 @@ export const initIPCHandlers = () => {
 
       electronStore?.set(ElectronStorageItem.updateStrategy, strategy)
 
-      getTray()?.buildContextMenu()
+      if (!getTrayInstance()?.isDestroyed()) {
+        getTray()?.buildContextMenu()
+      }
       const focusedWindow = BrowserWindow.getFocusedWindow()
       if (focusedWindow) {
         new MenuBuilder(focusedWindow).buildMenu()
