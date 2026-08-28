@@ -247,4 +247,34 @@ describe('constructKeysToTree with hash tags', () => {
     expect(nodes[0].nameString).toBe('{a:b}:c')
     expect(nodes[0].children[0].isLeaf).toBe(true)
   })
+
+  it('finds an overlapping delimiter match after a rejected one', () => {
+    const nodes = removeIds(
+      constructKeysToTree({
+        items: [
+          { nameString: '{aa}:x', type: KeyTypes.Hash, ttl: -1, size: 0 },
+        ] as unknown as IKeyPropTypes[],
+        delimiterPattern: 'aa|a}',
+        delimiters: ['aa', 'a}'],
+      }),
+    )
+
+    expect(nodes[0].nameString).toBe('{a')
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
+
+  it('keeps overlapping matches rejected while they stay inside the hash tag', () => {
+    const nodes = removeIds(
+      constructKeysToTree({
+        items: [
+          { nameString: '{aab}aay', type: KeyTypes.Hash, ttl: -1, size: 0 },
+        ] as unknown as IKeyPropTypes[],
+        delimiterPattern: 'aa|ab',
+        delimiters: ['aa', 'ab'],
+      }),
+    )
+
+    expect(nodes[0].nameString).toBe('{aab}')
+    expect(nodes[0].children[0].isLeaf).toBe(true)
+  })
 })

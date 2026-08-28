@@ -65,6 +65,10 @@ export const constructKeysToTree = (props: Props): any[] => {
       ) {
         parts.push(name.slice(partStart, match.index))
         partStart = match.index + length
+      } else {
+        // A rejected match must not consume the characters it spans: an
+        // overlapping match one character later can still be a split point.
+        regex.lastIndex = match.index + 1
       }
 
       match = regex.exec(name)

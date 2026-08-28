@@ -87,4 +87,20 @@ describe('splitWithPrefixThreshold', () => {
       'd',
     ])
   })
+
+  // `aa` matches at index 1 and is rejected for sitting inside the hash tag;
+  // the eligible `a}` at index 2 straddles the closing brace and must still
+  // be found, so a rejected match may not consume what it spans.
+  it('finds an overlapping delimiter match after a rejected one', () => {
+    expect(splitWithPrefixThreshold('{aa}:x', 'aa|a}', 0)).toEqual(['{a', ':x'])
+  })
+
+  // `aa` at index 1 and the overlapping `ab` at index 2 both sit inside the
+  // hash tag and stay rejected; only `aa` at index 5 is a split point.
+  it('keeps overlapping matches rejected while they stay inside the hash tag', () => {
+    expect(splitWithPrefixThreshold('{aab}aay', 'aa|ab', 0)).toEqual([
+      '{aab}',
+      'y',
+    ])
+  })
 })
