@@ -1,4 +1,6 @@
 import {
+  AppUpdateState,
+  AppUpdateStatus,
   AppUpdateStrategy,
   ElectronStorageItem,
   IpcInvokeEvent,
@@ -26,3 +28,8 @@ export const ipcAppUpdateDownload = async (version: string) => {
 export const ipcSkipUpdateVersion = async (version: string) => {
   await window.app?.ipc?.invoke(IpcInvokeEvent.skipUpdateVersion, version)
 }
+
+export const ipcCheckForUpdate = async (): Promise<AppUpdateState> =>
+  (await window.app?.ipc?.invoke(IpcInvokeEvent.checkForUpdate)) ?? {
+    status: AppUpdateStatus.Error,
+  }

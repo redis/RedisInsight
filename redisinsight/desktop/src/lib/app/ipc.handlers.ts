@@ -7,6 +7,7 @@ import {
   getUpdateStrategy,
   startUpdateDownload,
   checkForUpdate,
+  triggerManualUpdateCheck,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import {
@@ -76,5 +77,9 @@ export const initIPCHandlers = () => {
 
   ipcMain.handle(IpcInvokeEvent.appUpdateDownload, (_event, version: string) =>
     startUpdateDownload(version),
+  )
+
+  ipcMain.handle(IpcInvokeEvent.checkForUpdate, () =>
+    triggerManualUpdateCheck(),
   )
 }

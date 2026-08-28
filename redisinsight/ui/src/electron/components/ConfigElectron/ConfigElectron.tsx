@@ -200,10 +200,13 @@ const ConfigElectron = () => {
     )
   }
 
-  const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
+  const updateStateAction = (
+    _e: any,
+    { status, version, manual }: AppUpdateState,
+  ) => {
     switch (status) {
       case AppUpdateStatus.Available:
-        if (foundGuard.shouldSkip(version)) {
+        if (!manual && foundGuard.shouldSkip(version)) {
           return
         }
         restartGuard.resolveCurrent()
