@@ -1,4 +1,4 @@
-import { app, ipcMain, nativeTheme } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import log from 'electron-log'
 import {
   electronStore,
@@ -7,6 +7,10 @@ import {
   getUpdateStrategy,
   startUpdateDownload,
   checkForUpdate,
+  triggerManualUpdateCheck,
+  getTray,
+  getTrayInstance,
+  MenuBuilder,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import {
@@ -60,6 +64,14 @@ export const initIPCHandlers = () => {
 
       electronStore?.set(ElectronStorageItem.updateStrategy, strategy)
 
+      if (!getTrayInstance()?.isDestroyed()) {
+        getTray()?.buildContextMenu()
+      }
+      const focusedWindow = BrowserWindow.getFocusedWindow()
+      if (focusedWindow) {
+        new MenuBuilder(focusedWindow).buildMenu()
+      }
+
       checkForUpdate(
         process.env.RI_MANUAL_UPGRADES_LINK || process.env.RI_UPGRADES_LINK,
       ).catch((e) => log.error(wrapErrorMessageSensitiveData(e)))
@@ -76,5 +88,9 @@ export const initIPCHandlers = () => {
 
   ipcMain.handle(IpcInvokeEvent.appUpdateDownload, (_event, version: string) =>
     startUpdateDownload(version),
+  )
+
+  ipcMain.handle(IpcInvokeEvent.checkForUpdate, () =>
+    triggerManualUpdateCheck(),
   )
 }

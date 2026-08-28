@@ -42,9 +42,9 @@ const createToastGuard = () => {
     get lastVersion() {
       return lastVersion
     },
-    shouldSkip: (version?: string) =>
+    shouldSkip: (version?: string, manual?: boolean) =>
       !!version &&
-      (version === dismissedVersion ||
+      ((version === dismissedVersion && !manual) ||
         (version === lastVersion && !resolvedRef.current)),
     resolveCurrent: () => {
       resolvedRef.current = true
@@ -200,10 +200,13 @@ const ConfigElectron = () => {
     )
   }
 
-  const updateStateAction = (_e: any, { status, version }: AppUpdateState) => {
+  const updateStateAction = (
+    _e: any,
+    { status, version, manual }: AppUpdateState,
+  ) => {
     switch (status) {
       case AppUpdateStatus.Available:
-        if (foundGuard.shouldSkip(version)) {
+        if (foundGuard.shouldSkip(version, manual)) {
           return
         }
         restartGuard.resolveCurrent()
@@ -212,8 +215,15 @@ const ConfigElectron = () => {
         )
         showUpdateFoundToast(version ?? '')
         break
+      case AppUpdateStatus.NotAvailable:
+        dispatch(
+          addMessageNotification({
+            title: t('notification.success.appUpToDate.title'),
+            message: t('notification.success.appUpToDate.message'),
+          }),
+        )
+        break
       case AppUpdateStatus.Error: {
-        dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
         dispatch(
           addMessageNotification({
             title: t('notification.error.appUpdateFailed.title'),
@@ -221,9 +231,14 @@ const ConfigElectron = () => {
             variant: 'danger',
           }),
         )
-        const lastFoundVersion = foundGuard.lastVersion
-        if (lastFoundVersion !== null) {
-          showUpdateFoundToast(lastFoundVersion)
+        if (!manual) {
+          dispatch(
+            removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+          )
+          const lastFoundVersion = foundGuard.lastVersion
+          if (lastFoundVersion !== null) {
+            showUpdateFoundToast(lastFoundVersion)
+          }
         }
         break
       }

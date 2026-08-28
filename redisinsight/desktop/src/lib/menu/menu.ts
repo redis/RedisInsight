@@ -13,6 +13,8 @@ import {
   WindowType,
   windowFactory,
   electronStore,
+  shouldShowManualUpdateCheck,
+  triggerManualUpdateCheck,
 } from 'desktopSrc/lib'
 import { ElectronStorageItem } from 'uiSrc/electron/constants'
 
@@ -66,6 +68,16 @@ export class MenuBuilder {
           label: `About ${app.name}`,
           selector: 'orderFrontStandardAboutPanel:',
         },
+        ...(shouldShowManualUpdateCheck()
+          ? [
+              {
+                label: 'Check for Updates…',
+                click: () => {
+                  triggerManualUpdateCheck()
+                },
+              },
+            ]
+          : []),
         { type: 'separator' },
         {
           label: `Hide ${app.name}`,
@@ -343,6 +355,16 @@ export class MenuBuilder {
               )
             },
           },
+          ...(shouldShowManualUpdateCheck()
+            ? [
+                {
+                  label: 'Check for Updates…',
+                  click: () => {
+                    triggerManualUpdateCheck()
+                  },
+                },
+              ]
+            : []),
           { type: 'separator' },
           {
             label: `About ${app.name}`,

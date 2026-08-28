@@ -9,6 +9,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { AppUpdateStatus, AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
+import i18n from 'uiSrc/i18n'
 import {
   addInfiniteNotification,
   addMessageNotification,
@@ -431,6 +432,62 @@ describe('ConfigElectron', () => {
       expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
     })
 
+    it('should resurface a dismissed version when the check is manual', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+      foundAction?.payload.onClose?.()
+
+      store.clearActions()
+      jest.clearAllMocks()
+
+      // An unattended periodic recheck for the same version stays hidden...
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      expect(store.getActions()).toHaveLength(0)
+
+      // ...but a manual check re-surfaces it even though it was dismissed.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+        manual: true,
+      })
+
+      const addAction = findInfiniteNotification(store)
+      expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
+      expect(addAction?.payload.variation).toBe('1.2.3')
+    })
+
+    it('should not re-show a still-open found toast even for a manual check', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      store.clearActions()
+
+      // The toast for 1.2.3 is still open and unresolved; re-announcing it
+      // manually must not touch it, or its live buttons would be orphaned.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+        manual: true,
+      })
+
+      expect(store.getActions()).toHaveLength(0)
+    })
+
     it('should not emit close telemetry after "Update" was clicked', () => {
       triggerUpdateState({
         status: AppUpdateStatus.Available,
@@ -457,6 +514,41 @@ describe('ConfigElectron', () => {
       )
       const messageAction = findMessageNotification(store)
       expect(messageAction?.payload.variant).toBe('danger')
+    })
+
+    it('should not touch the found toast when a manual check fails', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      store.clearActions()
+      jest.clearAllMocks()
+
+      updateStateAction(null, { status: AppUpdateStatus.Error, manual: true })
+
+      expect(store.getActions()).not.toContainEqual(
+        removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound),
+      )
+      expect(
+        store
+          .getActions()
+          .filter((action) => action.type === addInfiniteNotification.type),
+      ).toHaveLength(0)
+      const messageAction = findMessageNotification(store)
+      expect(messageAction?.payload.variant).toBe('danger')
+    })
+
+    it('should show an up-to-date toast when a manual check finds nothing new', () => {
+      triggerUpdateState({ status: AppUpdateStatus.NotAvailable })
+
+      const messageAction = findMessageNotification(store)
+      expect(messageAction?.payload.title).toBe(
+        i18n.t('notification.success.appUpToDate.title'),
+      )
     })
 
     it('should restore a working retry prompt after a download failure', () => {

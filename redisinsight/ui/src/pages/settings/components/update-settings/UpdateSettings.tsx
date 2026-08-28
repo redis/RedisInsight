@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { AppUpdateStrategy } from 'uiSrc/electron/constants'
 import {
+  ipcCheckForUpdate,
   ipcGetUpdateStrategy,
   ipcSetUpdateStrategy,
 } from 'uiSrc/electron/utils'
@@ -12,12 +15,14 @@ import {
   RiSelectOption,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RedisUIButton, TextButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text'
 import { useTranslation } from 'uiSrc/i18n'
 
 const UpdateSettings = () => {
   const { t } = useTranslation()
   const [strategy, setStrategy] = useState<AppUpdateStrategy | null>(null)
+  const [isChecking, setIsChecking] = useState(false)
 
   useEffect(() => {
     ipcGetUpdateStrategy().then(setStrategy)
@@ -43,6 +48,12 @@ const UpdateSettings = () => {
     })
   }
 
+  const onCheckForUpdates = async () => {
+    setIsChecking(true)
+    await ipcCheckForUpdate()
+    setIsChecking(false)
+  }
+
   if (!strategy) {
     return null
   }
@@ -51,16 +62,30 @@ const UpdateSettings = () => {
     <form>
       <Title size="XS">{t('settings.general.updates.title')}</Title>
       <Spacer size="m" />
-      <FormField label={t('settings.general.updates.label')}>
-        <Spacer size="m" />
-        <RiSelect
-          valueRender={defaultValueRender}
-          options={options}
-          value={strategy}
-          onChange={onChange}
-          data-testid="select-update-strategy"
-        />
-      </FormField>
+      <Row justify="between" align="center">
+        <FormField.Label label={t('settings.general.updates.label')} />
+        {strategy === AppUpdateStrategy.notify && (
+          <TextButton
+            variant="primary-inline"
+            size="small"
+            onClick={onCheckForUpdates}
+            disabled={isChecking}
+            data-testid="btn-check-for-updates"
+          >
+            <RedisUIButton.Icon icon={RefreshIcon} />
+            {t('settings.general.updates.button.check')}
+          </TextButton>
+        )}
+      </Row>
+      <Spacer size="m" />
+      <RiSelect
+        valueRender={defaultValueRender}
+        options={options}
+        value={strategy}
+        onChange={onChange}
+        aria-label={t('settings.general.updates.label')}
+        data-testid="select-update-strategy"
+      />
       <Spacer size="xl" />
     </form>
   )

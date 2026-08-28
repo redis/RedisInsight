@@ -12,6 +12,7 @@ enum IpcInvokeEvent {
   setUpdateStrategy = 'app:update:strategy:set',
   appUpdateDownload = 'app:update:download',
   skipUpdateVersion = 'app:update:skip',
+  checkForUpdate = 'app:update:check',
 }
 
 enum IpcOnEvent {
