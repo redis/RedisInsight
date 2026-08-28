@@ -28,6 +28,11 @@ export const getUpdateStrategy = (): AppUpdateStrategy => {
     : AppUpdateStrategy.auto
 }
 
+export const shouldShowManualUpdateCheck = (): boolean =>
+  process.env.RI_DISABLE_AUTO_UPGRADE !== 'true' &&
+  !process.mas &&
+  getUpdateStrategy() === AppUpdateStrategy.notify
+
 export const sendToRenderer = (
   channel: IpcOnEvent,
   payload: any,
@@ -157,7 +162,9 @@ export const triggerManualUpdateCheck = async (
     process.mas ||
     updateDownloadState.isDownloading
   ) {
-    return { status: AppUpdateStatus.Error }
+    const state: AppUpdateState = { status: AppUpdateStatus.Error }
+    sendUpdateState(state)
+    return state
   }
 
   updateDownloadState.isManualCheck = true

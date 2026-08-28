@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Button, TextButton } from '@redis-ui/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
@@ -16,6 +15,7 @@ import {
   RiSelectOption,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RedisUIButton, TextButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text'
 import { useTranslation } from 'uiSrc/i18n'
 
@@ -72,7 +72,7 @@ const UpdateSettings = () => {
             disabled={isChecking}
             data-testid="btn-check-for-updates"
           >
-            <Button.Icon icon={RefreshIcon} />
+            <RedisUIButton.Icon icon={RefreshIcon} />
             {t('settings.general.updates.button.check')}
           </TextButton>
         )}

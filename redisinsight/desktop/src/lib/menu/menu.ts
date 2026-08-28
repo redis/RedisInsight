@@ -13,13 +13,10 @@ import {
   WindowType,
   windowFactory,
   electronStore,
-  getUpdateStrategy,
+  shouldShowManualUpdateCheck,
   triggerManualUpdateCheck,
 } from 'desktopSrc/lib'
-import {
-  AppUpdateStrategy,
-  ElectronStorageItem,
-} from 'uiSrc/electron/constants'
+import { ElectronStorageItem } from 'uiSrc/electron/constants'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -71,7 +68,7 @@ export class MenuBuilder {
           label: `About ${app.name}`,
           selector: 'orderFrontStandardAboutPanel:',
         },
-        ...(getUpdateStrategy() === AppUpdateStrategy.notify
+        ...(shouldShowManualUpdateCheck()
           ? [
               {
                 label: 'Check for Updates…',
@@ -358,7 +355,7 @@ export class MenuBuilder {
               )
             },
           },
-          ...(getUpdateStrategy() === AppUpdateStrategy.notify
+          ...(shouldShowManualUpdateCheck()
             ? [
                 {
                   label: 'Check for Updates…',
