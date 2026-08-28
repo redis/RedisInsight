@@ -9,6 +9,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { AppUpdateStatus, AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
+import i18n from 'uiSrc/i18n'
 import {
   addInfiniteNotification,
   addMessageNotification,
@@ -23,13 +24,15 @@ const findInfiniteNotification = (store: typeof mockedStore) =>
   store
     .getActions()
     .find((action) => action.type === addInfiniteNotification.type) as
-    { payload: InfiniteMessage } | undefined
+    | { payload: InfiniteMessage }
+    | undefined
 
 const findMessageNotification = (store: typeof mockedStore) =>
   store
     .getActions()
     .find((action) => action.type === addMessageNotification.type) as
-    { payload: IMessage } | undefined
+    | { payload: IMessage }
+    | undefined
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
@@ -431,6 +434,40 @@ describe('ConfigElectron', () => {
       expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
     })
 
+    it('should resurface a dismissed version when the check is manual', () => {
+      render(<ConfigElectron />, { store })
+      const updateStateAction = (window.app.updateState as jest.Mock).mock
+        .calls[0][0]
+
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      const foundAction = findInfiniteNotification(store)
+      foundAction?.payload.onClose?.()
+
+      store.clearActions()
+      jest.clearAllMocks()
+
+      // An unattended periodic recheck for the same version stays hidden...
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+      })
+      expect(store.getActions()).toHaveLength(0)
+
+      // ...but a manual check re-surfaces it even though it was dismissed.
+      updateStateAction(null, {
+        status: AppUpdateStatus.Available,
+        version: '1.2.3',
+        manual: true,
+      })
+
+      const addAction = findInfiniteNotification(store)
+      expect(addAction?.payload.id).toBe(InfiniteMessagesIds.appUpdateFound)
+      expect(addAction?.payload.variation).toBe('1.2.3')
+    })
+
     it('should not emit close telemetry after "Update" was clicked', () => {
       triggerUpdateState({
         status: AppUpdateStatus.Available,
@@ -457,6 +494,15 @@ describe('ConfigElectron', () => {
       )
       const messageAction = findMessageNotification(store)
       expect(messageAction?.payload.variant).toBe('danger')
+    })
+
+    it('should show an up-to-date toast when a manual check finds nothing new', () => {
+      triggerUpdateState({ status: AppUpdateStatus.NotAvailable })
+
+      const messageAction = findMessageNotification(store)
+      expect(messageAction?.payload.title).toBe(
+        i18n.t('notification.success.appUpToDate.title'),
+      )
     })
 
     it('should restore a working retry prompt after a download failure', () => {
