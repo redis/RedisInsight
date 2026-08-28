@@ -7,8 +7,13 @@ import {
   MenuItemConstructorOptions,
 } from 'electron'
 import path from 'path'
-import { getWindows } from 'desktopSrc/lib'
+import {
+  getWindows,
+  getUpdateStrategy,
+  triggerManualUpdateCheck,
+} from 'desktopSrc/lib'
 import { showOrCreateWindow } from 'desktopSrc/utils'
+import { AppUpdateStrategy } from 'uiSrc/electron/constants'
 // eslint-disable-next-line import/no-cycle
 import { setToQuiting } from './trayManager'
 
@@ -82,6 +87,16 @@ export class TrayBuilder {
           )
         },
       },
+      ...(getUpdateStrategy() === AppUpdateStrategy.notify
+        ? [
+            {
+              label: 'Check for Updates…',
+              click: () => {
+                triggerManualUpdateCheck()
+              },
+            },
+          ]
+        : []),
       { type: 'separator' },
       {
         label: 'Quit',
