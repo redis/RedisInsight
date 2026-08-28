@@ -171,7 +171,9 @@ export const triggerManualUpdateCheck = async (
   }
 
   if (!electronStore?.get(ElectronStorageItem.isUpdateAvailable)) {
-    return { status: AppUpdateStatus.NotAvailable }
+    const state: AppUpdateState = { status: AppUpdateStatus.NotAvailable }
+    sendUpdateState(state)
+    return state
   }
 
   electronStore?.delete(ElectronStorageItem.updateSkippedVersion)

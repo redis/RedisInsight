@@ -1419,6 +1419,8 @@
   "notification.success.addedKey.title": "Key has been added",
   "notification.success.addedRdiInstance.message": "<bold>{{name}}</bold> has been added to RedisInsight.",
   "notification.success.addedRdiInstance.title": "Instance has been added",
+  "notification.success.appUpToDate.message": "Redis Insight is already running the latest version.",
+  "notification.success.appUpToDate.title": "You're up to date",
   "notification.success.azureAuthSuccess.message": "Signed in as <bold>{{username}}</bold>",
   "notification.success.azureAuthSuccess.title": "Azure authentication successful",
   "notification.success.createIndex.message": "Open the list of indexes to see it.",

@@ -215,6 +215,14 @@ const ConfigElectron = () => {
         )
         showUpdateFoundToast(version ?? '')
         break
+      case AppUpdateStatus.NotAvailable:
+        dispatch(
+          addMessageNotification({
+            title: t('notification.success.appUpToDate.title'),
+            message: t('notification.success.appUpToDate.message'),
+          }),
+        )
+        break
       case AppUpdateStatus.Error: {
         dispatch(removeInfiniteNotification(InfiniteMessagesIds.appUpdateFound))
         dispatch(

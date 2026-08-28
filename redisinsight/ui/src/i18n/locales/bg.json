@@ -1419,6 +1419,8 @@
   "notification.success.addedKey.title": "Ключът беше добавен",
   "notification.success.addedRdiInstance.message": "<bold>{{name}}</bold> беше добавена към RedisInsight.",
   "notification.success.addedRdiInstance.title": "Инстанцията беше добавена",
+  "notification.success.appUpToDate.message": "Вече използвате последната версия на Redis Insight.",
+  "notification.success.appUpToDate.title": "Всичко е точно!",
   "notification.success.azureAuthSuccess.message": "Влязохте като <bold>{{username}}</bold>",
   "notification.success.azureAuthSuccess.title": "Успешно удостоверяване в Azure",
   "notification.success.createIndex.message": "Отворете списъка с индекси, за да го видите.",
