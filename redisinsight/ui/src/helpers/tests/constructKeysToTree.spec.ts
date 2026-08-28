@@ -137,8 +137,6 @@ describe('constructKeysToTree with prefixLength', () => {
   })
 })
 
-// These exercise the copy of splitWithPrefixThreshold that is inlined into
-// constructKeysToTree for the Web Worker, not the exported helper.
 describe('constructKeysToTree with hash tags', () => {
   const buildTree = (names: string[], prefixLength = 0, delimiter = ':') =>
     removeIds(
@@ -174,8 +172,6 @@ describe('constructKeysToTree with hash tags', () => {
     expect(nodes).toHaveLength(1)
     expect(nodes[0].nameString).toBe('{portal2:co}')
     expect(nodes[0].keyCount).toBe(2)
-    // leaf nameString is the full key name; VirtualTree derives the visible
-    // label from it with splitWithPrefixThreshold(...).pop()
     expect(
       nodes[0].children.map((child: any) => child.nameString).sort(),
     ).toEqual(['{portal2:co}:other', '{portal2:co}:something'])

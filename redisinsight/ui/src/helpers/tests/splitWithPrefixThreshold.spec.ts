@@ -4,23 +4,14 @@ const COLON = ':'
 const COLON_OR_UNDERSCORE = ':|_'
 
 const hashTagTests: [string, string, string[]][] = [
-  // a hash tag containing a delimiter stays in one part
   ['{portal2:co}:something', COLON, ['{portal2:co}', 'something']],
-  // a hash tag with no delimiter inside it behaves as before
   ['{user}:1:2', COLON, ['{user}', '1', '2']],
-  // only the first `{`...`}` pair is a hash tag
   ['a{b:c}:d:{e:f}', COLON, ['a{b:c}', 'd', '{e', 'f}']],
-  // an empty `{}` is not a hash tag
   ['foo{}:bar:baz', COLON, ['foo{}', 'bar', 'baz']],
-  // `}` closes the first `{` even when it leaves the tag empty
   ['foo{}{bar:baz}:x', COLON, ['foo{}{bar', 'baz}', 'x']],
-  // no closing brace
   ['foo{bar:baz', COLON, ['foo{bar', 'baz']],
-  // the only `}` comes before the first `{`
   ['foo}bar{baz:qux', COLON, ['foo}bar{baz', 'qux']],
-  // no braces at all
   ['user:1:name', COLON, ['user', '1', 'name']],
-  // every configured delimiter is ignored inside the hash tag
   ['{a:b_c}:d_e', COLON_OR_UNDERSCORE, ['{a:b_c}', 'd', 'e']],
 ]
 
@@ -66,9 +57,6 @@ describe('splitWithPrefixThreshold', () => {
       '}',
     ])
   })
-  // A rejected match must not consume an overlapping eligible one: `/aa/g`
-  // matches at index 0, which the prefix threshold rejects, and the real
-  // match at index 1 must still be found.
   it('finds an overlapping delimiter match after the prefix threshold', () => {
     expect(splitWithPrefixThreshold('aaa{x}:z', 'aa', 1)).toEqual([
       'a',
@@ -88,15 +76,10 @@ describe('splitWithPrefixThreshold', () => {
     ])
   })
 
-  // `aa` matches at index 1 and is rejected for sitting inside the hash tag;
-  // the eligible `a}` at index 2 straddles the closing brace and must still
-  // be found, so a rejected match may not consume what it spans.
   it('finds an overlapping delimiter match after a rejected one', () => {
     expect(splitWithPrefixThreshold('{aa}:x', 'aa|a}', 0)).toEqual(['{a', ':x'])
   })
 
-  // `aa` at index 1 and the overlapping `ab` at index 2 both sit inside the
-  // hash tag and stay rejected; only `aa` at index 5 is a split point.
   it('keeps overlapping matches rejected while they stay inside the hash tag', () => {
     expect(splitWithPrefixThreshold('{aab}aay', 'aa|ab', 0)).toEqual([
       '{aab}',

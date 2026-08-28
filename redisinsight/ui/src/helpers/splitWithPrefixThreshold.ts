@@ -1,20 +1,6 @@
 // NOTE: constructKeysToTree keeps its own inline copy of this function —
 // it is stringified into a Web Worker Blob by useDisposableWebworker, so it
 // cannot reference this module. Keep both implementations in sync.
-//
-// Splits a key name into the parts that become tree levels.
-//
-// Two things stop a delimiter from being a split point:
-//   - it starts before `pLength`, so the first level always spans at least the
-//     requested prefix (the existing "prefix length" tree setting);
-//   - it falls inside a Redis hash tag, so a hash tag spanning several
-//     delimiter-separated groups stays in one tree node instead of being torn
-//     apart (e.g. `{portal2:co}:something`).
-//
-// The hash tag is resolved exactly like Redis does in `keyHashSlot` (cluster.c):
-// the first `{`, then the first `}` after it, and only when there is at least
-// one character in between. Key names without such a span — no braces,
-// unbalanced braces, an empty `{}` — are split as before.
 export const splitWithPrefixThreshold = (
   name: string,
   dPattern: string,
@@ -34,9 +20,6 @@ export const splitWithPrefixThreshold = (
     return [prefix + restParts[0], ...restParts.slice(1)]
   }
 
-  // The scan starts at the prefix threshold: a match rejected for starting
-  // inside the prefix must not consume an overlapping match that follows it.
-  // The `match.index >= pLength` guard below is kept as an explicit invariant.
   const regex = new RegExp(dPattern, 'g')
   regex.lastIndex = pLength
   const parts: string[] = []
@@ -47,7 +30,6 @@ export const splitWithPrefixThreshold = (
     const { length } = match[0]
 
     if (length === 0) {
-      // never let a zero-length match stall the scan
       regex.lastIndex += 1
     } else if (
       match.index >= pLength &&
@@ -56,8 +38,6 @@ export const splitWithPrefixThreshold = (
       parts.push(name.slice(partStart, match.index))
       partStart = match.index + length
     } else {
-      // A rejected match must not consume the characters it spans: an
-      // overlapping match one character later can still be a split point.
       regex.lastIndex = match.index + 1
     }
 
