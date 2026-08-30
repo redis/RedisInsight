@@ -4,7 +4,6 @@ import { RiTooltip } from 'uiSrc/components/base'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { isTruncatedString } from 'uiSrc/utils'
-import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
 import {
   DestructiveButton,
   EmptyButton,
@@ -91,7 +90,7 @@ const PopoverDelete = (props: Props) => {
 
   const deleteButtonWithTooltip = (
     <RiTooltip
-      content={TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA}
+      content={t('browser.keyDetails.truncatedActionDisabled')}
       anchorClassName={styles.editBtnAnchor}
       data-testid={testid ? `${testid}-tooltip` : 'remove-tooltip'}
     >

@@ -17,7 +17,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import { getFormatTime, getNextId } from 'uiSrc/utils/streamUtils'
-import { SortOrder, TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
+import { SortOrder } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
@@ -221,7 +221,9 @@ const MessagesViewWrapper = (props: Props) => {
         loadMoreItems={loadMoreItems}
         {...props}
         noItemsMessageString={
-          isTruncatedConsumerName ? TEXT_CONSUMER_NAME_TOO_LONG : undefined
+          isTruncatedConsumerName
+            ? t('browser.stream.consumers.nameTooLong')
+            : undefined
         }
       />
     </>

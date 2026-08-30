@@ -102,7 +102,7 @@ describe('HomeTabs', () => {
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.INSTANCES_TAB_CHANGED,
       eventData: {
-        tab: 'Redis Data Integration',
+        tab: 'rdi-instances',
       },
     })
   })
