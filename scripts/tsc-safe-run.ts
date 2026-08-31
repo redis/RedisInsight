@@ -98,8 +98,12 @@ if (tsc.status !== 0 && !tsErrors.length) {
 // That script is untouched - it still only knows how to compare/overwrite a
 // baseline against TsError[] JSON read from stdin.
 const check = spawnSync(
-  'tsx',
-  [path.join(__dirname, 'ts-error-check.ts'), ...checkArgs],
+  process.execPath,
+  [
+    requireFromCwd.resolve('tsx/cli'),
+    path.join(__dirname, 'ts-error-check.ts'),
+    ...checkArgs,
+  ],
   {
     input: JSON.stringify(tsErrors),
     stdio: ['pipe', 'inherit', 'inherit'],
