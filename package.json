@@ -309,7 +309,7 @@
     "monaco-editor": "^0.48.0",
     "monaco-yaml": "^5.1.1",
     "msgpackr": "^1.12.1",
-    "node-abi": "^4.33.0",
+    "node-abi": "^4.34.0",
     "pako": "^2.2.0",
     "php-serialize": "^5.1.3",
     "pickleparser": "^0.2.1",
