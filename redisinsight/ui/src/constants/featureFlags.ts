@@ -15,6 +15,7 @@ export enum FeatureFlags {
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
   devLanguage = 'dev-language',
+  devRdiUi = 'dev-rdiUi',
   vectorSearchEnhancements = 'vectorSearchEnhancements',
   valueDecoder = 'valueDecoder',
   appUpdateStrategySettings = 'appUpdateStrategySettings',
