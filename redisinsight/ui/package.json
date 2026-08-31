@@ -13,9 +13,9 @@
     "dev": "vite dev",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "stats": "NODE_OPTIONS=--max_old_space_size=8192 npx vite-bundle-visualizer --open -o ./dist-stats.html --sourcemap",
-    "type-check": "tsx ../../scripts/ts-error-check.ts compare .tscheck.rec.json 'npm run tscheck --prefix redisinsight/ui' --project tsconfig.json",
-    "tscheck": "tsx ../../scripts/ts-error-check.ts overwrite .tscheck.rec.json --project tsconfig.json",
-    "tscheck:force": "tsx ../../scripts/ts-error-check.ts force_overwrite .tscheck.rec.json --project tsconfig.json"
+    "type-check": "tsx ../../scripts/tsc-safe-run.ts --project tsconfig.json compare .tscheck.rec.json 'npm run tscheck --prefix redisinsight/ui'",
+    "tscheck": "tsx ../../scripts/tsc-safe-run.ts --project tsconfig.json overwrite .tscheck.rec.json",
+    "tscheck:force": "tsx ../../scripts/tsc-safe-run.ts --project tsconfig.json force_overwrite .tscheck.rec.json"
   },
   "overrides": {
     "form-data": "^4.0.4"
