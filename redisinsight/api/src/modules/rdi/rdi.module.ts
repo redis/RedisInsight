@@ -12,6 +12,10 @@ import { RdiAnalytics } from 'src/modules/rdi/rdi.analytics';
 import { RdiPipelineAnalytics } from 'src/modules/rdi/rdi-pipeline.analytics';
 import { RdiStatisticsController } from 'src/modules/rdi/rdi-statistics.controller';
 import { RdiStatisticsService } from 'src/modules/rdi/rdi-statistics.service';
+import { PipelineDraftController } from 'src/modules/rdi/pipeline-draft.controller';
+import { PipelineDraftService } from 'src/modules/rdi/pipeline-draft.service';
+import { PipelineDraftRepository } from 'src/modules/rdi/repository/pipeline-draft.repository';
+import { LocalPipelineDraftRepository } from 'src/modules/rdi/repository/local.pipeline-draft.repository';
 
 @Module({})
 export class RdiModule {
@@ -22,11 +26,13 @@ export class RdiModule {
         RdiController,
         RdiPipelineController,
         RdiStatisticsController,
+        PipelineDraftController,
       ],
       providers: [
         RdiService,
         RdiPipelineService,
         RdiStatisticsService,
+        PipelineDraftService,
         RdiClientProvider,
         RdiClientStorage,
         RdiClientFactory,
@@ -35,6 +41,10 @@ export class RdiModule {
         {
           provide: RdiRepository,
           useClass: rdiRepository,
+        },
+        {
+          provide: PipelineDraftRepository,
+          useClass: LocalPipelineDraftRepository,
         },
       ],
     };
