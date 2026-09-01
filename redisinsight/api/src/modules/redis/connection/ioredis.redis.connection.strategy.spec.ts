@@ -22,6 +22,7 @@ import {
 import { InternalServerErrorException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { ReplyError } from 'src/models';
+import { Database } from 'src/modules/database/models/database';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get(
   'redis_clients',
@@ -399,7 +400,7 @@ describe('IoredisRedisConnectionStrategy', () => {
         const config = await service['getTLSConfig']({
           ...mockDatabaseWithTlsAuth,
           verifyServerCert,
-        });
+        } as Database);
 
         expect(config.rejectUnauthorized).toEqual(false);
       },

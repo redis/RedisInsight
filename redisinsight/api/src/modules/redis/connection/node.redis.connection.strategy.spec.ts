@@ -10,6 +10,7 @@ import { SshTunnelProvider } from 'src/modules/ssh/ssh-tunnel.provider';
 import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.redis.connection.strategy';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { RedisConnectionFamily } from 'src/modules/database/entities/database.entity';
+import { Database } from 'src/modules/database/models/database';
 
 jest.mock('redis', () => ({
   ...jest.requireActual('redis'),
@@ -117,7 +118,7 @@ describe('NodeRedisConnectionStrategy', () => {
         const config = await service['getTLSConfig']({
           ...mockDatabaseWithTlsAuth,
           verifyServerCert,
-        });
+        } as Database);
 
         expect(config.rejectUnauthorized).toEqual(false);
       },
