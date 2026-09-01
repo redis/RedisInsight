@@ -9,6 +9,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
 import {
+  connectedInstanceSelector,
   fetchConnectedInstanceAction,
   fetchInstancesAction as fetchRdiInstancesAction,
   instancesSelector as rdiInstancesSelector,
@@ -18,15 +19,19 @@ import {
   instancesSelector as dbInstancesSelector,
   resetConnectedInstance as resetConnectedDatabaseInstance,
 } from 'uiSrc/slices/instances/instances'
+import { isDevRdiUiEnabledSelector } from 'uiSrc/slices/app/features'
+import { getConfig } from 'uiSrc/config'
+import { isVersionHigher, Nullable } from 'uiSrc/utils'
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
-import { Nullable } from 'uiSrc/utils'
-import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
+
+const riConfig = getConfig()
 
 export interface Props {
   routes: IRoute[]
@@ -42,6 +47,8 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   const { lastPage, contextRdiInstanceId } = useAppSelector(appContextSelector)
   const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
   const { data: dbInstances } = useAppSelector(dbInstancesSelector)
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
+  const isDevRdiUiEnabled = useAppSelector(isDevRdiUiEnabledSelector)
 
   const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
 
@@ -76,9 +83,30 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
         history.push(Pages.rdiStatistics(rdiInstanceId))
         return
       }
-      history.push(Pages.rdiPipelineManagement(rdiInstanceId))
+
+      // The connected instance (incl. version) loads asynchronously above.
+      // `id` only matches `rdiInstanceId` once that fetch actually succeeds,
+      // so wait for it rather than deciding v1 vs v2 off stale/empty data.
+      const isConnectedInstanceReady = connectedInstance.id === rdiInstanceId
+      if (!isConnectedInstanceReady && !connectedInstance.error) {
+        return
+      }
+
+      const shouldUseRdiUi =
+        isConnectedInstanceReady &&
+        isDevRdiUiEnabled &&
+        isVersionHigher(
+          connectedInstance.version,
+          riConfig.features.rdiUi.minSupportedVersion,
+        )
+
+      history.push(
+        shouldUseRdiUi
+          ? Pages.rdiPipelineManagementV2(rdiInstanceId)
+          : Pages.rdiPipelineManagement(rdiInstanceId),
+      )
     }
-  }, [])
+  }, [connectedInstance.id, connectedInstance.error])
 
   return (
     <Col className={styles.page} gap="none" responsive={false}>

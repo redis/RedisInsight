@@ -109,6 +109,10 @@ export const defaultConfig = {
     cloudAds: {
       defaultFlag: booleanEnv('RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG', true),
     },
+    rdiUi: {
+      minSupportedVersion:
+        process.env.RI_FEATURES_RDI_UI_MIN_SUPPORTED_VERSION ?? '1.16.0',
+    },
   },
   sentry: {
     dsn: process.env.RI_SENTRY_DSN ?? '',
