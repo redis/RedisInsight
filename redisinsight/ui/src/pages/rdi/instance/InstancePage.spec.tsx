@@ -41,7 +41,7 @@ import {
   loadInstances as loadRdiInstances,
   setConnectedInstance,
 } from 'uiSrc/slices/rdi/instances'
-import { PageNames, Pages } from 'uiSrc/constants'
+import { FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
 import {
   getPipelineStatus,
   setConfigValidationErrors,
@@ -195,6 +195,92 @@ describe('InstancePage', () => {
     reactRouterDom.useLocation = jest
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
+    // the v1/v2 decision only fires once the connected instance has loaded
+    store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
+    store.getState().rdi.instances.connectedInstance.version = ''
+
+    await act(() =>
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(pushMock).toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should redirect to rdi pipeline management v2 page when the flag is enabled and the version is high enough', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
+    store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
+    store.getState().rdi.instances.connectedInstance.version = '1.17.0'
+    store.getState().app.features.featureFlags.features[FeatureFlags.devRdiUi] =
+      { flag: true }
+
+    await act(() =>
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(pushMock).toHaveBeenCalledWith(
+      Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should not redirect to rdi pipeline management page until the connected instance has loaded', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
+    store.getState().rdi.instances.connectedInstance.id = ''
+    store.getState().rdi.instances.connectedInstance.error = ''
+
+    await act(() =>
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should default to rdi pipeline management page when the connected instance fails to load', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
+    store.getState().rdi.instances.connectedInstance.id = ''
+    store.getState().rdi.instances.connectedInstance.error = 'Some error'
 
     await act(() =>
       render(
