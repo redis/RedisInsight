@@ -3,6 +3,7 @@ import * as redis from 'redis';
 import {
   mockClientMetadata,
   mockDatabase,
+  mockDatabaseWithTlsAuth,
   mockSshTunnelProvider,
 } from 'src/__mocks__';
 import { SshTunnelProvider } from 'src/modules/ssh/ssh-tunnel.provider';
@@ -98,5 +99,28 @@ describe('NodeRedisConnectionStrategy', () => {
         }),
       );
     });
+  });
+
+  describe('getTLSConfig', () => {
+    it('should reject unauthorized when verifyServerCert is true', async () => {
+      const config = await service['getTLSConfig']({
+        ...mockDatabaseWithTlsAuth,
+        verifyServerCert: true,
+      });
+
+      expect(config.rejectUnauthorized).toEqual(true);
+    });
+
+    it.each([false, undefined, null])(
+      'should not reject unauthorized when verifyServerCert is %s',
+      async (verifyServerCert) => {
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert,
+        });
+
+        expect(config.rejectUnauthorized).toEqual(false);
+      },
+    );
   });
 });

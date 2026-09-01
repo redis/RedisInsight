@@ -382,4 +382,27 @@ describe('IoredisRedisConnectionStrategy', () => {
         .catch(checkError(done));
     });
   });
+
+  describe('getTLSConfig', () => {
+    it('should reject unauthorized when verifyServerCert is true', async () => {
+      const config = await service['getTLSConfig']({
+        ...mockDatabaseWithTlsAuth,
+        verifyServerCert: true,
+      });
+
+      expect(config.rejectUnauthorized).toEqual(true);
+    });
+
+    it.each([false, undefined, null])(
+      'should not reject unauthorized when verifyServerCert is %s',
+      async (verifyServerCert) => {
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert,
+        });
+
+        expect(config.rejectUnauthorized).toEqual(false);
+      },
+    );
+  });
 });
