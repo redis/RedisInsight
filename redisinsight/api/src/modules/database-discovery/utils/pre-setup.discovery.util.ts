@@ -153,6 +153,10 @@ export const prepareDatabaseFromEnvs = async (
         certificate: tlsCertificate,
         key: tlsKey,
       } as ClientCertificate;
+    }
+
+    // populateDefaultValues leaves verifyServerCert null, which now means "do not verify".
+    if (databaseToAdd.tls) {
       databaseToAdd.verifyServerCert = true;
     }
 

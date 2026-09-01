@@ -493,6 +493,7 @@ describe('AzureAutodiscoveryService', () => {
           port: database.sslPort,
           name: database.name,
           tls: true,
+          verifyServerCert: true,
           provider: HostingProvider.AZURE_CACHE,
           providerDetails: expect.objectContaining({
             provider: CloudProvider.Azure,

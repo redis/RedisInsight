@@ -57,6 +57,7 @@ export class DatabaseImportService {
     ['type', ['type']],
     ['connectionType', ['connectionType']],
     ['tls', ['tls', 'ssl']],
+    ['verifyServerCert', ['verifyServerCert', 'sslOptions.rejectUnauthorized']],
     ['tlsServername', ['tlsServername']],
     ['tlsCaName', ['caCert.name']],
     [
@@ -296,6 +297,11 @@ export class DatabaseImportService {
           status = DatabaseImportStatus.Partial;
           errors.push(e);
         }
+      }
+
+      // Import files rarely carry verifyServerCert; absent now means "do not verify".
+      if (data?.tls) {
+        data.verifyServerCert = data.verifyServerCert ?? true;
       }
 
       if (data?.compressor && !(data.compressor in Compressor)) {

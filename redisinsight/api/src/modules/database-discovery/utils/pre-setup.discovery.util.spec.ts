@@ -181,6 +181,18 @@ describe('preSetupDiscoveryUtil', () => {
         name: `${mockDatabaseToImportFromEnvsPrepared.host}:6379`, // auto generated name
       });
     });
+    it('should verify the server cert when RI_REDIS_TLS is true without client certs', async () => {
+      process.env.RI_REDIS_HOST = mockDatabaseToImportFromEnvsInput.host;
+      process.env.RI_REDIS_TLS = 'true';
+
+      await expect(prepareDatabaseFromEnvs('RI_REDIS_HOST')).resolves.toEqual({
+        ...mockDatabaseToImportFromEnvsPrepared,
+        port: 6379,
+        name: `${mockDatabaseToImportFromEnvsPrepared.host}:6379`,
+        tls: true,
+        verifyServerCert: true,
+      });
+    });
     it('should discover database with certs in base64 format', async () => {
       process.env.RI_REDIS_HOST_1 =
         mockDatabaseToImportWithCertsFromEnvsInput.host;

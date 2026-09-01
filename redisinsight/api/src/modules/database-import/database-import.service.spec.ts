@@ -302,6 +302,98 @@ describe('DatabaseImportService', () => {
         false,
       );
     });
+    it('should default verifyServerCert to true when importing tls without the flag', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: true,
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should keep an explicit false verifyServerCert on tls import', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+          verifyServerCert: false,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should map sslOptions.rejectUnauthorized onto verifyServerCert', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          ssl: true,
+          sslOptions: { rejectUnauthorized: false },
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
+          new: true,
+        },
+        false,
+      );
+    });
     it('should create cluster database', async () => {
       await service['createDatabase'](
         mockSessionMetadata,
