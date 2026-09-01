@@ -20,8 +20,8 @@ import {
   resetConnectedInstance as resetConnectedDatabaseInstance,
 } from 'uiSrc/slices/instances/instances'
 import { isDevRdiUiEnabledSelector } from 'uiSrc/slices/app/features'
-import { getConfig } from 'uiSrc/config'
-import { isVersionHigher, Nullable } from 'uiSrc/utils'
+import { Nullable } from 'uiSrc/utils'
+import { shouldUseRdiUiPipeline } from 'uiSrc/utils/rdi'
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
@@ -30,8 +30,6 @@ import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigat
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
-
-const riConfig = getConfig()
 
 export interface Props {
   routes: IRoute[]
@@ -85,19 +83,31 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
       }
 
       // The connected instance (incl. version) loads asynchronously above.
-      // `id` only matches `rdiInstanceId` once that fetch actually succeeds,
-      // so wait for it rather than deciding v1 vs v2 off stale/empty data.
-      const isConnectedInstanceReady = connectedInstance.id === rdiInstanceId
-      if (!isConnectedInstanceReady && !connectedInstance.error) {
+      // `id` only matches `rdiInstanceId` once that fetch actually succeeds.
+      // `contextRdiInstanceId === rdiInstanceId` confirms the store has
+      // already processed *this* instance's reset+fetch cycle (it's set in
+      // the same effect, synchronously) - without it, a stale `error` left
+      // over from a previously viewed instance would look like "this
+      // instance failed to load" on the very first render and push to
+      // legacy before the real fetch ever gets a chance to resolve.
+      const isSameInstanceContext = contextRdiInstanceId === rdiInstanceId
+      const isConnectedInstanceReady =
+        isSameInstanceContext && connectedInstance.id === rdiInstanceId
+      const hasFailedToLoad =
+        isSameInstanceContext &&
+        !connectedInstance.loading &&
+        !!connectedInstance.error &&
+        !isConnectedInstanceReady
+
+      if (!isConnectedInstanceReady && !hasFailedToLoad) {
         return
       }
 
       const shouldUseRdiUi =
         isConnectedInstanceReady &&
-        isDevRdiUiEnabled &&
-        isVersionHigher(
-          connectedInstance.version,
-          riConfig.features.rdiUi.minSupportedVersion,
+        shouldUseRdiUiPipeline(
+          connectedInstance.version ?? '',
+          isDevRdiUiEnabled,
         )
 
       history.push(
@@ -106,7 +116,12 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
           : Pages.rdiPipelineManagement(rdiInstanceId),
       )
     }
-  }, [connectedInstance.id, connectedInstance.error])
+  }, [
+    contextRdiInstanceId,
+    connectedInstance.id,
+    connectedInstance.error,
+    connectedInstance.loading,
+  ])
 
   return (
     <Col className={styles.page} gap="none" responsive={false}>

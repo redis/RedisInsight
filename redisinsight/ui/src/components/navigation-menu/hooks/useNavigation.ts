@@ -8,10 +8,12 @@ import { Props as HighlightedFeatureProps } from 'uiSrc/components/hightlighted-
 import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-routes'
 import {
   appFeaturePagesHighlightingSelector,
+  isDevRdiUiEnabledSelector,
   removeFeatureFromHighlighting,
 } from 'uiSrc/slices/app/features'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { connectedInstanceSelector as connectedRdiInstanceSelector } from 'uiSrc/slices/rdi/instances'
+import { shouldUseRdiUiPipeline } from 'uiSrc/utils/rdi'
 
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BUILD_FEATURES } from 'uiSrc/constants/featuresHighlighting'
@@ -45,9 +47,9 @@ export function useNavigation() {
   const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { id: connectedRdiInstanceId = '' } = useAppSelector(
-    connectedRdiInstanceSelector,
-  )
+  const { id: connectedRdiInstanceId = '', version: connectedRdiVersion = '' } =
+    useAppSelector(connectedRdiInstanceSelector)
+  const isDevRdiUiEnabled = useAppSelector(isDevRdiUiEnabledSelector)
   const highlightedPages = useAppSelector(appFeaturePagesHighlightingSelector)
 
   const isRdiWorkspace = workspace === AppWorkspace.RDI
@@ -144,13 +146,19 @@ export function useNavigation() {
     },
   ].filter((tab) => !!tab) as INavigations[]
 
+  const pipelineManagementPage = shouldUseRdiUiPipeline(
+    connectedRdiVersion,
+    isDevRdiUiEnabled,
+  )
+    ? Pages.rdiPipelineManagementV2(connectedRdiInstanceId)
+    : Pages.rdiPipelineManagement(connectedRdiInstanceId)
+
   const privateRdiRoutes: INavigations[] = [
     {
       tooltipText: t('navigation.page.pipeline.tooltip'),
       pageName: PageNames.rdiPipelineManagement,
       ariaLabel: t('navigation.page.pipeline.ariaLabel'),
-      onClick: () =>
-        handleGoPage(Pages.rdiPipelineManagement(connectedRdiInstanceId)),
+      onClick: () => handleGoPage(pipelineManagementPage),
       dataTestId: 'pipeline-management-page-btn',
       isActivePage: isPipelineManagementPath(),
       iconType: PipelineManagementIcon,
