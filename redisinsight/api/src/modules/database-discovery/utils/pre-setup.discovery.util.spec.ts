@@ -91,6 +91,29 @@ describe('preSetupDiscoveryUtil', () => {
         name: 'host:6379',
       });
     });
+    it('should verify the server cert when tls is set without verifyServerCert', () => {
+      expect(
+        populateDefaultValues({
+          host: 'host',
+          tls: true,
+        } as Database),
+      ).toMatchObject({
+        tls: true,
+        verifyServerCert: true,
+      });
+    });
+    it('should keep an explicit null verifyServerCert on tls file rows', () => {
+      expect(
+        populateDefaultValues({
+          host: 'host',
+          tls: true,
+          verifyServerCert: null,
+        } as Database),
+      ).toMatchObject({
+        tls: true,
+        verifyServerCert: null,
+      });
+    });
     it('should prepare object with default values for not specified fields', () => {
       expect(populateDefaultValues(mockDatabaseToImportFromEnvsInput)).toEqual(
         mockDatabaseToImportFromEnvsPrepared,

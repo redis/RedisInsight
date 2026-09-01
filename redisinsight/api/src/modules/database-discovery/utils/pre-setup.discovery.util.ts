@@ -42,10 +42,11 @@ export const populateDefaultValues = (
     db = null,
     provider = null,
     modules = [],
-    verifyServerCert = null,
     ssh = null,
     sshOptions = null,
     tls = false,
+    // Absent now means "do not verify". Keep explicit null/false as-is.
+    verifyServerCert = tls ? true : null,
     tlsServername = null,
     caCert = null,
     clientCert = null,

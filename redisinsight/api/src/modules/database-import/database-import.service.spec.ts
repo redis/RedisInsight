@@ -332,6 +332,37 @@ describe('DatabaseImportService', () => {
         false,
       );
     });
+    it('should keep an exported null verifyServerCert as unchecked', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+          verifyServerCert: null,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
+          new: true,
+        },
+        false,
+      );
+    });
     it('should keep an explicit false verifyServerCert on tls import', async () => {
       await service['createDatabase'](
         mockSessionMetadata,

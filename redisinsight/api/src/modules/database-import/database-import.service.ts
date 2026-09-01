@@ -299,9 +299,13 @@ export class DatabaseImportService {
         }
       }
 
-      // Import files rarely carry verifyServerCert; absent now means "do not verify".
+      // Absent verifyServerCert now means "do not verify". Default only when
+      // the field is missing; exported null/false must stay unchecked.
       if (data?.tls) {
-        data.verifyServerCert = data.verifyServerCert ?? true;
+        data.verifyServerCert =
+          data.verifyServerCert === undefined
+            ? true
+            : data.verifyServerCert === true;
       }
 
       if (data?.compressor && !(data.compressor in Compressor)) {
