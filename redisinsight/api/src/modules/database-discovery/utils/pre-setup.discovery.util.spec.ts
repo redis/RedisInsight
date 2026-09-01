@@ -108,7 +108,7 @@ describe('preSetupDiscoveryUtil', () => {
           host: 'host',
           tls: true,
           verifyServerCert: null,
-        } as Database),
+        } as unknown as Database),
       ).toMatchObject({
         tls: true,
         verifyServerCert: null,
