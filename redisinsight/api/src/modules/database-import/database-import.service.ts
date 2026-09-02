@@ -299,13 +299,15 @@ export class DatabaseImportService {
         }
       }
 
-      // Absent verifyServerCert now means "do not verify". Default only when
-      // the field is missing; exported null/false must stay unchecked.
+      // Absent now means "do not verify". Default only when the field is
+      // missing; exported null stays unchecked. Leave other values alone so
+      // @IsBoolean can reject junk (e.g. rejectUnauthorized: "true").
       if (data?.tls) {
-        data.verifyServerCert =
-          data.verifyServerCert === undefined
-            ? true
-            : data.verifyServerCert === true;
+        if (data.verifyServerCert === undefined) {
+          data.verifyServerCert = true;
+        } else if (data.verifyServerCert === null) {
+          data.verifyServerCert = false;
+        }
       }
 
       if (data?.compressor && !(data.compressor in Compressor)) {

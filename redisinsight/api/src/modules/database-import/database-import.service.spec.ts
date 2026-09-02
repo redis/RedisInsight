@@ -17,6 +17,7 @@ import {
   ConnectionType,
   Compressor,
 } from 'src/modules/database/entities/database.entity';
+import { DatabaseImportStatus } from 'src/modules/database-import/dto/database-import.response';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import {
@@ -393,6 +394,20 @@ describe('DatabaseImportService', () => {
         },
         false,
       );
+    });
+    it('should reject a non-boolean verifyServerCert on tls import', async () => {
+      const result = await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          ssl: true,
+          sslOptions: { rejectUnauthorized: 'true' },
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).not.toHaveBeenCalled();
+      expect(result.status).toBe(DatabaseImportStatus.Fail);
     });
     it('should map sslOptions.rejectUnauthorized onto verifyServerCert', async () => {
       await service['createDatabase'](
