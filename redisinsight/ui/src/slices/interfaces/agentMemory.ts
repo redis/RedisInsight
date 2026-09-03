@@ -50,6 +50,16 @@ export interface LongTermMemoryRecord {
   updatedAt?: string
 }
 
+/** Partial update payload for a long-term memory record (editable fields). */
+export interface AgentMemoryRecordUpdate {
+  text?: string
+  memoryType?: string
+  topics?: string[]
+  namespace?: string
+  userId?: string
+  sessionId?: string
+}
+
 export const DEFAULT_MEMORY_TYPE = 'semantic'
 
 export enum AgentMemoryWorkspaceTab {
@@ -111,6 +121,8 @@ export interface StateAgentMemoryWorkspace {
     error: string
     data: LongTermMemoryRecord[]
     lastRefreshTime: Nullable<number>
+    /** Record shown in the detail pane; null when the pane is closed. */
+    selectedRecordId: Nullable<string>
     search: string
     similarityThreshold: Nullable<number>
     topics: string[]

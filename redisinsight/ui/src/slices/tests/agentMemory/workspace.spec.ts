@@ -9,6 +9,8 @@ import reducer, {
   getWorkingMemorySuccess,
   getWorkingMemoryFailure,
   getLongTermMemorySuccess,
+  setSelectedRecord,
+  updateLongTermMemorySuccess,
   setLongTermMemorySearch,
   toggleTopicFilter,
   toggleSessionFilter,
@@ -155,6 +157,37 @@ describe('agentMemory workspace slice', () => {
       )
 
       expect(nextState.longTermMemory.data).toEqual([mockMemory])
+    })
+  })
+
+  describe('record selection + update', () => {
+    it('should set and clear the selected record id', () => {
+      let state = reducer(initialState, setSelectedRecord('memory-1'))
+      expect(state.longTermMemory.selectedRecordId).toEqual('memory-1')
+
+      state = reducer(state, setSelectedRecord(null))
+      expect(state.longTermMemory.selectedRecordId).toBeNull()
+    })
+
+    it('should replace the updated record in place', () => {
+      const state = reducer(
+        initialState,
+        getLongTermMemorySuccess([mockMemory]),
+      )
+      const updated = { ...mockMemory, text: 'user loves redis' }
+
+      const nextState = reducer(state, updateLongTermMemorySuccess(updated))
+
+      expect(nextState.longTermMemory.data).toEqual([updated])
+    })
+
+    it('should drop a selection that is no longer in the fetched data', () => {
+      let state = reducer(initialState, getLongTermMemorySuccess([mockMemory]))
+      state = reducer(state, setSelectedRecord('memory-1'))
+
+      const nextState = reducer(state, getLongTermMemorySuccess([]))
+
+      expect(nextState.longTermMemory.selectedRecordId).toBeNull()
     })
   })
 

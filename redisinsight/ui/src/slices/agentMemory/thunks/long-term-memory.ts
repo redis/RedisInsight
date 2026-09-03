@@ -10,11 +10,15 @@ import {
 
 import { AppDispatch, RootState } from '../../store'
 import { addErrorNotification } from '../../app/notifications'
-import { LongTermMemoryRecord } from '../../interfaces/agentMemory'
+import {
+  AgentMemoryRecordUpdate,
+  LongTermMemoryRecord,
+} from '../../interfaces/agentMemory'
 import {
   getLongTermMemory,
   getLongTermMemoryFailure,
   getLongTermMemorySuccess,
+  updateLongTermMemorySuccess,
 } from '../workspace'
 import { isStaleResponse } from './helpers'
 
@@ -94,6 +98,32 @@ export function fetchLongTermMemoryAction(endpointId: string) {
 /** Overview pane: scoped to the shared user + session pills. */
 export function fetchOverviewLongTermMemoryAction(endpointId: string) {
   return fetchLongTermMemory(endpointId, true)
+}
+
+/**
+ * Apply a partial update to one record. On success the updated record
+ * (returned by the server) replaces the one in the list in place.
+ */
+export function updateLongTermMemoryAction(
+  endpointId: string,
+  memoryId: string,
+  update: AgentMemoryRecordUpdate,
+  onSuccess?: () => void,
+) {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const { data, status } = await apiService.patch<LongTermMemoryRecord>(
+        getAgentMemoryUrl(endpointId, ApiEndpoints.AGENT_MEMORY_LTM, memoryId),
+        update,
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch(updateLongTermMemorySuccess(data))
+        onSuccess?.()
+      }
+    } catch (_err) {
+      dispatch(addErrorNotification(_err as AxiosError))
+    }
+  }
 }
 
 export function deleteLongTermMemoryAction(

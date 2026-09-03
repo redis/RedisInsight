@@ -6,6 +6,7 @@ import { RiTooltip } from 'uiSrc/components'
 import {
   agentMemoryLongTermSelector,
   fetchLongTermMemoryAction,
+  setSelectedRecord,
   toggleSessionFilter,
   toggleTopicFilter,
 } from 'uiSrc/slices/agentMemory/workspace'
@@ -50,7 +51,10 @@ const TopicChips = ({ values, onPick }: TopicChipsProps) => {
               type="button"
               $kind="topic"
               data-testid={`topic-chip-${value}`}
-              onClick={() => onPick(value)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onPick(value)
+              }}
             >
               {value}
             </S.Chip>
@@ -63,10 +67,21 @@ const TopicChips = ({ values, onPick }: TopicChipsProps) => {
 
 interface MemoryCardProps {
   memory: LongTermMemoryRecord
+  selected: boolean
+  onSelect: (id: string) => void
 }
 
-const MemoryCard = ({ memory }: MemoryCardProps) => (
-  <S.Card data-testid="long-term-memory-card">
+// Interactive controls inside the card open filters/copy, not the detail
+// pane, so they stop the card's select click.
+const stop = (event: React.MouseEvent) => event.stopPropagation()
+
+const MemoryCard = ({ memory, selected, onSelect }: MemoryCardProps) => (
+  <S.RecordCard
+    data-testid="long-term-memory-card"
+    data-selected={selected}
+    $selected={selected}
+    onClick={() => onSelect(memory.id)}
+  >
     <S.CardMeta>
       <S.TypeBadge $type={memory.memoryType ?? DEFAULT_MEMORY_TYPE}>
         {memory.memoryType ?? DEFAULT_MEMORY_TYPE}
@@ -84,7 +99,7 @@ const MemoryCard = ({ memory }: MemoryCardProps) => (
           }
         />
       )}
-      <S.CardId>
+      <S.CardId onClick={stop}>
         <HoverCopyButton
           copy={memory.id}
           label="Copy id"
@@ -102,7 +117,7 @@ const MemoryCard = ({ memory }: MemoryCardProps) => (
     />
     {!!memory.sessionId && (
       <S.CardFooter>
-        <S.CardMetaSession>
+        <S.CardMetaSession onClick={stop}>
           <S.VisuallyHidden>from session:</S.VisuallyHidden>
           <RiTooltip
             title="Session ID"
@@ -125,15 +140,14 @@ const MemoryCard = ({ memory }: MemoryCardProps) => (
         </S.CardMetaSession>
       </S.CardFooter>
     )}
-  </S.Card>
+  </S.RecordCard>
 )
 
 /** The long-term memory records list. Search + filters live in the
  * toolbar above the panel (LongTermMemoryToolbar). */
 const LongTermMemoryPanel = ({ endpointId }: LongTermMemoryPanelProps) => {
-  const { data, error, loading, lastRefreshTime } = useAppSelector(
-    agentMemoryLongTermSelector,
-  )
+  const { data, error, loading, lastRefreshTime, selectedRecordId } =
+    useAppSelector(agentMemoryLongTermSelector)
 
   return (
     <S.Pane data-testid="long-term-memory-panel">
@@ -160,7 +174,11 @@ const LongTermMemoryPanel = ({ endpointId }: LongTermMemoryPanelProps) => {
       <S.CardList>
         {data.map((memory) => (
           <li key={memory.id}>
-            <MemoryCard memory={memory} />
+            <MemoryCard
+              memory={memory}
+              selected={memory.id === selectedRecordId}
+              onSelect={(id) => dispatch(setSelectedRecord(id))}
+            />
           </li>
         ))}
         {!data.length && (

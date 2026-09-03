@@ -7,10 +7,14 @@ import {
   AgentMemoryNewMessage,
   AgentMemoryScopeFilter,
   DiscoveryFiltersResponse,
+  LongTermMemoryRecord,
   LongTermMemorySearchResponse,
   WorkingMemoryResponse,
 } from 'src/modules/agent-memory/agent-memory.types';
-import { SearchLongTermMemoryDto } from 'src/modules/agent-memory/dto';
+import {
+  SearchLongTermMemoryDto,
+  UpdateLongTermMemoryDto,
+} from 'src/modules/agent-memory/dto';
 
 /**
  * Proxies inspector data reads/writes to the connected agent memory
@@ -63,6 +67,15 @@ export class AgentMemoryDataService {
   ): Promise<LongTermMemorySearchResponse> {
     const client = await this.clientProvider.getOrCreate(metadata);
     return client.searchLongTermMemory(dto);
+  }
+
+  async updateLongTermMemory(
+    metadata: AgentMemoryClientMetadata,
+    memoryId: string,
+    dto: UpdateLongTermMemoryDto,
+  ): Promise<LongTermMemoryRecord> {
+    const client = await this.clientProvider.getOrCreate(metadata);
+    return client.updateLongTermMemory(memoryId, dto);
   }
 
   async deleteLongTermMemories(
