@@ -47,6 +47,7 @@ function fetchLongTermMemory(endpointId: string, useSharedScope: boolean) {
     try {
       const body: Record<string, unknown> = {
         text: longTermMemory.search,
+        similarityThreshold: longTermMemory.similarityThreshold ?? undefined,
         userId: longTermMemory.userIds.length ? undefined : sharedUserId,
         userIds: longTermMemory.userIds.length
           ? longTermMemory.userIds
