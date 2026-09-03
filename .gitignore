@@ -103,3 +103,6 @@ storybook-static
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Playwright CLI scratch output
+.playwright-cli/
