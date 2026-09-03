@@ -16,6 +16,8 @@ import { PipelineDraftController } from 'src/modules/rdi/pipeline-draft.controll
 import { PipelineDraftService } from 'src/modules/rdi/pipeline-draft.service';
 import { PipelineDraftRepository } from 'src/modules/rdi/repository/pipeline-draft.repository';
 import { LocalPipelineDraftRepository } from 'src/modules/rdi/repository/local.pipeline-draft.repository';
+import { RdiProxyController } from 'src/modules/rdi/rdi-proxy.controller';
+import { RdiProxyService } from 'src/modules/rdi/rdi-proxy.service';
 
 @Module({})
 export class RdiModule {
@@ -27,12 +29,14 @@ export class RdiModule {
         RdiPipelineController,
         RdiStatisticsController,
         PipelineDraftController,
+        RdiProxyController,
       ],
       providers: [
         RdiService,
         RdiPipelineService,
         RdiStatisticsService,
         PipelineDraftService,
+        RdiProxyService,
         RdiClientProvider,
         RdiClientStorage,
         RdiClientFactory,

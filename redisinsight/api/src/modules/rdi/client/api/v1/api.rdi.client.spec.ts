@@ -718,6 +718,53 @@ describe('ApiRdiClient', () => {
     });
   });
 
+  describe('proxyRequest', () => {
+    it('should forward the request and return the raw response', async () => {
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 201,
+        headers: { 'content-type': 'application/json' },
+        data: { id: '1' },
+      });
+
+      const result = await client.proxyRequest({
+        method: 'POST',
+        path: 'api/v1/pipelines',
+        query: 'dryRun=true',
+        body: { name: 'my-pipeline' },
+        headers: { 'content-type': 'application/json' },
+      });
+
+      expect(mockedAxios.request).toHaveBeenCalledWith({
+        method: 'POST',
+        url: 'api/v1/pipelines?dryRun=true',
+        data: { name: 'my-pipeline' },
+        headers: { 'content-type': 'application/json' },
+        validateStatus: null,
+      });
+      expect(result).toEqual({
+        status: 201,
+        headers: { 'content-type': 'application/json' },
+        data: { id: '1' },
+      });
+    });
+
+    it('should pass through non-2xx responses instead of throwing', async () => {
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 404,
+        headers: {},
+        data: { message: 'Not found' },
+      });
+
+      const result = await client.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines/unknown',
+      });
+
+      expect(result.status).toBe(404);
+      expect(result.data).toEqual({ message: 'Not found' });
+    });
+  });
+
   describe('connect', () => {
     it('should set auth and authorization headers on successful login', async () => {
       const mockedAccessToken = sign(

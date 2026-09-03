@@ -38,6 +38,8 @@ import {
   RdiClientMetadata,
   Rdi,
   RdiPipelineStatus,
+  RdiProxyRequest,
+  RdiProxyResponse,
 } from 'src/modules/rdi/models';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
@@ -349,6 +351,30 @@ export class ApiRdiClient extends RdiClient {
     if (expiresIn < TOKEN_THRESHOLD) {
       await this.connect();
     }
+  }
+
+  async proxyRequest({
+    method,
+    path,
+    query,
+    body,
+    headers,
+  }: RdiProxyRequest): Promise<RdiProxyResponse> {
+    // Non-2xx responses are part of the RDI API contract the UI's SDK handles
+    // itself, so pass them through instead of throwing.
+    const response = await this.client.request({
+      method,
+      url: query ? `${path}?${query}` : path,
+      data: body,
+      headers,
+      validateStatus: null,
+    });
+
+    return {
+      status: response.status,
+      headers: response.headers as Record<string, string>,
+      data: response.data,
+    };
   }
 
   private async pollActionStatus(
