@@ -2,6 +2,7 @@ import React from 'react'
 
 import styled, { css } from 'styled-components'
 import { Modal } from 'uiSrc/components/base/display/modal'
+import { visuallyHiddenCss } from 'uiSrc/components/base/utils/VisuallyHidden'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
@@ -13,15 +14,7 @@ export const ModalContent = styled(Modal.Content.Compose)`
 `
 
 export const VisuallyHiddenTitle = styled(Modal.Content.Header.Title)`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+  ${visuallyHiddenCss}
 `
 
 export const ModalBody = styled(Col)`
