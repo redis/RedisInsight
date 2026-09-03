@@ -1,6 +1,11 @@
 {
-  "version": 11,
+  "version": 12,
   "features": {
+    "dev-rdiUi": {
+      "flag": true,
+      "perc": [[0, 0]],
+      "filters": []
+    },
     "appUpdateStrategySettings": {
       "flag": true,
       "perc": [[0, 100]],
