@@ -627,6 +627,8 @@ export class AzureAutodiscoveryService {
             username: connectionDetails.username,
             password: connectionDetails.password,
             tls: connectionDetails.tls,
+            // Azure Cache presents a publicly trusted cert; absent now means "do not verify".
+            verifyServerCert: true,
             provider,
             providerDetails,
           });
