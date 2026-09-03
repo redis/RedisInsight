@@ -126,7 +126,7 @@
     "@babel/preset-react": "^7.29.7",
     "@babel/preset-typescript": "^7.29.7",
     "@electron/rebuild": "^4.2.0",
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^10.5.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.3",
     "@sentry/vite-plugin": "^5.4.0",
     "@sentry/webpack-plugin": "^5.4.0",
