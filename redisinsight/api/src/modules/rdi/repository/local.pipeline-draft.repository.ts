@@ -120,14 +120,22 @@ export class LocalPipelineDraftRepository extends PipelineDraftRepository {
     }
 
     const decrypted = await this.modelEncryptor.decryptEntity(existing, true);
-    const updateData = omitBy(data, isUndefined);
+    const { data: updatedData, ...restUpdateData } = omitBy(data, isUndefined);
+    const { data: decryptedData, ...restDecrypted } = decrypted;
 
+    // `decryptedData` is already the entity's JSON-string representation of
+    // `data`, so it must be assigned directly rather than passed through
+    // plainToInstance - going through @DataAsJsonString() again would
+    // JSON.stringify an already-stringified value
     const merged = plainToInstance(PipelineDraftEntity, {
-      ...decrypted,
-      ...updateData,
+      ...restDecrypted,
+      ...restUpdateData,
       id,
       rdiInstanceId,
     });
+    merged.data = isUndefined(updatedData)
+      ? decryptedData
+      : JSON.stringify(updatedData);
 
     const saved = await this.repository.save(
       await this.modelEncryptor.encryptEntity(merged),

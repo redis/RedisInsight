@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ValidationPipe } from '@nestjs/common';
 import { mockSessionMetadata } from 'src/__mocks__';
 import { PipelineDraftController } from './pipeline-draft.controller';
 import { PipelineDraftService } from './pipeline-draft.service';
 import { pipelineDraftFactory } from './__tests__/pipeline-draft.factory';
+import { CreatePipelineDraftDto } from './dto';
 
 const mockRdiInstanceId = faker.string.uuid();
 
@@ -57,6 +58,19 @@ describe('PipelineDraftController', () => {
         mockRdiInstanceId,
         { data: draft.data },
       );
+    });
+
+    it('should strip fields not declared on the create dto, such as an injected id', async () => {
+      const pipe = new ValidationPipe({ transform: true, whitelist: true });
+      const draft = pipelineDraftFactory.build();
+
+      const transformed = await pipe.transform(
+        { data: draft.data, id: faker.string.uuid() },
+        { type: 'body', metatype: CreatePipelineDraftDto },
+      );
+
+      expect(transformed).toEqual({ data: draft.data });
+      expect(transformed.id).toBeUndefined();
     });
   });
 

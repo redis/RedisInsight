@@ -40,6 +40,7 @@ const mockRepository = () => ({
 describe('LocalPipelineDraftRepository', () => {
   let repository: LocalPipelineDraftRepository;
   let typeormRepo: ReturnType<typeof mockRepository>;
+  let encryptionService: ReturnType<typeof mockEncryptionServiceFactory>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -58,6 +59,7 @@ describe('LocalPipelineDraftRepository', () => {
 
     repository = module.get(LocalPipelineDraftRepository);
     typeormRepo = module.get(getRepositoryToken(PipelineDraftEntity));
+    encryptionService = module.get(EncryptionService);
   });
 
   describe('create', () => {
@@ -229,6 +231,24 @@ describe('LocalPipelineDraftRepository', () => {
           { data: {} },
         ),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should not re-encode the existing data when the patch omits it', async () => {
+      const entity = pipelineDraftEntityFactory.build({
+        rdiInstanceId: mockRdiInstanceId,
+      });
+      typeormRepo.findOneBy.mockResolvedValueOnce(entity);
+
+      await repository.update(
+        mockSessionMetadata,
+        mockRdiInstanceId,
+        entity.id,
+        {},
+      );
+
+      // the value handed to encryption is the entity's single-encoded JSON
+      // string, unchanged - not JSON.stringify'd a second time on top of it
+      expect(encryptionService.encrypt).toHaveBeenCalledWith(entity.data);
     });
   });
 

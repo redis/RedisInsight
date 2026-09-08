@@ -22,7 +22,7 @@ import {
 } from 'src/modules/rdi/dto';
 
 @ApiTags('RDI')
-@UsePipes(new ValidationPipe({ transform: true }))
+@UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('rdi/:id/pipeline-drafts')
 export class PipelineDraftController {
