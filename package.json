@@ -47,7 +47,7 @@
     "package:mac:arm": "npm run build:prod && electron-builder build --mac --arm64 -p never",
     "package:linux": "npm run build:prod && electron-builder build --linux -p never",
     "postinstall": "patch-package && vite optimize -c ./redisinsight/ui/vite.config.mjs",
-    "test": "jest",
+    "test": "jest -w 1",
     "test:api": "npm run test --prefix redisinsight/api",
     "test:api:integration": "npm run test:api --prefix redisinsight/api",
     "test:watch": "jest --watch -w 1",

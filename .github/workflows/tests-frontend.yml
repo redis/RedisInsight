@@ -24,7 +24,11 @@ jobs:
 
       - name: Unit tests UI
         timeout-minutes: 15
-        run: npm run test:cov -- --ci --silent --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }}
+        # Each shard only runs a fraction of the test files, so the global
+        # coverageThreshold in jest.config.cjs can't be met per shard.
+        # Disable it here; merge-coverage re-checks it against the merged
+        # coverage of all shards.
+        run: npm run test:cov -- --ci --silent --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }} --coverageThreshold='{}'
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v7
@@ -52,11 +56,12 @@ jobs:
           pattern: ${{ env.REPORT_NAME }}-*
           path: shard-reports
 
-      - name: Merge shard reports
-        run: node scripts/merge-jest-shard-reports.mjs shard-reports report/coverage/report.json coverage/report.json
+      - name: Merge shard reports and check coverage thresholds
+        run: node scripts/merge-jest-shard-reports.mjs shard-reports report/coverage/report.json coverage/report.json jest.config.cjs
 
       - name: Upload merged Test Report
         uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: ${{ env.REPORT_NAME }}
           path: report
