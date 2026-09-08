@@ -163,6 +163,47 @@ describe('LocalPipelineDraftRepository', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should exclude entities whose decrypt returns null instead of throwing (strategy mismatch)', async () => {
+      mockEncryptionServiceFactory.mockReturnValueOnce({
+        getAvailableEncryptionStrategies: jest.fn(),
+        isEncryptionAvailable: jest.fn().mockResolvedValue(true),
+        encrypt: jest.fn().mockResolvedValue(mockEncryptResult),
+        decrypt: jest.fn().mockResolvedValue(null),
+        getEncryptionStrategy: jest.fn(),
+      });
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          LocalPipelineDraftRepository,
+          {
+            provide: getRepositoryToken(PipelineDraftEntity),
+            useFactory: mockRepository,
+          },
+          {
+            provide: EncryptionService,
+            useFactory: mockEncryptionServiceFactory,
+          },
+        ],
+      }).compile();
+
+      const mismatchedRepository = module.get(LocalPipelineDraftRepository);
+      const mismatchedTypeormRepo = module.get(
+        getRepositoryToken(PipelineDraftEntity),
+      );
+      const entity = pipelineDraftEntityFactory.build({
+        rdiInstanceId: mockRdiInstanceId,
+        encryption: 'KEYTAR',
+      });
+      mismatchedTypeormRepo.find.mockResolvedValueOnce([entity]);
+
+      const result = await mismatchedRepository.list(
+        mockSessionMetadata,
+        mockRdiInstanceId,
+      );
+
+      expect(result).toEqual([]);
+    });
   });
 
   describe('get', () => {

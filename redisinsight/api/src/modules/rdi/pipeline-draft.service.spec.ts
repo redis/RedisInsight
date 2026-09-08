@@ -80,6 +80,14 @@ describe('PipelineDraftService', () => {
       ).rejects.toThrow(NotFoundException);
       expect(repository.create).not.toHaveBeenCalled();
     });
+
+    it('should check rdi existence without decrypting its credentials', async () => {
+      const dto = createPipelineDraftDtoFactory.build();
+
+      await service.create(mockSessionMetadata, mockRdiInstanceId, dto);
+
+      expect(rdiRepository.get).toHaveBeenCalledWith(mockRdiInstanceId, true);
+    });
   });
 
   describe('list', () => {

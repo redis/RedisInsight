@@ -71,9 +71,10 @@ export class LocalPipelineDraftRepository extends PipelineDraftRepository {
       }),
     );
 
-    return filter(decryptedEntities, (entity) => !isNull(entity)).map(
-      (entity) => classToClass(PipelineDraft, entity),
-    );
+    return filter(
+      decryptedEntities,
+      (entity) => !isNull(entity) && !isNull(entity.data),
+    ).map((entity) => classToClass(PipelineDraft, entity));
   }
 
   async get(

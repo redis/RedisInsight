@@ -24,7 +24,7 @@ export class PipelineDraftService {
   ): Promise<PipelineDraft> {
     this.logger.debug('Creating pipeline draft', sessionMetadata);
 
-    const rdi = await this.rdiRepository.get(rdiInstanceId);
+    const rdi = await this.rdiRepository.get(rdiInstanceId, true);
     if (!rdi) {
       throw new NotFoundException(
         `RDI instance with id ${rdiInstanceId} was not found`,
