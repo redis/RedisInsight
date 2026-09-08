@@ -5,7 +5,7 @@ import { mockSessionMetadata } from 'src/__mocks__';
 import { PipelineDraftController } from './pipeline-draft.controller';
 import { PipelineDraftService } from './pipeline-draft.service';
 import { pipelineDraftFactory } from './__tests__/pipeline-draft.factory';
-import { CreatePipelineDraftDto } from './dto';
+import { CreatePipelineDraftDto, UpdatePipelineDraftDto } from './dto';
 
 const mockRdiInstanceId = faker.string.uuid();
 
@@ -131,6 +131,17 @@ describe('PipelineDraftController', () => {
       );
 
       expect(result).toEqual(updatedDraft);
+    });
+
+    it('should reject null data instead of treating it as an omitted field', async () => {
+      const pipe = new ValidationPipe({ transform: true, whitelist: true });
+
+      await expect(
+        pipe.transform(
+          { data: null },
+          { type: 'body', metatype: UpdatePipelineDraftDto },
+        ),
+      ).rejects.toThrow();
     });
   });
 

@@ -4,6 +4,7 @@ import { NotFoundException } from '@nestjs/common';
 import { mockSessionMetadata } from 'src/__mocks__';
 import { PipelineDraftService } from './pipeline-draft.service';
 import { PipelineDraftRepository } from './repository/pipeline-draft.repository';
+import { RdiRepository } from './repository/rdi.repository';
 import {
   pipelineDraftFactory,
   createPipelineDraftDtoFactory,
@@ -19,9 +20,14 @@ const mockPipelineDraftRepository = () => ({
   delete: jest.fn(),
 });
 
+const mockRdiRepository = () => ({
+  get: jest.fn().mockResolvedValue({ id: mockRdiInstanceId }),
+});
+
 describe('PipelineDraftService', () => {
   let service: PipelineDraftService;
   let repository: ReturnType<typeof mockPipelineDraftRepository>;
+  let rdiRepository: ReturnType<typeof mockRdiRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,11 +37,16 @@ describe('PipelineDraftService', () => {
           provide: PipelineDraftRepository,
           useFactory: mockPipelineDraftRepository,
         },
+        {
+          provide: RdiRepository,
+          useFactory: mockRdiRepository,
+        },
       ],
     }).compile();
 
     service = module.get(PipelineDraftService);
     repository = module.get(PipelineDraftRepository);
+    rdiRepository = module.get(RdiRepository);
   });
 
   describe('create', () => {
@@ -58,6 +69,16 @@ describe('PipelineDraftService', () => {
         mockRdiInstanceId,
         dto,
       );
+    });
+
+    it('should throw NotFoundException when the rdi instance does not exist', async () => {
+      rdiRepository.get.mockResolvedValueOnce(null);
+      const dto = createPipelineDraftDtoFactory.build();
+
+      await expect(
+        service.create(mockSessionMetadata, mockRdiInstanceId, dto),
+      ).rejects.toThrow(NotFoundException);
+      expect(repository.create).not.toHaveBeenCalled();
     });
   });
 

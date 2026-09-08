@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,7 @@ export class PipelineDraftEntity {
   id: string;
 
   @Expose()
+  @Index('IDX_pipeline_draft_rdiInstanceId')
   @Column({ nullable: false })
   rdiInstanceId: string;
 

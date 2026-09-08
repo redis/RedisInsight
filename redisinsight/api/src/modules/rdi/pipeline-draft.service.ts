@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { SessionMetadata } from 'src/common/models';
 import { PipelineDraft } from 'src/modules/rdi/models';
 import { PipelineDraftRepository } from 'src/modules/rdi/repository/pipeline-draft.repository';
+import { RdiRepository } from 'src/modules/rdi/repository/rdi.repository';
 import {
   CreatePipelineDraftDto,
   UpdatePipelineDraftDto,
@@ -11,7 +12,10 @@ import {
 export class PipelineDraftService {
   private logger = new Logger('PipelineDraftService');
 
-  constructor(private readonly repository: PipelineDraftRepository) {}
+  constructor(
+    private readonly repository: PipelineDraftRepository,
+    private readonly rdiRepository: RdiRepository,
+  ) {}
 
   async create(
     sessionMetadata: SessionMetadata,
@@ -19,6 +23,14 @@ export class PipelineDraftService {
     dto: CreatePipelineDraftDto,
   ): Promise<PipelineDraft> {
     this.logger.debug('Creating pipeline draft', sessionMetadata);
+
+    const rdi = await this.rdiRepository.get(rdiInstanceId);
+    if (!rdi) {
+      throw new NotFoundException(
+        `RDI instance with id ${rdiInstanceId} was not found`,
+      );
+    }
+
     return this.repository.create(sessionMetadata, rdiInstanceId, dto);
   }
 

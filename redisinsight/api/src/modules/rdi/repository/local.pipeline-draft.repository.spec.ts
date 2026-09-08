@@ -246,9 +246,52 @@ describe('LocalPipelineDraftRepository', () => {
         {},
       );
 
-      // the value handed to encryption is the entity's single-encoded JSON
-      // string, unchanged - not JSON.stringify'd a second time on top of it
       expect(encryptionService.encrypt).toHaveBeenCalledWith(entity.data);
+    });
+
+    it('should not save when the existing draft fails to decrypt, instead of wiping it with null', async () => {
+      const decryptionError = new Error('decryption failed');
+      mockEncryptionServiceFactory.mockReturnValueOnce({
+        getAvailableEncryptionStrategies: jest.fn(),
+        isEncryptionAvailable: jest.fn().mockResolvedValue(true),
+        encrypt: jest.fn().mockResolvedValue(mockEncryptResult),
+        decrypt: jest.fn().mockRejectedValue(decryptionError),
+        getEncryptionStrategy: jest.fn(),
+      });
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          LocalPipelineDraftRepository,
+          {
+            provide: getRepositoryToken(PipelineDraftEntity),
+            useFactory: mockRepository,
+          },
+          {
+            provide: EncryptionService,
+            useFactory: mockEncryptionServiceFactory,
+          },
+        ],
+      }).compile();
+
+      const failingRepository = module.get(LocalPipelineDraftRepository);
+      const failingTypeormRepo = module.get(
+        getRepositoryToken(PipelineDraftEntity),
+      );
+      const entity = pipelineDraftEntityFactory.build({
+        rdiInstanceId: mockRdiInstanceId,
+        encryption: 'KEYTAR',
+      });
+      failingTypeormRepo.findOneBy.mockResolvedValueOnce(entity);
+
+      await expect(
+        failingRepository.update(
+          mockSessionMetadata,
+          mockRdiInstanceId,
+          entity.id,
+          {},
+        ),
+      ).rejects.toThrow(decryptionError);
+      expect(failingTypeormRepo.save).not.toHaveBeenCalled();
     });
   });
 

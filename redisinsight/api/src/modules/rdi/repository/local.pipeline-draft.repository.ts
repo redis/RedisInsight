@@ -119,14 +119,14 @@ export class LocalPipelineDraftRepository extends PipelineDraftRepository {
       throw new NotFoundException(`Pipeline draft with id ${id} was not found`);
     }
 
-    const decrypted = await this.modelEncryptor.decryptEntity(existing, true);
+    // must not ignore decryption errors here, or a failure would fall
+    // through to `decryptedData` below and overwrite valid ciphertext with null
+    const decrypted = await this.modelEncryptor.decryptEntity(existing);
     const { data: updatedData, ...restUpdateData } = omitBy(data, isUndefined);
     const { data: decryptedData, ...restDecrypted } = decrypted;
 
-    // `decryptedData` is already the entity's JSON-string representation of
-    // `data`, so it must be assigned directly rather than passed through
-    // plainToInstance - going through @DataAsJsonString() again would
-    // JSON.stringify an already-stringified value
+    // decryptedData is already a JSON string; plainToInstance would run it
+    // through @DataAsJsonString() again and double-encode it
     const merged = plainToInstance(PipelineDraftEntity, {
       ...restDecrypted,
       ...restUpdateData,
