@@ -156,7 +156,10 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
   private async getTLSConfig(database: Database): Promise<ConnectionOptions> {
     let config: ConnectionOptions;
     config = {
-      rejectUnauthorized: database.verifyServerCert,
+      // Node treats a missing rejectUnauthorized as true. verifyServerCert is
+      // optional and defaults to false (unchecked "Verify TLS Certificate");
+      // older rows and test-connection payloads leave it null/undefined.
+      rejectUnauthorized: database.verifyServerCert === true,
       checkServerIdentity: this.dummyFn,
       servername: database.tlsServername || undefined,
     };

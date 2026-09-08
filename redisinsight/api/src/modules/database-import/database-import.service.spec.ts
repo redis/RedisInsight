@@ -17,6 +17,7 @@ import {
   ConnectionType,
   Compressor,
 } from 'src/modules/database/entities/database.entity';
+import { DatabaseImportStatus } from 'src/modules/database-import/dto/database-import.response';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import {
@@ -297,6 +298,143 @@ describe('DatabaseImportService', () => {
           ]),
           compressor: Compressor.GZIP,
           tlsServername: 'redis-insight',
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should default verifyServerCert to true when importing tls without the flag', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: true,
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should keep an exported null verifyServerCert as unchecked', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+          verifyServerCert: null,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should keep an explicit false verifyServerCert on tls import', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          tls: true,
+          verifyServerCert: false,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
+          new: true,
+        },
+        false,
+      );
+    });
+    it('should reject a non-boolean verifyServerCert on tls import', async () => {
+      const result = await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          ssl: true,
+          sslOptions: { rejectUnauthorized: 'true' },
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).not.toHaveBeenCalled();
+      expect(result.status).toBe(DatabaseImportStatus.Fail);
+    });
+    it('should map sslOptions.rejectUnauthorized onto verifyServerCert', async () => {
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          ssl: true,
+          sslOptions: { rejectUnauthorized: false },
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...pick(mockDatabase, [
+            'host',
+            'port',
+            'name',
+            'connectionType',
+            'compressor',
+            'modules',
+            'environment',
+            'connectionFamily',
+          ]),
+          tls: true,
+          verifyServerCert: false,
           new: true,
         },
         false,
