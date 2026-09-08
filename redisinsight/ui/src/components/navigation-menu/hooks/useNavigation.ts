@@ -158,7 +158,8 @@ export function useNavigation() {
       tooltipText: t('navigation.page.pipeline.tooltip'),
       pageName: PageNames.rdiPipelineManagement,
       ariaLabel: t('navigation.page.pipeline.ariaLabel'),
-      onClick: () => handleGoPage(pipelineManagementPage),
+      onClick: () =>
+        connectedRdiInstanceId && handleGoPage(pipelineManagementPage),
       dataTestId: 'pipeline-management-page-btn',
       isActivePage: isPipelineManagementPath(),
       iconType: PipelineManagementIcon,

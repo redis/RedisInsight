@@ -19,6 +19,7 @@ import {
   resetPipelineManagement,
   setAppContextConnectedRdiInstanceId,
   setAppContextInitialState,
+  setLastPageContext,
 } from 'uiSrc/slices/app/context'
 import {
   resetCliHelperSettings,
@@ -136,6 +137,7 @@ describe('InstancePage', () => {
       setPipelineConfig(''),
       setPipelineJobs([]),
       resetPipelineManagement(),
+      setLastPageContext(''),
       setConnectedInstance(),
       setAppContextConnectedRdiInstanceId('rdiInstanceId'),
       resetConnectedDatabaseInstance(),
@@ -177,6 +179,7 @@ describe('InstancePage', () => {
       setPipelineConfig(''),
       setPipelineJobs([]),
       resetPipelineManagement(),
+      setLastPageContext(''),
       setConnectedInstance(),
     ]
 
@@ -468,6 +471,60 @@ describe('InstancePage', () => {
     expect(pushMock).not.toHaveBeenCalledWith(
       Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
     )
+  })
+
+  it('should not restore a lastPage left over from a previously viewed instance', async () => {
+    ;(appContextSelector as jest.Mock).mockReturnValue({
+      contextRdiInstanceId: 'previousInstanceId',
+      lastPage: PageNames.rdiStatistics,
+    })
+
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
+
+    await act(() =>
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(store.getActions()).toContainEqual(setLastPageContext(''))
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should not navigate when clicking the Pipeline tab while the connected instance id is not yet available', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest.fn().mockReturnValue({
+      pathname: Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    })
+    store.getState().rdi.instances.connectedInstance.id = ''
+
+    const { getByRole } = render(
+      <BrowserRouter>
+        <InstancePage {...instance(mockedProps)} />
+      </BrowserRouter>,
+    )
+    const pipelineTab = getByRole('tab', { name: 'Pipeline' })
+
+    await userEvent.click(pipelineTab)
+
+    expect(pushMock).not.toHaveBeenCalled()
   })
 
   it('should navigate to the v2 pipeline management page when clicking the Pipeline tab and the instance is eligible', async () => {

@@ -6,6 +6,7 @@ import {
   resetDatabaseContext,
   resetRdiContext,
   setAppContextConnectedRdiInstanceId,
+  setLastPageContext,
 } from 'uiSrc/slices/app/context'
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
 import {
@@ -62,6 +63,7 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   useEffect(() => {
     if (!contextRdiInstanceId || contextRdiInstanceId !== rdiInstanceId) {
       dispatch(resetRdiContext())
+      dispatch(setLastPageContext(''))
       dispatch(fetchConnectedInstanceAction(rdiInstanceId))
     }
     dispatch(setAppContextConnectedRdiInstanceId(rdiInstanceId))

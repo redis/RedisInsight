@@ -22,9 +22,6 @@ const PipelineManagementV2Page = () => {
 
   useEffect(
     () => () => {
-      // unmount - record this as the last visited RDI section, same as the
-      // legacy pipeline management page, so re-entering the instance's bare
-      // URL restores here instead of wherever lastPage was last set to
       dispatch(setLastPageContext(PageNames.rdiPipelineManagement))
     },
     [],
