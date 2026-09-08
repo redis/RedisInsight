@@ -2,6 +2,8 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { render, screen, cleanup, mockedStore } from 'uiSrc/utils/test-utils'
+import { PageNames } from 'uiSrc/constants'
+import { setLastPageContext } from 'uiSrc/slices/app/context'
 import PipelineManagementV2Page from './PipelineManagementV2Page'
 
 let store: typeof mockedStore
@@ -25,5 +27,15 @@ describe('PipelineManagementV2Page', () => {
     expect(
       screen.getByTestId('pipeline-management-v2-page'),
     ).toBeInTheDocument()
+  })
+
+  it('should record itself as the last visited rdi section on unmount', () => {
+    const { unmount } = renderPage()
+
+    unmount()
+
+    expect(store.getActions()).toContainEqual(
+      setLastPageContext(PageNames.rdiPipelineManagement),
+    )
   })
 })
