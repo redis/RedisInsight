@@ -213,6 +213,7 @@
     "html-webpack-plugin": "^5.6.8",
     "i18next-cli": "^1",
     "identity-obj-proxy": "^3.0.0",
+    "istanbul-lib-coverage": "^3.2.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fixed-jsdom": "^0.0.11",
