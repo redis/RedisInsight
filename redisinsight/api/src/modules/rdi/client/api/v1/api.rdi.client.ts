@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 import axios, { AxiosInstance } from 'axios';
 import { plainToInstance } from 'class-transformer';
-import { HttpStatus, Logger } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Logger } from '@nestjs/common';
 
 import { RdiClient } from 'src/modules/rdi/client/rdi.client';
 import {
@@ -38,6 +38,8 @@ import {
   RdiClientMetadata,
   Rdi,
   RdiPipelineStatus,
+  RdiProxyRequest,
+  RdiProxyResponse,
 } from 'src/modules/rdi/models';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
@@ -348,6 +350,77 @@ export class ApiRdiClient extends RdiClient {
 
     if (expiresIn < TOKEN_THRESHOLD) {
       await this.connect();
+    }
+  }
+
+  async proxyRequest({
+    method,
+    path,
+    query,
+    body,
+    headers,
+  }: RdiProxyRequest): Promise<RdiProxyResponse> {
+    const requestUrl = query ? `${path}?${query}` : path;
+    this.assertPathWithinRdiBase(requestUrl);
+
+    // Non-2xx responses are part of the RDI API contract the UI's SDK handles
+    // itself, so pass them through instead of throwing.
+    const response = await this.client.request({
+      method,
+      url: requestUrl,
+      data: body,
+      headers,
+      validateStatus: null,
+      // `path` is caller-controlled; without this, axios lets an
+      // absolute/scheme-relative path override baseURL and send our
+      // Authorization header to an arbitrary host (SSRF)
+      allowAbsoluteUrls: false,
+      // return 3xx to the caller instead of following it server-side - a
+      // followed Location could point our backend (not just the browser) at
+      // an arbitrary/internal host, which allowAbsoluteUrls doesn't cover
+      maxRedirects: 0,
+      // avoid axios parsing/re-serializing the body, which corrupts
+      // non-JSON, binary, or already-encoded upstream responses
+      responseType: 'arraybuffer',
+    });
+
+    return {
+      status: response.status,
+      headers: response.headers as Record<string, string>,
+      data: response.data,
+    };
+  }
+
+  /**
+   * `rdi.url` may itself have a path (RDI hosted under a subpath, e.g.
+   * https://host/rdi). allowAbsoluteUrls only stops an absolute/scheme
+   * -relative path from overriding the origin - a relative `../` segment
+   * still normalizes past that subpath once combined with the base URL, so
+   * check the resolved target stays under it.
+   */
+  private assertPathWithinRdiBase(requestUrl: string): void {
+    const baseUrl = new URL(this.rdi.url);
+    const basePath = baseUrl.pathname.replace(/\/+$/, '');
+
+    if (!basePath) {
+      return;
+    }
+
+    // mirrors axios's own combineURLs (plain concatenation), not WHATWG
+    // relative-URL resolution - the latter would drop the base's last path
+    // segment as if it were a filename, which isn't how axios joins these
+    const resolved = new URL(
+      `${basePath}/${requestUrl.replace(/^\/+/, '')}`,
+      baseUrl.origin,
+    );
+
+    if (
+      resolved.pathname !== basePath &&
+      !resolved.pathname.startsWith(`${basePath}/`)
+    ) {
+      throw new ForbiddenException(
+        'Requested path is outside the configured RDI instance URL',
+      );
     }
   }
 
