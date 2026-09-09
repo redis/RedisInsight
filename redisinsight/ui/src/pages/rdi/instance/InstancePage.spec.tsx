@@ -95,7 +95,8 @@ describe('InstancePage', () => {
   })
 
   it('should call proper actions with resetting context', async () => {
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: '',
     })
 
@@ -154,7 +155,8 @@ describe('InstancePage', () => {
   })
 
   it('should fetch rdi instance info', async () => {
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: 'prevId',
     })
 
@@ -201,7 +203,8 @@ describe('InstancePage', () => {
     // the v1/v2 decision only fires once the store has processed this
     // instance's own reset+fetch cycle (contextRdiInstanceId) and it has
     // finished loading
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
     })
     store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
@@ -232,7 +235,8 @@ describe('InstancePage', () => {
     reactRouterDom.useLocation = jest
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
     })
     store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
@@ -265,7 +269,8 @@ describe('InstancePage', () => {
     reactRouterDom.useLocation = jest
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
     })
     store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
@@ -298,7 +303,8 @@ describe('InstancePage', () => {
     reactRouterDom.useLocation = jest
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
     })
     store.getState().rdi.instances.connectedInstance.id = ''
@@ -333,7 +339,8 @@ describe('InstancePage', () => {
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
     // contextRdiInstanceId hasn't caught up to this instance yet, even
     // though a stale error from a different instance is still in the store
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: 'previousInstanceId',
     })
     store.getState().rdi.instances.connectedInstance.id = ''
@@ -367,7 +374,8 @@ describe('InstancePage', () => {
     reactRouterDom.useLocation = jest
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK) })
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
     })
     store.getState().rdi.instances.connectedInstance.id = ''
@@ -417,7 +425,8 @@ describe('InstancePage', () => {
   })
 
   it('should redirect to rdi pipeline statistics page', async () => {
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
       lastPage: PageNames.rdiStatistics,
     })
@@ -474,7 +483,8 @@ describe('InstancePage', () => {
   })
 
   it('should not restore a lastPage left over from a previously viewed instance', async () => {
-    ;(appContextSelector as jest.Mock).mockReturnValue({
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
       contextRdiInstanceId: 'previousInstanceId',
       lastPage: PageNames.rdiStatistics,
     })
