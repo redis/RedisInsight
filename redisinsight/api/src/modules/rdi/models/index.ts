@@ -6,3 +6,4 @@ export * from './rdi-dry-run';
 export * from './rdi-statistics';
 export * from './rdi-info';
 export * from './rdi.pipeline.status';
+export * from './rdi-proxy';

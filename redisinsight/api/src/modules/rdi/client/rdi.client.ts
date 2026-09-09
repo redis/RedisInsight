@@ -3,6 +3,8 @@ import {
   RdiClientMetadata,
   RdiPipeline,
   RdiPipelineStatus,
+  RdiProxyRequest,
+  RdiProxyResponse,
   RdiStatisticsResult,
 } from 'src/modules/rdi/models';
 import {
@@ -69,6 +71,15 @@ export abstract class RdiClient {
   abstract ensureAuth(): Promise<void>;
 
   abstract connect(): Promise<void>;
+
+  /**
+   * Forwards an arbitrary request to the RDI instance's native API, reusing this
+   * client's base URL and bearer token.
+   *
+   * Needed by the @rdi-ui/pipeline pipeline management UI, which speaks the
+   * native RDI API directly instead of RedisInsight's curated /rdi endpoints.
+   */
+  abstract proxyRequest(request: RdiProxyRequest): Promise<RdiProxyResponse>;
 
   public setLastUsed(): void {
     this.lastUsed = Date.now();
