@@ -1,6 +1,6 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui'
 import { TFunction } from 'i18next'
-import { KeyValueFormat, SortOrder } from './keys'
+import { SortOrder } from './keys'
 
 export const DEFAULT_DELIMITER: EuiComboBoxOptionOption = {
   label: ':',
@@ -13,33 +13,11 @@ export const getTextUnprintableCharacters = (t: TFunction) => ({
   title: t('browser.keyDetails.unprintable.title'),
   content: t('browser.keyDetails.unprintable.content'),
 })
-export const TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA =
-  'This action is disabled because the key or value is too large to process within Redis Insight.'
-export const AXIOS_ERROR_DISABLED_ACTION_WITH_TRUNCATED_DATA = {
-  response: {
-    data: {
-      message: TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-    },
-  },
-}
-export const TEXT_CONSUMER_GROUP_NAME_TOO_LONG =
-  'The consumer group name is too long, details cannot be displayed.'
-export const TEXT_CONSUMER_NAME_TOO_LONG =
-  'The consumer name is too long, details cannot be displayed.'
-export const TEXT_DISABLED_FORMATTER_EDITING =
-  'Cannot edit the value in this format'
-export const TEXT_DISABLED_STRING_EDITING = 'Load the entire value to edit it'
 
 export const getTextInvalidValue = (t: TFunction) => ({
   title: t('browser.keyDetails.invalidValue.title'),
   text: t('browser.keyDetails.invalidValue.text'),
 })
-
-export const TEXT_DISABLED_COMPRESSED_VALUE: string =
-  'Cannot edit the decompressed value'
-
-export const TEXT_FAILED_CONVENT_FORMATTER = (format: KeyValueFormat) =>
-  `Failed to convert to ${format}`
 
 export const DATABASE_OVERVIEW_REFRESH_INTERVAL =
   riConfig.browser.databaseOverviewRefreshInterval

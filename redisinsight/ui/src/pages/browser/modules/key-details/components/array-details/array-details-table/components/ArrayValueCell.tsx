@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  TEXT_FAILED_CONVENT_FORMATTER,
   getTextInvalidValue,
   getTextUnprintableCharacters,
 } from 'uiSrc/constants'
@@ -106,7 +105,9 @@ export const ArrayValueCell = ({
           title={
             isValid
               ? t('browser.array.column.value')
-              : TEXT_FAILED_CONVENT_FORMATTER(viewFormat)
+              : t('browser.keyDetails.failedConvertFormatter', {
+                  format: viewFormat,
+                })
           }
           tooltipContent={tooltipContent}
           position="bottom"

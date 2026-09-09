@@ -5,6 +5,7 @@ import { getGroupTypeDisplay } from 'uiSrc/utils'
 
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { DeleteButton, StyledGroupBadge } from './GroupBadge.styles'
 
@@ -24,6 +25,7 @@ const GroupBadge = ({
   onDelete,
   compressed,
 }: Props) => {
+  const { t } = useTranslation()
   // @ts-ignore
   const backgroundColor = GROUP_TYPES_COLORS[type] ?? 'var(--defaultTypeColor)'
   return (
@@ -51,7 +53,7 @@ const GroupBadge = ({
         <DeleteButton
           size="XS"
           icon={CancelSlimIcon}
-          aria-label="Delete"
+          aria-label={t('common.button.delete')}
           onClick={() => onDelete(type)}
           data-testid={`${type}-delete-btn`}
         />

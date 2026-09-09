@@ -7,7 +7,7 @@ import { ParseKeys } from 'i18next'
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
 import { handlePasteHostName } from 'uiSrc/utils'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 
 import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
@@ -79,6 +79,7 @@ const ClusterConnectionForm = (props: Props) => {
   } = props
 
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
 
   const hostInfo: RiInfoIconProps = {
     content: HostInfoTooltipContent({ includeAutofillInfo: true, t }),

@@ -1,7 +1,7 @@
 import React from 'react'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components/base'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { useTranslation } from 'uiSrc/i18n'
 
 import { type SubmitButtonProps } from './SubmitButton.types'
@@ -12,6 +12,7 @@ export const SubmitButton = ({
   onClick,
 }: SubmitButtonProps) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
 
   return (
     <RiTooltip

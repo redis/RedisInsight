@@ -7,6 +7,7 @@ import { remarkRedisInsightLink } from 'uiSrc/utils/formatters/markdown/remarkRe
 import { safeUrl } from 'uiSrc/utils/formatters/markdown/safeUrl'
 import { getFileUrlFromMd } from 'uiSrc/utils/pathUtil'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
+import i18n from 'uiSrc/i18n'
 import {
   MarkdownRendererProps,
   MarkdownLeafComponents,
@@ -122,7 +123,7 @@ export const makeLinkElement = (
     // before sanitization runs.
     if (title === 'Redis Cloud') {
       if (!CloudLink) return <>{linkChildren}</>
-      return <CloudLink url={href} text={text || 'Redis Cloud'} />
+      return <CloudLink url={href} text={text || i18n.t('common.redisCloud')} />
     }
 
     if (IS_ABSOLUTE_PATH.test(href)) {

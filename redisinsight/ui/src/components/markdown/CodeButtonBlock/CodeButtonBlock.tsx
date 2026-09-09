@@ -38,6 +38,7 @@ import {
 import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule, Environment } from 'apiClient'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { RunConfirmationPopover } from './components'
 import styles from './styles.module.scss'
@@ -78,6 +79,7 @@ const CodeButtonBlock = (props: Props) => {
   const [isRan, setIsRan] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
   const { environment } = useDatabaseEnvironment()
   const isProduction = environment === Environment.Production
@@ -200,7 +202,7 @@ const CodeButtonBlock = (props: Props) => {
             className={cx(styles.actionBtn, styles.copyBtn)}
             data-testid={`copy-btn-${label}`}
           >
-            Copy
+            {t('common.button.copy')}
           </EmptyButton>
           {!isRunButtonHidden && (
             <RiPopover
@@ -215,10 +217,10 @@ const CodeButtonBlock = (props: Props) => {
                 <RiTooltip
                   content={
                     isProduction
-                      ? 'Button disabled for your production database to avoid accidental data modifications.'
+                      ? t('workbench.codeButton.productionDisabledTooltip')
                       : isPopoverOpen
                         ? undefined
-                        : 'Open Workbench in the top navbar to see the command results.'
+                        : t('workbench.codeButton.openWorkbenchTooltip')
                   }
                   data-testid="run-btn-open-workbench-tooltip"
                 >
@@ -233,7 +235,7 @@ const CodeButtonBlock = (props: Props) => {
                     {...rest}
                     data-testid={`run-btn-${label}`}
                   >
-                    Run
+                    {t('common.button.run')}
                   </EmptyButton>
                 </RiTooltip>
               }

@@ -2,7 +2,7 @@ import React from 'react'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components/base'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { useTranslation } from 'uiSrc/i18n'
 
 import { type SubmitButtonProps } from './SubmitButton.types'
@@ -26,6 +26,7 @@ export const SubmitButton = ({
   isDisabled,
 }: SubmitButtonProps) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   let title: string | null = null
   let content: string | null = null
   const emptyAliases = selection.filter(({ alias }) => !alias)

@@ -17,11 +17,7 @@ import {
 } from 'uiSrc/slices/browser/stream'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import {
-  KeyTypes,
-  TableCellTextAlignment,
-  TEXT_FAILED_CONVENT_FORMATTER,
-} from 'uiSrc/constants'
+import { KeyTypes, TableCellTextAlignment } from 'uiSrc/constants'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
@@ -161,7 +157,9 @@ const StreamDataViewWrapper = (props: Props) => {
                           title={
                             isValid
                               ? 'Field'
-                              : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                              : t('browser.keyDetails.failedConvertFormatter', {
+                                  format: viewFormatProp,
+                                })
                           }
                           tooltipContent={tooltipContent}
                         />
@@ -299,7 +297,9 @@ const StreamDataViewWrapper = (props: Props) => {
               title={
                 isValid
                   ? 'Value'
-                  : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                  : t('browser.keyDetails.failedConvertFormatter', {
+                      format: viewFormatProp,
+                    })
               }
               tooltipContent={tooltipContent}
               expanded={expanded}

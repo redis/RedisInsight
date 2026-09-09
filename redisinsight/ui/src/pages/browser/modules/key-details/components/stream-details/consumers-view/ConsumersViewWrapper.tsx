@@ -11,11 +11,7 @@ import {
 } from 'uiSrc/slices/browser/stream'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import {
-  TableCellAlignment,
-  TableCellTextAlignment,
-  TEXT_CONSUMER_GROUP_NAME_TOO_LONG,
-} from 'uiSrc/constants'
+import { TableCellAlignment, TableCellTextAlignment } from 'uiSrc/constants'
 import { StreamViewType } from 'uiSrc/slices/interfaces/stream'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import {
@@ -221,7 +217,9 @@ const ConsumersViewWrapper = (props: Props) => {
         onSelectConsumer={handleSelectConsumer}
         {...props}
         noItemsMessageString={
-          isTruncatedGroupName ? TEXT_CONSUMER_GROUP_NAME_TOO_LONG : undefined
+          isTruncatedGroupName
+            ? t('browser.stream.groups.nameTooLong')
+            : undefined
         }
       />
     </>

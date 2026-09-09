@@ -10,6 +10,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {
@@ -22,6 +23,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
   props: Props<T>,
 ) => {
   const { selection, onDelete, subTitle } = props
+  const { t } = useTranslation()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   const onButtonClick = () => {
@@ -40,7 +42,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       className={styles.actionBtn}
       data-testid="delete-btn"
     >
-      Delete
+      {t('common.button.delete')}
     </PrimaryButton>
   )
 
@@ -80,7 +82,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
           className={styles.popoverDeleteBtn}
           data-testid="delete-selected-dbs"
         >
-          Delete
+          {t('common.button.delete')}
         </DestructiveButton>
       </div>
     </RiPopover>

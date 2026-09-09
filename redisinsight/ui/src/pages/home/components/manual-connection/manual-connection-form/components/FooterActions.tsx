@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormikErrors } from 'formik'
 import { ParseKeys } from 'i18next'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
@@ -27,6 +27,7 @@ export interface Props {
 
 const FooterActions = (props: Props) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const {
     isLoading,
     submitButtonText,

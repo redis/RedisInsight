@@ -7,7 +7,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import * as keys from 'uiSrc/constants/keys'
 import { validateField } from 'uiSrc/utils/validations'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 import { CloudConnectionOptions } from 'uiSrc/pages/home/constants'
@@ -57,6 +57,7 @@ const fieldDisplayNames: Record<keyof Values, ParseKeys> = {
 
 const CloudConnectionForm = (props: Props) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const { accessKey, secretKey, onClose, onSubmit, loading } = props
 
   const options = [

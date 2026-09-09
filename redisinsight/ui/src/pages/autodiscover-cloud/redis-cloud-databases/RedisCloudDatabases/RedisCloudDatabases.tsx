@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { map, pick } from 'lodash'
 
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -60,6 +60,7 @@ const RedisCloudDatabasesPage = ({
   onSubmit,
 }: Props) => {
   const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const loadingMsg = t('autodiscover.cloud.loading')
   const notFoundMsg = t('autodiscover.cloud.notFound')
   const noResultsMessage = t('autodiscover.cloud.databases.noResults')

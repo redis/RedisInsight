@@ -1,13 +1,7 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
-import {
-  KeyValueCompressor,
-  KeyValueFormat,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-} from 'uiSrc/constants'
+import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
 import { hashDataSelector } from 'uiSrc/slices/browser/hash'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { anyToBuffer, bufferToString } from 'uiSrc/utils'
@@ -221,7 +215,7 @@ describe('HashDetailsTable', () => {
 
       await waitForRiTooltipVisible()
       expect(screen.getByTestId('hash_edit-tooltip-1')).toHaveTextContent(
-        TEXT_DISABLED_FORMATTER_EDITING,
+        'Cannot edit the value in this format',
       )
     },
   )
@@ -294,7 +288,7 @@ describe('HashDetailsTable', () => {
 
       expect(editBtn).toBeDisabled()
       expect(screen.getByTestId('hash_edit-tooltip-1')).toHaveTextContent(
-        TEXT_DISABLED_COMPRESSED_VALUE,
+        'Cannot edit the decompressed value',
       )
       expect(queryByTestId('hash_value-editor-1')).not.toBeInTheDocument()
     })
@@ -337,7 +331,9 @@ describe('HashDetailsTable', () => {
         screen.getByTestId(
           `remove-hash-button-${MOCK_TRUNCATED_STRING_VALUE}-tooltip`,
         ),
-      ).toHaveTextContent(TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA)
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
     })
 
     it('should disable editing value when entry value is truncated', async () => {
@@ -361,7 +357,9 @@ describe('HashDetailsTable', () => {
 
       expect(
         screen.getByTestId('hash_edit-tooltip-regular-field'),
-      ).toHaveTextContent(TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA)
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
 
       fireEvent.click(editButton)
       expect(
@@ -395,7 +393,9 @@ describe('HashDetailsTable', () => {
 
       expect(
         screen.getByTestId(`hash_edit-tooltip-${MOCK_TRUNCATED_STRING_VALUE}`),
-      ).toHaveTextContent(TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA)
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
 
       fireEvent.click(editButton)
       expect(
@@ -431,7 +431,9 @@ describe('HashDetailsTable', () => {
         screen.getByTestId(
           `hash-ttl_edit-tooltip-${MOCK_TRUNCATED_STRING_VALUE}`,
         ),
-      ).toHaveTextContent(TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA)
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
     })
   })
 })

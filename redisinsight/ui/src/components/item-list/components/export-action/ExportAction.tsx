@@ -11,6 +11,7 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {
@@ -23,6 +24,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
   props: Props<T>,
 ) => {
   const { selection, onExport, subTitle } = props
+  const { t } = useTranslation()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [withSecrets, setWithSecrets] = useState(true)
 
@@ -34,7 +36,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
       className={styles.actionBtn}
       data-testid="export-btn"
     >
-      Export
+      {t('common.button.export')}
     </PrimaryButton>
   )
 
@@ -67,7 +69,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
         <Checkbox
           id="export-passwords"
           name="export-passwords"
-          label="Export passwords"
+          label={t('itemList.exportAction.exportPasswords')}
           checked={withSecrets}
           onChange={(e) => setWithSecrets(e.target.checked)}
           data-testid="export-passwords"
@@ -83,7 +85,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
           }}
           data-testid="export-selected-dbs"
         >
-          Export
+          {t('common.button.export')}
         </PrimaryButton>
       </div>
     </RiPopover>

@@ -3,6 +3,7 @@ import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoad
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 
 export type ConnectivityErrorProps = {
   onRetry?: () => void
@@ -14,18 +15,23 @@ const ConnectivityError = ({
   isLoading,
   error,
   onRetry,
-}: ConnectivityErrorProps) => (
-  <Col centered>
-    {isLoading && <SuspenseLoader />}
-    <Col centered gap="xl">
-      <FlexItem data-testid="connectivity-error-message">{error}</FlexItem>
-      {onRetry && (
-        <FlexItem>
-          <PrimaryButton onClick={onRetry}>Retry</PrimaryButton>
-        </FlexItem>
-      )}
+}: ConnectivityErrorProps) => {
+  const { t } = useTranslation()
+  return (
+    <Col centered>
+      {isLoading && <SuspenseLoader />}
+      <Col centered gap="xl">
+        <FlexItem data-testid="connectivity-error-message">{error}</FlexItem>
+        {onRetry && (
+          <FlexItem>
+            <PrimaryButton onClick={onRetry}>
+              {t('common.button.retry')}
+            </PrimaryButton>
+          </FlexItem>
+        )}
+      </Col>
     </Col>
-  </Col>
-)
+  )
+}
 
 export default ConnectivityError

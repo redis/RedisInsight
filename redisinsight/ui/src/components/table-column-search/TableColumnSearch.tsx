@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
 import { SearchInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -18,6 +19,7 @@ const TableColumnSearch = (props: Props) => {
     onApply = () => {},
     searchValidation,
   } = props
+  const { t } = useTranslation()
   const [value, setValue] = useState<string>('')
 
   const handleChangeValue = (initValue: string) => {
@@ -42,7 +44,7 @@ const TableColumnSearch = (props: Props) => {
       <SearchInput
         onKeyDown={onKeyDown}
         name={fieldName}
-        placeholder="Search"
+        placeholder={t('common.search.placeholder')}
         value={value || ''}
         onChange={handleChangeValue}
         data-testid="search"

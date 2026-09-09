@@ -13,6 +13,7 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
+import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -20,6 +21,7 @@ import InstancesNavigationPopover from '../instance-header/components/instances-
 import styles from './styles.module.scss'
 
 const RdiInstanceHeader = () => {
+  const { t } = useTranslation()
   const { name = '' } = useAppSelector(connectedInstanceSelector)
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
@@ -43,16 +45,19 @@ const RdiInstanceHeader = () => {
           data-testid="breadcrumbs-container"
         >
           <div>
-            <RiTooltip position="bottom" content="My RDI instances">
+            <RiTooltip
+              position="bottom"
+              content={t('rdiInstanceHeader.myRdiInstances')}
+            >
               <Link
                 color="subdued"
                 underline
                 variant="inline"
-                aria-label="My RDI instances"
+                aria-label={t('rdiInstanceHeader.myRdiInstances')}
                 data-testid="my-rdi-instances-btn"
                 onClick={goHome}
               >
-                Data integration
+                {t('rdiInstanceHeader.dataIntegration')}
               </Link>
             </RiTooltip>
           </div>
