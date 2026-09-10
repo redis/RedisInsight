@@ -24,6 +24,7 @@ import { CustomTutorialModule } from 'src/modules/custom-tutorial/custom-tutoria
 import { CloudModule } from 'src/modules/cloud/cloud.module';
 import { AzureModule } from 'src/modules/azure/azure.module';
 import { RdiModule } from 'src/modules/rdi/rdi.module';
+import { AgentMemoryModule } from 'src/modules/agent-memory/agent-memory.module';
 import { AiChatModule } from 'src/modules/ai/chat/ai-chat.module';
 import { AiQueryModule } from 'src/modules/ai/query/ai-query.module';
 import { InitModule } from 'src/modules/init/init.module';
@@ -78,6 +79,7 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
     AiChatModule,
     AiQueryModule.register(),
     RdiModule.register(),
+    AgentMemoryModule.register(),
     StaticsManagementModule.register({
       initDefaults: STATICS_CONFIG.initDefaults,
       autoUpdate: STATICS_CONFIG.autoUpdate,
