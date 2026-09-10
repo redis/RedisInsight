@@ -754,6 +754,24 @@ describe('ApiRdiClient', () => {
     it('should return the raw 3xx response instead of following it server-side', async () => {
       mockedAxios.request.mockResolvedValueOnce({
         status: 307,
+        headers: { location: 'http://localhost:4000/api/v1/pipelines/new' },
+        data: null,
+      });
+
+      const result = await client.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines/old',
+      });
+
+      expect(result.status).toBe(307);
+      expect(result.headers.location).toBe(
+        'http://localhost:4000/api/v1/pipelines/new',
+      );
+    });
+
+    it('should strip a redirect Location that points to a different origin', async () => {
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 307,
         headers: { location: 'https://elsewhere.example/other' },
         data: null,
       });
@@ -764,7 +782,67 @@ describe('ApiRdiClient', () => {
       });
 
       expect(result.status).toBe(307);
-      expect(result.headers.location).toBe('https://elsewhere.example/other');
+      expect(result.headers.location).toBeUndefined();
+    });
+
+    it('should strip a redirect Location that escapes the rdi url subpath', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 307,
+        headers: { location: 'http://localhost:4000/admin' },
+        data: null,
+      });
+
+      const result = await scopedClient.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines/old',
+      });
+
+      expect(result.status).toBe(307);
+      expect(result.headers.location).toBeUndefined();
+    });
+
+    it('should keep a relative redirect Location that stays within the rdi url subpath', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 307,
+        headers: { location: '/rdi/api/v1/pipelines/new' },
+        data: null,
+      });
+
+      const result = await scopedClient.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines/old',
+      });
+
+      expect(result.status).toBe(307);
+      expect(result.headers.location).toBe('/rdi/api/v1/pipelines/new');
+    });
+
+    it('should strip a redirect Location that escapes the rdi url subpath via an encoded ..%2f', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+      mockedAxios.request.mockResolvedValueOnce({
+        status: 307,
+        headers: { location: '/rdi/..%2f..%2fadmin' },
+        data: null,
+      });
+
+      const result = await scopedClient.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines/old',
+      });
+
+      expect(result.status).toBe(307);
+      expect(result.headers.location).toBeUndefined();
     });
 
     it('should allow a request path when the rdi url has no subpath', async () => {
@@ -809,6 +887,52 @@ describe('ApiRdiClient', () => {
       ).rejects.toThrow(
         'Requested path is outside the configured RDI instance URL',
       );
+      expect(mockedAxios.request).not.toHaveBeenCalled();
+    });
+
+    it('should reject a request path that escapes the rdi url subpath via an encoded ..%2f', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+
+      await expect(
+        scopedClient.proxyRequest({
+          method: 'GET',
+          path: 'foo/..%2f..%2fadmin',
+        }),
+      ).rejects.toThrow(
+        'Requested path is outside the configured RDI instance URL',
+      );
+      expect(mockedAxios.request).not.toHaveBeenCalled();
+    });
+
+    it('should reject a request path that escapes the rdi url subpath via %2e%2e%2f', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+
+      await expect(
+        scopedClient.proxyRequest({
+          method: 'GET',
+          path: '%2e%2e%2fadmin',
+        }),
+      ).rejects.toThrow(
+        'Requested path is outside the configured RDI instance URL',
+      );
+      expect(mockedAxios.request).not.toHaveBeenCalled();
+    });
+
+    it('should reject a request path with malformed percent-encoding', async () => {
+      const scopedClient = new ApiRdiClient(mockRdiClientMetadata, {
+        ...mockRdi,
+        url: 'http://localhost:4000/rdi',
+      });
+
+      await expect(
+        scopedClient.proxyRequest({ method: 'GET', path: 'foo%' }),
+      ).rejects.toThrow('Requested path is malformed');
       expect(mockedAxios.request).not.toHaveBeenCalled();
     });
 

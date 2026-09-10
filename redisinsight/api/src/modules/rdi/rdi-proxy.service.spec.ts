@@ -55,7 +55,11 @@ describe('RdiProxyService', () => {
       expect(client.setLastUsed).toHaveBeenCalled();
       expect(result).toEqual({
         status: 200,
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          'content-security-policy': 'sandbox',
+          'x-content-type-options': 'nosniff',
+        },
         data: { ok: true },
       });
     });
@@ -106,7 +110,34 @@ describe('RdiProxyService', () => {
         path: 'api/v1/pipelines',
       });
 
-      expect(result.headers).toEqual({ 'content-type': 'application/json' });
+      expect(result.headers).toEqual({
+        'content-type': 'application/json',
+        'content-security-policy': 'sandbox',
+        'x-content-type-options': 'nosniff',
+      });
+    });
+
+    it('should force a sandboxed CSP and nosniff, overriding any values RDI sends', async () => {
+      client.proxyRequest.mockResolvedValueOnce({
+        status: 200,
+        headers: {
+          'content-type': 'text/html',
+          'content-security-policy': "default-src 'self' 'unsafe-inline'",
+          'x-content-type-options': 'none',
+        },
+        data: '<html><script>alert(1)</script></html>',
+      });
+
+      const result = await service.proxy(mockRdiClientMetadata, {
+        method: 'GET',
+        path: 'api/v1/pipelines',
+      });
+
+      expect(result.headers).toEqual({
+        'content-type': 'text/html',
+        'content-security-policy': 'sandbox',
+        'x-content-type-options': 'nosniff',
+      });
     });
   });
 });

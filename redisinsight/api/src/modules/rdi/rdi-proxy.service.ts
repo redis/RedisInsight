@@ -50,8 +50,23 @@ const STRIPPED_RESPONSE_HEADERS = new Set([
   // browsers act on this even for a plain fetch response - would let RDI
   // wipe RedisInsight's own cookies/storage since it comes from our origin
   'clear-site-data',
+  // overridden below with FORCED_RESPONSE_HEADERS, not just stripped
+  'content-security-policy',
+  'x-content-type-options',
 ]);
 const STRIPPED_RESPONSE_HEADER_PREFIXES = ['access-control-'];
+
+/**
+ * If RDI is compromised and returns e.g. `text/html`, opening the proxy URL
+ * as a document would otherwise render/execute that response under
+ * RedisInsight's own origin. `sandbox` only affects that document-navigation
+ * case - it doesn't touch the fetch/XHR responses the pipeline SDK actually
+ * consumes.
+ */
+const FORCED_RESPONSE_HEADERS: Record<string, string> = {
+  'content-security-policy': 'sandbox',
+  'x-content-type-options': 'nosniff',
+};
 
 @Injectable()
 export class RdiProxyService {
@@ -93,7 +108,7 @@ export class RdiProxyService {
   private static filterResponseHeaders(
     headers: Record<string, string> = {},
   ): Record<string, string> {
-    return Object.fromEntries(
+    const filtered = Object.fromEntries(
       Object.entries(headers).filter(([name]) => {
         const lowerName = name.toLowerCase();
         return (
@@ -104,5 +119,7 @@ export class RdiProxyService {
         );
       }),
     );
+
+    return { ...filtered, ...FORCED_RESPONSE_HEADERS };
   }
 }

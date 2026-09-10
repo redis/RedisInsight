@@ -361,7 +361,7 @@ export class ApiRdiClient extends RdiClient {
     headers,
   }: RdiProxyRequest): Promise<RdiProxyResponse> {
     const requestUrl = query ? `${path}?${query}` : path;
-    this.assertPathWithinRdiBase(requestUrl);
+    this.assertPathWithinRdiBase(path);
 
     // Non-2xx responses are part of the RDI API contract the UI's SDK handles
     // itself, so pass them through instead of throwing.
@@ -384,9 +384,24 @@ export class ApiRdiClient extends RdiClient {
       responseType: 'arraybuffer',
     });
 
+    const responseHeaders = response.headers as Record<string, string>;
+
+    if (response.status >= 300 && response.status < 400) {
+      const locationKey = Object.keys(responseHeaders).find(
+        (key) => key.toLowerCase() === 'location',
+      );
+
+      if (
+        locationKey &&
+        !this.isLocationWithinRdiBase(responseHeaders[locationKey])
+      ) {
+        delete responseHeaders[locationKey];
+      }
+    }
+
     return {
       status: response.status,
-      headers: response.headers as Record<string, string>,
+      headers: responseHeaders,
       data: response.data,
     };
   }
@@ -398,7 +413,7 @@ export class ApiRdiClient extends RdiClient {
    * still normalizes past that subpath once combined with the base URL, so
    * check the resolved target stays under it.
    */
-  private assertPathWithinRdiBase(requestUrl: string): void {
+  private assertPathWithinRdiBase(path: string): void {
     const baseUrl = new URL(this.rdi.url);
     const basePath = baseUrl.pathname.replace(/\/+$/, '');
 
@@ -406,11 +421,18 @@ export class ApiRdiClient extends RdiClient {
       return;
     }
 
+    let decodedPath: string;
+    try {
+      decodedPath = decodeURIComponent(path);
+    } catch {
+      throw new ForbiddenException('Requested path is malformed');
+    }
+
     // mirrors axios's own combineURLs (plain concatenation), not WHATWG
     // relative-URL resolution - the latter would drop the base's last path
     // segment as if it were a filename, which isn't how axios joins these
     const resolved = new URL(
-      `${basePath}/${requestUrl.replace(/^\/+/, '')}`,
+      `${basePath}/${decodedPath.replace(/^\/+/, '')}`,
       baseUrl.origin,
     );
 
@@ -422,6 +444,36 @@ export class ApiRdiClient extends RdiClient {
         'Requested path is outside the configured RDI instance URL',
       );
     }
+  }
+
+  private isLocationWithinRdiBase(location: string): boolean {
+    const baseUrl = new URL(this.rdi.url);
+    let decodedLocation: string;
+
+    try {
+      decodedLocation = decodeURIComponent(location);
+    } catch {
+      return false;
+    }
+
+    let resolved: URL;
+    try {
+      resolved = new URL(decodedLocation, baseUrl);
+    } catch {
+      return false;
+    }
+
+    if (resolved.origin !== baseUrl.origin) {
+      return false;
+    }
+
+    const basePath = baseUrl.pathname.replace(/\/+$/, '');
+
+    return (
+      !basePath ||
+      resolved.pathname === basePath ||
+      resolved.pathname.startsWith(`${basePath}/`)
+    );
   }
 
   private async pollActionStatus(
