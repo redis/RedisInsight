@@ -25,6 +25,8 @@ describe('Empty', () => {
     const addPipelineButton = screen.getByTestId('add-pipeline-btn')
     await userEvent.click(addPipelineButton)
 
-    expect(pushMock).toHaveBeenCalledWith(Pages.rdiPipeline('123'))
+    expect(pushMock).toHaveBeenCalledWith(Pages.rdiPipeline('123'), {
+      skipLastPageRestore: true,
+    })
   })
 })

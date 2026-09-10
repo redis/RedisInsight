@@ -39,7 +39,8 @@ export interface Props {
 const RdiInstancePage = ({ routes = [] }: Props) => {
   const dispatch = useAppDispatch()
   const history = useHistory()
-  const { pathname } = useLocation()
+  const location = useLocation<{ skipLastPageRestore?: boolean }>()
+  const { pathname } = location
   const { privateRdiRoutes } = useNavigation()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
@@ -77,6 +78,7 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
     // redirect only if there is no exact path
     if (pathname === Pages.rdiPipeline(rdiInstanceId)) {
       if (
+        !location.state?.skipLastPageRestore &&
         lastPage === PageNames.rdiStatistics &&
         contextRdiInstanceId === rdiInstanceId
       ) {
@@ -121,6 +123,8 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
       )
     }
   }, [
+    pathname,
+    location.state,
     contextRdiInstanceId,
     connectedInstance.id,
     connectedInstance.error,

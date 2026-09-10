@@ -461,6 +461,92 @@ describe('InstancePage', () => {
     )
   })
 
+  it('should redirect to rdi pipeline management (not restore statistics) when the navigation explicitly opts out via skipLastPageRestore', async () => {
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
+      contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
+      lastPage: PageNames.rdiStatistics,
+    })
+
+    const replaceMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: jest.fn(),
+      replace: replaceMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest.fn().mockReturnValue({
+      pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK),
+      state: { skipLastPageRestore: true },
+    })
+    store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
+    store.getState().rdi.instances.connectedInstance.version = ''
+    store.getState().rdi.instances.connectedInstance.loading = false
+    store.getState().rdi.instances.connectedInstance.error = ''
+
+    await act(() =>
+      render(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(replaceMock).toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+    expect(replaceMock).not.toHaveBeenCalledWith(
+      Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should redirect to rdi pipeline management when navigating to the bare url from within the same already-loaded instance (e.g. the statistics empty-state CTA)', async () => {
+    const mockedAppContextSelector = appContextSelector as jest.Mock
+    mockedAppContextSelector.mockReturnValue({
+      contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
+      lastPage: PageNames.rdiStatistics,
+    })
+
+    const replaceMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: jest.fn(),
+      replace: replaceMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    store.getState().rdi.instances.connectedInstance.id = RDI_INSTANCE_ID_MOCK
+    store.getState().rdi.instances.connectedInstance.version = ''
+    store.getState().rdi.instances.connectedInstance.loading = false
+    store.getState().rdi.instances.connectedInstance.error = ''
+
+    reactRouterDom.useLocation = jest.fn().mockReturnValue({
+      pathname: Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    })
+
+    const { rerender } = render(
+      <BrowserRouter>
+        <InstancePage {...instance(mockedProps)} />
+      </BrowserRouter>,
+    )
+
+    reactRouterDom.useLocation = jest.fn().mockReturnValue({
+      pathname: Pages.rdiPipeline(RDI_INSTANCE_ID_MOCK),
+      state: { skipLastPageRestore: true },
+    })
+
+    await act(() =>
+      rerender(
+        <BrowserRouter>
+          <InstancePage {...instance(mockedProps)} />
+        </BrowserRouter>,
+      ),
+    )
+
+    expect(replaceMock).toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
   it('should navigate to rdi pipeline analytics page via clicking on navigation', async () => {
     const pushMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
