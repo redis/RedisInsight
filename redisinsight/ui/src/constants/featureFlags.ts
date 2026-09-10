@@ -6,6 +6,7 @@ export enum FeatureFlags {
   documentationChat = 'documentationChat',
   envDependent = 'envDependent',
   rdi = 'redisDataIntegration',
+  agentMemory = 'agentMemory',
   hashFieldExpiration = 'hashFieldExpiration',
   enhancedCloudUI = 'enhancedCloudUI',
   cloudAds = 'cloudAds',

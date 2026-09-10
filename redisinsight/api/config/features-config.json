@@ -38,6 +38,11 @@
         }
       ]
     },
+    "agentMemory": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": []
+    },
     "insightsRecommendations": {
       "flag": true,
       "perc": [[0, 100]]

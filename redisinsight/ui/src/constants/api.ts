@@ -193,6 +193,16 @@ enum ApiEndpoints {
   RDI_PIPELINE_STOP = 'pipeline/stop',
   RDI_PIPELINE_START = 'pipeline/start',
   RDI_PIPELINE_RESET = 'pipeline/reset',
+
+  AGENT_MEMORY_ENDPOINTS = 'agent-memory',
+  AGENT_MEMORY_CONNECT = 'connect',
+  AGENT_MEMORY_SESSIONS = 'sessions',
+  AGENT_MEMORY_WORKING_MEMORY = 'working-memory',
+  AGENT_MEMORY_LTM_SEARCH = 'long-term-memory/search',
+  AGENT_MEMORY_LTM = 'long-term-memory',
+  AGENT_MEMORY_DISCOVERY = 'discovery',
+  AGENT_MEMORY_CONFIG = 'config',
+  AGENT_MEMORY_SUMMARY_VIEWS = 'summary-views',
 }
 
 export enum CustomHeaders {

@@ -32,6 +32,10 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
+      KnownFeatures.AgentMemory,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
+    this.strategies.set(
       KnownFeatures.CloudSso,
       new CloudSsoFlagStrategy(
         this.featuresConfigService,

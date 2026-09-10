@@ -28,6 +28,7 @@ export interface Props {
   appendInfo?: JSX.Element | string | null
   testid?: string
   buttonLabel?: string
+  ariaLabel?: string
   persistent?: boolean
   customOutsideDetector?: boolean
 }
@@ -48,6 +49,7 @@ const PopoverDelete = (props: Props) => {
     appendInfo,
     testid = '',
     buttonLabel,
+    ariaLabel,
     persistent,
     customOutsideDetector,
   } = props
@@ -70,7 +72,7 @@ const PopoverDelete = (props: Props) => {
   const deleteButton = buttonLabel ? (
     <EmptyButton
       icon={DeleteIcon}
-      aria-label={t('browser.popoverDelete.removeAria')}
+      aria-label={ariaLabel ?? t('browser.popoverDelete.removeAria')}
       disabled={isDisabled || updateLoading}
       onClick={isDisabled ? () => {} : onButtonClick}
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}
@@ -81,7 +83,7 @@ const PopoverDelete = (props: Props) => {
     <IconButton
       size="M"
       icon={DeleteIcon}
-      aria-label={t('browser.popoverDelete.removeAria')}
+      aria-label={ariaLabel ?? t('browser.popoverDelete.removeAria')}
       disabled={isDisabled || updateLoading}
       onClick={isDisabled ? () => {} : onButtonClick}
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}

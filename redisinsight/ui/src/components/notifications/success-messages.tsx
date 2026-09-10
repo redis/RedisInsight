@@ -60,6 +60,18 @@ export default {
       </Text>
     ),
   }),
+  ADDED_NEW_AGENT_MEMORY_ENDPOINT: (endpointName: string) => ({
+    title: i18n.t('notification.success.addedAgentMemoryEndpoint.title'),
+    message: (
+      <Text component="span">
+        <Trans
+          i18nKey="notification.success.addedAgentMemoryEndpoint.message"
+          values={{ name: escapeTrans(formatNameShort(endpointName)) }}
+          components={{ bold }}
+        />
+      </Text>
+    ),
+  }),
   DELETE_INSTANCE: (instanceName: string) => ({
     title: i18n.t('notification.success.deleteInstance.title'),
     message: (
