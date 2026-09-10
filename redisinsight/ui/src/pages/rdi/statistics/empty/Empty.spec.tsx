@@ -1,8 +1,8 @@
-import { createMemoryHistory } from 'history'
 import React from 'react'
-import { Router } from 'react-router-dom'
+import reactRouterDom from 'react-router-dom'
 
-import { fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import { Pages } from 'uiSrc/constants'
 import Empty from './Empty'
 
 describe('Empty', () => {
@@ -14,19 +14,17 @@ describe('Empty', () => {
     ).toBeInTheDocument()
   })
 
-  test('navigates to pipeline config page when "Add Pipeline" button is clicked', () => {
-    const history = createMemoryHistory()
-    render(
-      <Router history={history}>
-        <Empty rdiInstanceId="123" />
-      </Router>,
-    )
+  test('navigates to the bare rdi instance url when "Add Pipeline" button is clicked, not straight to the legacy config page', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+    })
+
+    render(<Empty rdiInstanceId="123" />)
 
     const addPipelineButton = screen.getByTestId('add-pipeline-btn')
-    fireEvent.click(addPipelineButton)
+    await userEvent.click(addPipelineButton)
 
-    waitFor(() => {
-      expect(history.location.pathname).toBe('/rdi/pipeline-config/123')
-    })
+    expect(pushMock).toHaveBeenCalledWith(Pages.rdiPipeline('123'))
   })
 })

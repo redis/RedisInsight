@@ -80,7 +80,9 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
         lastPage === PageNames.rdiStatistics &&
         contextRdiInstanceId === rdiInstanceId
       ) {
-        history.push(Pages.rdiStatistics(rdiInstanceId))
+        // replace, not push - the bare URL isn't a real page, so it
+        // shouldn't become a dead history entry that Back can land on
+        history.replace(Pages.rdiStatistics(rdiInstanceId))
         return
       }
 
@@ -112,7 +114,7 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
           isDevRdiUiEnabled,
         )
 
-      history.push(
+      history.replace(
         shouldUseRdiUi
           ? Pages.rdiPipelineManagementV2(rdiInstanceId)
           : Pages.rdiPipelineManagement(rdiInstanceId),

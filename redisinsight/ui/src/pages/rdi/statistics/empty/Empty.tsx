@@ -37,7 +37,10 @@ const Empty = ({ rdiInstanceId }: Props) => {
           data-testid="add-pipeline-btn"
           size="s"
           onClick={() => {
-            history.push(Pages.rdiPipelineConfig(rdiInstanceId))
+            // the bare instance URL is where the v1/v2 pipeline management
+            // decision is made - jumping straight to the legacy config page
+            // would skip it
+            history.push(Pages.rdiPipeline(rdiInstanceId))
           }}
         >
           {t('rdi.statistics.empty.addButton')}

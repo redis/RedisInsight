@@ -74,6 +74,7 @@ beforeEach(() => {
 
   reactRouterDom.useHistory = jest.fn().mockReturnValue({
     push: jest.fn(),
+    replace: jest.fn(),
     block: jest.fn(() => jest.fn()),
   })
 })
@@ -191,9 +192,10 @@ describe('InstancePage', () => {
   })
 
   it('should redirect to rdi pipeline management page', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -220,15 +222,16 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).toHaveBeenCalledWith(
+    expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
     )
   })
 
   it('should redirect to rdi pipeline management v2 page when the flag is enabled and the version is high enough', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -254,15 +257,16 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).toHaveBeenCalledWith(
+    expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
   })
 
   it('should redirect to rdi pipeline management page even at exactly the minimum supported version', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -288,15 +292,16 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).toHaveBeenCalledWith(
+    expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
   })
 
   it('should not redirect to rdi pipeline management page until the connected instance has loaded', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -319,18 +324,19 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).not.toHaveBeenCalledWith(
+    expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
     )
-    expect(pushMock).not.toHaveBeenCalledWith(
+    expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
   })
 
   it('should ignore a stale error left over from a previously viewed instance', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -356,18 +362,19 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).not.toHaveBeenCalledWith(
+    expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
     )
-    expect(pushMock).not.toHaveBeenCalledWith(
+    expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
   })
 
   it('should default to rdi pipeline management page when the connected instance fails to load', async () => {
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -390,7 +397,7 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).toHaveBeenCalledWith(
+    expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
     )
   })
@@ -431,9 +438,10 @@ describe('InstancePage', () => {
       lastPage: PageNames.rdiStatistics,
     })
 
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -448,7 +456,7 @@ describe('InstancePage', () => {
       ),
     )
 
-    expect(pushMock).toHaveBeenCalledWith(
+    expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
     )
   })
@@ -489,9 +497,10 @@ describe('InstancePage', () => {
       lastPage: PageNames.rdiStatistics,
     })
 
-    const pushMock = jest.fn()
+    const replaceMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({
-      push: pushMock,
+      push: jest.fn(),
+      replace: replaceMock,
       block: jest.fn(() => jest.fn()),
     })
 
@@ -508,7 +517,7 @@ describe('InstancePage', () => {
     )
 
     expect(store.getActions()).toContainEqual(setLastPageContext(''))
-    expect(pushMock).not.toHaveBeenCalledWith(
+    expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
     )
   })
