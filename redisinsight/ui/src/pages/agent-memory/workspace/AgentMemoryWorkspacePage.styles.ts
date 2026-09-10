@@ -3,6 +3,7 @@ import {
   ButtonHTMLAttributes,
   HTMLAttributes,
   ImgHTMLAttributes,
+  InputHTMLAttributes,
 } from 'react'
 import styled from 'styled-components'
 
@@ -31,8 +32,6 @@ const lightAccents = {
   roleAccentBg: 'rgba(127, 219, 254, 0.18)',
   chipTopicBg: 'rgba(199, 150, 228, 0.18)',
   chipTopicText: '#6a3aa0',
-  chipEntityBg: '#e8ebec',
-  chipEntityText: '#163341',
   paneHeaderBorder: '#e8ebec',
   typeMessageBg: 'rgba(45, 71, 84, 0.1)',
   typeMessageText: '#2d4754',
@@ -46,8 +45,6 @@ const darkAccents: typeof lightAccents = {
   roleAccentBg: 'rgba(127, 219, 254, 0.18)',
   chipTopicBg: 'rgba(199, 150, 228, 0.22)',
   chipTopicText: '#d4b3f0',
-  chipEntityBg: 'var(--ami-bgTertiary)',
-  chipEntityText: 'var(--ami-text)',
   paneHeaderBorder: 'var(--ami-bgTertiary)',
   typeMessageBg: 'rgba(245, 247, 250, 0.08)',
   typeMessageText: 'var(--ami-textSecondary)',
@@ -406,28 +403,20 @@ export const ActiveFilters = styled(Row)`
 `
 
 export const FilterPill = styled.span<
-  HTMLAttributes<HTMLSpanElement> & { $kind?: 'topic' | 'entity' }
+  HTMLAttributes<HTMLSpanElement> & { $kind?: 'topic' }
 >`
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 2px 4px 2px 7px;
   background: ${({ $kind }) =>
-    $kind === 'topic'
-      ? palette.chipTopicBg
-      : $kind === 'entity'
-        ? palette.chipEntityBg
-        : palette.bgTertiary};
+    $kind === 'topic' ? palette.chipTopicBg : palette.bgTertiary};
   border: 1px solid ${palette.separator};
   border-radius: 12px;
   font-family: ${fontMono};
   font-size: ${({ theme }) => theme.core.font.fontSize.s12};
   color: ${({ $kind }) =>
-    $kind === 'topic'
-      ? palette.chipTopicText
-      : $kind === 'entity'
-        ? palette.chipEntityText
-        : palette.text};
+    $kind === 'topic' ? palette.chipTopicText : palette.text};
 
   em {
     color: ${palette.textMuted};
@@ -515,7 +504,7 @@ export const ErrorText = styled.p<HTMLAttributes<HTMLParagraphElement>>`
 export const Card = styled.article<HTMLAttributes<HTMLElement>>`
   background: ${palette.bgPrimary};
   border: 1px solid ${palette.border};
-  border-radius: ${({ theme }) => theme.components.card.borderRadius};
+  border-radius: 0;
   padding: 10px 11px;
   flex-shrink: 0;
 `
@@ -667,6 +656,32 @@ export const TypeBadge = styled.span<
   }}
 `
 
+export const ThresholdControl = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+
+  label {
+    font-size: ${({ theme }) => theme.core.font.fontSize.s12};
+    color: ${palette.textSecondary};
+    white-space: nowrap;
+  }
+`
+
+export const ThresholdInput = styled.input<
+  InputHTMLAttributes<HTMLInputElement>
+>`
+  width: 64px;
+  font-family: ${fontMono};
+  font-size: ${({ theme }) => theme.core.font.fontSize.s12};
+  padding: 2px 6px;
+  border: 1px solid ${palette.border};
+  border-radius: 4px;
+  background: ${palette.bgSecondary};
+  color: ${palette.text};
+`
+
 export const CardFooter = styled.footer<HTMLAttributes<HTMLElement>>`
   display: flex;
   align-items: center;
@@ -736,7 +751,7 @@ export const ChipRowChips = styled(Row)`
 `
 
 export const Chip = styled.button<
-  ButtonHTMLAttributes<HTMLButtonElement> & { $kind: 'topic' | 'entity' }
+  ButtonHTMLAttributes<HTMLButtonElement> & { $kind: 'topic' }
 >`
   display: inline-flex;
   align-items: center;
@@ -752,10 +767,8 @@ export const Chip = styled.button<
   transition:
     border-color 120ms ease,
     transform 80ms ease;
-  background: ${({ $kind }) =>
-    $kind === 'topic' ? palette.chipTopicBg : palette.chipEntityBg};
-  color: ${({ $kind }) =>
-    $kind === 'topic' ? palette.chipTopicText : palette.chipEntityText};
+  background: ${palette.chipTopicBg};
+  color: ${palette.chipTopicText};
 
   &:hover {
     border-color: currentColor;

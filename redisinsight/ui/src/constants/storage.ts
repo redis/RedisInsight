@@ -52,7 +52,6 @@ enum BrowserStorageItem {
   whatsNewLastVersionSeen = 'whatsNewLastVersionSeen',
   valueDecoderRules = 'valueDecoderRules_',
   agentMemoryPanelSizes = 'agentMemoryPanelSizes',
-  agentMemoryLtmPanelSizes = 'agentMemoryLtmPanelSizes',
 }
 
 export default BrowserStorageItem
