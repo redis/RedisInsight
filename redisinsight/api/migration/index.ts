@@ -60,6 +60,7 @@ import { DatabaseIsProduction1778758000000 } from './1778758000000-database-isPr
 import { Environment1779000000000 } from './1779000000000-database-environment';
 import { DropDatabaseIsProduction1779000000001 } from './1779000000001-drop-database-isProduction';
 import { DatabaseConnectionFamily1784000000000 } from './1784000000000-database-connection-family';
+import { PipelineDraft1784100000000 } from './1784100000000-pipeline-draft';
 import { AzureVerifyServerCert1785100000000 } from './1785100000000-azure-verify-server-cert';
 
 export default [
@@ -125,5 +126,6 @@ export default [
   Environment1779000000000,
   DropDatabaseIsProduction1779000000001,
   DatabaseConnectionFamily1784000000000,
+  PipelineDraft1784100000000,
   AzureVerifyServerCert1785100000000,
 ];
