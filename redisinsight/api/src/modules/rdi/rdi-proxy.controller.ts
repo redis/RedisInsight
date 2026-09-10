@@ -1,9 +1,23 @@
-import { All, Controller, Req, Res } from '@nestjs/common';
+import {
+  All,
+  Controller,
+  MethodNotAllowedException,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { RdiProxyService } from 'src/modules/rdi/rdi-proxy.service';
 import { RequestRdiClientMetadata } from 'src/modules/rdi/decorators';
 import { RdiClientMetadata } from 'src/modules/rdi/models';
+
+const ALLOWED_PROXY_METHODS = new Set([
+  'GET',
+  'POST',
+  'PUT',
+  'PATCH',
+  'DELETE',
+]);
 
 /**
  * Transparent passthrough to an RDI instance's native API.
@@ -27,6 +41,12 @@ export class RdiProxyController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
+    if (!ALLOWED_PROXY_METHODS.has(req.method)) {
+      throw new MethodNotAllowedException(
+        `Method ${req.method} is not supported by this proxy`,
+      );
+    }
+
     const { status, headers, data } = await this.rdiProxyService.proxy(
       rdiClientMetadata,
       {
