@@ -42,6 +42,7 @@ import FilterPills from './components/filter-pills/FilterPills'
 import WorkingMemoryPanel from './components/working-memory-panel/WorkingMemoryPanel'
 import LongTermOverviewPanel from './components/long-term-overview-panel/LongTermOverviewPanel'
 import LongTermMemoryPanel from './components/long-term-memory-panel/LongTermMemoryPanel'
+import LongTermMemoryDetails from './components/long-term-memory-details/LongTermMemoryDetails'
 import LongTermMemoryToolbar from './components/long-term-memory-toolbar/LongTermMemoryToolbar'
 import ConfigurationPanel from './components/configuration-panel/ConfigurationPanel'
 import * as S from './AgentMemoryWorkspacePage.styles'
@@ -309,9 +310,25 @@ const AgentMemoryWorkspacePage = () => {
       {isLtmTab && (
         <S.PanesArea>
           <S.PanesContainer direction="horizontal">
-            <ResizablePanel id="agent-memory-records-panel" defaultSize={100}>
+            <ResizablePanel
+              id="agent-memory-records-panel"
+              defaultSize={longTermMemory.selectedRecordId ? 55 : 100}
+              minSize={PANEL_MIN_SIZE}
+            >
               <LongTermMemoryPanel endpointId={endpointId} />
             </ResizablePanel>
+            {!!longTermMemory.selectedRecordId && (
+              <>
+                <ResizablePanelHandle />
+                <ResizablePanel
+                  id="agent-memory-record-detail-panel"
+                  defaultSize={45}
+                  minSize={PANEL_MIN_SIZE}
+                >
+                  <LongTermMemoryDetails endpointId={endpointId} />
+                </ResizablePanel>
+              </>
+            )}
           </S.PanesContainer>
         </S.PanesArea>
       )}

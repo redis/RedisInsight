@@ -31,6 +31,7 @@ export const initialState: StateAgentMemoryWorkspace = {
     error: '',
     data: [],
     lastRefreshTime: null,
+    selectedRecordId: null,
     search: '',
     similarityThreshold: null,
     topics: [],
@@ -124,10 +125,33 @@ const inspectorSlice = createSlice({
       state.longTermMemory.error = ''
       state.longTermMemory.data = payload
       state.longTermMemory.lastRefreshTime = Date.now()
+      // Drop a selection that no longer exists (deleted or filtered out) so
+      // the detail pane can't point at a missing record.
+      if (
+        state.longTermMemory.selectedRecordId &&
+        !payload.some((m) => m.id === state.longTermMemory.selectedRecordId)
+      ) {
+        state.longTermMemory.selectedRecordId = null
+      }
     },
     getLongTermMemoryFailure: (state, { payload }: PayloadAction<string>) => {
       state.longTermMemory.loading = false
       state.longTermMemory.error = payload
+    },
+    setSelectedRecord: (
+      state,
+      { payload }: PayloadAction<Nullable<string>>,
+    ) => {
+      state.longTermMemory.selectedRecordId = payload
+    },
+    updateLongTermMemorySuccess: (
+      state,
+      { payload }: PayloadAction<LongTermMemoryRecord>,
+    ) => {
+      const index = state.longTermMemory.data.findIndex(
+        (m) => m.id === payload.id,
+      )
+      if (index !== -1) state.longTermMemory.data[index] = payload
     },
     setLongTermMemorySearch: (state, { payload }: PayloadAction<string>) => {
       state.longTermMemory.search = payload
@@ -211,6 +235,8 @@ export const {
   getLongTermMemory,
   getLongTermMemorySuccess,
   getLongTermMemoryFailure,
+  setSelectedRecord,
+  updateLongTermMemorySuccess,
   setLongTermMemorySearch,
   setSimilarityThreshold,
   toggleTopicFilter,
@@ -231,6 +257,10 @@ export const agentMemoryWorkingSelector = (state: RootState) =>
   state.agentMemory.workspace.workingMemory
 export const agentMemoryLongTermSelector = (state: RootState) =>
   state.agentMemory.workspace.longTermMemory
+export const agentMemorySelectedRecordSelector = (state: RootState) => {
+  const { data, selectedRecordId } = state.agentMemory.workspace.longTermMemory
+  return data.find((m) => m.id === selectedRecordId) ?? null
+}
 export const agentMemoryConfigurationSelector = (state: RootState) =>
   state.agentMemory.workspace.configuration
 
@@ -247,6 +277,7 @@ export {
 export {
   fetchLongTermMemoryAction,
   fetchOverviewLongTermMemoryAction,
+  updateLongTermMemoryAction,
   deleteLongTermMemoryAction,
 } from './thunks/long-term-memory'
 export { fetchConfigurationAction } from './thunks/configuration'
