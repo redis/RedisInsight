@@ -22,6 +22,7 @@ import RdiPage from 'uiSrc/pages/rdi/home'
 import RdiInstancePage from 'uiSrc/pages/rdi/instance'
 import RdiStatisticsPage from 'uiSrc/pages/rdi/statistics'
 import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
+import PipelineManagementV2Page from 'uiSrc/pages/rdi/pipeline-management-v2'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
@@ -67,6 +68,9 @@ const LazyRdiStatisticsPage = lazy(() => import('uiSrc/pages/rdi/statistics'))
 const LazyPipelineManagementPage = lazy(
   () => import('uiSrc/pages/rdi/pipeline-management'),
 )
+const LazyPipelineManagementV2Page = lazy(
+  () => import('uiSrc/pages/rdi/pipeline-management-v2'),
+)
 
 const INSTANCE_ROUTES: IRoute[] = [
   {
@@ -109,6 +113,12 @@ const RDI_INSTANCE_ROUTES: IRoute[] = getRouteIncludedByEnv([
     path: Pages.rdiPipelineManagement(':rdiInstanceId'),
     component: LAZY_LOAD ? LazyPipelineManagementPage : PipelineManagementPage,
     routes: RDI_PIPELINE_MANAGEMENT_ROUTES,
+  },
+  {
+    path: Pages.rdiPipelineManagementV2(':rdiInstanceId'),
+    component: LAZY_LOAD
+      ? LazyPipelineManagementV2Page
+      : PipelineManagementV2Page,
   },
 ])
 

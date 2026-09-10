@@ -37,7 +37,9 @@ const Empty = ({ rdiInstanceId }: Props) => {
           data-testid="add-pipeline-btn"
           size="s"
           onClick={() => {
-            history.push(Pages.rdiPipelineConfig(rdiInstanceId))
+            history.push(Pages.rdiPipeline(rdiInstanceId), {
+              skipLastPageRestore: true,
+            })
           }}
         >
           {t('rdi.statistics.empty.addButton')}

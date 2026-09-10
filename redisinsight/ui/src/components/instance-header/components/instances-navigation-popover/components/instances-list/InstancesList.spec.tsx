@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import React from 'react'
+import reactRouterDom from 'react-router-dom'
 import { instance, mock } from 'ts-mockito'
 import { act } from 'react-dom/test-utils'
 import {
@@ -12,6 +13,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Environment } from 'apiClient'
 import { Instance, RdiInstance } from 'uiSrc/slices/interfaces'
+import { Pages } from 'uiSrc/constants'
 import InstancesList, { InstancesListProps } from './InstancesList'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
 
@@ -71,6 +73,9 @@ jest.mock('uiSrc/slices/rdi/instances', () => ({
       name: 'RdiDB_1',
     },
   }),
+  checkConnectToRdiInstanceAction:
+    (id: string, onSuccessAction?: (id: string) => void) => () =>
+      onSuccessAction?.(id),
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -138,5 +143,25 @@ describe('InstancesList', () => {
       event: TelemetryEvent.CONFIG_DATABASES_OPEN_DATABASE,
       eventData: expect.any(Object),
     })
+  })
+
+  it('should navigate to the bare rdi instance url on switching rdi instances, not straight to the legacy config page', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+    })
+
+    const { getByTestId } = render(
+      <InstancesList
+        {...instance(mockedProps)}
+        selectedTab={InstancesTabs.RDI}
+        filteredRdiInstances={mockRdis}
+      />,
+    )
+
+    const listItem = getByTestId(`instance-item-${mockRdis[1].id}`)
+    await act(() => fireEvent.click(listItem))
+
+    expect(pushMock).toHaveBeenCalledWith(Pages.rdiPipeline(mockRdis[1].id))
   })
 })
