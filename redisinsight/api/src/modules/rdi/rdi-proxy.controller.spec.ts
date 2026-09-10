@@ -108,5 +108,33 @@ describe('RdiProxyController', () => {
         expect.objectContaining({ path: '' }),
       );
     });
+
+    it('should reject a TRACE request without forwarding it to rdi', async () => {
+      const res = mockResponse();
+      const req: any = {
+        method: 'TRACE',
+        url: `/rdi/${mockRdiClientMetadata.id}/proxy/api/v1/pipelines`,
+        headers: {},
+      };
+
+      await expect(
+        controller.proxy(mockRdiClientMetadata, req, res),
+      ).rejects.toThrow('Method TRACE is not supported by this proxy');
+      expect(service.proxy).not.toHaveBeenCalled();
+    });
+
+    it('should reject a CONNECT request without forwarding it to rdi', async () => {
+      const res = mockResponse();
+      const req: any = {
+        method: 'CONNECT',
+        url: `/rdi/${mockRdiClientMetadata.id}/proxy/api/v1/pipelines`,
+        headers: {},
+      };
+
+      await expect(
+        controller.proxy(mockRdiClientMetadata, req, res),
+      ).rejects.toThrow('Method CONNECT is not supported by this proxy');
+      expect(service.proxy).not.toHaveBeenCalled();
+    });
   });
 });
