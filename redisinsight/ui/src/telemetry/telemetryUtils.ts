@@ -73,7 +73,6 @@ const TELEMETRY_EMPTY_VALUE = 'none'
 const sendEventTelemetry = async ({
   event,
   eventData = {},
-  traits = {},
 }: ITelemetrySendEvent) => {
   let providerData
   try {
@@ -91,7 +90,6 @@ const sendEventTelemetry = async ({
     await apiService.post(`${ApiEndpoints.ANALYTICS_SEND_EVENT}`, {
       event,
       eventData: { ...providerData, ...eventData, ...freeDbIdentifier },
-      traits,
     })
   } catch (e) {
     // continue regardless of error
