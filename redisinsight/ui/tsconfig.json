@@ -29,7 +29,11 @@
     "paths": {
       "uiSrc/*": ["src/*"],
       "apiClient": ["../api-client"],
-      "apiClient/*": ["../api-client/*"]
+      "apiClient/*": ["../api-client/*"],
+      // TODO: RI-0000 - drop once TypeScript is upgraded to 5.x repo-wide.
+      // See src/types/zod-v4-stub.d.ts for why these two are remapped.
+      "zod/v4-mini": ["src/types/zod-v4-stub.d.ts"],
+      "zod/v4/core": ["src/types/zod-v4-stub.d.ts"]
     }
   },
   "include": [

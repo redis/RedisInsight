@@ -4,14 +4,13 @@ import { useParams } from 'react-router-dom'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { formatLongName, setTitle } from 'uiSrc/utils'
 import { useTranslation } from 'uiSrc/i18n'
-import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PageNames } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import { RdiInstanceHeader } from 'uiSrc/components'
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { useConnectRdiInstance } from '../hooks/useConnectRdiInstance'
-import * as S from './PipelineManagementV2Page.styles'
+import RdiPipeline from './components/rdi-pipeline'
 import styles from './styles.module.scss'
 
 /**
@@ -50,15 +49,9 @@ const PipelineManagementV2Page = () => {
         <RdiInstanceHeader />
       </FlexItem>
       <RdiInstancePageTemplate>
-        <Row
-          justify="center"
-          align="center"
-          data-testid="pipeline-management-v2-page"
-        >
-          <S.PlaceholderContainer>
-            <Text>The new pipeline management experience is coming soon.</Text>
-          </S.PlaceholderContainer>
-        </Row>
+        <FlexItem grow data-testid="pipeline-management-v2-page">
+          <RdiPipeline rdiInstanceId={rdiInstanceId} />
+        </FlexItem>
       </RdiInstancePageTemplate>
     </Col>
   )
