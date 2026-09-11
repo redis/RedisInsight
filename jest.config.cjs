@@ -34,6 +34,7 @@ module.exports = {
     '@redislabsdev/redis-ui-table': '@redis-ui/table',
     'monaco-editor': '<rootDir>/redisinsight/__mocks__/monacoMock.js',
     'monaco-yaml': '<rootDir>/redisinsight/__mocks__/monacoYamlMock.js',
+    '@rdi-ui/pipeline': '<rootDir>/redisinsight/__mocks__/rdiUiPipelineMock.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),

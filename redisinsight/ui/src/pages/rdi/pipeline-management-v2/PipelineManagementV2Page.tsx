@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { formatLongName, setTitle } from 'uiSrc/utils'
 import { useTranslation } from 'uiSrc/i18n'
-import { Text } from 'uiSrc/components/base/text'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PageNames } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
-import * as S from './PipelineManagementV2Page.styles'
+import RdiPipeline from './components/rdi-pipeline'
 
 const PipelineManagementV2Page = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { name: connectedRdiInstanceName } = useAppSelector(
     connectedInstanceSelector,
   )
@@ -28,15 +29,9 @@ const PipelineManagementV2Page = () => {
   )
 
   return (
-    <Row
-      justify="center"
-      align="center"
-      data-testid="pipeline-management-v2-page"
-    >
-      <S.PlaceholderContainer>
-        <Text>The new pipeline management experience is coming soon.</Text>
-      </S.PlaceholderContainer>
-    </Row>
+    <FlexItem grow data-testid="pipeline-management-v2-page">
+      <RdiPipeline rdiInstanceId={rdiInstanceId} />
+    </FlexItem>
   )
 }
 
