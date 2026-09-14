@@ -49,7 +49,10 @@ describe('RdiPipeline', () => {
     )
     expect(capturedProps.rdiClient).toMatchObject({
       baseUrl: expect.stringContaining(`rdi/${MOCK_RDI_ID}/proxy`),
-      withCredentials: true,
     })
+    // Deliberately no withCredentials: the API answers with
+    // Access-Control-Allow-Origin: *, which browsers reject for credentialed
+    // cross-origin requests. See RdiPipeline.tsx for the full explanation.
+    expect(capturedProps.rdiClient).not.toHaveProperty('withCredentials')
   })
 })

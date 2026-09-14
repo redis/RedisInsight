@@ -40,7 +40,16 @@ const RdiPipeline = ({ rdiInstanceId }: Props) => {
         navigation={navigation}
         rdiClient={{
           baseUrl: `${getBaseUrl()}rdi/${rdiInstanceId}/proxy`,
-          withCredentials: true,
+          // Deliberately no `withCredentials`: the API's CORS setup
+          // (app.enableCors() with no options, in main.ts) answers with
+          // Access-Control-Allow-Origin: *, which browsers reject for a
+          // credentialed (cross-origin, cookie-carrying) request. The proxy
+          // authenticates to the RDI instance server-side, so the browser has
+          // no cookie to send here anyway. Turning this on would also require
+          // enableCors() to know the exact origin RedisInsight is served
+          // from, which isn't knowable ahead of time (Docker, Electron,
+          // hosted web all differ) - the wildcard-origin CORS config this
+          // relies on is what makes the proxy deployment-agnostic.
         }}
         targetDatabase={{ strategy: 'manual' }}
         sourceSecrets={{ strategy: 'credentials' }}
