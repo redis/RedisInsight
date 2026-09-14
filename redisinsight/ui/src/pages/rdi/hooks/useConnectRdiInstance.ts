@@ -19,14 +19,6 @@ import {
   resetConnectedInstance as resetConnectedDatabaseInstance,
 } from 'uiSrc/slices/instances/instances'
 
-/**
- * Loads the RDI instance list, the connected instance itself, and clears any
- * leftover database-page context, given an instance id.
- *
- * Shared by every page that renders inside a given RDI instance - both the v1
- * shell (RdiInstancePage) and the standalone v2 page - so instance loading
- * behaves identically regardless of which pipeline UI ends up rendering.
- */
 export const useConnectRdiInstance = (rdiInstanceId: string) => {
   const dispatch = useAppDispatch()
   const { contextRdiInstanceId } = useAppSelector(appContextSelector)

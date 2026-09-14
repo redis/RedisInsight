@@ -184,11 +184,6 @@ const ROUTES: IRoute[] = [
       exact: true,
       featureFlag: FeatureFlags.rdi,
     },
-    // Standalone page, not nested under RdiInstancePage: @rdi-ui/pipeline
-    // owns its own navigation, so this route must not inherit the v1 shell's
-    // Pipeline/Analytics tabs or pipeline status bar. Must come before
-    // Pages.rdiPipeline below - that route has no `exact` (its own sub-routes
-    // rely on prefix matching), so it would otherwise swallow this URL first.
     {
       path: Pages.rdiPipelineManagementV2(':rdiInstanceId'),
       component: LAZY_LOAD
