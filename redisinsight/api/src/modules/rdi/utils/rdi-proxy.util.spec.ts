@@ -102,12 +102,49 @@ describe('proxy.util', () => {
       );
     });
 
-    it('Should keep an encoded delimiter encoded rather than treating it as a separator', () => {
-      expect(
-        resolveRdiUpstreamUrl('http://localhost:4000', 'api/v1/p/foo%2Fbar')
-          .href,
-      ).toEqual('http://localhost:4000/api/v1/p/foo%2Fbar');
-    });
+    it.each([
+      // single layer
+      '..%2fadmin',
+      '..%5cadmin',
+      'api/..%2f..%2fsecret',
+      // an encoded separator anywhere in a segment, traversal or not
+      'api/v1/p/foo%2Fbar',
+      // nested encodings of the same thing
+      '%252e%252e%252fadmin',
+      '%25252e%25252e%25252fadmin',
+      '%252e%252e%252f..%2fadmin',
+      // a literal % is what makes nesting possible at all
+      'api/v1/p/100%25off',
+    ])(
+      'Should reject %s, which another decoding layer could re-read as a different path',
+      (path) => {
+        expect(() =>
+          resolveRdiUpstreamUrl('http://localhost:4000', path),
+        ).toThrow(ForbiddenException);
+      },
+    );
+
+    it.each(['%c0%afadmin', '%2e%2e%2f%', '%', 'api/%zz'])(
+      'Should reject the malformed escape %s',
+      (path) => {
+        expect(() =>
+          resolveRdiUpstreamUrl('http://localhost:4000', path),
+        ).toThrow(ForbiddenException);
+      },
+    );
+
+    it.each([
+      ['a space', 'api/v2/pipelines/my%20pipeline/status'],
+      ['non-ascii', 'api/v2/pipelines/caf%C3%A9/status'],
+      ['unreserved punctuation', 'api/v2/pipelines/a-b_c.d~e/status'],
+    ])(
+      'Should still allow an escape with no structural meaning (%s)',
+      (_label, path) => {
+        expect(
+          resolveRdiUpstreamUrl('http://localhost:4000', path).pathname,
+        ).toEqual(`/${path}`);
+      },
+    );
 
     it.each([
       'https://attacker.example/steal',
@@ -118,11 +155,12 @@ describe('proxy.util', () => {
       ).toThrow(ForbiddenException);
     });
 
-    it('Should not constrain encoded separators when the base url has no path', () => {
-      // nothing to escape from: any path on the origin is in scope
-      expect(
-        resolveRdiUpstreamUrl('http://localhost:4000', '..%2fadmin').href,
-      ).toEqual('http://localhost:4000/..%2fadmin');
+    it('Should reject an encoded separator even when the base url has no path', () => {
+      // the rule is about the path being unambiguous, not only about staying
+      // inside a subpath, so it does not vary with the shape of the base url
+      expect(() =>
+        resolveRdiUpstreamUrl('http://localhost:4000', '..%2fadmin'),
+      ).toThrow(ForbiddenException);
     });
 
     it('Should not let a scheme-relative path change the host', () => {
@@ -186,11 +224,13 @@ describe('proxy.util', () => {
         },
       );
 
-      it('Should still allow an encoded slash inside a real path segment', () => {
-        // decodes to /rdi/api/v1/pipelines/foo/bar, still within the base
+      it('Should not apply the inertness rule to the configured base path', () => {
+        // the base is operator-configured and trusted, so a `%` in it must not
+        // make every request fail
         expect(
-          resolveRdiUpstreamUrl(rdiUrl, 'api/v1/pipelines/foo%2Fbar').href,
-        ).toEqual('http://localhost:4000/rdi/api/v1/pipelines/foo%2Fbar');
+          resolveRdiUpstreamUrl('http://localhost:4000/r%25di', 'api/v1/x')
+            .pathname,
+        ).toEqual('/r%25di/api/v1/x');
       });
     });
   });

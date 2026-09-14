@@ -67,19 +67,61 @@ const OUT_OF_SCOPE_MESSAGE =
   'Requested path is outside the configured RDI instance URL';
 
 /**
- * Percent-encoded separators that an upstream might decode.
+ * Characters that determine how a path is structured. A segment decoding to any
+ * of these could be re-read as more than one segment further down the chain.
  *
- * Backslash is included because Windows-hosted and some proxy implementations
- * treat it as a path separator once decoded.
+ * `%` is the load-bearing one: encoding a `%` is the only way to nest
+ * encodings, so refusing a segment that decodes to one rules out double,
+ * triple and arbitrarily-deep encoding with a single condition - instead of
+ * needing a new case for every extra layer.
  */
-const ENCODED_SEPARATORS = /%2f|%5c/gi;
+const STRUCTURAL_CHARACTERS = /[/\\?#%]/;
 
 /**
- * The given pathname as an upstream would read it if it percent-decoded
- * separators *before* normalizing dot segments.
+ * Requires every caller-supplied path segment to be inert - to mean the same
+ * thing no matter how many times it is decoded.
+ *
+ * `new URL()` resolves and normalizes dot segments but deliberately leaves
+ * percent-escapes alone, so `..%2fadmin` and `%252e%252e%252fadmin` both look
+ * like one harmless segment to a containment check. Anything between here and
+ * RDI - a reverse proxy, RDI's own router, or both in sequence - may decode
+ * before normalizing and arrive somewhere else entirely.
+ *
+ * Predicting how many layers decode, and in what order, is not a winnable game;
+ * there is always one more encoding. So this does not try. It requires each
+ * segment to decode cleanly to something with no structural meaning, which
+ * makes the path unambiguous for every layer at once.
+ *
+ * The cost: a pipeline name containing `/` or `%` cannot be addressed through
+ * the proxy. Names are identifier-shaped in practice, an encoded separator
+ * would not survive RDI's own path routing either, and spaces and non-ASCII
+ * characters are unaffected.
  */
-const readWithDecodedSeparators = (pathname: string, origin: string): string =>
-  new URL(pathname.replace(ENCODED_SEPARATORS, '/'), origin).pathname;
+const assertPathIsInert = (path: string): void => {
+  path.split('/').forEach((segment) => {
+    if (!segment) {
+      return;
+    }
+
+    let decoded: string;
+
+    try {
+      decoded = decodeURIComponent(segment);
+    } catch {
+      // a lone `%`, or an invalid/overlong UTF-8 escape - what a different
+      // decoder would make of it is anyone's guess, so do not forward it
+      throw new ForbiddenException('Requested path is malformed');
+    }
+
+    if (
+      STRUCTURAL_CHARACTERS.test(decoded) ||
+      decoded === '.' ||
+      decoded === '..'
+    ) {
+      throw new ForbiddenException(OUT_OF_SCOPE_MESSAGE);
+    }
+  });
+};
 
 export const resolveRdiUpstreamUrl = (
   rdiUrl: string,
@@ -102,20 +144,11 @@ export const resolveRdiUpstreamUrl = (
     throw new ForbiddenException(OUT_OF_SCOPE_MESSAGE);
   }
 
-  // `new URL()` correctly treats %2F as an opaque character rather than a
-  // separator, so the check above reads `..%2fadmin` as a single segment and
-  // lets it through. An upstream - or a reverse proxy in front of RDI - that
-  // decodes first and normalizes second reads the same path as `../admin` and
-  // lands outside the base. Check that reading too, so containment holds
-  // whichever order the upstream happens to use. An encoded slash inside a
-  // real segment still passes, since it resolves within the base either way.
-  if (
-    !readWithDecodedSeparators(url.pathname, base.origin).startsWith(
-      readWithDecodedSeparators(base.pathname, base.origin),
-    )
-  ) {
-    throw new ForbiddenException(OUT_OF_SCOPE_MESSAGE);
-  }
+  // Containment above only holds for the path as we send it. Everything after
+  // the configured base is caller-supplied, so require it to survive any
+  // amount of decoding unchanged - see assertPathIsInert. The base itself is
+  // operator-configured and trusted, so it is not subject to this.
+  assertPathIsInert(url.pathname.slice(base.pathname.length));
 
   url.search = query ?? '';
 
