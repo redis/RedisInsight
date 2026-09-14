@@ -19,10 +19,18 @@ import {
 const PROXIED_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
 /**
- * Matches `application/json` and its suffixed variants (`+json`), with or
- * without parameters such as `; charset=utf-8`.
+ * Matches exactly what the globally installed `bodyParser.json()` parses:
+ * `application/json`, optionally with parameters such as `; charset=utf-8`.
+ *
+ * Deliberately does NOT match `+json` suffixes (`application/merge-patch+json`,
+ * `application/problem+json`). body-parser's default type is the bare
+ * `application/json`, so it skips those and `req.body` would arrive undefined -
+ * meaning a wider pattern here accepts the request and then forwards an empty
+ * body with the caller's content type, which is the exact failure this guard
+ * exists to prevent. Widening this without also widening the parser in
+ * `main.ts` reintroduces that bug. RDI's API uses no `+json` media type.
  */
-const JSON_CONTENT_TYPE = /^application\/([\w.+-]+\+)?json\b/i;
+const JSON_CONTENT_TYPE = /^application\/json\s*(;|$)/i;
 
 /**
  * Passthrough to an RDI instance's native API for the @rdi-ui/pipeline UI.
@@ -57,6 +65,8 @@ export class RdiProxyController {
     // would reach us as an undefined body and get forwarded as an empty
     // request while still carrying the caller's content type. Every RDI API
     // endpoint takes JSON, so refuse loudly rather than forward a lie.
+    // Fails closed: a body-less request declaring a non-JSON type is refused
+    // too, which costs nothing since the SDK never sends one.
     if (contentType && !JSON_CONTENT_TYPE.test(contentType)) {
       throw new UnsupportedMediaTypeException(
         `Content type ${contentType} is not supported by this proxy`,

@@ -63,6 +63,24 @@ export const getRdiUpstreamQuery = (requestUrl: string): string =>
  * the origin. An absolute or scheme-relative `path` fails the same check, which
  * is what keeps this from being an SSRF primitive.
  */
+const OUT_OF_SCOPE_MESSAGE =
+  'Requested path is outside the configured RDI instance URL';
+
+/**
+ * Percent-encoded separators that an upstream might decode.
+ *
+ * Backslash is included because Windows-hosted and some proxy implementations
+ * treat it as a path separator once decoded.
+ */
+const ENCODED_SEPARATORS = /%2f|%5c/gi;
+
+/**
+ * The given pathname as an upstream would read it if it percent-decoded
+ * separators *before* normalizing dot segments.
+ */
+const readWithDecodedSeparators = (pathname: string, origin: string): string =>
+  new URL(pathname.replace(ENCODED_SEPARATORS, '/'), origin).pathname;
+
 export const resolveRdiUpstreamUrl = (
   rdiUrl: string,
   path: string,
@@ -81,9 +99,22 @@ export const resolveRdiUpstreamUrl = (
   }
 
   if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) {
-    throw new ForbiddenException(
-      'Requested path is outside the configured RDI instance URL',
-    );
+    throw new ForbiddenException(OUT_OF_SCOPE_MESSAGE);
+  }
+
+  // `new URL()` correctly treats %2F as an opaque character rather than a
+  // separator, so the check above reads `..%2fadmin` as a single segment and
+  // lets it through. An upstream - or a reverse proxy in front of RDI - that
+  // decodes first and normalizes second reads the same path as `../admin` and
+  // lands outside the base. Check that reading too, so containment holds
+  // whichever order the upstream happens to use. An encoded slash inside a
+  // real segment still passes, since it resolves within the base either way.
+  if (
+    !readWithDecodedSeparators(url.pathname, base.origin).startsWith(
+      readWithDecodedSeparators(base.pathname, base.origin),
+    )
+  ) {
+    throw new ForbiddenException(OUT_OF_SCOPE_MESSAGE);
   }
 
   url.search = query ?? '';

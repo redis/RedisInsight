@@ -125,23 +125,21 @@ describe('RdiProxyController', () => {
       );
     });
 
-    it.each([
-      'application/json',
-      'application/json; charset=utf-8',
-      'application/merge-patch+json',
-      'application/problem+json',
-    ])('Should accept the %s content type', async (contentType) => {
-      await controller.proxy(
-        mockRdiClientMetadata,
-        mockRequest({
-          method: 'POST',
-          headers: { 'content-type': contentType },
-        }),
-        res,
-      );
+    it.each(['application/json', 'application/json; charset=utf-8'])(
+      'Should accept the %s content type',
+      async (contentType) => {
+        await controller.proxy(
+          mockRdiClientMetadata,
+          mockRequest({
+            method: 'POST',
+            headers: { 'content-type': contentType },
+          }),
+          res,
+        );
 
-      expect(service.proxy).toHaveBeenCalled();
-    });
+        expect(service.proxy).toHaveBeenCalled();
+      },
+    );
 
     it.each([
       'text/plain',
@@ -149,6 +147,11 @@ describe('RdiProxyController', () => {
       'application/octet-stream',
       'application/x-www-form-urlencoded',
       'application/xml',
+      // body-parser's json() does not parse +json suffixes, so accepting these
+      // would forward an empty body with the caller's content type
+      'application/merge-patch+json',
+      'application/problem+json',
+      'application/jsonp',
     ])(
       'Should refuse the %s content type instead of forwarding an empty body',
       async (contentType) => {
