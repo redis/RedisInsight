@@ -1,7 +1,9 @@
+import { posix } from 'path';
 import { sign } from 'jsonwebtoken';
 import axios, { AxiosInstance } from 'axios';
 import { plainToInstance } from 'class-transformer';
-import { HttpStatus, Logger } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Logger } from '@nestjs/common';
+import appConfig, { Config } from 'src/utils/config';
 
 import { RdiClient } from 'src/modules/rdi/client/rdi.client';
 import {
@@ -38,6 +40,8 @@ import {
   RdiClientMetadata,
   Rdi,
   RdiPipelineStatus,
+  RdiProxyRequest,
+  RdiProxyResponse,
 } from 'src/modules/rdi/models';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
@@ -57,6 +61,8 @@ import {
 interface ConnectionsConfig {
   sources: Record<string, Record<string, unknown>>;
 }
+
+const SERVER_CONFIG = appConfig.get('server') as Config['server'];
 
 export class ApiRdiClient extends RdiClient {
   protected readonly client: AxiosInstance;
@@ -349,6 +355,188 @@ export class ApiRdiClient extends RdiClient {
     if (expiresIn < TOKEN_THRESHOLD) {
       await this.connect();
     }
+  }
+
+  async proxyRequest({
+    method,
+    path,
+    query,
+    body,
+    headers,
+  }: RdiProxyRequest): Promise<RdiProxyResponse> {
+    const requestUrl = query ? `${path}?${query}` : path;
+    this.assertPathWithinRdiBase(path);
+
+    // Non-2xx responses are part of the RDI API contract the UI's SDK handles
+    // itself, so pass them through instead of throwing.
+    const response = await this.client.request({
+      method,
+      url: requestUrl,
+      data: body,
+      headers,
+      validateStatus: null,
+      // `path` is caller-controlled; without this, axios lets an
+      // absolute/scheme-relative path override baseURL and send our
+      // Authorization header to an arbitrary host (SSRF)
+      allowAbsoluteUrls: false,
+      // return 3xx to the caller instead of following it server-side - a
+      // followed Location could point our backend (not just the browser) at
+      // an arbitrary/internal host, which allowAbsoluteUrls doesn't cover
+      maxRedirects: 0,
+      // avoid axios parsing/re-serializing the body, which corrupts
+      // non-JSON, binary, or already-encoded upstream responses
+      responseType: 'arraybuffer',
+    });
+
+    const responseHeaders = response.headers as Record<string, string>;
+
+    if (response.status >= 300 && response.status < 400) {
+      const locationKey = Object.keys(responseHeaders).find(
+        (key) => key.toLowerCase() === 'location',
+      );
+
+      if (locationKey) {
+        const rewritten = this.rewriteLocationThroughProxy(
+          responseHeaders[locationKey],
+        );
+
+        if (rewritten) {
+          responseHeaders[locationKey] = rewritten;
+        } else {
+          delete responseHeaders[locationKey];
+        }
+      }
+    }
+
+    return {
+      status: response.status,
+      headers: responseHeaders,
+      data: response.data,
+    };
+  }
+
+  /**
+   * `rdi.url` may itself have a path (RDI hosted under a subpath, e.g.
+   * https://host/rdi). allowAbsoluteUrls only stops an absolute/scheme
+   * -relative path from overriding the origin - a relative `../` segment
+   * still normalizes past that subpath once combined with the base URL, so
+   * check the resolved target stays under it.
+   */
+  private assertPathWithinRdiBase(path: string): void {
+    const baseUrl = new URL(this.rdi.url);
+    const basePath = baseUrl.pathname.replace(/\/+$/, '');
+
+    if (!basePath) {
+      return;
+    }
+
+    const decodedPath = ApiRdiClient.decodePathComponent(path);
+
+    // mirrors axios's own combineURLs (plain concatenation), not WHATWG
+    // relative-URL resolution - the latter would drop the base's last path
+    // segment as if it were a filename, which isn't how axios joins these
+    const resolved = new URL(
+      `${basePath}/${decodedPath.replace(/^\/+/, '')}`,
+      baseUrl.origin,
+    );
+
+    if (
+      resolved.pathname !== basePath &&
+      !resolved.pathname.startsWith(`${basePath}/`)
+    ) {
+      throw new ForbiddenException(
+        'Requested path is outside the configured RDI instance URL',
+      );
+    }
+  }
+
+  /**
+   * decodeURIComponent can turn an encoded delimiter (%3F, %23) into a
+   * literal ?/# that a later URL() parse would treat as the start of a
+   * query/fragment, silently truncating what actually gets validated while
+   * the real request still carries the original, still-encoded path -
+   * reject outright rather than let the check and the request diverge.
+   */
+  private static decodePathComponent(value: string): string {
+    let decoded: string;
+    try {
+      decoded = decodeURIComponent(value);
+    } catch {
+      throw new ForbiddenException('Requested path is malformed');
+    }
+
+    if (/[?#]/.test(decoded)) {
+      throw new ForbiddenException('Requested path is malformed');
+    }
+
+    return decoded;
+  }
+
+  /**
+   * If a redirect Location stays within RDI's base, rewrite it to the
+   * externally reachable proxy URL - RDI's raw Location (absolute or
+   * root-relative) would otherwise send the browser straight to RDI
+   * itself, bypassing the proxy's injected auth and RedisInsight's CORS.
+   * Returns null when the Location should be stripped instead (points
+   * outside RDI's base or failed to parse).
+   */
+  private rewriteLocationThroughProxy(location: string): string | null {
+    const baseUrl = new URL(this.rdi.url);
+
+    let resolved: URL;
+    try {
+      resolved = new URL(location, baseUrl);
+    } catch {
+      return null;
+    }
+
+    if (resolved.origin !== baseUrl.origin) {
+      return null;
+    }
+
+    // resolved.pathname can still hide an encoded dot-segment (%2e%2e,
+    // %2f) - decode and re-resolve it the same way assertPathWithinRdiBase
+    // does, so an RDI-returned Location can't encode its way past the
+    // subpath check below.
+    let decodedPathname: string;
+    try {
+      decodedPathname = decodeURIComponent(resolved.pathname);
+    } catch {
+      return null;
+    }
+
+    if (/[?#]/.test(decodedPathname)) {
+      return null;
+    }
+
+    let normalized: URL;
+    try {
+      normalized = new URL(decodedPathname, baseUrl.origin);
+    } catch {
+      return null;
+    }
+
+    const basePath = baseUrl.pathname.replace(/\/+$/, '');
+
+    if (
+      basePath &&
+      normalized.pathname !== basePath &&
+      !normalized.pathname.startsWith(`${basePath}/`)
+    ) {
+      return null;
+    }
+
+    const relativePath = normalized.pathname.slice(basePath.length);
+    const proxyPrefix = posix.join(
+      '/',
+      SERVER_CONFIG.proxyPath || '',
+      SERVER_CONFIG.globalPrefix,
+      'rdi',
+      this.metadata.id,
+      'proxy',
+    );
+
+    return `${posix.join(proxyPrefix, relativePath)}${resolved.search}${resolved.hash}`;
   }
 
   private async pollActionStatus(
