@@ -1,25 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
-import {
-  appContextSelector,
-  resetDatabaseContext,
-  resetRdiContext,
-  setAppContextConnectedRdiInstanceId,
-  setLastPageContext,
-} from 'uiSrc/slices/app/context'
+import { appContextSelector } from 'uiSrc/slices/app/context'
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
-import {
-  connectedInstanceSelector,
-  fetchConnectedInstanceAction,
-  fetchInstancesAction as fetchRdiInstancesAction,
-  instancesSelector as rdiInstancesSelector,
-} from 'uiSrc/slices/rdi/instances'
-import {
-  fetchInstancesAction,
-  instancesSelector as dbInstancesSelector,
-  resetConnectedInstance as resetConnectedDatabaseInstance,
-} from 'uiSrc/slices/instances/instances'
 import { isDevRdiUiEnabledSelector } from 'uiSrc/slices/app/features'
 import { Nullable } from 'uiSrc/utils'
 import { shouldUseRdiUiPipeline } from 'uiSrc/utils/rdi'
@@ -28,6 +11,7 @@ import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
+import { useConnectRdiInstance } from '../hooks/useConnectRdiInstance'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
@@ -37,42 +21,18 @@ export interface Props {
 }
 
 const RdiInstancePage = ({ routes = [] }: Props) => {
-  const dispatch = useAppDispatch()
   const history = useHistory()
   const location = useLocation<{ skipLastPageRestore?: boolean }>()
   const { pathname } = location
   const { privateRdiRoutes } = useNavigation()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { lastPage, contextRdiInstanceId } = useAppSelector(appContextSelector)
-  const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
-  const { data: dbInstances } = useAppSelector(dbInstancesSelector)
-  const connectedInstance = useAppSelector(connectedInstanceSelector)
+  const { lastPage } = useAppSelector(appContextSelector)
+  const { connectedInstance, contextRdiInstanceId } =
+    useConnectRdiInstance(rdiInstanceId)
   const isDevRdiUiEnabled = useAppSelector(isDevRdiUiEnabledSelector)
 
   const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
-
-  useEffect(() => {
-    if (!dbInstances?.length) {
-      dispatch(fetchInstancesAction())
-    }
-    if (!rdiInstances?.length) {
-      dispatch(fetchRdiInstancesAction())
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!contextRdiInstanceId || contextRdiInstanceId !== rdiInstanceId) {
-      dispatch(resetRdiContext())
-      dispatch(setLastPageContext(''))
-      dispatch(fetchConnectedInstanceAction(rdiInstanceId))
-    }
-    dispatch(setAppContextConnectedRdiInstanceId(rdiInstanceId))
-
-    // clear database context
-    dispatch(resetConnectedDatabaseInstance())
-    dispatch(resetDatabaseContext())
-  }, [rdiInstanceId])
 
   useEffect(() => {
     // redirect only if there is no exact path

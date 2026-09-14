@@ -114,12 +114,6 @@ const RDI_INSTANCE_ROUTES: IRoute[] = getRouteIncludedByEnv([
     component: LAZY_LOAD ? LazyPipelineManagementPage : PipelineManagementPage,
     routes: RDI_PIPELINE_MANAGEMENT_ROUTES,
   },
-  {
-    path: Pages.rdiPipelineManagementV2(':rdiInstanceId'),
-    component: LAZY_LOAD
-      ? LazyPipelineManagementV2Page
-      : PipelineManagementV2Page,
-  },
 ])
 
 const ROUTES: IRoute[] = [
@@ -187,6 +181,14 @@ const ROUTES: IRoute[] = [
     {
       path: Pages.rdi,
       component: LAZY_LOAD ? LazyRdiPage : RdiPage,
+      exact: true,
+      featureFlag: FeatureFlags.rdi,
+    },
+    {
+      path: Pages.rdiPipelineManagementV2(':rdiInstanceId'),
+      component: LAZY_LOAD
+        ? LazyPipelineManagementV2Page
+        : PipelineManagementV2Page,
       exact: true,
       featureFlag: FeatureFlags.rdi,
     },

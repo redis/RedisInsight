@@ -29,6 +29,14 @@ describe('PipelineManagementV2Page', () => {
     ).toBeInTheDocument()
   })
 
+  it('should render the instance breadcrumb, but not the v1 shell (tabs/status bar)', () => {
+    renderPage()
+
+    expect(screen.getByTestId('breadcrumbs-container')).toBeInTheDocument()
+    expect(screen.queryByTestId('pipeline-management-page-btn')).toBeNull()
+    expect(screen.queryByTestId('pipeline-status-page-btn')).toBeNull()
+  })
+
   it('should record itself as the last visited rdi section on unmount', () => {
     const { unmount } = renderPage()
 
