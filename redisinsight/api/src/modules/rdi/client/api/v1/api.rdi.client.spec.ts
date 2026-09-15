@@ -843,4 +843,55 @@ describe('ApiRdiClient', () => {
       );
     });
   });
+  describe('proxyRequest', () => {
+    const proxyResponse = (overrides: Record<string, unknown> = {}) => ({
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+      data: Buffer.from('{"ok":true}'),
+      ...overrides,
+    });
+
+    it('should forward the request to an absolute url built from the base url', async () => {
+      mockedAxios.request.mockResolvedValueOnce(proxyResponse());
+
+      const body = { name: 'p1' };
+      const result = await client.proxyRequest({
+        method: 'POST',
+        path: 'api/v1/pipelines',
+        query: 'dryRun=true',
+        body,
+        headers: { 'content-type': 'application/json' },
+      });
+
+      expect(mockedAxios.request).toHaveBeenCalledWith({
+        method: 'POST',
+        url: 'http://localhost:4000/api/v1/pipelines?dryRun=true',
+        data: body,
+        headers: { 'content-type': 'application/json' },
+        validateStatus: null,
+        maxRedirects: 0,
+        responseType: 'arraybuffer',
+      });
+      expect(result).toEqual({
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+        body: Buffer.from('{"ok":true}'),
+      });
+    });
+
+    it('should pass a non-2xx status through instead of throwing', async () => {
+      mockedAxios.request.mockResolvedValueOnce(
+        proxyResponse({ status: 422, data: Buffer.from('{"detail":"nope"}') }),
+      );
+
+      const result = await client.proxyRequest({
+        method: 'GET',
+        path: 'api/v1/pipelines',
+        headers: {},
+      });
+
+      expect(result.status).toEqual(422);
+      expect(result.body).toEqual(Buffer.from('{"detail":"nope"}'));
+    });
+  });
 });
