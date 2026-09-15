@@ -1,9 +1,21 @@
 /* eslint-disable sonarjs/no-nested-template-literals */
 /* eslint-disable no-restricted-globals */
 // @ts-nocheck
-export const importPluginScript = () => (config) => {
-  const { scriptSrc, stylesSrc, iframeId, modules, baseUrl, appVersion } =
-    JSON.parse(config)
+export const importPluginScript = () => () => {
+  // Stringified into inline script source, so keep angle brackets out of this
+  // function: a literal `<` before `script` or `!--` truncates the document.
+  const configElement = document.getElementById(
+    'ri-plugin-config',
+  ) as HTMLScriptElement | null
+  const {
+    scriptSrc,
+    scriptPath,
+    stylesSrc,
+    iframeId,
+    modules,
+    baseUrl,
+    appVersion,
+  } = JSON.parse(configElement?.textContent || '{}')
   const events = {
     ERROR: 'error',
     LOADED: 'loaded',
@@ -19,7 +31,14 @@ export const importPluginScript = () => (config) => {
     value: {
       callbacks: { counter: 0 },
       pluginState: {},
-      config: { scriptSrc, stylesSrc, iframeId, baseUrl, appVersion },
+      config: {
+        scriptSrc,
+        scriptPath,
+        stylesSrc,
+        iframeId,
+        baseUrl,
+        appVersion,
+      },
       modules,
     },
     writable: false,
@@ -113,13 +132,38 @@ export const importPluginScript = () => (config) => {
   listenEvents()
 }
 
+export const PLUGIN_CONFIG_ELEMENT_ID = 'ri-plugin-config'
+
+/** Escape a value for use inside a double-quoted HTML attribute. */
+export const escapeHtmlAttribute = (value: unknown): string =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+/**
+ * Serialize the plugin config for a JSON script element.
+ *
+ * A script element is HTML raw text, and every exit from the script-data state
+ * begins with `<`, so escaping `<` unconditionally covers the closing tag, the
+ * comment opener and a nested start tag alike — do not narrow it to one of
+ * those. Lossless, since `JSON.stringify` emits `<` only inside string values.
+ */
+export const serializeConfigForJsonScript = (config: unknown): string =>
+  (JSON.stringify(config ?? {}) ?? '{}').replace(/</g, '\\u003c')
+
 export const prepareIframeHtml = (config) => {
   const importPluginScriptInner: string = importPluginScript().toString()
-  const { scriptSrc, scriptPath, stylesSrc, bodyClass } = config
+  const { scriptSrc, stylesSrc, bodyClass } = config
   const stylesLinks = stylesSrc
-    .map((styleSrc: string) => `<link rel="stylesheet" href=${styleSrc} />`)
+    .map(
+      (styleSrc: string) =>
+        `<link rel="stylesheet" href="${escapeHtmlAttribute(styleSrc)}" />`,
+    )
     .join('')
-  const configString = JSON.stringify(config)
+  const configJson = serializeConfigForJsonScript(config)
 
   return `
       <head>
@@ -127,7 +171,7 @@ export const prepareIframeHtml = (config) => {
         <!-- Forbid XMLHttpRequest (AJAX), WebSocket, fetch(), <a ping> or EventSource -->
         <meta http-equiv="Content-Security-Policy" content="connect-src 'none';">
       </head>
-      <body class="${bodyClass}" style="height: fit-content">
+      <body class="${escapeHtmlAttribute(bodyClass)}" style="height: fit-content">
         <script>
           try {
             document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -136,20 +180,22 @@ export const prepareIframeHtml = (config) => {
           }
         </script>
         <div id="app"></div>
+        <script type="application/json" id="${PLUGIN_CONFIG_ELEMENT_ID}">${configJson}</script>
         <script>
           globalThis.plugin = {}
-          ;(${importPluginScriptInner})(\`${configString}\`);
-          import(\`${scriptSrc}\`)
+          ;(${importPluginScriptInner})();
+          import(globalThis.state.config.scriptSrc)
               .then((module) => {
                   globalThis.plugin = { ...module.default };
                   globalThis.PluginSDK.setPluginLoadSucceed();
               })
               .catch((e) => {
-                  var error = \`${scriptPath} not found. Check if it has been renamed or deleted and try again.\`
+                  var error = globalThis.state.config.scriptPath +
+                      ' not found. Check if it has been renamed or deleted and try again.'
                   globalThis.PluginSDK.setPluginLoadFailed(error)
               })
         </script>
-        <script src="${scriptSrc}" type="module"></script>
+        <script src="${escapeHtmlAttribute(scriptSrc)}" type="module"></script>
       </body>
 `
 }
