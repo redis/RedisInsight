@@ -9,6 +9,7 @@ import {
 } from './i18n.constants'
 import en from './locales/en.json'
 import bg from './locales/bg.json'
+import ru from './locales/ru.json'
 
 // TODO: Temporary let `?lang=bg` force the initial language so
 // translations can be eyeballed before the real language switcher is introduced.
@@ -20,6 +21,7 @@ i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     bg: { translation: bg },
+	ru: { translation: ru },
   },
   lng: queryLanguage ?? DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,
