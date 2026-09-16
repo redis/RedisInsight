@@ -709,10 +709,6 @@
   "src/pages/workbench/utils/tests/query.spec.ts": {
     "TS7053": 1
   },
-  "src/plugins/pluginImport.spec.ts": {
-    "TS2322": 1,
-    "TS7017": 1
-  },
   "src/services/commands-history/database/CommandsHistoryIndexedDB.spec.ts": {
     "TS2339": 2,
     "TS2345": 4,
