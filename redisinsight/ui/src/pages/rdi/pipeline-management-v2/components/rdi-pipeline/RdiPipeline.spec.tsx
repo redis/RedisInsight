@@ -1,7 +1,8 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { act, render, screen } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import RdiPipeline from './RdiPipeline'
 
@@ -51,5 +52,29 @@ describe('RdiPipeline', () => {
       baseUrl: expect.stringContaining(`rdi/${MOCK_RDI_ID}/proxy`),
     })
     expect(capturedProps.rdiClient).not.toHaveProperty('withCredentials')
+  })
+
+  it('should keep prop identities stable across a wizard-step navigation', () => {
+    const history = createMemoryHistory({
+      initialEntries: [Pages.rdiPipelineManagementV2(MOCK_RDI_ID)],
+    })
+
+    render(
+      <Router history={history}>
+        <RdiPipeline rdiInstanceId={MOCK_RDI_ID} />
+      </Router>,
+    )
+    const initialProps = capturedProps
+
+    act(() => {
+      history.push(`${Pages.rdiPipelineManagementV2(MOCK_RDI_ID)}/create`)
+    })
+
+    expect(capturedProps.rdiClient).toBe(initialProps.rdiClient)
+    expect(capturedProps.targetDatabase).toBe(initialProps.targetDatabase)
+    expect(capturedProps.sourceSecrets).toBe(initialProps.sourceSecrets)
+    expect(capturedProps.multiSource).toBe(initialProps.multiSource)
+    expect(capturedProps.pipelineSecrets).toBe(initialProps.pipelineSecrets)
+    expect(capturedProps.configTranslate).toBe(initialProps.configTranslate)
   })
 })

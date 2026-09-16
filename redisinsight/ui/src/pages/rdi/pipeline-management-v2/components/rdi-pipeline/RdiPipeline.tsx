@@ -13,6 +13,24 @@ export interface Props {
   rdiInstanceId: string
 }
 
+// Stable across renders - no dependency on props/state - so identity never
+// changes and can't retrigger PipelineManagement's own mount-effects, unlike
+// an inline object literal recreated on every render (this component
+// re-renders on every wizard-step navigation, since useRdiPipelineNavigation
+// subscribes to location).
+const TARGET_DATABASE = { strategy: 'manual' as const }
+const SOURCE_SECRETS = { strategy: 'credentials' as const }
+const MULTI_SOURCE = {}
+// secret mounting isn't wired up yet - stub only satisfies the required
+// shape so the component renders
+const PIPELINE_SECRETS = { mountSecrets: async () => {} }
+const CONFIG_TRANSLATE = {
+  // native-config <-> draft translation isn't wired up yet - these stubs
+  // only satisfy the required shape so the component renders
+  translateDraftToNativeConfig: async () => ({ jobs: [] }),
+  translateNativeConfigToDraft: async () => ({}),
+}
+
 const RdiPipeline = ({ rdiInstanceId }: Props) => {
   const navigation = useRdiPipelineNavigation()
   const { theme } = useThemeContext()
@@ -34,43 +52,43 @@ const RdiPipeline = ({ rdiInstanceId }: Props) => {
     [theme],
   )
 
+  // Memoized for the same reason as the constants above - only this one
+  // actually depends on a prop, so it can't be hoisted alongside them.
+  const rdiClient = useMemo(
+    () => ({
+      baseUrl: `${getBaseUrl()}rdi/${rdiInstanceId}/proxy`,
+      // Electron's WindowAuthMiddleware guards every API route (including
+      // this proxy) on window.windowId; this client bypasses apiService's
+      // own interceptor that normally attaches it, so it has to be set here
+      // too.
+      ...(window.windowId && {
+        headers: { [CustomHeaders.WindowId]: window.windowId },
+      }),
+      // Deliberately no `withCredentials`: the API's CORS setup
+      // (app.enableCors() with no options, in main.ts) answers with
+      // Access-Control-Allow-Origin: *, which browsers reject for a
+      // credentialed (cross-origin, cookie-carrying) request. The proxy
+      // authenticates to the RDI instance server-side, so the browser has
+      // no cookie to send here anyway. Turning this on would also require
+      // enableCors() to know the exact origin RedisInsight is served from,
+      // which isn't knowable ahead of time (Docker, Electron, hosted web
+      // all differ) - the wildcard-origin CORS config this relies on is
+      // what makes the proxy deployment-agnostic.
+    }),
+    [rdiInstanceId],
+  )
+
   return (
     <StyledThemeProvider theme={rdiUiTheme}>
       <PipelineManagement
         basePath={Pages.rdiPipelineManagementV2(rdiInstanceId)}
         navigation={navigation}
-        rdiClient={{
-          baseUrl: `${getBaseUrl()}rdi/${rdiInstanceId}/proxy`,
-          // Electron's WindowAuthMiddleware guards every API route
-          // (including this proxy) on window.windowId; this client
-          // bypasses apiService's own interceptor that normally attaches
-          // it, so it has to be set here too.
-          ...(window.windowId && {
-            headers: { [CustomHeaders.WindowId]: window.windowId },
-          }),
-          // Deliberately no `withCredentials`: the API's CORS setup
-          // (app.enableCors() with no options, in main.ts) answers with
-          // Access-Control-Allow-Origin: *, which browsers reject for a
-          // credentialed (cross-origin, cookie-carrying) request. The proxy
-          // authenticates to the RDI instance server-side, so the browser has
-          // no cookie to send here anyway. Turning this on would also require
-          // enableCors() to know the exact origin RedisInsight is served
-          // from, which isn't knowable ahead of time (Docker, Electron,
-          // hosted web all differ) - the wildcard-origin CORS config this
-          // relies on is what makes the proxy deployment-agnostic.
-        }}
-        targetDatabase={{ strategy: 'manual' }}
-        sourceSecrets={{ strategy: 'credentials' }}
-        multiSource={{}}
-        // secret mounting isn't wired up yet - stub only satisfies the
-        // required shape so the component renders
-        pipelineSecrets={{ mountSecrets: async () => {} }}
-        configTranslate={{
-          // native-config <-> draft translation isn't wired up yet - these
-          // stubs only satisfy the required shape so the component renders
-          translateDraftToNativeConfig: async () => ({ jobs: [] }),
-          translateNativeConfigToDraft: async () => ({}),
-        }}
+        rdiClient={rdiClient}
+        targetDatabase={TARGET_DATABASE}
+        sourceSecrets={SOURCE_SECRETS}
+        multiSource={MULTI_SOURCE}
+        pipelineSecrets={PIPELINE_SECRETS}
+        configTranslate={CONFIG_TRANSLATE}
       />
     </StyledThemeProvider>
   )
