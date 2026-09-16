@@ -307,7 +307,7 @@ describe('importPluginScript', () => {
   it('should read the config from the dom and set up the Plugin SDK', () => {
     pluginGlobals.ResizeObserver = jest.fn(() => ({
       observe: jest.fn(),
-    }))
+    })) as unknown as typeof globalThis.ResizeObserver
     const modules = [{ name: '${globalThis.__EVALUATED = 1}', version: 1 }]
     const iframeId = faker.string.uuid()
     const element = document.createElement('script')
