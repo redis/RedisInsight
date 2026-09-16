@@ -189,7 +189,6 @@ const ROUTES: IRoute[] = [
       component: LAZY_LOAD
         ? LazyPipelineManagementV2Page
         : PipelineManagementV2Page,
-      exact: true,
       featureFlag: FeatureFlags.rdi,
     },
     {
