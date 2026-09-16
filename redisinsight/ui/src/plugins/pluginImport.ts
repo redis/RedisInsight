@@ -184,13 +184,14 @@ export const prepareIframeHtml = (config) => {
         <script>
           globalThis.plugin = {}
           ;(${importPluginScriptInner})();
-          import(globalThis.state.config.scriptSrc)
+          var riConfig = globalThis.state.config;
+          import(riConfig.scriptSrc)
               .then((module) => {
                   globalThis.plugin = { ...module.default };
                   globalThis.PluginSDK.setPluginLoadSucceed();
               })
               .catch((e) => {
-                  var error = globalThis.state.config.scriptPath +
+                  var error = riConfig.scriptPath +
                       ' not found. Check if it has been renamed or deleted and try again.'
                   globalThis.PluginSDK.setPluginLoadFailed(error)
               })

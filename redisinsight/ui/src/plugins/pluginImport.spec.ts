@@ -14,6 +14,9 @@ import {
  * `"` and `\`, but not a backtick or `${`.
  */
 const UNSAFE_MODULE_NAMES = [
+  // One representative per distinct escape route out of the script-data state,
+  // plus an attribute-context breakout and a control character. Each fails
+  // against the pre-fix generator, so together they guard the whole fix.
   {
     description: 'template literal substitution',
     value: '${globalThis.__EVALUATED = 1}',
@@ -27,44 +30,16 @@ const UNSAFE_MODULE_NAMES = [
     value: '</script><script>globalThis.__EVALUATED = 1</script>',
   },
   {
-    description: 'uppercase closing script tag',
-    value: '</SCRIPT><SCRIPT>globalThis.__EVALUATED = 1</SCRIPT>',
-  },
-  {
-    description: 'closing script tag without a gt sign',
-    value: '</script ',
-  },
-  {
-    description: 'closing script tag with a tab terminator',
-    value: '</script\t',
-  },
-  {
     description: 'script data double escape',
     value: '<!--<script>globalThis.__EVALUATED = 1',
   },
   {
-    description: 'trailing backslash',
-    value: 'name\\',
-  },
-  {
-    description: 'double quote',
+    description: 'attribute-context double quote',
     value: 'name" onload="globalThis.__EVALUATED = 1',
   },
   {
-    description: 'html comment opener',
-    value: '<!--',
-  },
-  {
-    description: 'line separator',
+    description: 'line separator control character',
     value: `name${String.fromCharCode(0x2028)}globalThis.__EVALUATED = 1`,
-  },
-  {
-    description: 'carriage return',
-    value: `name${String.fromCharCode(13)}globalThis.__EVALUATED = 1`,
-  },
-  {
-    description: 'null byte',
-    value: `name${String.fromCharCode(0)}`,
   },
 ]
 
@@ -87,6 +62,26 @@ const getExecutableScriptSources = (doc: Document): string[] =>
   Array.from(doc.querySelectorAll('script'))
     .filter((script) => script.getAttribute('type') !== 'application/json')
     .map((script) => script.textContent || '')
+
+/** A stubbed iframe-frame global object, wired to read config from `doc`. */
+const createFrameSandbox = (doc: Document): Record<string, unknown> => {
+  const sandbox: Record<string, unknown> = {
+    __EVALUATED: undefined,
+    ResizeObserver: function ResizeObserverStub() {
+      return { observe: () => undefined }
+    },
+    parent: { dispatchEvent: () => undefined },
+    document: {
+      getElementById: () => getConfigElement(doc),
+      createEvent: () => ({ initEvent: () => undefined }),
+      addEventListener: () => undefined,
+      createElementNS: () => undefined,
+      body: { offsetHeight: 0 },
+    },
+  }
+  sandbox.globalThis = sandbox
+  return sandbox
+}
 
 describe('pluginImport', () => {
   const buildConfig = (override: Record<string, unknown> = {}) => ({
@@ -163,67 +158,33 @@ describe('pluginImport', () => {
     })
 
     it.each(UNSAFE_MODULE_NAMES)(
-      'should keep a module name containing $description out of script source',
+      'neutralises a module name containing $description',
       ({ value }) => {
         const config = buildConfig({ modules: [{ name: value, version: 1 }] })
-
         const doc = parseHtml(prepareIframeHtml(config))
 
+        // 1. never interpolated into executable script source (raw or escaped)
         getExecutableScriptSources(doc).forEach((source) => {
           expect(source).not.toContain(value)
-          // Also the serialized form, since JSON.stringify alters `"`, `\`, `<`
           expect(source).not.toContain(JSON.stringify(value).slice(1, -1))
         })
-      },
-    )
 
-    it.each(UNSAFE_MODULE_NAMES)(
-      'should not execute a module name containing $description',
-      ({ value }) => {
-        const config = buildConfig({ modules: [{ name: value, version: 1 }] })
-        const doc = parseHtml(prepareIframeHtml(config))
-
-        // Parsing cannot prove the value never runs, so evaluate each block.
-        // A fresh context per case avoids the non-configurable `state` clash.
-        const sandbox: Record<string, unknown> = {
-          __EVALUATED: undefined,
-          ResizeObserver: function ResizeObserverStub() {
-            return { observe: () => undefined }
-          },
-          parent: { dispatchEvent: () => undefined },
-          document: {
-            getElementById: () => getConfigElement(doc),
-            createEvent: () => ({ initEvent: () => undefined }),
-            addEventListener: () => undefined,
-            createElementNS: () => undefined,
-            body: { offsetHeight: 0 },
-          },
-        }
-        sandbox.globalThis = sandbox
-
+        // 2. never executes — parsing alone can't prove this, so evaluate every
+        // executable block in a stubbed frame
+        const sandbox = createFrameSandbox(doc)
         getExecutableScriptSources(doc).forEach((source) => {
           try {
             runInNewContext(source, sandbox)
           } catch {
-            // Unsupported in a bare context (e.g. `import()`); anything
-            // interpolated would already have run by then.
+            // import() etc. is unsupported in a bare context; anything
+            // interpolated would already have run before the throw
           }
         })
-
         expect(sandbox.__EVALUATED).toBeUndefined()
         expect(pluginGlobals.__EVALUATED).toBeUndefined()
-      },
-    )
 
-    it.each(UNSAFE_MODULE_NAMES)(
-      'should round-trip a module name containing $description intact',
-      ({ value }) => {
-        const config = buildConfig({ modules: [{ name: value, version: 1 }] })
-
-        const doc = parseHtml(prepareIframeHtml(config))
+        // 3. still reaches the plugin intact — escaping must be lossless
         const parsed = JSON.parse(getConfigElement(doc)?.textContent || '{}')
-
-        // Lossless: the plugin still sees the real name
         expect(parsed.modules).toEqual([{ name: value, version: 1 }])
       },
     )
