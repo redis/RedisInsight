@@ -82,4 +82,28 @@ describe('useRdiPipelineNavigation', () => {
     expect(callback).toHaveBeenCalled()
     expect(unsubscribe).toBe(unlisten)
   })
+
+  it('should keep returning the current pathname after a navigation, even from a service captured on an earlier render', () => {
+    const { result, rerender } = renderHook(() => useRdiPipelineNavigation())
+    const capturedService = result.current
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: '/integrate/123/create' })
+    rerender()
+
+    expect(capturedService.getPath()).toBe('/integrate/123/create')
+  })
+
+  it('should not recreate the navigation service object across renders', () => {
+    const { result, rerender } = renderHook(() => useRdiPipelineNavigation())
+    const firstService = result.current
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: '/integrate/123/create' })
+    rerender()
+
+    expect(result.current).toBe(firstService)
+  })
 })

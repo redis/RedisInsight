@@ -4,6 +4,7 @@ import { themes as rdiUiThemes } from '@redis-ui/styles-rdi'
 import { PipelineManagement } from '@rdi-ui/pipeline'
 import { Pages } from 'uiSrc/constants'
 import { Theme } from 'uiSrc/constants/themes'
+import { CustomHeaders } from 'uiSrc/constants/api'
 import { getBaseUrl } from 'uiSrc/services/apiService'
 import { useThemeContext } from 'uiSrc/contexts/themeContext'
 import { useRdiPipelineNavigation } from '../../hooks/useRdiPipelineNavigation'
@@ -40,6 +41,13 @@ const RdiPipeline = ({ rdiInstanceId }: Props) => {
         navigation={navigation}
         rdiClient={{
           baseUrl: `${getBaseUrl()}rdi/${rdiInstanceId}/proxy`,
+          // Electron's WindowAuthMiddleware guards every API route
+          // (including this proxy) on window.windowId; this client
+          // bypasses apiService's own interceptor that normally attaches
+          // it, so it has to be set here too.
+          ...(window.windowId && {
+            headers: { [CustomHeaders.WindowId]: window.windowId },
+          }),
           // Deliberately no `withCredentials`: the API's CORS setup
           // (app.enableCors() with no options, in main.ts) answers with
           // Access-Control-Allow-Origin: *, which browsers reject for a
