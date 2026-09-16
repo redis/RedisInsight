@@ -19,8 +19,9 @@ const ANALYTICS_CONFIG = config.get('analytics') as Config['analytics'];
 export interface ITelemetryEvent {
   event: string;
   eventData: Object;
-  nonTracking: boolean;
-  traits?: Object;
+  // Internal emitters only. Never accepted from the request body, since it would
+  // let a caller bypass the user's analytics consent.
+  nonTracking?: boolean;
 }
 
 export interface ITelemetryInitEvent {
@@ -193,7 +194,7 @@ export class AnalyticsService {
     payload: ITelemetryEvent,
   ) {
     try {
-      const { eventData, nonTracking, traits = {} } = payload;
+      const { eventData, nonTracking } = payload;
       const isAnalyticsGranted =
         await this.checkIsAnalyticsGranted(sessionMetadata);
 
@@ -208,7 +209,6 @@ export class AnalyticsService {
           },
           context: {
             traits: {
-              ...traits,
               telemetry: isAnalyticsGranted
                 ? Telemetry.Enabled
                 : Telemetry.Disabled,
