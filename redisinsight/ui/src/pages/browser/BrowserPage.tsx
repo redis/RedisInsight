@@ -55,6 +55,7 @@ import { MakeSearchableModalProvider } from './components/make-searchable-modal'
 import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
+import CommandLogPanel from './components/command-log-panel'
 
 import * as S from './BrowserPage.styles'
 
@@ -63,6 +64,7 @@ const widthExplorePanel = 460
 
 export const firstPanelId = 'keys'
 export const secondPanelId = 'keyDetails'
+export const thirdPanelId = 'commandLog'
 
 const isOneSideMode = (isInsightsOpen: boolean) =>
   globalThis.innerWidth <
@@ -92,8 +94,13 @@ const BrowserPage = () => {
   const overview = useAppSelector(connectedInstanceOverviewSelector)
   const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
-  const panelMinSize = isDevBrowser ? 20 : 45
-  const panelDefaultSize = 50
+  // Three columns share the width now: keeping the two-column minimum (45%)
+  // would exceed 100% in total and break the layout.
+  const panelMinSize = isDevBrowser ? 15 : 25
+  const commandLogMinSize = 15
+  const panelDefaultSize = 38
+  const secondPanelDefaultSize = 40
+  const commandLogDefaultSize = 22
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
   const [arePanelsCollapsed, setArePanelsCollapsed] = useState(
@@ -338,7 +345,9 @@ const BrowserPage = () => {
               <ResizablePanelHandle />
             )}
             <S.BorderedResizablePanel
-              defaultSize={sizes && sizes[1] ? sizes[1] : panelDefaultSize}
+              defaultSize={
+                sizes && sizes[1] ? sizes[1] : secondPanelDefaultSize
+              }
               minSize={panelMinSize}
               id={secondPanelId}
               $keyDetailsOpen={isRightPanelOpen}
@@ -360,6 +369,20 @@ const BrowserPage = () => {
                 closeRightPanels={closeRightPanels}
               />
             </S.BorderedResizablePanel>
+            {!arePanelsCollapsed && !isBrowserFullScreen && (
+              <ResizablePanelHandle />
+            )}
+            {!arePanelsCollapsed && !isBrowserFullScreen && (
+              <S.BorderedResizablePanel
+                defaultSize={
+                  sizes && sizes[2] ? sizes[2] : commandLogDefaultSize
+                }
+                minSize={commandLogMinSize}
+                id={thirdPanelId}
+              >
+                <CommandLogPanel />
+              </S.BorderedResizablePanel>
+            )}
           </S.StyledResizableContainer>
         </S.MainContent>
         <OnboardingStartPopover />
