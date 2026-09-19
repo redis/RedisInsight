@@ -253,7 +253,33 @@ describe('instances slice', () => {
       }
 
       // Act
-      const nextState = reducer(prevState, testConnectionSuccess())
+      const nextState = reducer(prevState, testConnectionSuccess(null))
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: {
+          instances: nextState,
+        },
+      })
+      expect(instancesSelector(rootState)).toEqual(state)
+    })
+
+    it('should cache the instance info read while testing the connection', () => {
+      // Arrange
+      const instanceInfo = {
+        ...initialState.instanceInfo,
+        databases: 16,
+      }
+      const state = {
+        ...initialState,
+        instanceInfo,
+      }
+
+      // Act
+      const nextState = reducer(
+        initialState,
+        testConnectionSuccess(instanceInfo),
+      )
 
       // Assert
       const rootState = Object.assign(initialStateDefault, {
@@ -1893,7 +1919,9 @@ describe('instances slice', () => {
         // Assert
         const expectedActions = [
           testConnection(),
-          testConnectionSuccess(),
+          // the mocked response has no body, so there is no instance info
+          // to cache
+          testConnectionSuccess(null),
           addMessageNotification(successMessages.TEST_CONNECTION()),
         ]
 

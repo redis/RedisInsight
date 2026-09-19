@@ -2,13 +2,22 @@ import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { connectedInstanceInfoSelector } from 'uiSrc/slices/instances/instances'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput } from 'uiSrc/components/base/inputs'
+import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import { useTranslation } from 'uiSrc/i18n'
 import styles from '../styles.module.scss'
+
+/**
+ * Redis ships with 16 logical databases by default. Used as the option count
+ * until the connection has been tested, because the real value can only be
+ * read from the instance itself.
+ */
+const DEFAULT_DATABASES_COUNT = 16
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -17,6 +26,8 @@ export interface Props {
 const DbIndex = (props: Props) => {
   const { t } = useTranslation()
   const { formik } = props
+  // Filled by `testConnectionSuccess` once the connection has been tested.
+  const { databases } = useAppSelector(connectedInstanceInfoSelector)
 
   const handleChangeDbIndexCheckbox = (
     e: ChangeEvent<HTMLInputElement>,
@@ -30,6 +41,16 @@ const DbIndex = (props: Props) => {
     formik.handleChange(e)
   }
   const id = useGenerateId('', ' over db')
+
+  const databasesCount =
+    databases && databases > 0 ? databases : DEFAULT_DATABASES_COUNT
+
+  // A picker instead of a free-form number: the previous input accepted
+  // indexes the instance does not have, which only failed later at runtime.
+  const dbOptions = Array.from({ length: databasesCount }, (_, index) => ({
+    value: String(index),
+    label: `db${index}`,
+  }))
 
   return (
     <>
@@ -53,15 +74,13 @@ const DbIndex = (props: Props) => {
         <Row gap="m" responsive>
           <FlexItem grow className={styles.dbInput}>
             <FormField label={t('home.form.dbIndex.field.databaseIndex')}>
-              <NumericInput
-                autoValidate
-                min={0}
-                name="db"
-                id="db"
+              <RiSelect
+                options={dbOptions}
+                value={String(formik.values.db ?? 0)}
+                onChange={(value: string) =>
+                  formik.setFieldValue('db', Number(value))
+                }
                 data-testid="db"
-                placeholder={t('home.form.dbIndex.placeholder.databaseIndex')}
-                value={Number(formik.values.db)}
-                onChange={(value) => formik.setFieldValue('db', value)}
               />
             </FormField>
           </FlexItem>
