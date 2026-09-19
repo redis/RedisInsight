@@ -148,8 +148,18 @@ const instancesSlice = createSlice({
       state.loadingChanging = true
       state.errorChanging = ''
     },
-    testConnectionSuccess: (state) => {
+    // The tested instance is not saved yet, so the info the API just read
+    // (notably the number of logical databases) is cached here to let the
+    // connection form offer a db picker before the database exists.
+    testConnectionSuccess: (
+      state,
+      { payload }: { payload: RedisNodeInfoResponse | null },
+    ) => {
       state.loadingChanging = false
+
+      if (payload) {
+        state.instanceInfo = { ...state.instanceInfo, ...payload }
+      }
     },
     testConnectionFailure: (state, { payload = '' }) => {
       state.loadingChanging = false
@@ -997,9 +1007,13 @@ export function testInstanceStandaloneAction(
   return async (dispatch: AppDispatch) => {
     dispatch(testConnection())
     try {
-      const result = await instancesService.testInstanceConnection(id, payload)
-      if (result) {
-        dispatch(testConnectionSuccess())
+      const { success, data } = await instancesService.testInstanceConnection(
+        id,
+        payload,
+      )
+
+      if (success) {
+        dispatch(testConnectionSuccess(data))
 
         dispatch(addMessageNotification(successMessages.TEST_CONNECTION()))
       }
