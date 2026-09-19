@@ -25,6 +25,7 @@ import SWAGGER_CONFIG from '../config/swagger';
 import LOGGER_CONFIG from '../config/logger';
 import { createHttpOptions } from './utils/createHttpOptions';
 import { SessionMetadataAdapter } from './modules/auth/session-metadata/adapters/session-metadata.adapter';
+import { OperationContextInterceptor } from './common/interceptors/operation-context.interceptor';
 
 const serverConfig = get('server') as Config['server'];
 
@@ -60,6 +61,9 @@ export default async function bootstrap(apiPort?: number): Promise<IApp> {
     options,
   );
   app.useGlobalFilters(new GlobalExceptionFilter(app.getHttpAdapter()));
+  // Binds the name of the running operation to the request context so the
+  // command log can attribute every Redis command to the action that caused it.
+  app.useGlobalInterceptors(new OperationContextInterceptor());
   // set qs as parser to support nested objects in the query string
   app.set('query parser', qs.parse);
   app.use(bodyParser.json({ limit: serverConfig.maxPayloadSize }));
