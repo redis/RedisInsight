@@ -21,6 +21,6 @@
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "keytar": "^7.9.0",
-    "tunnel-ssh": "^5.1.2"
+    "tunnel-ssh": "^5.2.0"
   }
 }
