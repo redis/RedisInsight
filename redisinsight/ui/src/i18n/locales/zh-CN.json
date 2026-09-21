@@ -92,7 +92,7 @@
   "analytics.slowLog.clearModal.button.cancel": "取消",
   "analytics.slowLog.clearModal.button.clear": "清除",
   "analytics.slowLog.clearModal.message": "{{name}}",
-  "analytics.slowLog.clearModal.note": "注意： 这是服务器配置",
+  "analytics.slowLog.clearModal.note": "注意：这是服务器配置",
   "analytics.slowLog.clearModal.title": "清除慢日志",
   "analytics.slowLog.config.button.cancel": "取消",
   "analytics.slowLog.config.button.default": "默认",
