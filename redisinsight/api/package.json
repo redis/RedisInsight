@@ -92,7 +92,7 @@
     "@segment/analytics-node": "^2.3.0",
     "@supercharge/promise-pool": "^3.3.0",
     "@types/json-bigint": "^1.0.4",
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "axios": "^1.20.0",
     "better-sqlite3": "^13.0.3",
     "body-parser": "^2.3.0",
