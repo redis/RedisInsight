@@ -103,7 +103,7 @@ const NavigationMenu = () => {
             >
               <SideBarItemIcon
                 icon={GithubIcon}
-                aria-label="github-repo-icon"
+                aria-label={t('navigation.github.ariaLabel')}
                 data-testid="github-repo-icon"
               />
             </SideBarItem>

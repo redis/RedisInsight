@@ -24,8 +24,8 @@ docs {
   stores `theme`, `dateFormat`, and `timezone`) and is applied app-wide on the
   next load by the UI.
 
-  The example above switches the UI to Bulgarian (`bg`). Send `"en"` to switch
-  back to English.
+  The example above switches the UI to Bulgarian (`bg`). Send `"zh-CN"` to switch
+  to Simplified Chinese, or `"en"` to switch back to English.
 
   ## Request Body
 
@@ -33,7 +33,7 @@ docs {
 
   | Field | Type | Description |
   |-------|------|-------------|
-  | `language` | string | Locale code to apply. Currently supported: `en`, `bg`. Unknown codes fall back to `en` at render time. |
+  | `language` | string | Locale code to apply. Currently supported: `en`, `bg`, `zh-CN`. Unknown codes fall back to `en` at render time. |
   | `theme` | string (optional) | Color theme, e.g. `DARK`, `LIGHT`, `SYSTEM`. |
   | `dateFormat` | string (optional) | Applied date format. |
   | `timezone` | string (optional) | `local` or `UTC`. |

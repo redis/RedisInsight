@@ -1,10 +1,10 @@
-import { defineConfig } from 'i18next-cli'
+import { defineConfig } from 'i18next-cli';
 
 // Config for `npm run i18n:extract` — scans t() usages in the UI and syncs keys
-// into the locale files. en is the source of truth; bg gets the same keys with
-// empty values to translate.
+// into the locale files. en is the source of truth; secondary locales get the
+// same keys with empty values to translate.
 export default defineConfig({
-  locales: ['en', 'bg'],
+  locales: ['en', 'bg', 'zh-CN'],
   extract: {
     input: ['redisinsight/ui/src/**/*.{ts,tsx}'],
     ignore: ['**/node_modules/**', '**/*.d.ts', '**/*.spec.{ts,tsx}'],
@@ -15,9 +15,9 @@ export default defineConfig({
     keySeparator: false,
     nsSeparator: false,
     primaryLanguage: 'en',
-    secondaryLanguages: ['bg'],
+    secondaryLanguages: ['bg', 'zh-CN'],
     sort: true,
     // Keep keys whose t() calls were removed, so translations aren't lost.
     removeUnusedKeys: false,
   },
-})
+});
