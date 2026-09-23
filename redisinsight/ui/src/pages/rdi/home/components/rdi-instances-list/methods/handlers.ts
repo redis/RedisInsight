@@ -2,13 +2,13 @@ import {
   SortingState,
   PaginationState,
 } from 'uiSrc/components/base/layout/table'
-import { BrowserStorageItem, Pages } from 'uiSrc/constants'
+import { BrowserStorageItem, FeatureFlags, Pages } from 'uiSrc/constants'
 import {
   getObjectStorageField,
   localStorageService,
   setObjectStorageField,
 } from 'uiSrc/services'
-import { dispatch } from 'uiSrc/slices/store'
+import { dispatch, store } from 'uiSrc/slices/store'
 import { navigate } from 'uiSrc/Router'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { setAppContextConnectedRdiInstanceId } from 'uiSrc/slices/app/context'
@@ -30,6 +30,20 @@ export const handleSortingChange = (sorting: SortingState) => {
   })
 }
 
+/**
+ * With `dev-rdiUi` on, opening an instance drills into the
+ * @redislabsdev/rdi-ui management page instead of the RedisInsight-native
+ * pipeline pages. Read from the store directly since this is not a hook.
+ */
+const getRdiInstancePage = (rdiId: string) => {
+  const isRdiUiEnabled =
+    store.getState().app.features.featureFlags.features?.[
+      FeatureFlags.devRdiUi
+    ]?.flag
+
+  return isRdiUiEnabled ? Pages.rdiManagement(rdiId) : Pages.rdiPipeline(rdiId)
+}
+
 export const handleCheckConnectToRdiInstance = (instance: RdiInstance) => {
   const { id } = instance
 
@@ -41,7 +55,7 @@ export const handleCheckConnectToRdiInstance = (instance: RdiInstance) => {
   dispatch(
     checkConnectToRdiInstanceAction(
       id,
-      (rdiId: string) => navigate(Pages.rdiPipeline(rdiId)),
+      (rdiId: string) => navigate(getRdiInstancePage(rdiId)),
       () => dispatch(setAppContextConnectedRdiInstanceId('')),
     ),
   )

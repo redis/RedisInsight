@@ -22,6 +22,7 @@ import RdiPage from 'uiSrc/pages/rdi/home'
 import RdiInstancePage from 'uiSrc/pages/rdi/instance'
 import RdiStatisticsPage from 'uiSrc/pages/rdi/statistics'
 import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
+import RdiManagementPage from 'uiSrc/pages/rdi/management'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
@@ -67,6 +68,7 @@ const LazyRdiStatisticsPage = lazy(() => import('uiSrc/pages/rdi/statistics'))
 const LazyPipelineManagementPage = lazy(
   () => import('uiSrc/pages/rdi/pipeline-management'),
 )
+const LazyRdiManagementPage = lazy(() => import('uiSrc/pages/rdi/management'))
 
 const INSTANCE_ROUTES: IRoute[] = [
   {
@@ -179,6 +181,13 @@ const ROUTES: IRoute[] = [
       component: LAZY_LOAD ? LazyRdiPage : RdiPage,
       exact: true,
       featureFlag: FeatureFlags.rdi,
+    },
+    // Must precede the non-exact rdiPipeline route below, which would otherwise
+    // swallow this path. Gated by dev-rdiUi; falls through to 404 when off.
+    {
+      path: Pages.rdiManagement(':rdiInstanceId'),
+      component: LAZY_LOAD ? LazyRdiManagementPage : RdiManagementPage,
+      featureFlag: FeatureFlags.devRdiUi,
     },
     {
       path: Pages.rdiPipeline(':rdiInstanceId'),

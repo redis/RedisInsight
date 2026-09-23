@@ -103,3 +103,8 @@ storybook-static
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# yalc — local-only linking of @redislabsdev/rdi-ui during development.
+# See RDI_README.md. Never commit these: they point at paths on one machine.
+.yalc/
+yalc.lock

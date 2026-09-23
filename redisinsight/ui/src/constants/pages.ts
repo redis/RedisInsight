@@ -31,6 +31,7 @@ export enum PageNames {
   rdiPipelineConfig = 'config',
   rdiPipelineJobs = 'jobs',
   rdiStatistics = 'statistics',
+  rdiManagement = 'management',
 }
 
 const redisCloud = '/redis-cloud'
@@ -89,4 +90,7 @@ export const Pages = {
   rdiPipelineJobs: (rdiInstance: string, jobName: string) =>
     `${rdi}/${rdiInstance}/${PageNames.rdiPipelineManagement}/${PageNames.rdiPipelineJobs}/${jobName}`,
   rdiStatistics: (rdiInstance: string) => `${rdi}/${rdiInstance}/statistics`,
+  // rdi management powered by @redislabsdev/rdi-ui, behind the dev-rdiUi flag
+  rdiManagement: (rdiInstance: string) =>
+    `${rdi}/${rdiInstance}/${PageNames.rdiManagement}`,
 }

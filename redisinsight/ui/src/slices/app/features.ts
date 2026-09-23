@@ -74,6 +74,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devLanguage]: {
         flag: false,
       },
+      [FeatureFlags.devRdiUi]: {
+        flag: false,
+      },
       [FeatureFlags.vectorSearchEnhancements]: {
         flag: false,
       },

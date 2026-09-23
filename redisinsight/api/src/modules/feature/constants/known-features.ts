@@ -86,6 +86,10 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevLanguage,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevRdiUi]: {
+    name: KnownFeatures.DevRdiUi,
+    storage: FeatureStorage.Database,
+  },
   [KnownFeatures.VectorSearchEnhancements]: {
     name: KnownFeatures.VectorSearchEnhancements,
     storage: FeatureStorage.Database,

@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 13,
   "features": {
     "appUpdateStrategySettings": {
       "flag": true,
@@ -18,6 +18,11 @@
       "filters": []
     },
     "dev-language": {
+      "flag": true,
+      "perc": [[0, 0]],
+      "filters": []
+    },
+    "dev-rdiUi": {
       "flag": true,
       "perc": [[0, 0]],
       "filters": []

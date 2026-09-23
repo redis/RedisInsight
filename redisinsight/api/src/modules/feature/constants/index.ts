@@ -37,6 +37,7 @@ export enum KnownFeatures {
   DevBrowser = 'dev-browser',
   Array = 'array',
   DevLanguage = 'dev-language',
+  DevRdiUi = 'dev-rdiUi',
   VectorSearchEnhancements = 'vectorSearchEnhancements',
   ValueDecoder = 'valueDecoder',
   AppUpdateStrategySettings = 'appUpdateStrategySettings',

@@ -12,6 +12,8 @@ import { RdiAnalytics } from 'src/modules/rdi/rdi.analytics';
 import { RdiPipelineAnalytics } from 'src/modules/rdi/rdi-pipeline.analytics';
 import { RdiStatisticsController } from 'src/modules/rdi/rdi-statistics.controller';
 import { RdiStatisticsService } from 'src/modules/rdi/rdi-statistics.service';
+import { RdiProxyController } from 'src/modules/rdi/rdi-proxy.controller';
+import { RdiProxyService } from 'src/modules/rdi/rdi-proxy.service';
 
 @Module({})
 export class RdiModule {
@@ -22,11 +24,13 @@ export class RdiModule {
         RdiController,
         RdiPipelineController,
         RdiStatisticsController,
+        RdiProxyController,
       ],
       providers: [
         RdiService,
         RdiPipelineService,
         RdiStatisticsService,
+        RdiProxyService,
         RdiClientProvider,
         RdiClientStorage,
         RdiClientFactory,
