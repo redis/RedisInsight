@@ -24,6 +24,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   BulbHighlighting,
@@ -37,6 +38,7 @@ export interface Props {
 
 const InsightsTrigger = (props: Props) => {
   const { source = 'overview' } = props
+  const { t } = useTranslation()
   const { openedPanel } = useAppSelector(sidePanelsSelector)
   const { tabSelected } = useAppSelector(insightsPanelSelector)
   const { isHighlighted } = useAppSelector(recommendationsSelector)
@@ -83,11 +85,13 @@ const InsightsTrigger = (props: Props) => {
 
   return (
     <RiTooltip
-      title={isHighlighted && instanceId ? undefined : 'Insights'}
+      title={
+        isHighlighted && instanceId ? undefined : t('insights.trigger.title')
+      }
       content={
         isHighlighted && instanceId
-          ? 'New tips are available'
-          : 'Open interactive tutorials to learn more about Redis or Redis Stack capabilities, or use tips to improve your database.'
+          ? t('insights.trigger.newTips')
+          : t('insights.trigger.description')
       }
     >
       <BulbWrapper>
@@ -98,7 +102,7 @@ const InsightsTrigger = (props: Props) => {
           onClick={handleClickTrigger}
           data-testid="insights-trigger"
           isOpen={isInsightsOpen}
-          aria-label="Insights-trigger"
+          aria-label={t('insights.trigger.ariaLabel')}
         />
         {isHighlighted && instanceId && <BulbHighlighting />}
       </BulbWrapper>

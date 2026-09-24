@@ -20,6 +20,7 @@ import {
 } from 'uiSrc/telemetry'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from 'uiSrc/components/side-panels/styles.module.scss'
 
 export interface Props {
@@ -30,6 +31,7 @@ export interface Props {
 
 const InsightsPanel = (props: Props) => {
   const { isFullScreen, onToggleFullScreen, onClose } = props
+  const { t } = useTranslation()
   const { tabSelected } = useAppSelector(insightsPanelSelector)
   const {
     data: { totalUnread },
@@ -63,19 +65,25 @@ const InsightsPanel = (props: Props) => {
             anchorWrapperClassName={styles.onboardingAnchorWrapper}
             fullSize
           >
-            <span>Tutorials</span>
+            <span>{t('insights.panel.tutorialsTab')}</span>
           </OnboardingTour>
         ),
         value: InsightsPanelTabs.Explore,
         content: null,
       },
       {
-        label: <span>Tips {totalUnread ? ` (${totalUnread})` : ''}</span>,
+        label: (
+          <span>
+            {totalUnread
+              ? t('insights.panel.tipsTabWithCount', { count: totalUnread })
+              : t('insights.panel.tipsTab')}
+          </span>
+        ),
         value: InsightsPanelTabs.Recommendations,
         content: null,
       },
     ],
-    [tabSelected, totalUnread, isFullScreen],
+    [isFullScreen, t, tabSelected, totalUnread],
   )
 
   const handleTabChange = (name: string) => {
@@ -93,7 +101,7 @@ const InsightsPanel = (props: Props) => {
       >
         <Row>
           <Text size="L" color="primary">
-            Insights
+            {t('insights.panel.title')}
           </Text>
         </Row>
       </Header>

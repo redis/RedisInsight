@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { BuildType } from 'uiSrc/constants/env'
@@ -31,6 +32,7 @@ const RedisLogoIcon = styled.span`
 `
 
 export const RedisLogo = ({ isRdiWorkspace }: Props) => {
+  const { t } = useTranslation()
   const { envDependent } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const { server } = useAppSelector(appInfoSelector)
 
@@ -40,7 +42,7 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
         <SideBarItemIcon
           height="50px"
           width="50px"
-          aria-label="Redis Insight Homepage"
+          aria-label={t('navigation.homepage.ariaLabel')}
           icon={RedisLogoDarkMinIcon}
           centered
         />
@@ -58,10 +60,10 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
         tooltipProps={{
           text:
             server?.buildType === BuildType.RedisStack
-              ? 'Edit database'
+              ? t('home.databaseList.controls.button.editDatabase')
               : isRdiWorkspace
-                ? 'Redis Data Integration'
-                : 'Redis Databases',
+                ? t('homeTabs.rdiInstances')
+                : t('homeTabs.redisDatabases'),
           placement: 'right',
         }}
         style={{ marginBlock: '2rem', marginInline: 'auto' }}

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -14,6 +15,8 @@ import { SideBarItemIcon } from 'uiSrc/components/base/layout/sidebar/SideBarIte
 import { Link } from 'uiSrc/components/base/link/Link'
 
 const CreateCloud = () => {
+  const { t } = useTranslation()
+
   const onCLickLink = (isSSOEnabled: boolean) => {
     if (isSSOEnabled) return
 
@@ -38,7 +41,7 @@ const CreateCloud = () => {
           >
             <SideBarItem
               tooltipProps={{
-                text: 'Create FREE Redis Cloud database',
+                text: t('navigation.createCloud.tooltip'),
                 placement: 'right',
               }}
               onClick={(e) => {
@@ -55,7 +58,7 @@ const CreateCloud = () => {
                 width="20px"
                 height="20px"
                 icon={CloudIcon}
-                aria-label="cloud-db-icon"
+                aria-label={t('navigation.createCloud.iconAria')}
                 data-testid="cloud-db-icon"
               />
             </SideBarItem>

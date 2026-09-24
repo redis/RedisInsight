@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
@@ -16,6 +17,7 @@ import PopoverNotification from './PopoverNotification'
 import styles from './styles.module.scss'
 
 const NavButton = () => {
+  const { t } = useTranslation()
   const { isCenterOpen, totalUnread } = useAppSelector(
     notificationCenterSelector,
   )
@@ -28,13 +30,16 @@ const NavButton = () => {
 
   const Btn = (
     <SideBarItem
-      tooltipProps={{ text: 'Notification Center', placement: 'right' }}
+      tooltipProps={{
+        text: t('navigation.notifications.tooltip'),
+        placement: 'right',
+      }}
       onMouseDownCapture={onClickIcon}
       isActive={isCenterOpen}
     >
       <SideBarItemIcon
         icon={NotificationsIcon}
-        aria-label="Notification Menu"
+        aria-label={t('navigation.notifications.ariaLabel')}
         data-testid="notification-menu-button"
       />
     </SideBarItem>
