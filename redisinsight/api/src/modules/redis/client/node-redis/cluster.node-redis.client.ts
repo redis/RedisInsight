@@ -73,6 +73,10 @@ export class ClusterNodeRedisClient extends NodeRedisClient {
     command: RedisClientCommand,
     options?: IRedisClientCommandOptions,
   ): Promise<RedisClientCommandReply> {
+    // `call` and `sendPipeline` both delegate to this method, so recording
+    // here covers every command this client sends without duplicates.
+    this.logCommands([command], 'sendCommand');
+
     return this.client.sendCommand(
       undefined,
       false,
