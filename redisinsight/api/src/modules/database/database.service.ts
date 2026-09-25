@@ -19,6 +19,9 @@ import { AppRedisInstanceEvents } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DeleteDatabasesResponse } from 'src/modules/database/dto/delete.databases.response';
 import { ClientContext, SessionMetadata } from 'src/common/models';
+import { randomUUID } from 'crypto';
+import { RedisDatabaseInfoResponse } from 'src/modules/database/dto/redis-info.dto';
+import { RedisClient } from 'src/modules/redis/client';
 import { ExportDatabase } from 'src/modules/database/models/export-database';
 import { deepMerge } from 'src/common/utils';
 import { CaCertificate } from 'src/modules/certificate/models/ca-certificate';
@@ -354,7 +357,7 @@ export class DatabaseService {
     sessionMetadata: SessionMetadata,
     dto: CreateDatabaseDto | UpdateDatabaseDto,
     id?: string,
-  ): Promise<void> {
+  ): Promise<RedisDatabaseInfoResponse | null> {
     let database: Database;
 
     if (id) {
@@ -375,16 +378,57 @@ export class DatabaseService {
     try {
       await this.databaseFactory.createDatabaseModel(sessionMetadata, database);
 
-      return;
+      return await this.getConnectionInfo(sessionMetadata, database);
     } catch (error) {
       // don't throw an error to support sentinel autodiscovery flow
       if (error instanceof RedisConnectionSentinelMasterRequiredException) {
-        return;
+        return null;
       }
 
       this.logger.error('Connection test failed', error, sessionMetadata);
 
       throw error;
+    }
+  }
+
+  /**
+   * Reads instance info (notably the number of logical databases) right after
+   * a successful connection test.
+   *
+   * The UI needs it to offer a proper db picker before the database is saved.
+   * Any failure here is swallowed on purpose: the connection itself is already
+   * known to be healthy, so this info is only a bonus.
+   */
+  private async getConnectionInfo(
+    sessionMetadata: SessionMetadata,
+    database: Database,
+  ): Promise<RedisDatabaseInfoResponse | null> {
+    let client: RedisClient | undefined;
+
+    try {
+      client = await this.redisClientFactory.createClient(
+        {
+          sessionMetadata,
+          databaseId: database.id || randomUUID(),
+          context: ClientContext.Common,
+        },
+        database,
+        { useRetry: false },
+      );
+
+      return await this.databaseInfoProvider.getRedisGeneralInfo(client);
+    } catch (error) {
+      this.logger.warn(
+        'Unable to read instance info after a successful connection test',
+      );
+
+      return null;
+    } finally {
+      try {
+        await client?.disconnect();
+      } catch (e) {
+        // the client only exists to read instance info, nothing else to do
+      }
     }
   }
 

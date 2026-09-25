@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import cx from 'classnames'
+import styled from 'styled-components'
 import { useTheme } from '@redis-ui/styles'
 import { Environment } from 'apiClient'
 
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import { EnvironmentBadge } from 'uiSrc/components/environment-badge'
-import { selectOnFocus } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { BuildType } from 'uiSrc/constants/env'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
@@ -30,7 +30,6 @@ import {
   FeatureFlagComponent,
   RiTooltip,
 } from 'uiSrc/components'
-import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import ShortInstanceInfo from 'uiSrc/components/instance-header/components/ShortInstanceInfo'
 
@@ -43,10 +42,8 @@ import { appReturnUrlSelector } from 'uiSrc/slices/app/url-handling'
 import UserProfile from 'uiSrc/components/instance-header/components/user-profile/UserProfile'
 import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { NumericInput } from 'uiSrc/components/base/inputs'
+import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
@@ -58,6 +55,14 @@ import styles from './styles.module.scss'
 
 const riConfig = getConfig()
 const { returnUrlBase, returnUrlLabel, returnUrlTooltip } = riConfig.app
+
+/**
+ * Compact db picker: the header already carries the instance name, the
+ * environment badge and the instance info icon.
+ */
+const DbIndexSelect = styled(RiSelect)`
+  min-width: 96px;
+`
 
 export interface Props {
   onChangeDbIndex?: (index: number) => void
@@ -95,16 +100,27 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   const isProductionEnv = environment === Environment.Production
 
   const history = useHistory()
-  const [dbIndex, setDbIndex] = useState<string>(String(db || 0))
-  const [isDbIndexEditing, setIsDbIndexEditing] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    setDbIndex(String(db || 0))
-  }, [db])
-
   const isRedisStack = server?.buildType === BuildType.RedisStack
+
+  // Index picked by the user but not yet confirmed by the API. Keeps the
+  // select responsive while the request is in flight; cleared on response.
+  const [pendingDbIndex, setPendingDbIndex] = useState<string | null>(null)
+
+  const selectedDbIndex = pendingDbIndex ?? String(db || 0)
+
+  // One option per logical database exposed by the instance. The previous
+  // free-form number input let users pick a db that does not exist, which
+  // only surfaced later as a failing command.
+  const dbOptions = Array.from(
+    { length: Math.max(databases, 1) },
+    (_, index) => ({
+      value: String(index),
+      label: `db${index}`,
+    }),
+  )
 
   const goHome = () => {
     history.push(Pages.home)
@@ -114,18 +130,21 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
     document.location = `${returnUrlBase}${returnUrl}`
   }
 
-  const handleChangeDbIndex = () => {
-    setIsDbIndexEditing(false)
+  const handleChangeDbIndex = (nextIndex: string) => {
+    if (db === +nextIndex) {
+      return
+    }
 
-    if (db === +dbIndex) return
+    setPendingDbIndex(nextIndex)
 
     dispatch(
       checkDatabaseIndexAction(
         id,
-        +dbIndex,
+        +nextIndex,
         () => {
+          setPendingDbIndex(null)
           dispatch(clearBrowserKeyListData())
-          onChangeDbIndex?.(+dbIndex)
+          onChangeDbIndex?.(+nextIndex)
           dispatch(resetKeyInfo())
           dispatch(setBrowserSelectedKey(null))
 
@@ -134,11 +153,13 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
             eventData: {
               databaseId: id,
               prevIndex: db,
-              nextIndex: +dbIndex,
+              nextIndex: +nextIndex,
             },
           })
         },
-        () => setDbIndex(String(db)),
+        // on failure the store keeps the previous index, so dropping the
+        // pending value makes the select fall back to it
+        () => setPendingDbIndex(null),
       ),
     )
   }
@@ -236,56 +257,13 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                   </EnvironmentBadgeSlot>
                   {databases > 1 && (
                     <FlexItem style={{ paddingLeft: 12 }}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {isDbIndexEditing ? (
-                          <div style={{ marginRight: 48 }}>
-                            <InlineItemEditor
-                              controlsPosition="right"
-                              onApply={handleChangeDbIndex}
-                              onDecline={() => setIsDbIndexEditing(false)}
-                              viewChildrenMode={false}
-                              controlsClassName={styles.controls}
-                            >
-                              <NumericInput
-                                autoSize
-                                autoValidate
-                                min={0}
-                                onFocus={selectOnFocus}
-                                onChange={(value) =>
-                                  setDbIndex(value ? value.toString() : '')
-                                }
-                                value={Number(dbIndex)}
-                                placeholder={t('instanceHeader.databaseIndex')}
-                                className={styles.dbIndexInput}
-                                data-testid="change-index-input"
-                              />
-                            </InlineItemEditor>
-                          </div>
-                        ) : (
-                          <EmptyButton
-                            icon={EditIcon}
-                            iconSide="right"
-                            onClick={() => setIsDbIndexEditing(true)}
-                            className={styles.buttonDbIndex}
-                            disabled={isDbIndexDisabled || instanceLoading}
-                            data-testid="change-index-btn"
-                          >
-                            <span
-                              style={{
-                                fontSize: 14,
-                                marginBottom: '-2px',
-                              }}
-                            >
-                              db{db || 0}
-                            </span>
-                          </EmptyButton>
-                        )}
-                      </div>
+                      <DbIndexSelect
+                        options={dbOptions}
+                        value={selectedDbIndex}
+                        onChange={handleChangeDbIndex}
+                        disabled={isDbIndexDisabled || instanceLoading}
+                        data-testid="change-index-select"
+                      />
                     </FlexItem>
                   )}
                   <FlexItem style={{ paddingLeft: 6 }}>
