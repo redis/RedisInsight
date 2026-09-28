@@ -9,6 +9,13 @@ describe('useRdiPipelineNavigation', () => {
   let replaceMock: jest.Mock
   let goBackMock: jest.Mock
   let listenMock: jest.Mock
+  let historyMock: {
+    push: jest.Mock
+    replace: jest.Mock
+    goBack: jest.Mock
+    listen: jest.Mock
+    location: { pathname: string }
+  }
 
   beforeEach(() => {
     pushMock = jest.fn()
@@ -16,15 +23,14 @@ describe('useRdiPipelineNavigation', () => {
     goBackMock = jest.fn()
     listenMock = jest.fn().mockReturnValue(jest.fn())
 
-    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+    historyMock = {
       push: pushMock,
       replace: replaceMock,
       goBack: goBackMock,
       listen: listenMock,
-    })
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/integrate/123/pipeline-management-v2' })
+      location: { pathname: '/integrate/123/pipeline-management-v2' },
+    }
+    reactRouterDom.useHistory = jest.fn().mockReturnValue(historyMock)
   })
 
   it('should return the current pathname', () => {
@@ -84,13 +90,10 @@ describe('useRdiPipelineNavigation', () => {
   })
 
   it('should keep returning the current pathname after a navigation, even from a service captured on an earlier render', () => {
-    const { result, rerender } = renderHook(() => useRdiPipelineNavigation())
+    const { result } = renderHook(() => useRdiPipelineNavigation())
     const capturedService = result.current
 
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/integrate/123/create' })
-    rerender()
+    historyMock.location = { pathname: '/integrate/123/create' }
 
     expect(capturedService.getPath()).toBe('/integrate/123/create')
   })
@@ -99,9 +102,7 @@ describe('useRdiPipelineNavigation', () => {
     const { result, rerender } = renderHook(() => useRdiPipelineNavigation())
     const firstService = result.current
 
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/integrate/123/create' })
+    historyMock.location = { pathname: '/integrate/123/create' }
     rerender()
 
     expect(result.current).toBe(firstService)

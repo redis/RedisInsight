@@ -1,8 +1,9 @@
 import React from 'react'
-import reactRouterDom, { BrowserRouter } from 'react-router-dom'
+import reactRouterDom, { BrowserRouter, Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 
 import { render, screen, cleanup, mockedStore } from 'uiSrc/utils/test-utils'
-import { PageNames } from 'uiSrc/constants'
+import { FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import PipelineManagementV2Page from './PipelineManagementV2Page'
 
@@ -19,6 +20,9 @@ let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = mockedStore
+  store.getState().app.features.featureFlags.features[FeatureFlags.devRdiUi] = {
+    flag: true,
+  }
 
   reactRouterDom.useParams = jest
     .fn()
@@ -64,7 +68,26 @@ describe('PipelineManagementV2Page', () => {
     unmount()
 
     expect(store.getActions()).toContainEqual(
-      setLastPageContext(PageNames.rdiPipelineManagement),
+      setLastPageContext(PageNames.rdiPipelineManagementV2),
+    )
+  })
+
+  it('should redirect to the v1 pipeline management page when the dev flag is off', () => {
+    store.getState().app.features.featureFlags.features[FeatureFlags.devRdiUi] =
+      { flag: false }
+    const history = createMemoryHistory({
+      initialEntries: [Pages.rdiPipelineManagementV2(MOCK_RDI_ID)],
+    })
+
+    render(
+      <Router history={history}>
+        <PipelineManagementV2Page />
+      </Router>,
+      { store },
+    )
+
+    expect(history.location.pathname).toBe(
+      Pages.rdiPipelineManagement(MOCK_RDI_ID),
     )
   })
 })

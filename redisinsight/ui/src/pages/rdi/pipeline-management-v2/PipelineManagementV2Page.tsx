@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 
-import { useAppDispatch } from 'uiSrc/slices/hooks'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { formatLongName, setTitle } from 'uiSrc/utils'
 import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { PageNames } from 'uiSrc/constants'
+import { PageNames, Pages } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
+import { isDevRdiUiEnabledSelector } from 'uiSrc/slices/app/features'
 import { RdiInstanceHeader } from 'uiSrc/components'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import { useConnectRdiInstance } from '../hooks/useConnectRdiInstance'
@@ -18,16 +19,24 @@ const PipelineManagementV2Page = () => {
   const dispatch = useAppDispatch()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { connectedInstance } = useConnectRdiInstance(rdiInstanceId)
+  const isDevRdiUiEnabled = useAppSelector(isDevRdiUiEnabledSelector)
 
   const rdiInstanceName = formatLongName(connectedInstance.name, 33, 0, '...')
   setTitle(t('rdi.pipeline.pageTitle', { name: rdiInstanceName }))
 
   useEffect(
     () => () => {
-      dispatch(setLastPageContext(PageNames.rdiPipelineManagement))
+      dispatch(setLastPageContext(PageNames.rdiPipelineManagementV2))
     },
     [],
   )
+
+  // The route itself is only gated by FeatureFlags.rdi, so a direct/
+  // bookmarked visit to this URL would otherwise skip the dev-flag check
+  // that InstancePage's own v1->v2 redirect decision already applies.
+  if (!isDevRdiUiEnabled) {
+    return <Redirect to={Pages.rdiPipelineManagement(rdiInstanceId)} />
+  }
 
   return (
     <S.PageContainer gap="none" responsive={false}>

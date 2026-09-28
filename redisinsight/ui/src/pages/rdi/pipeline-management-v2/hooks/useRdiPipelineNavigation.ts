@@ -1,23 +1,16 @@
-import { useMemo, useRef } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useMemo } from 'react'
+import { useHistory } from 'react-router-dom'
 import { NavigationService } from '@rdi-ui/pipeline'
 import { Pages } from 'uiSrc/constants'
 
 export const useRdiPipelineNavigation = (): NavigationService => {
   const history = useHistory()
-  const location = useLocation()
-
-  // Read via a ref (kept fresh every render) rather than closing over
-  // location.pathname directly, so getPath() stays current even if the
-  // package captures this object once and never re-reads the prop -
-  // recreating the whole object on every navigation would otherwise be
-  // the only way to keep it fresh, retriggering the package's own effects.
-  const pathnameRef = useRef(location.pathname)
-  pathnameRef.current = location.pathname
 
   return useMemo(
     () => ({
-      getPath: () => pathnameRef.current,
+      // history.location is always current, so this doesn't go stale even
+      // if the package captures the object once and never re-reads the prop
+      getPath: () => history.location.pathname,
       navigate: (path, options) => {
         if (options?.replace) {
           history.replace(path)
