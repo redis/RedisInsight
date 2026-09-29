@@ -7,6 +7,7 @@ import {
   checkConnectToInstanceAction,
   createInstanceStandaloneAction,
   instancesSelector,
+  resetTestedInstanceInfo,
   testInstanceStandaloneAction,
   updateInstanceAction,
   cloneInstanceAction,
@@ -92,6 +93,9 @@ const ManualConnectionWrapper = (props: Props) => {
   useEffect(() => {
     dispatch(fetchCaCerts())
     dispatch(fetchClientCerts())
+    // The picker must not inherit the database count of a previously tested
+    // server, so opening the form starts from the default again.
+    dispatch(resetTestedInstanceInfo())
   }, [])
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { useAppSelector } from 'uiSrc/slices/hooks'
-import { connectedInstanceInfoSelector } from 'uiSrc/slices/instances/instances'
+import { testedInstanceInfoSelector } from 'uiSrc/slices/instances/instances'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
@@ -26,8 +26,12 @@ export interface Props {
 const DbIndex = (props: Props) => {
   const { t } = useTranslation()
   const { formik } = props
-  // Filled by `testConnectionSuccess` once the connection has been tested.
-  const { databases } = useAppSelector(connectedInstanceInfoSelector)
+  // Filled by `testConnectionSuccess` for the server being tested here.
+  // Deliberately not the connected instance's info: this form may be adding or
+  // editing a database that is not connected yet, and the database count of a
+  // previously connected instance must not leak into the picker.
+  const testedInstanceInfo = useAppSelector(testedInstanceInfoSelector)
+  const databases = testedInstanceInfo?.databases
 
   const handleChangeDbIndexCheckbox = (
     e: ChangeEvent<HTMLInputElement>,

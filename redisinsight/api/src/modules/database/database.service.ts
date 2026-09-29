@@ -376,9 +376,15 @@ export class DatabaseService {
     }
 
     try {
-      await this.databaseFactory.createDatabaseModel(sessionMetadata, database);
+      const model = await this.databaseFactory.createDatabaseModel(
+        sessionMetadata,
+        database,
+      );
 
-      return await this.getConnectionInfo(sessionMetadata, database);
+      // `createDatabaseModel` resolves the credentials (Azure Entra ID, access
+      // keys, …) onto the model it returns; the caller's object still holds the
+      // raw config, so the follow-up client has to be built from the model.
+      return await this.getConnectionInfo(sessionMetadata, model);
     } catch (error) {
       // don't throw an error to support sentinel autodiscovery flow
       if (error instanceof RedisConnectionSentinelMasterRequiredException) {

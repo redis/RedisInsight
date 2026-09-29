@@ -530,7 +530,7 @@ describe('DatabaseService', () => {
       it('should successfully test valid connection config', async () => {
         expect(
           await service.testConnection(mockSessionMetadata, mockDatabase),
-        ).toEqual(undefined);
+        ).toEqual(mockRedisGeneralInfo);
       });
       it('should successfully test valid sentinel config (without sentinelMaster)', async () => {
         databaseFactory.createDatabaseModel.mockRejectedValueOnce(
@@ -538,7 +538,7 @@ describe('DatabaseService', () => {
         );
         expect(
           await service.testConnection(mockSessionMetadata, mockDatabase),
-        ).toEqual(undefined);
+        ).toEqual(null);
       });
       it('should throw connection error', async () => {
         databaseFactory.createDatabaseModel.mockRejectedValueOnce(

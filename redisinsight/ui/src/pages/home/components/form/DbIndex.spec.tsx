@@ -3,12 +3,12 @@ import { useFormik } from 'formik'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { dbConnectionInfoFactory } from 'uiSrc/mocks/factories/database/DbConnectionInfo.factory'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { connectedInstanceInfoSelector } from 'uiSrc/slices/instances/instances'
+import { testedInstanceInfoSelector } from 'uiSrc/slices/instances/instances'
 import DbIndex from './DbIndex'
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
-  connectedInstanceInfoSelector: jest.fn(),
+  testedInstanceInfoSelector: jest.fn(),
 }))
 
 const renderComponent = (values: Partial<DbConnectionInfo> = {}) => {
@@ -34,7 +34,7 @@ const renderComponent = (values: Partial<DbConnectionInfo> = {}) => {
 describe('DbIndex', () => {
   beforeEach(() => {
     cleanup()
-    ;(connectedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue({
+    ;(testedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue({
       databases: 16,
     })
   })
@@ -65,7 +65,7 @@ describe('DbIndex', () => {
   })
 
   it('offers one option per logical database reported by the connection', async () => {
-    ;(connectedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue({
+    ;(testedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue({
       databases: 4,
     })
     renderComponent({ showDb: true, db: 0 })
@@ -78,9 +78,8 @@ describe('DbIndex', () => {
   })
 
   it('falls back to the Redis default of 16 databases before a test connection', async () => {
-    ;(connectedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue({
-      databases: undefined,
-    })
+    // no connection test has run for this form yet
+    ;(testedInstanceInfoSelector as unknown as jest.Mock).mockReturnValue(null)
     renderComponent({ showDb: true, db: 0 })
 
     await userEvent.click(screen.getByRole('combobox'))

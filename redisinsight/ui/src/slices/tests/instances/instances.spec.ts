@@ -264,21 +264,21 @@ describe('instances slice', () => {
       expect(instancesSelector(rootState)).toEqual(state)
     })
 
-    it('should cache the instance info read while testing the connection', () => {
+    it('should cache the tested instance info on its own field', () => {
       // Arrange
-      const instanceInfo = {
+      const testedInstanceInfo = {
         ...initialState.instanceInfo,
         databases: 16,
       }
       const state = {
         ...initialState,
-        instanceInfo,
+        testedInstanceInfo,
       }
 
       // Act
       const nextState = reducer(
         initialState,
-        testConnectionSuccess(instanceInfo),
+        testConnectionSuccess(testedInstanceInfo),
       )
 
       // Assert
