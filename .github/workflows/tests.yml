@@ -1,7 +1,8 @@
 name: ✅ Tests
 
-# Runs on every pull request. The changed files pick the suites; the
-# `run-*-tests` labels can widen that.
+# Runs on every pull request and on every merge queue entry. The changed files
+# pick the suites; the `run-*-tests` labels can widen that (labels exist only on
+# pull request events).
 #
 # Do not add `labeled` here. `tests-on-demand.yml` owns that trigger. A label
 # reaching this workflow reports a second `All required checks pass` on the same
@@ -10,6 +11,11 @@ name: ✅ Tests
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
+  # Merge queue entries for `main`. The queue's temporary branch gets the same
+  # suites as a PR run; `All required checks pass` is the required check that
+  # gates the merge either way.
+  merge_group:
 
   workflow_dispatch:
     inputs:
@@ -71,7 +77,13 @@ jobs:
           # Compare against main so each push's gating reflects the
           # cumulative branch diff, not just the latest commit. Keeps
           # the merge-gate aligned with what would actually land.
-          base: main
+          #
+          # On merge_group events the input must stay empty: a manual `base`
+          # overrides the action's built-in merge-queue handling, which diffs
+          # the entry's own base_sha..head_sha — exactly what the queue would
+          # land on main. `base: main` there collapses the diff to nothing and
+          # every suite would skip.
+          base: ${{ github.event_name != 'merge_group' && 'main' || '' }}
           filters: |
             frontend:
               - 'redisinsight/ui/**'
@@ -200,7 +212,8 @@ jobs:
 
   frontend-tests-coverage:
     needs: frontend-tests
-    if: ${{ github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    # Coverage attaches to a PR, so merge-queue runs have nowhere to report it.
+    if: ${{ github.event_name != 'merge_group' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -215,7 +228,7 @@ jobs:
 
   backend-tests-coverage:
     needs: backend-tests
-    if: ${{ github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    if: ${{ github.event_name != 'merge_group' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -238,7 +251,7 @@ jobs:
 
   integration-tests-coverage:
     needs: integration-tests
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event_name != 'merge_group' && github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -248,8 +261,9 @@ jobs:
   clean:
     uses: ./.github/workflows/clean-deployments.yml
     # `always()` runs this even when every test job skips, so it needs its own
-    # guard against deleting deployments for a run that did no work.
-    if: ${{ always() && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
+    # guard against deleting deployments for a run that did no work. Merge-queue
+    # runs have no PR deployments to clean.
+    if: ${{ always() && github.event_name != 'merge_group' && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     permissions:
       actions: write
       contents: read
