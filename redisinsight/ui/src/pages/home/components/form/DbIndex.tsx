@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
@@ -46,8 +46,16 @@ const DbIndex = (props: Props) => {
   }
   const id = useGenerateId('', ' over db')
 
-  const databasesCount =
-    databases && databases > 0 ? databases : DEFAULT_DATABASES_COUNT
+  // Redis Cluster does not implement `SELECT`, so it only ever has db0. The
+  // aggregated info of a cluster omits `databases`, which would otherwise fall
+  // back to the 16 offered before a connection has been tested.
+  const isCluster = testedInstanceInfo?.server?.redis_mode === 'cluster'
+
+  const databasesCount = isCluster
+    ? 1
+    : databases && databases > 0
+      ? databases
+      : DEFAULT_DATABASES_COUNT
 
   // A picker instead of a free-form number: the previous input accepted
   // indexes the instance does not have, which only failed later at runtime.
@@ -55,6 +63,18 @@ const DbIndex = (props: Props) => {
     value: String(index),
     label: `db${index}`,
   }))
+
+  // The option list shrinks when a connection test reports fewer databases
+  // than the 16 assumed before testing. Keep the form value inside the
+  // options, otherwise the form would submit an index the server does not
+  // have — the very problem the picker exists to prevent.
+  useEffect(() => {
+    const selected = Number(formik.values.db ?? 0)
+
+    if (selected >= databasesCount) {
+      formik.setFieldValue('db', databasesCount - 1)
+    }
+  }, [databasesCount])
 
   return (
     <>

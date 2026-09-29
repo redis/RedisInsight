@@ -114,13 +114,16 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   // One option per logical database exposed by the instance. The previous
   // free-form number input let users pick a db that does not exist, which
   // only surfaced later as a failing command.
-  const dbOptions = Array.from(
-    { length: Math.max(databases, 1) },
-    (_, index) => ({
-      value: String(index),
-      label: `db${index}`,
-    }),
-  )
+  //
+  // `databases` can be a keyspace-derived lower bound when `CONFIG GET
+  // databases` is not allowed on the server, so the connected index is always
+  // kept in the list even when it sits above the reported count.
+  const dbOptionCount = Math.max(databases, Number(db || 0) + 1, 1)
+
+  const dbOptions = Array.from({ length: dbOptionCount }, (_, index) => ({
+    value: String(index),
+    label: `db${index}`,
+  }))
 
   const goHome = () => {
     history.push(Pages.home)
