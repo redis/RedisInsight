@@ -1,33 +1,53 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 
-import { useAppDispatch } from 'uiSrc/slices/hooks'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { formatLongName, setTitle } from 'uiSrc/utils'
 import { useTranslation } from 'uiSrc/i18n'
-import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PageNames } from 'uiSrc/constants'
+import { PageNames, Pages } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
+import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { RdiInstanceHeader } from 'uiSrc/components'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
-import { useConnectRdiInstance } from '../hooks/useConnectRdiInstance'
+import { Loader } from 'uiSrc/components/base/display'
+import { useRdiPipelineUi } from '../hooks/useRdiPipelineUi'
+import RdiPipeline from './components/rdi-pipeline'
 import * as S from './PipelineManagementV2Page.styles'
 
 const PipelineManagementV2Page = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { connectedInstance } = useConnectRdiInstance(rdiInstanceId)
+  // useRdiPipelineUi already connects the instance (fetch + context reset) -
+  // this is a plain read of the same state, not a second connection.
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
+  const rdiPipelineUi = useRdiPipelineUi(rdiInstanceId)
 
   const rdiInstanceName = formatLongName(connectedInstance.name, 33, 0, '...')
   setTitle(t('rdi.pipeline.pageTitle', { name: rdiInstanceName }))
 
   useEffect(
     () => () => {
-      dispatch(setLastPageContext(PageNames.rdiPipelineManagement))
+      dispatch(setLastPageContext(PageNames.rdiPipelineManagementV2))
     },
     [],
   )
+
+  if (rdiPipelineUi.status === 'loading') {
+    return (
+      <Row justify="center" align="center">
+        <Loader />
+      </Row>
+    )
+  }
+
+  // The route itself is only gated by FeatureFlags.rdi, so a direct/
+  // bookmarked visit to this URL would otherwise skip the flag+version
+  // check that InstancePage's own v1->v2 redirect decision already applies.
+  if (rdiPipelineUi.target === 'v1') {
+    return <Redirect to={Pages.rdiPipelineManagement(rdiInstanceId)} />
+  }
 
   return (
     <S.PageContainer gap="none" responsive={false}>
@@ -36,13 +56,7 @@ const PipelineManagementV2Page = () => {
       </FlexItem>
       <FlexItem grow data-testid="pipeline-management-v2-page">
         <ExplorePanelTemplate>
-          <Row justify="center" align="center">
-            <S.PlaceholderContainer>
-              <Text>
-                The new pipeline management experience is coming soon.
-              </Text>
-            </S.PlaceholderContainer>
-          </Row>
+          <RdiPipeline rdiInstanceId={rdiInstanceId} />
         </ExplorePanelTemplate>
       </FlexItem>
     </S.PageContainer>

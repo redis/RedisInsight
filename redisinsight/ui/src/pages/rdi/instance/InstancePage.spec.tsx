@@ -8,6 +8,7 @@ import {
   cleanup,
   mockedStore,
   render,
+  screen,
   userEvent,
 } from 'uiSrc/utils/test-utils'
 import { resetKeys, resetPatternKeysData } from 'uiSrc/slices/browser/keys'
@@ -260,6 +261,10 @@ describe('InstancePage', () => {
     expect(replaceMock).toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
+    // history.replace() doesn't synchronously change the mocked pathname
+    // above, mirroring the real gap between the decision resolving and the
+    // URL actually changing - the v1 shell must not render in that gap either
+    expect(screen.queryByTestId('pipeline-management-page-btn')).toBeNull()
   })
 
   it('should redirect to rdi pipeline management page even at exactly the minimum supported version', async () => {
@@ -330,6 +335,10 @@ describe('InstancePage', () => {
     expect(replaceMock).not.toHaveBeenCalledWith(
       Pages.rdiPipelineManagementV2(RDI_INSTANCE_ID_MOCK),
     )
+    // A loader, not the v1 shell (tabs/status bar), while still deciding -
+    // otherwise it flashes on screen for an instance about to redirect away
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.queryByTestId('pipeline-management-page-btn')).toBeNull()
   })
 
   it('should ignore a stale error left over from a previously viewed instance', async () => {
