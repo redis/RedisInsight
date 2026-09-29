@@ -83,9 +83,18 @@ export async function testInstanceConnection(
   const url = id
     ? `${ApiEndpoints.DATABASES_TEST_CONNECTION}/${id}`
     : `${ApiEndpoints.DATABASES_TEST_CONNECTION}`
-  const { status } = await apiService.post(url, payload)
+  // The API answers with the instance info it just read — notably the number
+  // of logical databases, which lets the connection form offer a db picker
+  // instead of a free-form index field.
+  const { data, status } = await apiService.post<RedisNodeInfoResponse>(
+    url,
+    payload,
+  )
 
-  return isStatusSuccessful(status)
+  return {
+    success: isStatusSuccessful(status),
+    data: data ?? null,
+  }
 }
 
 export async function getInstance(id: string) {

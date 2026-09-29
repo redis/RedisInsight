@@ -348,6 +348,10 @@ export interface InitialStateInstances {
   editedInstance: InitialStateEditedInstances
   instanceOverview: DatabaseConfigInfo
   instanceInfo: RedisNodeInfoResponse
+  // Result of the most recent connection test, for a database that has not
+  // been saved yet. Separate from `instanceInfo`, which describes the instance
+  // that is actually connected.
+  testedInstanceInfo: Nullable<RedisNodeInfoResponse>
   freeInstances: Nullable<Instance[]>
   importInstances: {
     loading: boolean

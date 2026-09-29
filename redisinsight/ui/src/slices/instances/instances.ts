@@ -84,6 +84,10 @@ export const initialState: InitialStateInstances = {
     version: '',
     server: {},
   },
+  // Result of the most recent connection test. Kept apart from `instanceInfo`
+  // on purpose: that field describes the instance which is actually connected,
+  // while this one belongs to a database that has not been saved yet.
+  testedInstanceInfo: null as RedisNodeInfoResponse | null,
   importInstances: {
     loading: false,
     error: '',
@@ -147,13 +151,29 @@ const instancesSlice = createSlice({
     testConnection: (state) => {
       state.loadingChanging = true
       state.errorChanging = ''
+      // Drop the previous result, so a stale database count can never be shown
+      // while the new test is still in flight.
+      state.testedInstanceInfo = null
     },
-    testConnectionSuccess: (state) => {
+    // The tested instance is not saved yet, so the info the API just read
+    // (notably the number of logical databases) is cached on its own field.
+    // Writing it into `instanceInfo` would attribute it to the instance which
+    // is actually connected, and that may be a different server altogether.
+    testConnectionSuccess: (
+      state,
+      { payload }: { payload: RedisNodeInfoResponse | null },
+    ) => {
       state.loadingChanging = false
+      state.testedInstanceInfo = payload
     },
     testConnectionFailure: (state, { payload = '' }) => {
       state.loadingChanging = false
       state.errorChanging = payload.toString()
+    },
+    // Dispatched when a connection form is opened, so the picker starts from
+    // the default instead of the previous test's database count.
+    resetTestedInstanceInfo: (state) => {
+      state.testedInstanceInfo = null
     },
 
     changeInstanceAlias: (state) => {
@@ -341,6 +361,7 @@ export const {
   testConnection,
   testConnectionSuccess,
   testConnectionFailure,
+  resetTestedInstanceInfo,
   setDefaultInstance,
   setDefaultInstanceSuccess,
   setDefaultInstanceFailure,
@@ -386,6 +407,8 @@ export const connectedInstanceDangerousCommandsSelector = (
 ): string[] => state.connections.instances.dangerousCommands
 export const connectedInstanceInfoSelector = (state: RootState) =>
   state.connections.instances.instanceInfo
+export const testedInstanceInfoSelector = (state: RootState) =>
+  state.connections.instances.testedInstanceInfo
 export const editedInstanceSelector = (state: RootState) =>
   state.connections.instances.editedInstance
 export const connectedInstanceOverviewSelector = (state: RootState) =>
@@ -997,9 +1020,13 @@ export function testInstanceStandaloneAction(
   return async (dispatch: AppDispatch) => {
     dispatch(testConnection())
     try {
-      const result = await instancesService.testInstanceConnection(id, payload)
-      if (result) {
-        dispatch(testConnectionSuccess())
+      const { success, data } = await instancesService.testInstanceConnection(
+        id,
+        payload,
+      )
+
+      if (success) {
+        dispatch(testConnectionSuccess(data))
 
         dispatch(addMessageNotification(successMessages.TEST_CONNECTION()))
       }
