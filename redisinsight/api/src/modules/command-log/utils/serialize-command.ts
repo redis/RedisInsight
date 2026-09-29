@@ -21,6 +21,15 @@ export const MAX_PIPELINE_COMMANDS = 50;
 /** Placeholder used for values that are too large to be useful in a log. */
 export const MAX_ARGUMENT_LENGTH = 120;
 
+/**
+ * Buffers longer than this are never decoded.
+ *
+ * Decoding happens on the Redis send path, so turning a multi megabyte payload
+ * into a string would stall the event loop, and the result is truncated to
+ * `MAX_ARGUMENT_LENGTH` characters anyway. Such values are reported by size.
+ */
+export const MAX_DECODED_BUFFER_BYTES = 4096;
+
 export interface SerializedCommand {
   /** Command name, upper cased, e.g. `HSET`. */
   command: string;
@@ -72,11 +81,17 @@ const decodeBufferAsText = (buffer: Buffer): string | null => {
  * Converts a single command argument into a short, log-safe string.
  * Buffers are decoded when they hold text; binary values fall back to a size
  * placeholder because they are both unreadable and potentially very large.
+ * Anything beyond `MAX_DECODED_BUFFER_BYTES` is not decoded at all, so a bulk
+ * write cannot make this run for seconds on the Redis send path.
  */
 export const serializeArgument = (arg: unknown): string => {
   let value: string;
 
   if (Buffer.isBuffer(arg)) {
+    if (arg.length > MAX_DECODED_BUFFER_BYTES) {
+      return `<${arg.length} bytes>`;
+    }
+
     const decoded = decodeBufferAsText(arg);
 
     if (decoded === null) {
@@ -85,6 +100,12 @@ export const serializeArgument = (arg: unknown): string => {
 
     value = decoded;
   } else if (arg instanceof Uint8Array) {
+    // Checked before copying: `Buffer.from` would duplicate the whole array,
+    // which for a large value is the very allocation this guard avoids.
+    if (arg.length > MAX_DECODED_BUFFER_BYTES) {
+      return `<${arg.length} bytes>`;
+    }
+
     const decoded = decodeBufferAsText(Buffer.from(arg));
 
     if (decoded === null) {

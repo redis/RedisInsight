@@ -62,16 +62,36 @@ const CommandLogPanel = () => {
     socketRef.current?.emit(CommandLogEvent.Subscribe)
   }, [])
 
+  // Read from the socket callbacks below, which are registered once per
+  // connection and would otherwise capture a stale `isPaused`.
+  const isPausedRef = useRef(isPaused)
+
+  useEffect(() => {
+    isPausedRef.current = isPaused
+  }, [isPaused])
+
   useEffect(() => {
     if (!instanceId) {
       return
     }
 
+    // Entries belong to the instance they were captured from; keeping them
+    // would mix two servers' commands in the same list.
+    bufferRef.current = []
+    dispatch(resetCommandLogEntries())
+
     const socket = connectIo()
     socketRef.current = socket
     dispatch(setCommandLogSocket(socket))
 
-    const handleConnect = () => subscribe()
+    // A socket that reconnects while the panel is paused must stay quiet,
+    // otherwise commands start flowing again although the button still says
+    // "resume".
+    const handleConnect = () => {
+      if (!isPausedRef.current) {
+        subscribe()
+      }
+    }
 
     socket.on(SocketEvent.Connect, handleConnect)
     socket.on(CommandLogEvent.Data, (payload: ICommandLogEntry[]) => {
@@ -90,7 +110,7 @@ const CommandLogPanel = () => {
     })
 
     if (socket.connected) {
-      subscribe()
+      handleConnect()
     }
 
     return () => {
