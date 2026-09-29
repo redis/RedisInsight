@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { isNumber } from 'lodash'
@@ -116,6 +116,31 @@ const BrowserPage = () => {
   >(selectedKeyContext, null)
 
   const [sizes, setSizes] = useState(panelSizes)
+
+  // `panelSizes` is persisted, and the layout used to have only two panels.
+  // Whatever was stored has to be rescaled to the number of panels actually
+  // rendered: sizes that do not add up to 100% (stale two-column values plus
+  // the third default, or two panels left at 78% when the command log is
+  // hidden) are rejected by the resizable container.
+  const isCommandLogVisible = !arePanelsCollapsed && !isBrowserFullScreen
+
+  const panelDefaults = useMemo(() => {
+    const stored = [
+      sizes?.[0] || panelDefaultSize,
+      sizes?.[1] || secondPanelDefaultSize,
+      ...(isCommandLogVisible ? [sizes?.[2] || commandLogDefaultSize] : []),
+    ]
+
+    const total = stored.reduce((sum, size) => sum + size, 0)
+
+    return stored.map((size) => (size / total) * 100)
+  }, [
+    sizes,
+    isCommandLogVisible,
+    panelDefaultSize,
+    secondPanelDefaultSize,
+    commandLogDefaultSize,
+  ])
 
   const prevSelectedType = useRef<string>(type)
   const prevDbIndex = useRef(db)
@@ -326,7 +351,7 @@ const BrowserPage = () => {
             onLayout={onPanelWidthChange}
           >
             <S.BorderedResizablePanel
-              defaultSize={sizes && sizes[0] ? sizes[0] : panelDefaultSize}
+              defaultSize={panelDefaults[0]}
               minSize={panelMinSize}
               id={firstPanelId}
               $fullWidth={
@@ -345,9 +370,7 @@ const BrowserPage = () => {
               <ResizablePanelHandle />
             )}
             <S.BorderedResizablePanel
-              defaultSize={
-                sizes && sizes[1] ? sizes[1] : secondPanelDefaultSize
-              }
+              defaultSize={panelDefaults[1]}
               minSize={panelMinSize}
               id={secondPanelId}
               $keyDetailsOpen={isRightPanelOpen}
@@ -374,9 +397,7 @@ const BrowserPage = () => {
             )}
             {!arePanelsCollapsed && !isBrowserFullScreen && (
               <S.BorderedResizablePanel
-                defaultSize={
-                  sizes && sizes[2] ? sizes[2] : commandLogDefaultSize
-                }
+                defaultSize={panelDefaults[2]}
                 minSize={commandLogMinSize}
                 id={thirdPanelId}
               >

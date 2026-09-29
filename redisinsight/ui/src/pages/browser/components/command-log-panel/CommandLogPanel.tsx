@@ -70,15 +70,24 @@ const CommandLogPanel = () => {
     isPausedRef.current = isPaused
   }, [isPaused])
 
+  // The panel is unmounted whenever it is hidden (fullscreen mode, collapsed
+  // panels), so a remount is not the same thing as switching instance.
+  const previousInstanceIdRef = useRef(instanceId)
+
   useEffect(() => {
     if (!instanceId) {
       return
     }
 
     // Entries belong to the instance they were captured from; keeping them
-    // would mix two servers' commands in the same list.
-    bufferRef.current = []
-    dispatch(resetCommandLogEntries())
+    // would mix two servers' commands in the same list. Only clear when the
+    // panel actually points at another instance: a plain remount keeps the
+    // same instance and must not wipe the log.
+    if (previousInstanceIdRef.current !== instanceId) {
+      previousInstanceIdRef.current = instanceId
+      bufferRef.current = []
+      dispatch(resetCommandLogEntries())
+    }
 
     const socket = connectIo()
     socketRef.current = socket
