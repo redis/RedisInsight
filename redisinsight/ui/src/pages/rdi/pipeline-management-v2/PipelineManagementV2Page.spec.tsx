@@ -8,6 +8,7 @@ import { setLastPageContext } from 'uiSrc/slices/app/context'
 import PipelineManagementV2Page from './PipelineManagementV2Page'
 
 const MOCK_RDI_ID = 'rdiInstanceId'
+const SUPPORTED_VERSION = '1.19.0'
 
 const mockRdiPipeline = jest.fn()
 
@@ -20,6 +21,11 @@ let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = mockedStore
+  store.getState().app.context.contextRdiInstanceId = MOCK_RDI_ID
+  store.getState().rdi.instances.connectedInstance.id = MOCK_RDI_ID
+  store.getState().rdi.instances.connectedInstance.version = SUPPORTED_VERSION
+  store.getState().rdi.instances.connectedInstance.loading = false
+  store.getState().rdi.instances.connectedInstance.error = ''
   store.getState().app.features.featureFlags.features[FeatureFlags.devRdiUi] = {
     flag: true,
   }
@@ -89,5 +95,32 @@ describe('PipelineManagementV2Page', () => {
     expect(history.location.pathname).toBe(
       Pages.rdiPipelineManagement(MOCK_RDI_ID),
     )
+  })
+
+  it('should redirect to the v1 pipeline management page when the connected instance version is unsupported', () => {
+    store.getState().rdi.instances.connectedInstance.version = '1.0.0'
+    const history = createMemoryHistory({
+      initialEntries: [Pages.rdiPipelineManagementV2(MOCK_RDI_ID)],
+    })
+
+    render(
+      <Router history={history}>
+        <PipelineManagementV2Page />
+      </Router>,
+      { store },
+    )
+
+    expect(history.location.pathname).toBe(
+      Pages.rdiPipelineManagement(MOCK_RDI_ID),
+    )
+  })
+
+  it('should show a loader instead of the pipeline while the connected instance is still resolving', () => {
+    store.getState().app.context.contextRdiInstanceId = 'anotherInstanceId'
+
+    renderPage()
+
+    expect(screen.queryByTestId('pipeline-management-v2-page')).toBeNull()
+    expect(screen.queryByTestId('rdi-pipeline-mock')).toBeNull()
   })
 })

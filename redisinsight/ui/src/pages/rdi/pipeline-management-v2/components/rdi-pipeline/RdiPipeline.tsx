@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { themes as rdiUiThemes } from '@redis-ui/styles-rdi'
 import { PipelineManagement } from '@rdi-ui/pipeline'
 import { Pages } from 'uiSrc/constants'
@@ -30,6 +31,8 @@ const CONFIG_TRANSLATE = {
   translateDraftToNativeConfig: async () => ({ jobs: [] }),
   translateNativeConfigToDraft: async () => ({}),
 }
+
+const queryClient = new QueryClient()
 
 const RdiPipeline = ({ rdiInstanceId }: Props) => {
   const navigation = useRdiPipelineNavigation()
@@ -79,18 +82,20 @@ const RdiPipeline = ({ rdiInstanceId }: Props) => {
   )
 
   return (
-    <StyledThemeProvider theme={rdiUiTheme}>
-      <PipelineManagement
-        basePath={Pages.rdiPipelineManagementV2(rdiInstanceId)}
-        navigation={navigation}
-        rdiClient={rdiClient}
-        targetDatabase={TARGET_DATABASE}
-        sourceSecrets={SOURCE_SECRETS}
-        multiSource={MULTI_SOURCE}
-        pipelineSecrets={PIPELINE_SECRETS}
-        configTranslate={CONFIG_TRANSLATE}
-      />
-    </StyledThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <StyledThemeProvider theme={rdiUiTheme}>
+        <PipelineManagement
+          basePath={Pages.rdiPipelineManagementV2(rdiInstanceId)}
+          navigation={navigation}
+          rdiClient={rdiClient}
+          targetDatabase={TARGET_DATABASE}
+          sourceSecrets={SOURCE_SECRETS}
+          multiSource={MULTI_SOURCE}
+          pipelineSecrets={PIPELINE_SECRETS}
+          configTranslate={CONFIG_TRANSLATE}
+        />
+      </StyledThemeProvider>
+    </QueryClientProvider>
   )
 }
 
