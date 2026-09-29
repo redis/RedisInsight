@@ -7,7 +7,8 @@ import { Nullable } from 'uiSrc/utils'
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Loader } from 'uiSrc/components/base/display'
 import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 import { useRdiPipelineUi } from '../hooks/useRdiPipelineUi'
 import InstancePageRouter from './InstancePageRouter'
@@ -55,6 +56,18 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
       )
     }
   }, [pathname, location.state, contextRdiInstanceId, rdiPipelineUi])
+
+  // The bare URL never actually renders as a page - the effect above always
+  // replaces it with something else. Render a loader instead of the v1
+  // shell (tabs, status bar) below, so that shell can't flash on screen for
+  // an instance about to redirect away from it.
+  if (pathname === Pages.rdiPipeline(rdiInstanceId)) {
+    return (
+      <Row justify="center" align="center">
+        <Loader />
+      </Row>
+    )
+  }
 
   return (
     <Col className={styles.page} gap="none" responsive={false}>
