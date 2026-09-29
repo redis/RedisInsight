@@ -32,11 +32,11 @@ const CONFIG_TRANSLATE = {
   translateNativeConfigToDraft: async () => ({}),
 }
 
-const queryClient = new QueryClient()
-
 const RdiPipeline = ({ rdiInstanceId }: Props) => {
   const navigation = useRdiPipelineNavigation()
   const { theme } = useThemeContext()
+
+  const queryClient = useMemo(() => new QueryClient(), [rdiInstanceId])
 
   /**
    * @rdi-ui/pipeline bundles its own @redis-ui/components but reads the theme
