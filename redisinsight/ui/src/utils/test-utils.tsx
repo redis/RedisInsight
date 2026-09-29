@@ -66,6 +66,7 @@ import { initialState as initialStateAnalyticsSettings } from 'uiSrc/slices/anal
 import { initialState as initialStateDbAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { initialState as initialStatePubSub } from 'uiSrc/slices/pubsub/pubsub'
 import { initialState as initialStateRedisearch } from 'uiSrc/slices/browser/redisearch'
+import { initialState as initialStateCommandLog } from 'uiSrc/slices/browser/commandLog'
 import { initialState as initialStateRecommendations } from 'uiSrc/slices/recommendations/recommendations'
 import { initialState as initialStateOAuth } from 'uiSrc/slices/oauth/cloud'
 import { initialState as initialStateAzureAuth } from 'uiSrc/slices/oauth/azure'
@@ -136,6 +137,7 @@ const initialStateDefault: RootState = {
     array: cloneDeep(initialStateArray),
     bulkActions: cloneDeep(initialStateBulkActions),
     redisearch: cloneDeep(initialStateRedisearch),
+    commandLog: cloneDeep(initialStateCommandLog),
   },
   cli: {
     settings: cloneDeep(initialStateCliSettings),

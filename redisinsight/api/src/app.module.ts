@@ -45,6 +45,7 @@ import {
 import { DatabaseSettingsModule } from './modules/database-settings/database-settings.module';
 import { CredentialsModule } from './modules/database/credentials/credentials.module';
 import { QueryLibraryModule } from './modules/query-library/query-library.module';
+import { CommandLogModule } from './modules/command-log/command-log.module';
 
 const SERVER_CONFIG = config.get('server') as Config['server'];
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
@@ -86,6 +87,7 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
     DatabaseSettingsModule.register(),
     CredentialsModule.register(),
     QueryLibraryModule.register(),
+    CommandLogModule,
   ],
   controllers: [],
   providers: [],

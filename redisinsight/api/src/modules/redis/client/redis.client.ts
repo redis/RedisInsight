@@ -1,5 +1,6 @@
 import { ClientContext, ClientMetadata } from 'src/common/models';
 import { isNumber, pick } from 'lodash';
+import { randomUUID } from 'crypto';
 import { RedisString, UNKNOWN_REDIS_INFO } from 'src/common/constants';
 import apiConfig from 'src/utils/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -10,6 +11,12 @@ import { RedisDatabaseHelloResponse } from 'src/modules/database/dto/redis-info.
 import { plainToClass } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import { BrowserToolArrayCommands } from 'src/modules/browser/constants/browser-tool-commands';
+import { getCurrentOperation } from 'src/common/context/operation.context';
+import {
+  CommandLogEntry,
+  CommandLogSource,
+} from 'src/modules/command-log/models/command-log.entry';
+import { serializeCommands } from 'src/modules/command-log/utils/serialize-command';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
@@ -68,6 +75,20 @@ export enum RedisFeature {
 const CLIENT_DATABASE_FIELDS: (keyof Database)[] = ['providerDetails'];
 
 export abstract class RedisClient extends EventEmitter2 {
+  /**
+   * Sink receiving every command sent by any client of this process.
+   * Registered once by CommandLogService; while it is `null` recording is a
+   * no-op, which keeps the client layer free of any module dependency.
+   */
+  private static commandLogHandler: ((entry: CommandLogEntry) => void) | null =
+    null;
+
+  public static setCommandLogHandler(
+    handler: ((entry: CommandLogEntry) => void) | null,
+  ): void {
+    RedisClient.commandLogHandler = handler;
+  }
+
   public readonly id: string;
 
   public readonly database: Partial<Database>;
@@ -108,6 +129,78 @@ export abstract class RedisClient extends EventEmitter2 {
 
   public setLastUsed(): void {
     this.lastTimeUsed = Date.now();
+  }
+
+  /**
+   * Reports commands to the command log panel (see CommandLogService).
+   *
+   * Called from the hot path of every Redis command, therefore it must stay
+   * cheap and must never throw: a logging failure must never break a command.
+   * Recording is a no-op until a handler is registered.
+   *
+   * @param commands commands about to be sent
+   * @param source client method that produced them
+   */
+  protected logCommands(
+    commands: RedisClientCommand[],
+    source: CommandLogSource,
+  ): void {
+    const handler = RedisClient.commandLogHandler;
+
+    if (!handler) {
+      return;
+    }
+
+    try {
+      const isBatch = commands.length > 1;
+      const { entries } = serializeCommands(commands);
+      const operation = getCurrentOperation();
+      const time = Date.now();
+
+      entries.forEach((entry, index) => {
+        handler({
+          id: randomUUID(),
+          time,
+          databaseId: this.clientMetadata?.databaseId,
+          db: this.getLoggedDb(),
+          host: this.options?.host,
+          port: this.options?.port,
+          context: this.clientMetadata?.context,
+          operation,
+          source,
+          index: isBatch ? index + 1 : undefined,
+          ...entry,
+        });
+      });
+    } catch (e) {
+      // Recording must never interfere with the command itself.
+    }
+  }
+
+  /**
+   * Logical database the recorded commands run against.
+   *
+   * `clientMetadata.db` is only filled in when the caller pinned a database,
+   * which is not the case for the temporary clients used by connection tests.
+   * The driver always knows which db it selected, so read it from there instead
+   * of reporting `null` for perfectly well known commands.
+   */
+  protected getLoggedDb(): number | null {
+    const { options: clientOptions } = (this.client ?? {}) as {
+      options?: {
+        db?: unknown;
+        database?: unknown;
+        redisOptions?: { db?: unknown };
+      };
+    };
+
+    const db =
+      this.clientMetadata?.db ??
+      clientOptions?.db ??
+      clientOptions?.redisOptions?.db ??
+      clientOptions?.database;
+
+    return isNumber(db) ? (db as number) : null;
   }
 
   public isIdle(): boolean {
