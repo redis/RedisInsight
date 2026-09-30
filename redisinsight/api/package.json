@@ -125,7 +125,7 @@
     "socket.io-client": "^4.8.3",
     "source-map-support": "^0.5.19",
     "swagger-ui-express": "^4.6.3",
-    "tunnel-ssh": "^5.1.2",
+    "tunnel-ssh": "^5.2.0",
     "typeorm": "^0.3.31",
     "uuid": "^14.0.2",
     "winston": "^3.19.0",
