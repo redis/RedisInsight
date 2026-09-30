@@ -3,7 +3,7 @@
 App-level [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) setup.
 
 - Single `translation` namespace.
-- `lng` / `fallbackLng`: `en`. Supported: `en`, `bg`.
+- `lng` / `fallbackLng`: `en`. Supported: `en`, `bg`, `zh-CN`.
 - Locales live in [`locales/`](./locales) — `en.json` is the source of truth.
 - Type-safe keys: [`i18next.d.ts`](./i18next.d.ts) augments i18next with `typeof en.json`. No codegen — add a key to `en.json` and `t()` picks it up.
 

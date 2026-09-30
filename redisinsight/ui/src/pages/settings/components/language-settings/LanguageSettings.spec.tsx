@@ -74,4 +74,22 @@ describe('LanguageSettings', () => {
       language: 'bg',
     })
   })
+
+  it('should offer Simplified Chinese as a language option', async () => {
+    render(<LanguageSettings />, { store })
+
+    await userEvent.click(screen.getByTestId('select-language'))
+    await waitForRedisUiSelectVisible()
+
+    await waitFor(() => {
+      expect(screen.getByText(LANGUAGE_NAMES['zh-CN'])).toBeInTheDocument()
+    })
+
+    await userEvent.click(screen.getByText(LANGUAGE_NAMES['zh-CN']))
+
+    expect(i18n.changeLanguage).toHaveBeenCalledWith('zh-CN')
+    expect(updateUserConfigSettingsAction).toHaveBeenCalledWith({
+      language: 'zh-CN',
+    })
+  })
 })

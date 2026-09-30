@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   fetchNotificationsAction,
@@ -16,6 +17,7 @@ import Notification from './Notification'
 import styles from './styles.module.scss'
 
 const NotificationCenter = () => {
+  const { t } = useTranslation()
   const { isCenterOpen, notifications } = useAppSelector(
     notificationCenterSelector,
   )
@@ -56,12 +58,12 @@ const NotificationCenter = () => {
         data-testid="notification-center"
       >
         <Title size="S" className={styles.title}>
-          Notification Center
+          {t('navigation.notifications.title')}
         </Title>
         {!hasNotifications && (
           <div className={styles.noItemsText}>
             <Text color="subdued" data-testid="no-notifications-text">
-              No notifications to display.
+              {t('navigation.notifications.empty')}
             </Text>
           </div>
         )}

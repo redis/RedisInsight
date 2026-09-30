@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   notificationCenterSelector,
@@ -19,6 +20,7 @@ import styles from '../styles.module.scss'
 const CLOSE_NOTIFICATION_TIME = 6000
 
 const PopoverNotification = () => {
+  const { t } = useTranslation()
   const { isNotificationOpen, isCenterOpen, lastReceivedNotification } =
     useAppSelector(notificationCenterSelector)
   const [isHovering, setIsHovering] = useState(false)
@@ -108,7 +110,7 @@ const PopoverNotification = () => {
           >
             <IconButton
               icon={CancelSlimIcon}
-              aria-label="Close notification"
+              aria-label={t('navigation.notifications.closeAria')}
               className={styles.closeBtn}
               onMouseUp={(e: React.MouseEvent) => e.stopPropagation()}
               onClick={() => handleClickClose(lastReceivedNotification)}

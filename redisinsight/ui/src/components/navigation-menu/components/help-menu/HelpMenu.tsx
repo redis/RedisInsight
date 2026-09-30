@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
-import { useTranslation } from 'uiSrc/i18n'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
@@ -91,12 +91,15 @@ const HelpMenu = () => {
         [navStyles.navigationButtonNotified]: true,
       })}
       onClick={() => setIsHelpMenuActive((value) => !value)}
-      tooltipProps={{ text: 'Help', placement: 'right' }}
+      tooltipProps={{
+        text: t('navigation.help.tooltip'),
+        placement: 'right',
+      }}
       isActive={isHelpMenuActive}
     >
       <SideBarItemIcon
         icon={SupportIcon}
-        aria-label="Help Menu"
+        aria-label={t('navigation.help.ariaLabel')}
         data-testid="help-menu-button"
       />
     </SideBarItem>
@@ -113,7 +116,7 @@ const HelpMenu = () => {
     >
       <div className={styles.popover} data-testid="help-center">
         <Title size="XS" className={styles.helpMenuTitle}>
-          Help Center
+          {t('navigation.help.title')}
         </Title>
         <Spacer size="l" />
         <Row
@@ -137,7 +140,10 @@ const HelpMenu = () => {
                   textAlign="center"
                   className={styles.helpMenuText}
                 >
-                  Provide <br /> Feedback
+                  <Trans
+                    i18nKey="navigation.help.feedback"
+                    components={{ lineBreak: <br /> }}
+                  />
                 </Text>
               </Link>
             </FlexItem>
@@ -152,7 +158,7 @@ const HelpMenu = () => {
                 onClick={onKeyboardShortcutClick}
                 data-testid="shortcuts-btn"
               >
-                Keyboard Shortcuts
+                {t('navigation.help.keyboardShortcuts')}
               </Text>
             </Row>
 
@@ -173,7 +179,7 @@ const HelpMenu = () => {
                 data-testid="release-notes-btn"
               >
                 <Text size="xs" className={styles.helpMenuTextLink}>
-                  Release Notes
+                  {t('navigation.help.releaseNotes')}
                 </Text>
               </Link>
             </Row>
@@ -199,7 +205,7 @@ const HelpMenu = () => {
                   onClick={onResetOnboardingClick}
                   data-testid="reset-onboarding-btn"
                 >
-                  Reset Onboarding
+                  {t('navigation.help.resetOnboarding')}
                 </Text>
               </Row>
             </FeatureFlagComponent>
