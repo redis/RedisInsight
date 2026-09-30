@@ -1,5 +1,5 @@
 // Languages we ship translations for; add a code + matching locales/<code>.json.
-export const SUPPORTED_LANGUAGES = ['en', 'bg'] as const
+export const SUPPORTED_LANGUAGES = ['en', 'bg', 'ru'] as const
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]
 
@@ -13,4 +13,5 @@ export const DEFAULT_NAMESPACE = 'translation'
 export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
   en: 'English',
   bg: 'Български',
+  ru: 'Русский',
 }
