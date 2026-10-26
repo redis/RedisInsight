@@ -6,7 +6,7 @@
 # the best way to minimize the number of node_module restores and build steps
 # while still keeping the final image small.
 
-FROM node:24.16.0-alpine AS build
+FROM node:24.22.1-alpine AS build
 
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
@@ -49,7 +49,7 @@ RUN npm run build:api
 # larger as a result. Revisit with node-prune if image size regresses.
 RUN npm ci --prefix redisinsight/api --omit=dev
 
-FROM node:24.16.0-alpine
+FROM node:24.22.1-alpine
 
 # runtime args and environment variables
 ARG NODE_ENV=production
