@@ -129,7 +129,8 @@ jobs:
           && (steps.resolve-targets.outputs.mode == 'default'
               || contains(steps.resolve-targets.outputs.custom_targets, 'snap'))
         run: |
-          sudo snap install snapcraft --classic
+          # snapcraft 9.x can't resolve snap/gui desktop files on core24, so stay on 8.x.
+          sudo snap install snapcraft --classic --channel=8.x/stable
           sudo snap install lxd
           sudo lxd waitready --timeout=60
           sudo lxd init --auto
