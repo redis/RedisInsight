@@ -78,7 +78,7 @@
     "tmp": "^0.2.6"
   },
   "dependencies": {
-    "@azure/msal-node": "^5.6.0",
+    "@azure/msal-node": "^7.1.0",
     "@nestjs/common": "^11.2.5",
     "@nestjs/core": "^11.2.5",
     "@nestjs/event-emitter": "^3.1.0",
