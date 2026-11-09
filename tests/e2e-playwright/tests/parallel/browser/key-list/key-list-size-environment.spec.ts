@@ -1,0 +1,139 @@
+import { faker } from '@faker-js/faker';
+import { test, expect } from 'e2eSrc/fixtures/base';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
+import { DatabaseInstance, Environment } from 'e2eSrc/types';
+
+/**
+ * End-to-end: the Key Size column is hidden on Production databases and the
+ * Browser never asks Redis for key sizes there (MEMORY USAGE can block a large
+ * production database). Other environments keep the column and the toggle.
+ */
+const uniqueId = () => faker.string.alphanumeric(6);
+const KEY_SIZE_ENDPOINTS = /keys\/get-(metadata|info)/;
+
+test.describe('Browser > Key List > Key size by environment', () => {
+  test.describe('Production DB', () => {
+    let database: DatabaseInstance;
+    const keyName = `test-size-prod-${uniqueId()}`;
+
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
+      await apiHelper.createStringKey(database.id, keyName, 'value');
+    });
+
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteKeysByPattern(database.id, keyName).catch(() => {});
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
+
+    test('should not show the size column or request key sizes', async ({ browserPage }) => {
+      const requestBodies: Array<{ includeSize?: boolean }> = [];
+      browserPage.page.on('request', (request) => {
+        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
+          requestBodies.push(request.postDataJSON());
+        }
+      });
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeyRow(keyName)).toBeVisible();
+
+      await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
+      expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeHidden();
+    });
+
+    test('should not offer the key size toggle in the Columns menu', async ({ browserPage }) => {
+      await browserPage.goto(database.id);
+      await browserPage.keyList.columnsButton.click();
+
+      await expect(browserPage.keyList.showTtlToggle).toBeVisible();
+      await expect(browserPage.keyList.showKeySizeToggle).toBeHidden();
+    });
+  });
+
+  test.describe('Database labelled production after it was already in use', () => {
+    let database: DatabaseInstance;
+    const keyName = `test-size-relabel-${uniqueId()}`;
+
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(
+        StandaloneConfigFactory.build({ environment: Environment.Development }),
+      );
+      await apiHelper.createStringKey(database.id, keyName, 'value');
+    });
+
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteKeysByPattern(database.id, keyName).catch(() => {});
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
+
+    test('should hide the size column and stop requesting sizes even with a saved column choice', async ({
+      apiHelper,
+      browserPage,
+    }) => {
+      await browserPage.goto(database.id);
+      await browserPage.keyList.columnsButton.click();
+      await browserPage.keyList.showTtlToggle.click();
+      await browserPage.keyList.showTtlToggle.click();
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeVisible();
+
+      await apiHelper.updateDatabase(database.id, { environment: Environment.Production });
+
+      const requestBodies: Array<{ includeSize?: boolean }> = [];
+      browserPage.page.on('request', (request) => {
+        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
+          requestBodies.push(request.postDataJSON());
+        }
+      });
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeyRow(keyName)).toBeVisible();
+
+      await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
+      expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeHidden();
+    });
+  });
+
+  test.describe('Development DB', () => {
+    let database: DatabaseInstance;
+    const keyName = `test-size-dev-${uniqueId()}`;
+
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(
+        StandaloneConfigFactory.build({ environment: Environment.Development }),
+      );
+      await apiHelper.createStringKey(database.id, keyName, 'value');
+    });
+
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteKeysByPattern(database.id, keyName).catch(() => {});
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
+
+    test('should show the size column and request key sizes', async ({ browserPage }) => {
+      const requestBodies: Array<{ includeSize?: boolean }> = [];
+      browserPage.page.on('request', (request) => {
+        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
+          requestBodies.push(request.postDataJSON());
+        }
+      });
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeVisible();
+
+      expect(requestBodies.some(({ includeSize }) => includeSize === true)).toBe(true);
+    });
+
+    test('should offer the key size toggle in the Columns menu', async ({ browserPage }) => {
+      await browserPage.goto(database.id);
+      await browserPage.keyList.columnsButton.click();
+
+      await expect(browserPage.keyList.showKeySizeToggle).toBeVisible();
+    });
+  });
+});

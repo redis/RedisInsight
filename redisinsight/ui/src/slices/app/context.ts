@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Environment } from 'apiClient'
 import { EuiComboBoxOptionOption } from '@elastic/eui'
 import { RelativeWidthSizes } from 'uiSrc/components/virtual-table/interfaces'
 import {
@@ -411,6 +412,19 @@ export const {
 export const appContextSelector = (state: RootState) => state.app.context
 export const appContextDbConfig = (state: RootState) =>
   state.app.context.dbConfig
+export const isKeySizeAvailableSelector = (state: RootState) =>
+  state.connections.instances.connectedInstance.environment !==
+  Environment.Production
+export const appContextShownColumnsSelector = createSelector(
+  [
+    (state: RootState) => state.app.context.dbConfig.shownColumns,
+    isKeySizeAvailableSelector,
+  ],
+  (shownColumns, isKeySizeAvailable) =>
+    isKeySizeAvailable
+      ? shownColumns
+      : shownColumns.filter((col) => col !== BrowserColumns.Size),
+)
 export const appContextBrowser = (state: RootState) => state.app.context.browser
 export const appContextBrowserTree = (state: RootState) =>
   state.app.context.browser.tree

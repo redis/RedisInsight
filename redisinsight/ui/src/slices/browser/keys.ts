@@ -39,6 +39,7 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { IFetchKeyArgs, IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
+  appContextShownColumnsSelector,
   resetBrowserTree,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
@@ -820,7 +821,7 @@ export function fetchKeyInfo(
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     dispatch(defaultSelectedKeyAction())
-    const { shownColumns } = stateInit()?.app?.context?.dbConfig
+    const shownColumns = appContextShownColumnsSelector(stateInit())
     try {
       const state = stateInit()
       const { encoding } = state.app.info
@@ -917,7 +918,7 @@ export function fetchKeyInfo(
 // Asynchronous thunk action
 export function refreshKeyInfoAction(key: RedisResponseBuffer) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    const { shownColumns } = stateInit()?.app?.context?.dbConfig
+    const shownColumns = appContextShownColumnsSelector(stateInit())
     dispatch(refreshKeyInfo())
     try {
       const state = stateInit()
@@ -1254,7 +1255,7 @@ export function fetchKeysMetadata(
   onFailAction?: () => void,
 ) {
   return async (_dispatch: AppDispatch, stateInit: () => RootState) => {
-    const { shownColumns } = stateInit()?.app?.context?.dbConfig
+    const shownColumns = appContextShownColumnsSelector(stateInit())
     try {
       const state = stateInit()
       const { data } = await apiService.post<GetKeyInfoResponse[]>(
@@ -1291,7 +1292,7 @@ export function fetchKeysMetadataTree(
   onFailAction?: () => void,
 ) {
   return async (_dispatch: AppDispatch, stateInit: () => RootState) => {
-    const { shownColumns } = stateInit()?.app?.context?.dbConfig
+    const shownColumns = appContextShownColumnsSelector(stateInit())
     try {
       const state = stateInit()
       const { data } = await apiService.post<GetKeyInfoResponse[]>(

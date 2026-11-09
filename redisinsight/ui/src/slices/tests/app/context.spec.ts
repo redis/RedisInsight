@@ -1,7 +1,14 @@
 import { cloneDeep } from 'lodash'
-import { BrowserStorageItem, KeyTypes, SortOrder } from 'uiSrc/constants'
+import { Environment } from 'apiClient'
+import {
+  BrowserColumns,
+  BrowserStorageItem,
+  KeyTypes,
+  SortOrder,
+} from 'uiSrc/constants'
 import { localStorageService } from 'uiSrc/services'
 import { stringToBuffer } from 'uiSrc/utils'
+import { RootState } from 'uiSrc/slices/store'
 
 import {
   cleanup,
@@ -35,6 +42,8 @@ import reducer, {
   updateKeyDetailsSizes,
   appContextBrowserKeyDetails,
   appContextDbConfig,
+  appContextShownColumnsSelector,
+  isKeySizeAvailableSelector,
   setSlowLogUnits,
   setDbConfig,
   setDbIndexState,
@@ -489,6 +498,70 @@ describe('slices', () => {
       })
 
       expect(appContextDbConfig(rootState)).toEqual(state)
+    })
+  })
+
+  describe('shown columns by environment', () => {
+    const buildRootState = (
+      environment: Environment,
+      shownColumns: BrowserColumns[],
+    ) =>
+      cloneDeep({
+        ...initialStateDefault,
+        app: {
+          context: {
+            ...initialState,
+            dbConfig: { ...initialState.dbConfig, shownColumns },
+          },
+        },
+        connections: {
+          instances: {
+            ...initialStateDefault.connections.instances,
+            connectedInstance: {
+              ...initialStateDefault.connections.instances.connectedInstance,
+              environment,
+            },
+          },
+        },
+      }) as unknown as RootState
+
+    it.each([Environment.Unspecified, Environment.Development])(
+      'should keep the key size column for a %s database',
+      (environment) => {
+        const rootState = buildRootState(environment, [
+          BrowserColumns.Size,
+          BrowserColumns.TTL,
+        ])
+
+        expect(isKeySizeAvailableSelector(rootState)).toBe(true)
+        expect(appContextShownColumnsSelector(rootState)).toEqual([
+          BrowserColumns.Size,
+          BrowserColumns.TTL,
+        ])
+      },
+    )
+
+    it('should drop the key size column for a production database', () => {
+      const rootState = buildRootState(Environment.Production, [
+        BrowserColumns.Size,
+        BrowserColumns.TTL,
+      ])
+
+      expect(isKeySizeAvailableSelector(rootState)).toBe(false)
+      expect(appContextShownColumnsSelector(rootState)).toEqual([
+        BrowserColumns.TTL,
+      ])
+    })
+
+    it('should return the same array while the inputs are unchanged', () => {
+      const rootState = buildRootState(Environment.Production, [
+        BrowserColumns.Size,
+        BrowserColumns.TTL,
+      ])
+
+      expect(appContextShownColumnsSelector(rootState)).toBe(
+        appContextShownColumnsSelector(rootState),
+      )
     })
   })
 
