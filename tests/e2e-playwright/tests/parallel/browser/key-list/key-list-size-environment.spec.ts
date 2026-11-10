@@ -59,6 +59,25 @@ test.describe('Browser > Key List > Key size by environment', () => {
       await expect(browserPage.keyList.showKeySizeToggle).toBeHidden();
     });
 
+    test('should not request key sizes after the database record fails to load', async ({ browserPage }) => {
+      const databaseRecord = new RegExp(`/api/databases/${database.id}(\\?.*)?$`);
+      await browserPage.page.route(databaseRecord, (route) =>
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'Database record unavailable' }),
+        }),
+      );
+      const requestBodies = collectSizeRequests(browserPage.page);
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeyRow(keyName)).toBeVisible();
+
+      await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
+      expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
+    });
+
     test('should not request key sizes while the database record is still loading', async ({ browserPage }) => {
       const databaseRecord = new RegExp(`/api/databases/${database.id}(\\?.*)?$`);
       await browserPage.page.route(databaseRecord, async (route) => {

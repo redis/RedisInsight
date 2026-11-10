@@ -632,6 +632,24 @@ describe('instances slice', () => {
   })
 
   describe('setConnectedInstanceFailure', () => {
+    it('should keep the environment pending after a failed load', () => {
+      // Arrange
+      const pendingState: InitialStateInstances = {
+        ...initialState,
+        connectedInstance: {
+          ...initialState.connectedInstance,
+          loading: true,
+          isEnvironmentPending: true,
+        },
+      }
+
+      // Act
+      const nextState = reducer(pendingState, setConnectedInstanceFailure())
+
+      // Assert
+      expect(nextState.connectedInstance.isEnvironmentPending).toBe(true)
+    })
+
     it('should properly set loading = "false"', () => {
       // Arrange
       const state = {
@@ -639,7 +657,6 @@ describe('instances slice', () => {
         connectedInstance: {
           ...initialState.connectedInstance,
           loading: false,
-          isEnvironmentPending: false,
         },
       }
 

@@ -276,7 +276,6 @@ const instancesSlice = createSlice({
 
     setConnectedInstanceFailure: (state) => {
       state.connectedInstance.loading = false
-      state.connectedInstance.isEnvironmentPending = false
     },
 
     // reset connected instance
