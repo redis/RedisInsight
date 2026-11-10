@@ -245,17 +245,6 @@ jobs:
       resource_name: integration-coverage
       type: integration
 
-  clean:
-    uses: ./.github/workflows/clean-deployments.yml
-    # `always()` runs this even when every test job skips, so it needs its own
-    # guard against deleting deployments for a run that did no work.
-    if: ${{ always() && needs.changes.result != 'skipped' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
-    permissions:
-      actions: write
-      contents: read
-      deployments: write
-    needs: [changes, frontend-tests, backend-tests, integration-tests]
-
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
@@ -272,7 +261,7 @@ jobs:
   # decision made from the changed files.
   #
   # A job left out of `needs` cannot block a merge, so add new suites here.
-  # Coverage and cleanup are out on purpose.
+  # Coverage is out on purpose.
   required-checks-passed:
     name: All required checks pass
     if: always()
