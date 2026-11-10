@@ -1,3 +1,4 @@
+import { Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
@@ -10,6 +11,18 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  */
 const uniqueId = () => faker.string.alphanumeric(6);
 const KEY_SIZE_ENDPOINTS = /keys\/get-(metadata|info)/;
+const DATABASE_RECORD_DELAY_MS = 3000;
+
+const collectSizeRequests = (page: Page): Array<{ includeSize?: boolean }> => {
+  const bodies: Array<{ includeSize?: boolean }> = [];
+  page.on('request', (request) => {
+    if (request.method() !== 'POST' || !KEY_SIZE_ENDPOINTS.test(request.url())) return;
+    const body = request.postDataJSON();
+    if (Array.isArray(body.keys) && body.keys.length === 0) return;
+    bodies.push(body);
+  });
+  return bodies;
+};
 
 test.describe('Browser > Key List > Key size by environment', () => {
   test.describe('Production DB', () => {
@@ -27,12 +40,7 @@ test.describe('Browser > Key List > Key size by environment', () => {
     });
 
     test('should not show the size column or request key sizes', async ({ browserPage }) => {
-      const requestBodies: Array<{ includeSize?: boolean }> = [];
-      browserPage.page.on('request', (request) => {
-        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
-          requestBodies.push(request.postDataJSON());
-        }
-      });
+      const requestBodies = collectSizeRequests(browserPage.page);
 
       await browserPage.goto(database.id);
       await browserPage.keyList.searchKeys(keyName);
@@ -49,6 +57,22 @@ test.describe('Browser > Key List > Key size by environment', () => {
 
       await expect(browserPage.keyList.showTtlToggle).toBeVisible();
       await expect(browserPage.keyList.showKeySizeToggle).toBeHidden();
+    });
+
+    test('should not request key sizes while the database record is still loading', async ({ browserPage }) => {
+      const databaseRecord = new RegExp(`/api/databases/${database.id}(\\?.*)?$`);
+      await browserPage.page.route(databaseRecord, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, DATABASE_RECORD_DELAY_MS));
+        await route.continue();
+      });
+      const requestBodies = collectSizeRequests(browserPage.page);
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeyRow(keyName)).toBeVisible();
+
+      await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
+      expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
     });
   });
 
@@ -81,12 +105,7 @@ test.describe('Browser > Key List > Key size by environment', () => {
 
       await apiHelper.updateDatabase(database.id, { environment: Environment.Production });
 
-      const requestBodies: Array<{ includeSize?: boolean }> = [];
-      browserPage.page.on('request', (request) => {
-        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
-          requestBodies.push(request.postDataJSON());
-        }
-      });
+      const requestBodies = collectSizeRequests(browserPage.page);
 
       await browserPage.goto(database.id);
       await browserPage.keyList.searchKeys(keyName);
@@ -94,6 +113,42 @@ test.describe('Browser > Key List > Key size by environment', () => {
 
       await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
       expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeHidden();
+    });
+  });
+
+  test.describe('Database labelled production after it was already in use (tree view)', () => {
+    let database: DatabaseInstance;
+    const keyName = `test-size-relabel-tree-${uniqueId()}`;
+
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(
+        StandaloneConfigFactory.build({ environment: Environment.Development }),
+      );
+      await apiHelper.createStringKey(database.id, keyName, 'value');
+    });
+
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteKeysByPattern(database.id, keyName).catch(() => {});
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
+
+    test('should hide the size cell with a saved column choice', async ({ apiHelper, browserPage }) => {
+      await browserPage.goto(database.id);
+      await browserPage.keyList.columnsButton.click();
+      await browserPage.keyList.showTtlToggle.click();
+      await browserPage.keyList.showTtlToggle.click();
+      await browserPage.keyList.switchToTreeView();
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeVisible();
+
+      await apiHelper.updateDatabase(database.id, { environment: Environment.Production });
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.switchToTreeView();
+      await browserPage.keyList.searchKeys(keyName);
+      await expect(browserPage.keyList.getTreeNode(keyName)).toBeVisible();
+
       await expect(browserPage.keyList.getKeySizeCell(keyName)).toBeHidden();
     });
   });
@@ -115,12 +170,7 @@ test.describe('Browser > Key List > Key size by environment', () => {
     });
 
     test('should show the size column and request key sizes', async ({ browserPage }) => {
-      const requestBodies: Array<{ includeSize?: boolean }> = [];
-      browserPage.page.on('request', (request) => {
-        if (request.method() === 'POST' && KEY_SIZE_ENDPOINTS.test(request.url())) {
-          requestBodies.push(request.postDataJSON());
-        }
-      });
+      const requestBodies = collectSizeRequests(browserPage.page);
 
       await browserPage.goto(database.id);
       await browserPage.keyList.searchKeys(keyName);

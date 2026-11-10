@@ -412,9 +412,12 @@ export const {
 export const appContextSelector = (state: RootState) => state.app.context
 export const appContextDbConfig = (state: RootState) =>
   state.app.context.dbConfig
-export const isKeySizeAvailableSelector = (state: RootState) =>
-  state.connections.instances.connectedInstance.environment !==
-  Environment.Production
+export const isKeySizeAvailableSelector = (state: RootState) => {
+  const { environment, isEnvironmentPending } =
+    state.connections.instances.connectedInstance
+
+  return !isEnvironmentPending && environment !== Environment.Production
+}
 export const appContextShownColumnsSelector = createSelector(
   [
     (state: RootState) => state.app.context.dbConfig.shownColumns,

@@ -512,6 +512,43 @@ describe('instances slice', () => {
   })
 
   describe('setConnectedInstanceId', () => {
+    it('should keep a loaded environment when the id does not change', () => {
+      // Arrange
+      const id = 'id'
+      const loadedState: InitialStateInstances = {
+        ...initialState,
+        connectedInstance: {
+          ...initialState.connectedInstance,
+          id,
+          isEnvironmentPending: false,
+        },
+      }
+
+      // Act
+      const nextState = reducer(loadedState, setConnectedInstanceId(id))
+
+      // Assert
+      expect(nextState.connectedInstance.isEnvironmentPending).toBe(false)
+    })
+
+    it('should mark the environment as pending when the id changes', () => {
+      // Arrange
+      const loadedState: InitialStateInstances = {
+        ...initialState,
+        connectedInstance: {
+          ...initialState.connectedInstance,
+          id: 'previous-id',
+          isEnvironmentPending: false,
+        },
+      }
+
+      // Act
+      const nextState = reducer(loadedState, setConnectedInstanceId('next-id'))
+
+      // Assert
+      expect(nextState.connectedInstance.isEnvironmentPending).toBe(true)
+    })
+
     it('should properly set "id"', () => {
       // Arrange
       const id = 'id'
@@ -520,6 +557,7 @@ describe('instances slice', () => {
         connectedInstance: {
           ...initialState.connectedInstance,
           id,
+          isEnvironmentPending: true,
         },
       }
 
@@ -544,6 +582,7 @@ describe('instances slice', () => {
         connectedInstance: {
           ...initialState.connectedInstance,
           loading: true,
+          isEnvironmentPending: true,
         },
       }
 
@@ -569,6 +608,7 @@ describe('instances slice', () => {
         connectedInstance: {
           ...instance,
           loading: false,
+          isEnvironmentPending: false,
           isRediStack: false,
           isFreeDb: false,
           db: undefined,
@@ -599,6 +639,7 @@ describe('instances slice', () => {
         connectedInstance: {
           ...initialState.connectedInstance,
           loading: false,
+          isEnvironmentPending: false,
         },
       }
 

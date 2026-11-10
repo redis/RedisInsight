@@ -541,6 +541,22 @@ describe('slices', () => {
       },
     )
 
+    it.each([Environment.Unspecified, Environment.Development])(
+      'should drop the key size column while the %s environment is pending',
+      (environment) => {
+        const rootState = buildRootState(environment, [
+          BrowserColumns.Size,
+          BrowserColumns.TTL,
+        ])
+        rootState.connections.instances.connectedInstance.isEnvironmentPending = true
+
+        expect(isKeySizeAvailableSelector(rootState)).toBe(false)
+        expect(appContextShownColumnsSelector(rootState)).toEqual([
+          BrowserColumns.TTL,
+        ])
+      },
+    )
+
     it('should drop the key size column for a production database', () => {
       const rootState = buildRootState(Environment.Production, [
         BrowserColumns.Size,

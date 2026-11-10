@@ -206,15 +206,20 @@ const instancesSlice = createSlice({
 
     // set connected instance id
     setConnectedInstanceId: (state, { payload }: { payload: string }) => {
+      const isDifferentInstance = payload !== state.connectedInstance.id
+
       state.connectedInstance = {
         ...state.connectedInstance,
         id: payload,
+        isEnvironmentPending:
+          isDifferentInstance || state.connectedInstance.isEnvironmentPending,
       }
     },
 
     // set connected instance
     setConnectedInstance: (state) => {
       state.connectedInstance.loading = true
+      state.connectedInstance.isEnvironmentPending = true
     },
 
     // set connected instance success
@@ -227,6 +232,7 @@ const instancesSlice = createSlice({
       )?.isRediStack
       state.connectedInstance = ensureSemanticVersion(payload)
       state.connectedInstance.loading = false
+      state.connectedInstance.isEnvironmentPending = false
       state.connectedInstance.isRediStack = isRediStack || false
       state.connectedInstance.isFreeDb = payload.cloudDetails?.free || false
       state.connectedInstance.db =
@@ -270,6 +276,7 @@ const instancesSlice = createSlice({
 
     setConnectedInstanceFailure: (state) => {
       state.connectedInstance.loading = false
+      state.connectedInstance.isEnvironmentPending = false
     },
 
     // reset connected instance

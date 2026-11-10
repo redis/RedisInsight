@@ -204,10 +204,18 @@ export class KeyList {
   }
 
   /**
-   * Size cell of a key row (only rendered while the Key size column is shown)
+   * Tree node of a key (only rendered in tree view)
+   */
+  getTreeNode(keyName: string): Locator {
+    return this.page.getByTestId(/^node-item_/).filter({ hasText: keyName });
+  }
+
+  /**
+   * Size cell of a key row, loaded or still loading (only rendered while the Key size column is shown)
    */
   getKeySizeCell(keyName: string): Locator {
-    return this.page.getByTestId(`size-${keyName}`);
+    const escaped = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.page.getByTestId(new RegExp(`^size(-|-loading_)${escaped}$`));
   }
 
   /**
