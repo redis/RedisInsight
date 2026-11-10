@@ -11,7 +11,6 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  */
 const uniqueId = () => faker.string.alphanumeric(6);
 const KEY_SIZE_ENDPOINTS = /keys\/get-(metadata|info)/;
-const DATABASE_RECORD_DELAY_MS = 3000;
 
 const collectSizeRequests = (page: Page): Array<{ includeSize?: boolean }> => {
   const bodies: Array<{ includeSize?: boolean }> = [];
@@ -80,17 +79,28 @@ test.describe('Browser > Key List > Key size by environment', () => {
 
     test('should not request key sizes while the database record is still loading', async ({ browserPage }) => {
       const databaseRecord = new RegExp(`/api/databases/${database.id}(\\?.*)?$`);
+      let releaseRecord!: () => void;
+      const recordGate = new Promise<void>((resolve) => {
+        releaseRecord = resolve;
+      });
       await browserPage.page.route(databaseRecord, async (route) => {
-        await new Promise((resolve) => setTimeout(resolve, DATABASE_RECORD_DELAY_MS));
+        await recordGate;
         await route.continue();
       });
       const requestBodies = collectSizeRequests(browserPage.page);
 
-      await browserPage.goto(database.id);
+      const navigation = browserPage.goto(database.id);
+      try {
+        await expect
+          .poll(() => requestBodies.length, { message: 'a size request is sent while the record is held' })
+          .toBeGreaterThan(0);
+      } finally {
+        releaseRecord();
+      }
+      await navigation;
       await browserPage.keyList.searchKeys(keyName);
       await expect(browserPage.keyList.getKeyRow(keyName)).toBeVisible();
 
-      await expect.poll(() => requestBodies.length).toBeGreaterThan(0);
       expect(requestBodies.every(({ includeSize }) => includeSize === false)).toBe(true);
     });
   });
