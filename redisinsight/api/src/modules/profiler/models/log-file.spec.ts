@@ -8,7 +8,8 @@ import {
   mockSocket,
 } from 'src/__mocks__';
 import config from 'src/utils/config';
-import { join } from 'path';
+import { dirname, join } from 'path';
+import { BadRequestException } from '@nestjs/common';
 import { ReadStream, WriteStream } from 'fs';
 import { FileLogsEmitter } from 'src/modules/profiler/emitters/file.logs-emitter';
 import { TelemetryEvents } from 'src/constants';
@@ -46,6 +47,35 @@ describe('LogFile', () => {
     expect(logFile['analyticsEvents']).toEqual(new Map());
     expect(logFile['clientObservers']).toEqual(new Map());
     expect(logFile['emitter']).toEqual(undefined);
+  });
+
+  describe('id validation', () => {
+    it.each([
+      ['a parent directory', '../outside'],
+      ['a deep traversal', '../../../../../../tmp/outside'],
+      ['a nested path', 'nested/dir'],
+      ['an absolute path', '/tmp/outside'],
+      ['a windows separator', '..\\outside'],
+      ['a dot segment', '..'],
+      ['a file extension', 'logs.txt'],
+      ['an empty id', ''],
+      ['an overlong id', 'a'.repeat(129)],
+    ])('should refuse %s', (_, id) => {
+      expect(() => new LogFile(mockLogFile.instanceId, id)).toThrow(
+        BadRequestException,
+      );
+    });
+
+    it.each([
+      ['a generated client id', '_redis_5d6b5a4e-1f0c-4a52-9b7e-3c2f9c7f0a11'],
+      ['letters and digits', 'LogFile01'],
+      ['dashes and underscores', 'log_file-id'],
+    ])('should accept %s and keep the file inside the temp dir', (_, id) => {
+      const file = new LogFile(mockLogFile.instanceId, id);
+
+      expect(file['filePath']).toEqual(join(DIR_PATH.tmpDir, id));
+      expect(dirname(file['filePath'])).toEqual(DIR_PATH.tmpDir);
+    });
   });
 
   it('getWriteStream', () => {

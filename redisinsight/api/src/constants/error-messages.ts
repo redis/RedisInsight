@@ -18,6 +18,7 @@ export default {
   DATABASE_RECOMMENDATION_NOT_FOUND: 'Database recommendation was not found.',
   BROWSER_HISTORY_ITEM_NOT_FOUND: 'Browser history item was not found.',
   PROFILER_LOG_FILE_NOT_FOUND: 'Profiler log file was not found.',
+  PROFILER_INVALID_LOG_FILE_ID: 'Profiler log file id is not valid.',
   CONSUMER_GROUP_NOT_FOUND: 'Consumer Group with such name was not found.',
   PLUGIN_STATE_NOT_FOUND: 'Plugin state was not found.',
   CUSTOM_TUTORIAL_NOT_FOUND: 'Custom Tutorial was not found.',

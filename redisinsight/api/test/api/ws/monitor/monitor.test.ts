@@ -8,7 +8,13 @@ import {
   _,
 } from '../../deps';
 import { Socket } from 'socket.io-client';
+import * as fs from 'fs-extra';
+import { join } from 'path';
+import { randomUUID } from 'crypto';
+import config from 'src/utils/config';
+
 const { getSocket, constants, rte } = deps;
+const DIR_PATH = config.get('dir_path');
 
 const getMonitorClient = async (instanceId): Promise<Socket> => {
   return getSocket('monitor', {
@@ -28,7 +34,7 @@ describe('monitor', function () {
             new Promise((res, rej) => {
               client.emit(
                 'monitor',
-                { logFileId: constants.getRandomString() },
+                { logFileId: `_redis_${randomUUID()}` },
                 (ack) => {
                   expect(ack).to.eql({ status: 'ok' });
                   res(ack);
@@ -38,6 +44,28 @@ describe('monitor', function () {
             }),
         ),
       );
+    });
+  });
+
+  describe('Log file id', () => {
+    it('Should refuse a log file id that escapes the temp directory', async () => {
+      const escapedName = `ri-escaped-${constants.getRandomString()}`;
+      const escapedPath = join(DIR_PATH.tmpDir, '..', escapedName);
+      const client = await getMonitorClient(constants.TEST_INSTANCE_ID);
+
+      try {
+        await new Promise<void>((resolve, reject) => {
+          client.on('exception', () => resolve());
+          client.emit('monitor', { logFileId: `../${escapedName}` }, (ack) =>
+            reject(new Error(`Unexpected ack: ${JSON.stringify(ack)}`)),
+          );
+        });
+
+        expect(fs.existsSync(escapedPath)).to.eql(false);
+      } finally {
+        fs.removeSync(escapedPath);
+        client.close();
+      }
     });
   });
 
