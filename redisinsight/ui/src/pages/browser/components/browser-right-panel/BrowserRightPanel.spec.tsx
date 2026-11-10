@@ -1,12 +1,15 @@
 import React from 'react'
 import { cloneDeep, set } from 'lodash'
+import { faker } from '@faker-js/faker'
 import {
+  fireEvent,
   initialStateDefault,
   mockStore,
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
 import { FeatureFlags } from 'uiSrc/constants'
+import { stringToBuffer } from 'uiSrc/utils'
 import BrowserRightPanel from 'uiSrc/pages/browser/components/browser-right-panel/index'
 
 describe('BrowserRightPanel', () => {
@@ -58,5 +61,34 @@ describe('BrowserRightPanel', () => {
       },
     )
     expect(screen.queryByTestId('bulk-actions-content')).not.toBeInTheDocument()
+  })
+
+  it('should render key tabs and pass tab callbacks', () => {
+    const keyName = faker.string.alphanumeric(10)
+    const keyBuffer = stringToBuffer(keyName)
+    const onSelectTab = jest.fn()
+    const onCloseTab = jest.fn()
+
+    render(
+      <BrowserRightPanel
+        selectedKey={null}
+        setSelectedKey={jest.fn()}
+        arePanelsCollapsed={false}
+        isAddKeyPanelOpen={false}
+        handleAddKeyPanel={jest.fn()}
+        isBulkActionsPanelOpen={false}
+        handleBulkActionsPanel={jest.fn()}
+        closeRightPanels={jest.fn()}
+        keyTabs={[keyBuffer]}
+        onSelectTab={onSelectTab}
+        onCloseTab={onCloseTab}
+      />,
+    )
+
+    fireEvent.click(screen.getByTestId(`key-tab-${keyName}`))
+    expect(onSelectTab).toHaveBeenCalledWith(keyBuffer)
+
+    fireEvent.click(screen.getByTestId(`close-key-tab-${keyName}`))
+    expect(onCloseTab).toHaveBeenCalledWith(keyBuffer)
   })
 })

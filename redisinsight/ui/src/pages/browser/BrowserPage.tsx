@@ -26,6 +26,10 @@ import {
   setBrowserBulkActionOpen,
   setBrowserKeyListDataLoaded,
   appContextSelector,
+  appContextBrowserKeyTabs,
+  openBrowserKeyTab,
+  closeBrowserKeyTab,
+  clearBrowserKeyTabs,
 } from 'uiSrc/slices/app/context'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -81,6 +85,7 @@ const BrowserPage = () => {
     bulkActions: { opened: bulkActionOpenContext },
   } = useAppSelector(appContextBrowser)
   const { contextInstanceId } = useAppSelector(appContextSelector)
+  const keyTabs = useAppSelector(appContextBrowserKeyTabs)
 
   const { isBrowserFullScreen } = useAppSelector(keysSelector)
   const { type } = useAppSelector(selectedKeyDataSelector) ?? {
@@ -115,6 +120,7 @@ const BrowserPage = () => {
   const selectedKeyRef = useRef<Nullable<RedisResponseBuffer>>(selectedKey)
   const isBulkActionsPanelOpenRef = useRef<boolean>(isBulkActionsPanelOpen)
   const isSidePanelOpenRef = useRef<boolean>(!!openedSidePanel)
+  const keyTabsRef = useRef<RedisResponseBuffer[]>(keyTabs)
 
   const history = useHistory()
   const dispatch = useAppDispatch()
@@ -159,7 +165,19 @@ const BrowserPage = () => {
 
   useEffect(() => {
     selectedKeyRef.current = selectedKey
+
+    if (selectedKey) {
+      dispatch(openBrowserKeyTab(selectedKey))
+    }
   }, [selectedKey])
+
+  useEffect(() => {
+    keyTabsRef.current = keyTabs
+  }, [keyTabs])
+
+  useEffect(() => {
+    if (type) prevSelectedType.current = type
+  }, [type])
 
   useEffect(() => {
     setArePanelsCollapsed(() => isOneSideMode(!!openedSidePanel))
@@ -250,6 +268,8 @@ const BrowserPage = () => {
   }, [db])
 
   const onChangeDbIndex = () => {
+    dispatch(clearBrowserKeyTabs())
+
     if (selectedKey) {
       dispatch(toggleBrowserFullScreen(true))
       setSelectedKey(null)
@@ -279,12 +299,40 @@ const BrowserPage = () => {
     }
   }, [])
 
-  const closePanel = () => {
+  const closePanel = useCallback(() => {
     dispatch(toggleBrowserFullScreen(true))
 
     setSelectedKey(null)
     closeRightPanels()
-  }
+  }, [])
+
+  const handleSelectTab = useCallback((keyName: RedisResponseBuffer) => {
+    if (!isEqualBuffers(keyName, selectedKeyRef.current)) {
+      dispatch(setInitialStateByType(prevSelectedType.current))
+      setSelectedKey(keyName)
+      dispatch(setBrowserSelectedKey(keyName))
+    }
+    closeRightPanels()
+  }, [])
+
+  const handleCloseTab = useCallback((keyName: RedisResponseBuffer) => {
+    const tabs = keyTabsRef.current
+    const index = tabs.findIndex((tab) => isEqualBuffers(tab, keyName))
+
+    dispatch(closeBrowserKeyTab(keyName))
+
+    if (!isEqualBuffers(keyName, selectedKeyRef.current)) return
+
+    // like a browser: activate the right neighbour, otherwise the left one
+    const nextTab = tabs[index + 1] ?? tabs[index - 1]
+    if (nextTab) {
+      handleSelectTab(nextTab)
+      return
+    }
+
+    dispatch(setBrowserSelectedKey(null))
+    closePanel()
+  }, [])
 
   const isRightPanelOpen =
     selectedKey !== null || isAddKeyPanelOpen || isBulkActionsPanelOpen
@@ -358,6 +406,9 @@ const BrowserPage = () => {
                 handleAddKeyPanel={handleAddKeyPanel}
                 handleBulkActionsPanel={handleBulkActionsPanel}
                 closeRightPanels={closeRightPanels}
+                keyTabs={keyTabs}
+                onSelectTab={handleSelectTab}
+                onCloseTab={handleCloseTab}
               />
             </S.BorderedResizablePanel>
           </S.StyledResizableContainer>
