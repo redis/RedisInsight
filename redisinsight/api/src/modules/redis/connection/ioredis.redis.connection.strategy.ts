@@ -154,13 +154,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
    * @private
    */
   private async getTLSConfig(database: Database): Promise<ConnectionOptions> {
+    const shouldCheckHostname =
+      database.verifyServerCert === true &&
+      !REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification;
     let config: ConnectionOptions;
     config = {
       // Node treats a missing rejectUnauthorized as true. verifyServerCert is
       // optional and defaults to false (unchecked "Verify TLS Certificate");
       // older rows and test-connection payloads leave it null/undefined.
       rejectUnauthorized: database.verifyServerCert === true,
-      checkServerIdentity: this.dummyFn,
+      // Node checks the hostname against the certificate unless this is set.
+      ...(shouldCheckHostname ? {} : { checkServerIdentity: this.dummyFn }),
       servername: database.tlsServername || undefined,
     };
     if (database.caCert) {

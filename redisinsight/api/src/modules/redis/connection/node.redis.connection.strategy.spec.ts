@@ -11,6 +11,7 @@ import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.r
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { RedisConnectionFamily } from 'src/modules/database/entities/database.entity';
 import { Database } from 'src/modules/database/models/database';
+import serverConfig from 'src/utils/config';
 
 jest.mock('redis', () => ({
   ...jest.requireActual('redis'),
@@ -123,5 +124,62 @@ describe('NodeRedisConnectionStrategy', () => {
         expect(config.rejectUnauthorized).toEqual(false);
       },
     );
+
+    describe('hostname verification', () => {
+      const REDIS_CLIENTS_CONFIG = serverConfig.get('redis_clients');
+      const mismatchedCert = { subject: { CN: 'other.example.com' } } as any;
+      let initialSkip: boolean;
+
+      beforeEach(() => {
+        initialSkip = REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification;
+      });
+
+      afterEach(() => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = initialSkip;
+      });
+
+      it('should use the default hostname check when the certificate is verified', async () => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert: true,
+        });
+
+        expect(config.checkServerIdentity).toBeUndefined();
+      });
+
+      it('should accept any hostname when the opt-out is set', async () => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = true;
+
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert: true,
+        });
+
+        expect(config.rejectUnauthorized).toEqual(true);
+        expect(config.checkServerIdentity).toBeDefined();
+        expect(
+          config.checkServerIdentity?.('redis.example.com', mismatchedCert),
+        ).toBeUndefined();
+      });
+
+      it.each([false, undefined, null])(
+        'should accept any hostname when verifyServerCert is %s',
+        async (verifyServerCert) => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+
+          const config = await service['getTLSConfig']({
+            ...mockDatabaseWithTlsAuth,
+            verifyServerCert,
+          } as Database);
+
+          expect(config.checkServerIdentity).toBeDefined();
+          expect(
+            config.checkServerIdentity?.('redis.example.com', mismatchedCert),
+          ).toBeUndefined();
+        },
+      );
+    });
   });
 });
