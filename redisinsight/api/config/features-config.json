@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "features": {
     "dev-rdiUi": {
       "flag": true,
@@ -47,7 +47,7 @@
       "perc": [[0, 100]]
     },
     "documentationChat": {
-      "flag": true,
+      "flag": false,
       "perc": [[0, 100]],
       "filters": [
         {
@@ -58,7 +58,7 @@
       ]
     },
     "databaseChat": {
-      "flag": true,
+      "flag": false,
       "perc": [[0, 100]],
       "filters": [
         {
