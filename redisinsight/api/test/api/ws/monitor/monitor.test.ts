@@ -56,8 +56,11 @@ describe('monitor', function () {
       try {
         await new Promise<void>((resolve, reject) => {
           client.on('exception', () => resolve());
-          client.emit('monitor', { logFileId: `../${escapedName}` }, (ack) =>
-            reject(new Error(`Unexpected ack: ${JSON.stringify(ack)}`)),
+          client.emit(
+            'monitor',
+            { logFileId: `../${escapedName}` },
+            (ack: unknown) =>
+              reject(new Error(`Unexpected ack: ${JSON.stringify(ack)}`)),
           );
         });
 
