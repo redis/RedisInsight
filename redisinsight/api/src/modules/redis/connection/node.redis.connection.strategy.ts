@@ -101,6 +101,10 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       options,
     );
 
+    if (database.ssh && database.tls && config.socket) {
+      config.socket = this.withoutTunnelHostnameCheck(database, config.socket);
+    }
+
     return {
       rootNodes: [
         {
@@ -147,6 +151,24 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
   //     sentinelRetryStrategy: options?.useRetry ? this.retryStrategy : this.dummyFn,
   //   };
   // }
+
+  /**
+   * Every cluster node gets its own tunnel, so there is no single host to
+   * verify the certificates against and the hostname check is skipped.
+   * @private
+   */
+  private withoutTunnelHostnameCheck<T extends object>(
+    database: Database,
+    socket: T,
+  ): T {
+    if (database.verifyServerCert === true) {
+      this.logger.warn(
+        'TLS hostname verification is skipped for clusters reached through an SSH tunnel',
+      );
+    }
+
+    return { ...socket, checkServerIdentity: this.dummyFn.bind(this) };
+  }
 
   /**
    * Hostname check for the server certificate. Node's default check uses the

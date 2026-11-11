@@ -95,16 +95,25 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<ClusterOptions> {
+    const redisOptions = await this.getRedisOptions(
+      clientMetadata,
+      database,
+      options,
+    );
+
+    if (database.ssh && redisOptions.tls) {
+      redisOptions.tls = this.withoutTunnelHostnameCheck(
+        database,
+        redisOptions.tls,
+      );
+    }
+
     return {
       clusterRetryStrategy: options.useRetry
         ? this.retryStrategy.bind(this)
         : this.dummyFn.bind(this),
       slotsRefreshTimeout: REDIS_CLIENTS_CONFIG.slotsRefreshTimeout,
-      redisOptions: await this.getRedisOptions(
-        clientMetadata,
-        database,
-        options,
-      ),
+      redisOptions,
       maxRedirections: REDIS_CLIENTS_CONFIG.maxRedirections,
     };
   }
@@ -146,6 +155,24 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
         ? this.retryStrategy
         : this.dummyFn,
     };
+  }
+
+  /**
+   * Every cluster node gets its own tunnel, so there is no single host to
+   * verify the certificates against and the hostname check is skipped.
+   * @private
+   */
+  private withoutTunnelHostnameCheck(
+    database: Database,
+    tls: ConnectionOptions,
+  ): ConnectionOptions {
+    if (database.verifyServerCert === true) {
+      this.logger.warn(
+        'TLS hostname verification is skipped for clusters reached through an SSH tunnel',
+      );
+    }
+
+    return { ...tls, checkServerIdentity: this.dummyFn };
   }
 
   /**

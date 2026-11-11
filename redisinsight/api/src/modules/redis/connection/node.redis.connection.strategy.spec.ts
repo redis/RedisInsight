@@ -249,6 +249,45 @@ describe('NodeRedisConnectionStrategy', () => {
           ).toBeUndefined();
         });
       });
+
+      describe('cluster options through an SSH tunnel', () => {
+        const clusterDatabase = {
+          ...mockDatabaseWithTlsAuth,
+          host: 'redis.example.com',
+          tlsServername: undefined,
+          verifyServerCert: true,
+        } as Database;
+
+        beforeEach(() => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+        });
+
+        it('should not check the hostname of nodes that each have their own tunnel', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            { ...clusterDatabase, ssh: true },
+            {},
+          );
+          const socket = config.defaults?.socket as any;
+
+          expect(socket.rejectUnauthorized).toEqual(true);
+          expect(
+            socket.checkServerIdentity?.('127.0.0.1', mismatchedCert),
+          ).toBeUndefined();
+        });
+
+        it('should keep the default hostname check without a tunnel', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            { ...clusterDatabase, ssh: false },
+            {},
+          );
+
+          expect(
+            (config.defaults?.socket as any).checkServerIdentity,
+          ).toBeUndefined();
+        });
+      });
     });
   });
 });
