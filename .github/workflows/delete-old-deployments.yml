@@ -47,6 +47,8 @@ jobs:
       PAUSE_SECONDS: 1
     steps:
       - name: Delete deployments
+        # Explicit bash runs with pipefail, so a failed listing request fails the step.
+        shell: bash
         run: |
           OLDER_THAN_DAYS="${OLDER_THAN_DAYS:-30}"
           MAX_DELETIONS="${MAX_DELETIONS:-200}"
@@ -63,7 +65,7 @@ jobs:
           # Oldest first, so a capped run always makes progress on the backlog.
           candidates=$(gh api --paginate "repos/${REPO}/deployments?per_page=100" \
             --jq ".[] | select(.created_at < \"${cutoff}\") | [.created_at, .id, .environment] | @tsv" \
-            | sort | sed -n "1,${MAX_DELETIONS}p")
+            | sort | awk -v max="${MAX_DELETIONS}" 'NR <= max')
 
           deleted=0
           while IFS=$'\t' read -r created id environment; do
