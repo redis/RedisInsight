@@ -2,6 +2,8 @@ import React from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { isKeySizeAvailableSelector } from 'uiSrc/slices/app/context'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { AutoRefresh } from 'uiSrc/components'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
@@ -17,6 +19,7 @@ const HIDE_REFRESH_LABEL_WIDTH = 640
 
 const Header = () => {
   const { t } = useTranslation()
+  const isKeySizeAvailable = useAppSelector(isKeySizeAvailableSelector)
   const {
     viewType,
     searchMode,
@@ -61,6 +64,7 @@ const Header = () => {
             <FlexItem>
               <ColumnsMenu
                 shownColumns={shownColumns}
+                isKeySizeAvailable={isKeySizeAvailable}
                 onToggleColumn={handleToggleColumn}
               />
             </FlexItem>

@@ -32,7 +32,7 @@ import {
   setBrowserPatternScrollPosition,
   setBrowserIsNotRendered,
   setBrowserRedisearchScrollPosition,
-  appContextDbConfig,
+  appContextShownColumnsSelector,
 } from 'uiSrc/slices/app/context'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
@@ -95,7 +95,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   const selectedKey = useAppSelector(selectedKeySelector)
   const { nextCursor, previousResultCount } = useAppSelector(keysDataSelector)
   const { isSearched, isFiltered, searchMode } = useAppSelector(keysSelector)
-  const { shownColumns } = useAppSelector(appContextDbConfig)
+  const shownColumns = useAppSelector(appContextShownColumnsSelector)
   const visibleColumns = visibleColumnsProp ?? shownColumns
   const {
     keyList: { isNotRendered: isNotRenderedContext },

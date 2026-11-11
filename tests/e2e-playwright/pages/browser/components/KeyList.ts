@@ -19,6 +19,8 @@ export class KeyList {
   readonly listViewButton: Locator;
   readonly treeViewButton: Locator;
   readonly columnsButton: Locator;
+  readonly showKeySizeToggle: Locator;
+  readonly showTtlToggle: Locator;
   /** Keys browser panel refresh (distinct from instance header refresh) */
   readonly refreshButton: Locator;
   readonly keysAutoRefreshConfigButton: Locator;
@@ -67,6 +69,8 @@ export class KeyList {
     this.listViewButton = page.getByTestId('view-type-browser-btn');
     this.treeViewButton = page.getByTestId('view-type-list-btn');
     this.columnsButton = page.getByTestId('btn-columns-actions');
+    this.showKeySizeToggle = page.getByTestId('show-key-size');
+    this.showTtlToggle = page.getByTestId('show-ttl');
     this.refreshButton = page.getByTestId('keys-refresh-btn');
     this.keysAutoRefreshConfigButton = page.getByTestId('keys-auto-refresh-config-btn');
     this.keysAutoRefreshSwitch = page.getByTestId('keys-auto-refresh-switch');
@@ -197,6 +201,21 @@ export class KeyList {
   async switchToTreeView(): Promise<void> {
     await this.treeViewButton.click();
     await this.waitForKeysLoaded();
+  }
+
+  /**
+   * Tree node of a key (only rendered in tree view)
+   */
+  getTreeNode(keyName: string): Locator {
+    return this.page.getByTestId(/^node-item_/).filter({ hasText: keyName });
+  }
+
+  /**
+   * Size cell of a key row, loaded or still loading (only rendered while the Key size column is shown)
+   */
+  getKeySizeCell(keyName: string): Locator {
+    const escaped = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.page.getByTestId(new RegExp(`^size(-|-loading_)${escaped}$`));
   }
 
   /**

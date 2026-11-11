@@ -230,6 +230,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Delete multiple keys (bulk) |
 | ✅ | main | Search by Values of Keys |
 | ✅ | main | Configure columns visibility |
+| ✅ | main | Hide the key size column and skip size requests on production databases (incl. a database labelled production after use) |
+| ✅ | main | Keep the key size column and toggle on development databases |
 | ✅ | main | Configure auto-refresh |
 | ✅ | main | Show empty database welcome and open Add key manually |
 | ✅ | main | Display keys summary and scroll key list in list view |

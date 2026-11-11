@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'
 import {
   appContextBrowser,
   appContextDbConfig,
+  appContextShownColumnsSelector,
   appContextSelector,
   resetBrowserTree,
   setBrowserKeyListDataLoaded,
@@ -99,7 +100,8 @@ export const Context = ({
     connectedInstanceSelector,
   )
   const { contextInstanceId } = useAppSelector(appContextSelector)
-  const { shownColumns } = useAppSelector(appContextDbConfig)
+  const { shownColumns: storedColumns } = useAppSelector(appContextDbConfig)
+  const shownColumns = useAppSelector(appContextShownColumnsSelector)
   const { selectedIndex } = useAppSelector(redisearchSelector)
   const {
     keyList: {
@@ -318,8 +320,8 @@ export const Context = ({
       const shown: BrowserColumns[] = []
       const hidden: BrowserColumns[] = []
       const newColumns = checked
-        ? [...shownColumns, columnType]
-        : shownColumns.filter((col) => col !== columnType)
+        ? [...storedColumns, columnType]
+        : storedColumns.filter((col) => col !== columnType)
 
       if (checked) {
         shown.push(columnType)
@@ -337,7 +339,7 @@ export const Context = ({
         },
       })
     },
-    [shownColumns, connectedInstanceId],
+    [storedColumns, connectedInstanceId],
   )
 
   const handleScanMore = useCallback(

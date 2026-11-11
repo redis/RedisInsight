@@ -3,7 +3,14 @@ import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
 import { faker } from '@faker-js/faker'
-import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
+import { Environment } from 'apiClient'
+import {
+  cleanup,
+  mockedStore,
+  mockStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyTypes, BrowserColumns } from 'uiSrc/constants'
 import Node, { NodeProps } from './Node'
@@ -443,6 +450,22 @@ describe('Node', () => {
 
       expect(screen.getByTestId(`ttl-${mockDataFullName}`)).toBeInTheDocument()
       expect(screen.getByTestId(`size-${mockDataFullName}`)).toBeInTheDocument()
+    })
+
+    it('should render TTL but not Size on a production database', () => {
+      const productionState = cloneDeep(store.getState())
+      productionState.connections.instances.connectedInstance.environment =
+        Environment.Production
+
+      renderNode(
+        { data: mockedDataWithMetadata },
+        { store: mockStore(productionState) },
+      )
+
+      expect(screen.getByTestId(`ttl-${mockDataFullName}`)).toBeInTheDocument()
+      expect(
+        screen.queryByTestId(`size-${mockDataFullName}`),
+      ).not.toBeInTheDocument()
     })
 
     it('should not render TTL and Size when metadata does not exist', () => {

@@ -57,6 +57,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   isRediStack?: boolean
   visible?: boolean
   loading?: boolean
+  isEnvironmentPending?: boolean
   isFreeDb?: boolean
   environment: Environment
   connectionFamily?: RedisConnectionFamily

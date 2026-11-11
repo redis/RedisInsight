@@ -125,16 +125,6 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
 
-  clean:
-    uses: ./.github/workflows/clean-deployments.yml
-    # secrets: inherit
-    needs: [aws-upload]
-    if: always()
-    permissions:
-      actions: write
-      contents: read
-      deployments: write
-
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
