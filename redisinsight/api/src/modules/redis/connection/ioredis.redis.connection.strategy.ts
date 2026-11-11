@@ -101,7 +101,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
       options,
     );
 
-    if (database.ssh && redisOptions.tls) {
+    if (database.ssh && redisOptions.tls && !database.tlsServername) {
       redisOptions.tls = this.withoutTunnelHostnameCheck(
         database,
         redisOptions.tls,
@@ -158,8 +158,9 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
   }
 
   /**
-   * Every cluster node gets its own tunnel, so there is no single host to
-   * verify the certificates against and the hostname check is skipped.
+   * Every cluster node gets its own tunnel, so without a TLS server name there
+   * is no single host to verify the certificates against and the hostname
+   * check is skipped.
    * @private
    */
   private withoutTunnelHostnameCheck(

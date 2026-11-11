@@ -531,6 +531,11 @@ describe('IoredisRedisConnectionStrategy', () => {
       });
 
       describe('cluster options through an SSH tunnel', () => {
+        const certFor = (name: string) =>
+          ({
+            subject: { CN: name },
+            subjectaltname: `DNS:${name}`,
+          }) as any;
         const clusterDatabase = {
           ...mockDatabaseWithTlsAuth,
           host: 'redis.example.com',
@@ -566,6 +571,32 @@ describe('IoredisRedisConnectionStrategy', () => {
           );
 
           expect(config.redisOptions?.tls?.checkServerIdentity).toBeUndefined();
+        });
+
+        it('should check every node against the TLS server name when one is set', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            {
+              ...clusterDatabase,
+              ssh: true,
+              tlsServername: 'cert.example.com',
+            },
+            {},
+          );
+
+          const check = config.redisOptions?.tls?.checkServerIdentity;
+
+          expect(config.redisOptions?.tls?.servername).toEqual(
+            'cert.example.com',
+          );
+          expect(
+            check?.('127.0.0.1', certFor('cert.example.com')),
+          ).toBeUndefined();
+          expect(
+            check?.('127.0.0.1', certFor('other.example.com')),
+          ).toMatchObject({
+            code: 'ERR_TLS_CERT_ALTNAME_INVALID',
+          });
         });
       });
     });
