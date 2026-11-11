@@ -194,6 +194,9 @@ export default {
       parseInt(process.env.RI_CLIENTS_MAX_IDLE_THRESHOLD, 10) || 1000 * 60 * 60, // 1hr
     retryTimes: parseInt(process.env.RI_CLIENTS_RETRY_TIMES, 10) || 3,
     retryDelay: parseInt(process.env.RI_CLIENTS_RETRY_DELAY, 10) || 500,
+    // Opt-out for connecting by an address the server certificate does not name.
+    skipTlsHostnameVerification:
+      process.env.RI_TLS_SKIP_HOSTNAME_VERIFICATION === 'true',
     maxRetriesPerRequest:
       parseInt(process.env.RI_CLIENTS_MAX_RETRIES_PER_REQUEST, 10) || 1,
     maxRedirections: parseInt(process.env.RI_CLIENTS_MAX_REDIRECTIONS, 10) || 3,

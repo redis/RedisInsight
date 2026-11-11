@@ -7,7 +7,7 @@ import Redis, { Cluster, RedisOptions } from 'ioredis';
 import { isEmpty, isNumber } from 'lodash';
 import { IRedisConnectionOptions } from 'src/modules/redis/redis.client.factory';
 import { ClusterOptions } from 'ioredis/built/cluster/ClusterOptions';
-import { ConnectionOptions } from 'tls';
+import { checkServerIdentity, ConnectionOptions } from 'tls';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   RedisClient,
@@ -95,16 +95,25 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<ClusterOptions> {
+    const redisOptions = await this.getRedisOptions(
+      clientMetadata,
+      database,
+      options,
+    );
+
+    if (database.ssh && redisOptions.tls && !database.tlsServername) {
+      redisOptions.tls = this.withoutTunnelHostnameCheck(
+        database,
+        redisOptions.tls,
+      );
+    }
+
     return {
       clusterRetryStrategy: options.useRetry
         ? this.retryStrategy.bind(this)
         : this.dummyFn.bind(this),
       slotsRefreshTimeout: REDIS_CLIENTS_CONFIG.slotsRefreshTimeout,
-      redisOptions: await this.getRedisOptions(
-        clientMetadata,
-        database,
-        options,
-      ),
+      redisOptions,
       maxRedirections: REDIS_CLIENTS_CONFIG.maxRedirections,
     };
   }
@@ -149,18 +158,64 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
   }
 
   /**
+   * Every cluster node gets its own tunnel, so without a TLS server name there
+   * is no single host to verify the certificates against and the hostname
+   * check is skipped.
+   * @private
+   */
+  private withoutTunnelHostnameCheck(
+    database: Database,
+    tls: ConnectionOptions,
+  ): ConnectionOptions {
+    if (database.verifyServerCert === true) {
+      this.logger.warn(
+        'TLS hostname verification is skipped for clusters reached through an SSH tunnel',
+      );
+    }
+
+    return { ...tls, checkServerIdentity: this.dummyFn };
+  }
+
+  /**
+   * Hostname check for the server certificate. Node's default check uses the
+   * connect host, which is the local tunnel address for SSH connections, so
+   * tunnelled connections compare against the database host instead.
+   * @private
+   */
+  private getHostnameCheck(
+    database: Database,
+    shouldCheckHostname: boolean,
+  ): Pick<ConnectionOptions, 'checkServerIdentity'> {
+    if (!shouldCheckHostname) {
+      return { checkServerIdentity: this.dummyFn };
+    }
+
+    if (database.ssh) {
+      return {
+        checkServerIdentity: (_host, cert) =>
+          checkServerIdentity(database.tlsServername || database.host, cert),
+      };
+    }
+
+    return {};
+  }
+
+  /**
    * Normalize tls settings to be compatible with user redis connection library
    * @param database
    * @private
    */
   private async getTLSConfig(database: Database): Promise<ConnectionOptions> {
+    const shouldCheckHostname =
+      database.verifyServerCert === true &&
+      !REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification;
     let config: ConnectionOptions;
     config = {
       // Node treats a missing rejectUnauthorized as true. verifyServerCert is
       // optional and defaults to false (unchecked "Verify TLS Certificate");
       // older rows and test-connection payloads leave it null/undefined.
       rejectUnauthorized: database.verifyServerCert === true,
-      checkServerIdentity: this.dummyFn,
+      ...this.getHostnameCheck(database, shouldCheckHostname),
       servername: database.tlsServername || undefined,
     };
     if (database.caCert) {

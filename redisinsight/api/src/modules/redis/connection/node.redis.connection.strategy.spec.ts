@@ -11,6 +11,7 @@ import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.r
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { RedisConnectionFamily } from 'src/modules/database/entities/database.entity';
 import { Database } from 'src/modules/database/models/database';
+import serverConfig from 'src/utils/config';
 
 jest.mock('redis', () => ({
   ...jest.requireActual('redis'),
@@ -123,5 +124,200 @@ describe('NodeRedisConnectionStrategy', () => {
         expect(config.rejectUnauthorized).toEqual(false);
       },
     );
+
+    describe('hostname verification', () => {
+      const REDIS_CLIENTS_CONFIG = serverConfig.get('redis_clients');
+      const mismatchedCert = { subject: { CN: 'other.example.com' } } as any;
+      let initialSkip: boolean;
+
+      beforeEach(() => {
+        initialSkip = REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification;
+      });
+
+      afterEach(() => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = initialSkip;
+      });
+
+      it('should use the default hostname check when the certificate is verified', async () => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert: true,
+        });
+
+        expect(config.checkServerIdentity).toBeUndefined();
+      });
+
+      it('should accept any hostname when the opt-out is set', async () => {
+        REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = true;
+
+        const config = await service['getTLSConfig']({
+          ...mockDatabaseWithTlsAuth,
+          verifyServerCert: true,
+        });
+
+        expect(config.rejectUnauthorized).toEqual(true);
+        expect(config.checkServerIdentity).toBeDefined();
+        expect(
+          config.checkServerIdentity?.('redis.example.com', mismatchedCert),
+        ).toBeUndefined();
+      });
+
+      it.each([false, undefined, null])(
+        'should accept any hostname when verifyServerCert is %s',
+        async (verifyServerCert) => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+
+          const config = await service['getTLSConfig']({
+            ...mockDatabaseWithTlsAuth,
+            verifyServerCert,
+          } as Database);
+
+          expect(config.checkServerIdentity).toBeDefined();
+          expect(
+            config.checkServerIdentity?.('redis.example.com', mismatchedCert),
+          ).toBeUndefined();
+        },
+      );
+
+      describe('through an SSH tunnel', () => {
+        const certFor = (name: string) =>
+          ({
+            subject: { CN: name },
+            subjectaltname: `DNS:${name}`,
+          }) as any;
+        const sshDatabase = {
+          ...mockDatabaseWithTlsAuth,
+          host: 'redis.example.com',
+          ssh: true,
+          tlsServername: undefined,
+          verifyServerCert: true,
+        } as Database;
+
+        beforeEach(() => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+        });
+
+        it('should check the certificate against the database host, not the tunnel address', async () => {
+          const config = await service['getTLSConfig'](sshDatabase);
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('redis.example.com'),
+            ),
+          ).toBeUndefined();
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('other.example.com'),
+            ),
+          ).toMatchObject({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
+        });
+
+        it('should prefer the TLS server name over the database host', async () => {
+          const config = await service['getTLSConfig']({
+            ...sshDatabase,
+            tlsServername: 'cert.example.com',
+          });
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('cert.example.com'),
+            ),
+          ).toBeUndefined();
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('redis.example.com'),
+            ),
+          ).toMatchObject({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
+        });
+
+        it('should accept any hostname when the opt-out is set', async () => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = true;
+
+          const config = await service['getTLSConfig'](sshDatabase);
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('other.example.com'),
+            ),
+          ).toBeUndefined();
+        });
+      });
+
+      describe('cluster options through an SSH tunnel', () => {
+        const certFor = (name: string) =>
+          ({
+            subject: { CN: name },
+            subjectaltname: `DNS:${name}`,
+          }) as any;
+        const clusterDatabase = {
+          ...mockDatabaseWithTlsAuth,
+          host: 'redis.example.com',
+          tlsServername: undefined,
+          verifyServerCert: true,
+        } as Database;
+
+        beforeEach(() => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+        });
+
+        it('should not check the hostname of nodes that each have their own tunnel', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            { ...clusterDatabase, ssh: true },
+            {},
+          );
+          const socket = config.defaults?.socket as any;
+
+          expect(socket.rejectUnauthorized).toEqual(true);
+          expect(
+            socket.checkServerIdentity?.('127.0.0.1', mismatchedCert),
+          ).toBeUndefined();
+        });
+
+        it('should keep the default hostname check without a tunnel', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            { ...clusterDatabase, ssh: false },
+            {},
+          );
+
+          expect(
+            (config.defaults?.socket as any).checkServerIdentity,
+          ).toBeUndefined();
+        });
+
+        it('should check every node against the TLS server name when one is set', async () => {
+          const config = await service['getRedisClusterOptions'](
+            mockClientMetadata,
+            {
+              ...clusterDatabase,
+              ssh: true,
+              tlsServername: 'cert.example.com',
+            },
+            {},
+          );
+          const socket = config.defaults?.socket as any;
+
+          const check = socket.checkServerIdentity;
+
+          expect(socket.servername).toEqual('cert.example.com');
+          expect(
+            check?.('127.0.0.1', certFor('cert.example.com')),
+          ).toBeUndefined();
+          expect(
+            check?.('127.0.0.1', certFor('other.example.com')),
+          ).toMatchObject({
+            code: 'ERR_TLS_CERT_ALTNAME_INVALID',
+          });
+        });
+      });
+    });
   });
 });
