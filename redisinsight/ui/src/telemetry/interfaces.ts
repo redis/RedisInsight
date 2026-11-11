@@ -16,7 +16,6 @@ export interface ITelemetrySendEvent {
   event: TelemetryEvent
   eventData?: EventData
   nonTracking?: boolean
-  traits?: Object
 }
 
 export interface ITelemetrySendPageView {
