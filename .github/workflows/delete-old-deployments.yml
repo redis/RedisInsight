@@ -67,7 +67,22 @@ jobs:
             --jq ".[] | select(.created_at < \"${cutoff}\") | [.created_at, .id, .environment] | @tsv" \
             | sort | awk -v max="${MAX_DELETIONS}" 'NR <= max')
 
+          # Returns 1 to skip the deployment and 2 to stop the run on a rate limit.
+          api_call() {
+            local output
+            if output=$(gh api "$@" 2>&1); then
+              return 0
+            fi
+            if grep -qi 'rate limit' <<< "${output}"; then
+              echo "::warning::Stopped at ${id}: ${output}"
+              return 2
+            fi
+            echo "::warning::Skipped ${id}: ${output}"
+            return 1
+          }
+
           deleted=0
+          skipped=0
           while IFS=$'\t' read -r created id environment; do
             [ -n "${id}" ] || continue
 
@@ -80,13 +95,17 @@ jobs:
             # An active deployment cannot be deleted until it is marked inactive.
             state=$(gh api "repos/${REPO}/deployments/${id}/statuses?per_page=1" --jq '.[0].state // "none"') || state=unknown
             if [ "${state}" = "success" ]; then
-              gh api -X POST "repos/${REPO}/deployments/${id}/statuses" -f state=inactive > /dev/null \
-                || { echo "::warning::Stopped at ${id}: could not mark it inactive (rate limit?)"; break; }
+              rc=0
+              api_call -X POST "repos/${REPO}/deployments/${id}/statuses" -f state=inactive || rc=$?
+              if [ "${rc}" -eq 2 ]; then break; fi
+              if [ "${rc}" -ne 0 ]; then skipped=$((skipped + 1)); continue; fi
               sleep "${PAUSE_SECONDS}"
             fi
 
-            gh api -X DELETE "repos/${REPO}/deployments/${id}" \
-              || { echo "::warning::Stopped at ${id}: delete failed (rate limit?)"; break; }
+            rc=0
+            api_call -X DELETE "repos/${REPO}/deployments/${id}" || rc=$?
+            if [ "${rc}" -eq 2 ]; then break; fi
+            if [ "${rc}" -ne 0 ]; then skipped=$((skipped + 1)); continue; fi
             echo "Deleted ${id} (${environment}, ${created})"
             deleted=$((deleted + 1))
             sleep "${PAUSE_SECONDS}"
@@ -94,4 +113,4 @@ jobs:
 
           verb="Deleted"
           [ "${DRY_RUN}" = "true" ] && verb="Would delete"
-          echo "${verb} ${deleted} deployment(s) older than ${OLDER_THAN_DAYS} days." | tee -a "${GITHUB_STEP_SUMMARY}"
+          echo "${verb} ${deleted} deployment(s) older than ${OLDER_THAN_DAYS} days, skipped ${skipped}." | tee -a "${GITHUB_STEP_SUMMARY}"
