@@ -16,7 +16,7 @@ import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
 import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { appContextDbConfig } from 'uiSrc/slices/app/context'
+import { appContextShownColumnsSelector } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -74,7 +74,7 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
 
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
 
-  const { shownColumns } = useAppSelector(appContextDbConfig)
+  const shownColumns = useAppSelector(appContextShownColumnsSelector)
   const visibleColumns = visibleColumnsProp ?? shownColumns
   const includeSize = visibleColumns.includes(BrowserColumns.Size)
   const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
