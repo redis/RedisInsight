@@ -4,6 +4,7 @@ import { ProfilerClient } from 'src/modules/profiler/models/profiler.client';
 import { ClientLogsEmitter } from 'src/modules/profiler/emitters/client.logs-emitter';
 import { MonitorSettings } from 'src/modules/profiler/models/monitor-settings';
 import { LogFileProvider } from 'src/modules/profiler/providers/log-file.provider';
+import { LogFile } from 'src/modules/profiler/models/log-file';
 import { SessionMetadata } from 'src/common/models';
 import { Database } from 'src/modules/database/models/database';
 
@@ -20,6 +21,10 @@ export class ProfilerClientProvider {
     settings: MonitorSettings,
     database?: Database,
   ): Promise<ProfilerClient> {
+    if (settings?.logFileId) {
+      LogFile.assertValidId(settings.logFileId);
+    }
+
     if (!this.profilerClients.has(socket.id)) {
       const clientObserver = new ProfilerClient(socket.id, socket);
       this.profilerClients.set(socket.id, clientObserver);
