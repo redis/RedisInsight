@@ -23,6 +23,8 @@ services:
       RI_PRE_SETUP_DATABASES_PATH: '/root/.redisinsight-v2.0/databases.json'
       TEST_REDIS_HOST: 'redis'
       NODE_ENV: 'test'
+      # The test certificates do not name the test hosts.
+      RI_TLS_SKIP_HOSTNAME_VERIFICATION: 'true'
       RI_REQUEST_TIMEOUT: '25000'
       RI_DATA_DIR: '/usr/src/app/coverage/data'
       TEST_DATA_DIR: '/usr/src/app/coverage/data'
