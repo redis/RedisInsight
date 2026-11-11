@@ -180,6 +180,75 @@ describe('NodeRedisConnectionStrategy', () => {
           ).toBeUndefined();
         },
       );
+
+      describe('through an SSH tunnel', () => {
+        const certFor = (name: string) =>
+          ({
+            subject: { CN: name },
+            subjectaltname: `DNS:${name}`,
+          }) as any;
+        const sshDatabase = {
+          ...mockDatabaseWithTlsAuth,
+          host: 'redis.example.com',
+          ssh: true,
+          tlsServername: undefined,
+          verifyServerCert: true,
+        } as Database;
+
+        beforeEach(() => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = false;
+        });
+
+        it('should check the certificate against the database host, not the tunnel address', async () => {
+          const config = await service['getTLSConfig'](sshDatabase);
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('redis.example.com'),
+            ),
+          ).toBeUndefined();
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('other.example.com'),
+            ),
+          ).toMatchObject({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
+        });
+
+        it('should prefer the TLS server name over the database host', async () => {
+          const config = await service['getTLSConfig']({
+            ...sshDatabase,
+            tlsServername: 'cert.example.com',
+          });
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('cert.example.com'),
+            ),
+          ).toBeUndefined();
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('redis.example.com'),
+            ),
+          ).toMatchObject({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
+        });
+
+        it('should accept any hostname when the opt-out is set', async () => {
+          REDIS_CLIENTS_CONFIG.skipTlsHostnameVerification = true;
+
+          const config = await service['getTLSConfig'](sshDatabase);
+
+          expect(
+            config.checkServerIdentity?.(
+              '127.0.0.1',
+              certFor('other.example.com'),
+            ),
+          ).toBeUndefined();
+        });
+      });
     });
   });
 });

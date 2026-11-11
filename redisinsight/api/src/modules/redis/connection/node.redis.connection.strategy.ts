@@ -10,7 +10,7 @@ import {
 } from 'redis';
 import { isNumber } from 'lodash';
 import { IRedisConnectionOptions } from 'src/modules/redis/redis.client.factory';
-import { ConnectionOptions } from 'tls';
+import { checkServerIdentity, ConnectionOptions } from 'tls';
 import { ClusterNodeRedisClient, RedisClient } from 'src/modules/redis/client';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
@@ -149,6 +149,30 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
   // }
 
   /**
+   * Hostname check for the server certificate. Node's default check uses the
+   * connect host, which is the local tunnel address for SSH connections, so
+   * tunnelled connections compare against the database host instead.
+   * @private
+   */
+  private getHostnameCheck(
+    database: Database,
+    shouldCheckHostname: boolean,
+  ): Pick<ConnectionOptions, 'checkServerIdentity'> {
+    if (!shouldCheckHostname) {
+      return { checkServerIdentity: this.dummyFn.bind(this) };
+    }
+
+    if (database.ssh) {
+      return {
+        checkServerIdentity: (_host, cert) =>
+          checkServerIdentity(database.tlsServername || database.host, cert),
+      };
+    }
+
+    return {};
+  }
+
+  /**
    * Normalize tls settings to be compatible with user redis connection library
    * @param database
    * @private
@@ -163,10 +187,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       // optional and defaults to false (unchecked "Verify TLS Certificate");
       // older rows and test-connection payloads leave it null/undefined.
       rejectUnauthorized: database.verifyServerCert === true,
-      // Node checks the hostname against the certificate unless this is set.
-      ...(shouldCheckHostname
-        ? {}
-        : { checkServerIdentity: this.dummyFn.bind(this) }),
+      ...this.getHostnameCheck(database, shouldCheckHostname),
       servername: database.tlsServername || undefined,
     };
     if (database.caCert) {
