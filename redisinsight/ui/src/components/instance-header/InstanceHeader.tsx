@@ -22,6 +22,7 @@ import { appInfoSelector } from 'uiSrc/slices/app/info'
 import {
   appContextDbIndex,
   clearBrowserKeyListData,
+  clearBrowserKeyTabs,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
 
@@ -128,6 +129,8 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
           onChangeDbIndex?.(+dbIndex)
           dispatch(resetKeyInfo())
           dispatch(setBrowserSelectedKey(null))
+          // cleared here, not in Browser, since the index can be changed from any instance page
+          dispatch(clearBrowserKeyTabs())
 
           sendEventTelemetry({
             event: TelemetryEvent.BROWSER_DATABASE_INDEX_CHANGED,

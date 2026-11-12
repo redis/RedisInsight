@@ -1,18 +1,28 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
+import { faker } from '@faker-js/faker'
 import {
   render,
   screen,
   fireEvent,
   mockedStore,
+  mockStore,
+  initialStateDefault,
   cleanup,
 } from 'uiSrc/utils/test-utils'
+import { stringToBuffer } from 'uiSrc/utils'
 import { setConnectedInstanceId } from 'uiSrc/slices/instances/instances'
-import { loadKeys, toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
+import {
+  loadKeys,
+  resetKeyInfo,
+  toggleBrowserFullScreen,
+} from 'uiSrc/slices/browser/keys'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import {
+  closeBrowserKeyTab,
+  openBrowserKeyTab,
   setBrowserBulkActionOpen,
   setBrowserKeyListDataLoaded,
   setBrowserPanelSizes,
@@ -71,6 +81,13 @@ const mockKeyDetailsWrapper = (props: KeyDetailsWrapperProps) => (
       onClick={() => props.onCloseKey()}
     >
       onCloseKey
+    </button>
+    <button
+      type="button"
+      data-testid="onRemoveKey-btn"
+      onClick={() => props.onRemoveKey()}
+    >
+      onRemoveKey
     </button>
   </div>
 )
@@ -180,5 +197,88 @@ describe('BrowserPage', () => {
       ...afterRenderActions,
       ...unmountActions,
     ])
+  })
+
+  describe('key tabs', () => {
+    const keyNameString = faker.string.alphanumeric(10)
+    const keyName = stringToBuffer(keyNameString)
+
+    const getStoreWithTab = (isBulkActionsOpen = false) => {
+      const state = cloneDeep(initialStateDefault)
+      set(state, 'app.context.browser.keyTabs', [keyName])
+      set(state, 'app.context.browser.bulkActions.opened', isBulkActionsOpen)
+      return mockStore(state)
+    }
+
+    it('should close the panel when the last tab is closed without a selected key', () => {
+      const tabStore = getStoreWithTab()
+      render(<BrowserPage />, { store: tabStore })
+      const afterRenderActions = [...tabStore.getActions()]
+
+      fireEvent.click(screen.getByTestId(`close-key-tab-${keyNameString}`))
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        closeBrowserKeyTab(keyName),
+        toggleBrowserFullScreen(true),
+      ])
+    })
+
+    it('should keep the Bulk Actions panel open when the last tab is closed', () => {
+      const tabStore = getStoreWithTab(true)
+      render(<BrowserPage />, { store: tabStore })
+      const afterRenderActions = [...tabStore.getActions()]
+
+      fireEvent.click(screen.getByTestId(`close-key-tab-${keyNameString}`))
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        closeBrowserKeyTab(keyName),
+      ])
+    })
+
+    describe('when the selected key is deleted', () => {
+      const nextKeyName = stringToBuffer(faker.string.alphanumeric(12))
+
+      const getStoreWithSelectedKey = (tabs: (typeof keyName)[]) => {
+        const state = cloneDeep(initialStateDefault)
+        set(state, 'app.context.contextInstanceId', 'instanceId')
+        set(state, 'app.context.browser.keyTabs', tabs)
+        set(state, 'app.context.browser.keyList.selectedKey', keyName)
+        return mockStore(state)
+      }
+
+      it('should close its tab and open the neighbour one', () => {
+        const tabStore = getStoreWithSelectedKey([keyName, nextKeyName])
+        render(<BrowserPage />, { store: tabStore })
+        const afterRenderActions = [...tabStore.getActions()]
+
+        fireEvent.click(screen.getByTestId('onRemoveKey-btn'))
+
+        expect(tabStore.getActions()).toEqual([
+          ...afterRenderActions,
+          resetKeyInfo(),
+          closeBrowserKeyTab(keyName),
+          setBrowserSelectedKey(nextKeyName),
+          openBrowserKeyTab(nextKeyName),
+        ])
+      })
+
+      it('should close the panel when it was the only tab', () => {
+        const tabStore = getStoreWithSelectedKey([keyName])
+        render(<BrowserPage />, { store: tabStore })
+        const afterRenderActions = [...tabStore.getActions()]
+
+        fireEvent.click(screen.getByTestId('onRemoveKey-btn'))
+
+        expect(tabStore.getActions()).toEqual([
+          ...afterRenderActions,
+          resetKeyInfo(),
+          closeBrowserKeyTab(keyName),
+          setBrowserSelectedKey(null),
+          toggleBrowserFullScreen(true),
+        ])
+      })
+    })
   })
 })

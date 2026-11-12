@@ -39,6 +39,7 @@ export interface Props {
   keyTabs?: RedisResponseBuffer[]
   onSelectTab?: (keyName: RedisResponseBuffer) => void
   onCloseTab?: (keyName: RedisResponseBuffer) => void
+  onRemoveKey?: () => void
 }
 
 const noop = () => {}
@@ -56,6 +57,7 @@ const BrowserRightPanel = (props: Props) => {
     keyTabs = [],
     onSelectTab = noop,
     onCloseTab = noop,
+    onRemoveKey,
   } = props
 
   const { isBrowserFullScreen, viewType } = useAppSelector(keysSelector)
@@ -130,7 +132,7 @@ const BrowserRightPanel = (props: Props) => {
             keyProp={selectedKey}
             onCloseKey={closePanel}
             onEditKey={onEditKey}
-            onRemoveKey={onSelectKey}
+            onRemoveKey={onRemoveKey ?? onSelectKey}
             totalKeys={total}
             keysLastRefreshTime={keysLastRefreshTime}
           />
