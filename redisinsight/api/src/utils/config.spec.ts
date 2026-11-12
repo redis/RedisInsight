@@ -101,4 +101,43 @@ describe('Config util', () => {
       expect(result).toEqual(merge({ ...defaultConfig }, { ...prodConfig }));
     });
   });
+
+  describe('sockets path', () => {
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...OLD_ENV, NODE_ENV: 'test' };
+      delete process.env.RI_PROXY_PATH;
+      delete process.env.RI_SOCKET_PROXY_PATH;
+    });
+
+    afterAll(() => {
+      process.env = OLD_ENV;
+    });
+
+    it('should serve sockets from the root by default', () => {
+      // eslint-disable-next-line global-require
+      const { get } = require('./config');
+
+      expect((get('sockets') as Config['sockets']).path).toEqual('/socket.io');
+    });
+
+    it('should serve sockets under RI_PROXY_PATH', () => {
+      process.env.RI_PROXY_PATH = '/redisinsight/';
+      // eslint-disable-next-line global-require
+      const { get } = require('./config');
+
+      expect((get('sockets') as Config['sockets']).path).toEqual(
+        '/redisinsight/socket.io',
+      );
+    });
+
+    it('should serve sockets from the root when RI_SOCKET_PROXY_PATH is empty', () => {
+      process.env.RI_PROXY_PATH = '/redisinsight/';
+      process.env.RI_SOCKET_PROXY_PATH = '';
+      // eslint-disable-next-line global-require
+      const { get } = require('./config');
+
+      expect((get('sockets') as Config['sockets']).path).toEqual('/socket.io');
+    });
+  });
 });

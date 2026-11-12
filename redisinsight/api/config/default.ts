@@ -58,7 +58,13 @@ const pluginsAssetsUri = posix.join(
   'plugins',
 );
 
-const socketProxyPath = trim(process.env.RI_SOCKET_PROXY_PATH, '/');
+// RI_SOCKET_PROXY_PATH sets the path prefix of the socket.io endpoint. When it is unset, sockets
+// are served under RI_PROXY_PATH, the same path the UI connects to. `??` (not `||`) so that an
+// explicitly empty RI_SOCKET_PROXY_PATH still serves sockets from the root.
+const socketProxyPath = trim(
+  process.env.RI_SOCKET_PROXY_PATH ?? process.env.RI_PROXY_PATH,
+  '/',
+);
 
 const socketPath = posix.join('/', socketProxyPath, 'socket.io');
 
