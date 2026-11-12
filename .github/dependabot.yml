@@ -11,8 +11,9 @@ updates:
       # Overnight, so the batch and its CI finish before the working day.
       time: '02:00'
       timezone: 'Europe/Sofia'
-    # A cap for a busy week, not an expected number.
-    open-pull-requests-limit: 15
+    # Zero turns off version updates. Security updates have their own limit and
+    # keep opening pull requests.
+    open-pull-requests-limit: 0
     # Every pull request here edits the same lockfile, so an automatic rebase of
     # the whole set follows each merge. Use `@dependabot rebase` when merging.
     rebase-strategy: 'disabled'
@@ -190,7 +191,8 @@ updates:
       day: 'monday'
       time: '02:00'
       timezone: 'Europe/Sofia'
-    open-pull-requests-limit: 10
+    # Zero turns off version updates, as in the root entry.
+    open-pull-requests-limit: 0
     # Same reason as the root entry.
     rebase-strategy: 'disabled'
     cooldown:
