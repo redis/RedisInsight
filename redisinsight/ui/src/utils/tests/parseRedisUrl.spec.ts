@@ -162,6 +162,42 @@ const parseRedisUrlTests: Array<[string, any]> = [
       dbNumber: 2,
     },
   ],
+  [
+    '[::1]:6379',
+    {
+      ...defaultRedisParams,
+      host: '::1',
+      port: 6379,
+      hostname: '::1:6379',
+    },
+  ],
+  ['redis://[::1]', { ...defaultRedisParams, host: '::1', hostname: '::1' }],
+  [
+    'rediss://user:pa@ss@[2001:db8::1]:6380/2',
+    {
+      protocol: 'rediss',
+      username: 'user',
+      password: 'pa@ss',
+      host: '2001:db8::1',
+      port: 6380,
+      hostname: '2001:db8::1:6380',
+      dbNumber: 2,
+    },
+  ],
+  [
+    'redis://[::1]:6379/1',
+    {
+      ...defaultRedisParams,
+      host: '::1',
+      port: 6379,
+      hostname: '::1:6379',
+      dbNumber: 1,
+    },
+  ],
+  ['redis://[::1', null],
+  ['redis://[]:6379', null],
+  ['redis://[abc]:6379', null],
+  ['[abc]:6379', null],
 ]
 
 describe('parseRedisUrl', () => {
