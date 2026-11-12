@@ -50,7 +50,7 @@ jobs:
       # `npm audit` reads the committed lockfiles and the core tests are plain
       # `node --test` — neither needs `node_modules`, so we only set up Node.
       - name: Setup Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version-file: '.nvmrc'
 
