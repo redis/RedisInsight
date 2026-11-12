@@ -21,12 +21,28 @@ interface ParsedRedisUrl {
 // [::1] => ::1
 const unwrapIpv6Host = (host: string) => host.replace(/^\[(.*)\]$/, '$1')
 
+// URL validates bracketed IPv6 hosts, so [] or [abc] are rejected
+const isValidIpv6Host = (host: string) => {
+  try {
+    return !!new URL(`http://${host}`).hostname
+  } catch {
+    return false
+  }
+}
+
+const isValidHost = (host: string) =>
+  !host.startsWith('[') || isValidIpv6Host(host)
+
 const parseRedisUrl = (urlString: string = ''): Nullable<ParsedRedisUrl> => {
   const pureUrlPattern = /^(\[[^\]]+\]|[^:]+):(\d+)$/
   const pureMatch = urlString.match(pureUrlPattern)
 
   if (pureMatch) {
     const [, host, port] = pureMatch
+    if (!isValidHost(host)) {
+      return null
+    }
+
     const unwrappedHost = unwrapIpv6Host(host)
     return {
       protocol: 'redis',
@@ -39,9 +55,8 @@ const parseRedisUrl = (urlString: string = ''): Nullable<ParsedRedisUrl> => {
     }
   }
 
-  // eslint-disable-next-line no-useless-escape
   const redisUrlPattern =
-    /^(redis[s]?):\/\/(?:(.+)?@)?(?:.*@)?(\[[^\]\/]+\]|[^:\/]+)(?::(\d+))?(?:\/(\d+))?$/
+    /^(redis[s]?):\/\/(?:(.+)?@)?(?:.*@)?(\[[^\]/]+\]|[^:/]+)(?::(\d+))?(?:\/(\d+))?$/
   const match = urlString.match(redisUrlPattern)
 
   if (!match) {
@@ -49,6 +64,10 @@ const parseRedisUrl = (urlString: string = ''): Nullable<ParsedRedisUrl> => {
   }
 
   const [, protocol, userInfo, host, port, dbNumber] = match
+  if (!isValidHost(host)) {
+    return null
+  }
+
   const [, username, password] = userInfo?.match(/^(.*?)(?::(.*))?$/) || []
 
   const unwrappedHost = unwrapIpv6Host(host)
