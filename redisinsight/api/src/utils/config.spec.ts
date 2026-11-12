@@ -131,15 +131,13 @@ describe('Config util', () => {
       );
     });
 
-    it('should prefer RI_SOCKET_PROXY_PATH over RI_PROXY_PATH', () => {
+    it('should serve sockets from the root when RI_SOCKET_PROXY_PATH is empty', () => {
       process.env.RI_PROXY_PATH = '/redisinsight/';
-      process.env.RI_SOCKET_PROXY_PATH = '/api';
+      process.env.RI_SOCKET_PROXY_PATH = '';
       // eslint-disable-next-line global-require
       const { get } = require('./config');
 
-      expect((get('sockets') as Config['sockets']).path).toEqual(
-        '/api/socket.io',
-      );
+      expect((get('sockets') as Config['sockets']).path).toEqual('/socket.io');
     });
   });
 });
