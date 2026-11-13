@@ -47,7 +47,9 @@ export const buildConnectionUrl = (
 
 // Returns the init target for a database, or null when the connection cannot
 // be expressed in a URL (cluster, sentinel, SSH, client or custom CA certs,
-// custom TLS server name, Azure Entra ID with its temporary tokens).
+// custom TLS server name, skipped certificate verification, Azure Entra ID
+// with its temporary tokens). Redis Cloud targets use the provider's database
+// name, which `redisctl` matches on.
 // The password is never read here; the caller supplies it when needed.
 export const resolveInitTarget = (
   instance: Partial<Instance>,
@@ -62,6 +64,8 @@ export const resolveInitTarget = (
     tls,
     caCert,
     tlsServername,
+    verifyServerCert,
+    nameFromProvider,
     tlsClientAuthRequired,
     providerDetails,
     username,
@@ -79,14 +83,14 @@ export const resolveInitTarget = (
   }
 
   if (provider === ConnectionProvider.REDIS_CLOUD) {
-    return { kind: InitTargetKind.Cloud, name }
+    return { kind: InitTargetKind.Cloud, name: nameFromProvider || name }
   }
 
   const isPlainStandalone =
     connectionType === ConnectionType.Standalone &&
     !ssh &&
     !tlsClientAuthRequired &&
-    !(tls && (caCert || tlsServername))
+    !(tls && (caCert || tlsServername || !verifyServerCert))
 
   if (!isPlainStandalone || !host || !port) return null
 

@@ -50,10 +50,27 @@ describe('resolveInitTarget', () => {
     })
   })
 
+  it('should use the provider database name for a Redis Cloud database', () => {
+    expect(
+      resolveInitTarget({
+        ...standalone,
+        provider: ConnectionProvider.REDIS_CLOUD,
+        nameFromProvider: 'cloud-db-1',
+      }),
+    ).toEqual({ kind: InitTargetKind.Cloud, name: 'cloud-db-1' })
+  })
+
+  it('should keep a tls database that verifies the server certificate', () => {
+    expect(
+      resolveInitTarget({ ...standalone, tls: true, verifyServerCert: true }),
+    ).toMatchObject({ connection: { tls: true } })
+  })
+
   it('should flag a password without reading it', () => {
     const target = resolveInitTarget({
       ...standalone,
       tls: true,
+      verifyServerCert: true,
       username: 'app',
       db: 3,
       password: true as never,
@@ -79,8 +96,18 @@ describe('resolveInitTarget', () => {
     ['sentinel', { connectionType: ConnectionType.Sentinel }],
     ['ssh tunnel', { ssh: true }],
     ['client certificate', { tlsClientAuthRequired: true }],
-    ['custom ca certificate', { tls: true, caCert: { id: 'ca', name: 'ca' } }],
-    ['custom tls server name', { tls: true, tlsServername: 'redis.internal' }],
+    [
+      'custom ca certificate',
+      { tls: true, verifyServerCert: true, caCert: { id: 'ca', name: 'ca' } },
+    ],
+    [
+      'tls without certificate verification',
+      { tls: true, verifyServerCert: false },
+    ],
+    [
+      'custom tls server name',
+      { tls: true, verifyServerCert: true, tlsServername: 'redis.internal' },
+    ],
     ['azure entra id', azureProvider('entraId')],
     ['missing host', { host: '' }],
     ['missing name', { name: '' }],
