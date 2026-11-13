@@ -19,7 +19,11 @@ import {
   connectedInstanceInfoSelector,
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
-import { appContextDbIndex } from 'uiSrc/slices/app/context'
+import {
+  appContextDbIndex,
+  clearBrowserKeyTabs,
+} from 'uiSrc/slices/app/context'
+import { apiService } from 'uiSrc/services'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import InstanceHeader, { Props } from './InstanceHeader'
@@ -117,6 +121,21 @@ describe('InstanceHeader', () => {
     expect(store.getActions()).toContainEqual(
       expect.objectContaining(checkDatabaseIndex()),
     )
+  })
+
+  it('should clear key tabs after the database index is changed', async () => {
+    apiService.get = jest.fn().mockResolvedValue({ status: 200 })
+    render(<InstanceHeader {...instance(mockedProps)} />)
+
+    fireEvent.click(screen.getByTestId('change-index-btn'))
+    fireEvent.change(screen.getByTestId('change-index-input'), {
+      target: { value: 3 },
+    })
+    fireEvent.click(screen.getByTestId('apply-btn'))
+
+    await waitFor(() => {
+      expect(store.getActions()).toContainEqual(clearBrowserKeyTabs())
+    })
   })
 
   it('should be disabled db index button with loading state', () => {

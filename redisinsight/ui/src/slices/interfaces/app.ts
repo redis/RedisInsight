@@ -103,6 +103,7 @@ export interface StateAppContext {
       isNotRendered: boolean
       selectedKey: Nullable<RedisResponseBuffer>
     }
+    keyTabs: RedisResponseBuffer[]
     panelSizes: number[]
     tree: {
       openNodes: {

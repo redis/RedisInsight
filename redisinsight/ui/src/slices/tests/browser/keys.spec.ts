@@ -37,7 +37,10 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { SearchHistoryItem, SearchMode } from 'uiSrc/slices/interfaces/keys'
-import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
+import {
+  closeBrowserKeyTab,
+  setBrowserSelectedKey,
+} from 'uiSrc/slices/app/context'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   setEditorType,
@@ -1483,8 +1486,9 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('key info is reset when key not found', async () => {
+      it('key info is reset and its tab is closed when key not found', async () => {
         // Arrange
+        const keyName = stringToBuffer('keyName')
         const errorMessage = 'resource not found error'
         const responsePayload = {
           response: {
@@ -1496,7 +1500,7 @@ describe('keys slice', () => {
         apiService.post = jest.fn().mockRejectedValue(responsePayload)
 
         // Act
-        await store.dispatch<any>(fetchKeyInfo('keyName'))
+        await store.dispatch<any>(fetchKeyInfo(keyName))
 
         // Assert
         const expectedActions = [
@@ -1504,6 +1508,7 @@ describe('keys slice', () => {
           addErrorNotification(responsePayload as AxiosError),
           defaultSelectedKeyActionFailure(errorMessage),
           resetKeyInfo(),
+          closeBrowserKeyTab(keyName),
           setBrowserSelectedKey(null),
         ]
         expect(store.getActions()).toEqual(expectedActions)
@@ -1647,7 +1652,7 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('should reset key info and clear selected key when key not found (404)', async () => {
+      it('should reset key info, close its tab and clear selected key when key not found (404)', async () => {
         // Arrange
         const keyName = stringToBuffer('deletedKey')
         const errorMessage = 'Key with this name does not exist.'
@@ -1670,6 +1675,7 @@ describe('keys slice', () => {
           addErrorNotification(responsePayload as AxiosError),
           resetKeyInfo(),
           deletePatternKeyFromList(keyName),
+          closeBrowserKeyTab(keyName),
           setBrowserSelectedKey(null),
         ]
         expect(store.getActions()).toEqual(expectedActions)

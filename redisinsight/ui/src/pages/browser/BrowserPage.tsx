@@ -26,6 +26,9 @@ import {
   setBrowserBulkActionOpen,
   setBrowserKeyListDataLoaded,
   appContextSelector,
+  appContextBrowserKeyTabs,
+  openBrowserKeyTab,
+  closeBrowserKeyTab,
 } from 'uiSrc/slices/app/context'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -81,6 +84,7 @@ const BrowserPage = () => {
     bulkActions: { opened: bulkActionOpenContext },
   } = useAppSelector(appContextBrowser)
   const { contextInstanceId } = useAppSelector(appContextSelector)
+  const keyTabs = useAppSelector(appContextBrowserKeyTabs)
 
   const { isBrowserFullScreen } = useAppSelector(keysSelector)
   const { type } = useAppSelector(selectedKeyDataSelector) ?? {
@@ -114,7 +118,9 @@ const BrowserPage = () => {
   const prevDbIndex = useRef(db)
   const selectedKeyRef = useRef<Nullable<RedisResponseBuffer>>(selectedKey)
   const isBulkActionsPanelOpenRef = useRef<boolean>(isBulkActionsPanelOpen)
+  const isAddKeyPanelOpenRef = useRef<boolean>(isAddKeyPanelOpen)
   const isSidePanelOpenRef = useRef<boolean>(!!openedSidePanel)
+  const keyTabsRef = useRef<RedisResponseBuffer[]>(keyTabs)
 
   const history = useHistory()
   const dispatch = useAppDispatch()
@@ -154,12 +160,28 @@ const BrowserPage = () => {
   }, [isBulkActionsPanelOpen])
 
   useEffect(() => {
+    isAddKeyPanelOpenRef.current = isAddKeyPanelOpen
+  }, [isAddKeyPanelOpen])
+
+  useEffect(() => {
     if (contextInstanceId === instanceId) setSelectedKey(selectedKeyContext)
   }, [selectedKeyContext, contextInstanceId])
 
   useEffect(() => {
     selectedKeyRef.current = selectedKey
+
+    if (selectedKey) {
+      dispatch(openBrowserKeyTab(selectedKey))
+    }
   }, [selectedKey])
+
+  useEffect(() => {
+    keyTabsRef.current = keyTabs
+  }, [keyTabs])
+
+  useEffect(() => {
+    if (type) prevSelectedType.current = type
+  }, [type])
 
   useEffect(() => {
     setArePanelsCollapsed(() => isOneSideMode(!!openedSidePanel))
@@ -223,11 +245,6 @@ const BrowserPage = () => {
     setIsBulkActionsPanelOpen(value)
   }, [])
 
-  const handleRemoveSelectedKey = useCallback(() => {
-    setBrowserSelectedKey(null)
-    handlePanel(true)
-  }, [])
-
   const handleCreateIndexPanel = useCallback(
     (value: boolean) => {
       if (value) {
@@ -279,12 +296,60 @@ const BrowserPage = () => {
     }
   }, [])
 
-  const closePanel = () => {
+  const closePanel = useCallback(() => {
     dispatch(toggleBrowserFullScreen(true))
 
     setSelectedKey(null)
     closeRightPanels()
-  }
+  }, [])
+
+  const handleSelectTab = useCallback((keyName: RedisResponseBuffer) => {
+    if (!isEqualBuffers(keyName, selectedKeyRef.current)) {
+      dispatch(setInitialStateByType(prevSelectedType.current))
+      setSelectedKey(keyName)
+      dispatch(setBrowserSelectedKey(keyName))
+    }
+    closeRightPanels()
+  }, [])
+
+  const handleCloseTab = useCallback((keyName: RedisResponseBuffer) => {
+    const tabs = keyTabsRef.current
+    const index = tabs.findIndex((tab) => isEqualBuffers(tab, keyName))
+
+    dispatch(closeBrowserKeyTab(keyName))
+
+    if (isEqualBuffers(keyName, selectedKeyRef.current)) {
+      // like a browser: activate the right neighbour, otherwise the left one
+      const nextTab = tabs[index + 1] ?? tabs[index - 1]
+      if (nextTab) {
+        handleSelectTab(nextTab)
+        return
+      }
+
+      dispatch(setBrowserSelectedKey(null))
+      closePanel()
+      return
+    }
+
+    // no key is shown (e.g. the active one was deleted): closing the last tab
+    // closes the panel too, unless Add Key or Bulk Actions is open in it
+    const isLastTab = tabs.length === 1
+    const isOtherPanelOpen =
+      isAddKeyPanelOpenRef.current || isBulkActionsPanelOpenRef.current
+    if (isLastTab && !isOtherPanelOpen) {
+      closePanel()
+    }
+  }, [])
+
+  // the selected key was deleted in the UI: its tab goes away as if closed,
+  // opening the neighbour tab (keys deleted elsewhere keep their tab)
+  const handleRemoveSelectedKey = useCallback(() => {
+    const deletedKey = selectedKeyRef.current
+    if (!deletedKey) return
+
+    dispatch(resetKeyInfo())
+    handleCloseTab(deletedKey)
+  }, [])
 
   const isRightPanelOpen =
     selectedKey !== null || isAddKeyPanelOpen || isBulkActionsPanelOpen
@@ -358,6 +423,10 @@ const BrowserPage = () => {
                 handleAddKeyPanel={handleAddKeyPanel}
                 handleBulkActionsPanel={handleBulkActionsPanel}
                 closeRightPanels={closeRightPanels}
+                keyTabs={keyTabs}
+                onSelectTab={handleSelectTab}
+                onCloseTab={handleCloseTab}
+                onRemoveKey={handleRemoveSelectedKey}
               />
             </S.BorderedResizablePanel>
           </S.StyledResizableContainer>

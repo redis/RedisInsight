@@ -828,6 +828,7 @@
   "browser.keyList.size.tooltipTitle": "Размер на ключ",
   "browser.keyList.ttl.noLimit": "Без лимит",
   "browser.keyList.ttl.tooltipTitle": "Време на живот",
+  "browser.keyTabs.closeAria": "Затвори раздела {{name}}",
   "browser.keysBrowser.addKeyAria": "Добави ключ",
   "browser.keysBrowser.refreshDisabledMessage": "Изберете индекс, за да опресните ключовете.",
   "browser.keysBrowser.results": "Резултати: ",
