@@ -31,13 +31,12 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { DevToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import ShortInstanceInfo from 'uiSrc/components/instance-header/components/ShortInstanceInfo'
 
 import { resetKeyInfo } from 'uiSrc/slices/browser/keys'
 
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { getConfig } from 'uiSrc/config'
 import { appReturnUrlSelector } from 'uiSrc/slices/app/url-handling'
 import UserProfile from 'uiSrc/components/instance-header/components/user-profile/UserProfile'
@@ -83,14 +82,10 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   const { databases = 0 } = useAppSelector(connectedInstanceInfoSelector)
   const returnUrl = useAppSelector(appReturnUrlSelector)
   const {
-    [FeatureFlags.databaseChat]: databaseChatFeature,
-    [FeatureFlags.documentationChat]: documentationChatFeature,
+    [FeatureFlags.devTools]: devToolsFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
   } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isAnyChatAvailable = isAnyFeatureEnabled([
-    databaseChatFeature,
-    documentationChatFeature,
-  ])
+  const isDevToolsAvailable = !!devToolsFeature?.flag
   const { environment } = useDatabaseEnvironment()
   const isProductionEnv = environment === Environment.Production
 
@@ -330,9 +325,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
 
         <FlexItem>
           <Row align="center" justify="end">
-            {isAnyChatAvailable && (
+            {isDevToolsAvailable && (
               <FlexItem style={{ marginLeft: 12 }}>
-                <CopilotTrigger />
+                <DevToolsTrigger />
               </FlexItem>
             )}
 

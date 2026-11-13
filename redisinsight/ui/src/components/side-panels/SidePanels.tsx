@@ -21,7 +21,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
-import { CopilotPanel, InsightsPanel } from './components'
+import { CopilotPanel, DevToolsPanel, InsightsPanel } from './components'
 
 import { StyledInnerSidePanel, StyledSidePanel } from './SidePanels.styles'
 
@@ -118,6 +118,13 @@ const SidePanelsWrapper = (props: Props) => {
           <StyledInnerSidePanel>
             {openedPanel === SidePanels.AiAssistant && (
               <CopilotPanel
+                isFullScreen={isFullScreen}
+                onToggleFullScreen={handleFullScreen}
+                onClose={handleClose}
+              />
+            )}
+            {openedPanel === SidePanels.DevTools && (
+              <DevToolsPanel
                 isFullScreen={isFullScreen}
                 onToggleFullScreen={handleFullScreen}
                 onClose={handleClose}
