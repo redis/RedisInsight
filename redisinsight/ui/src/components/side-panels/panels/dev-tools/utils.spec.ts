@@ -60,12 +60,25 @@ describe('resolveInitTarget', () => {
     expect(JSON.stringify(target)).not.toContain('"password"')
   })
 
+  it('should keep an azure database that uses access keys', () => {
+    expect(
+      resolveInitTarget({
+        ...standalone,
+        providerDetails: { provider: 'azure', authType: 'accessKey' },
+      } as never),
+    ).toMatchObject({ kind: InitTargetKind.Url })
+  })
+
   it.each([
     ['cluster', { connectionType: ConnectionType.Cluster }],
     ['sentinel', { connectionType: ConnectionType.Sentinel }],
     ['ssh tunnel', { ssh: true }],
     ['client certificate', { tlsClientAuthRequired: true }],
     ['custom ca certificate', { tls: true, caCert: { id: 'ca', name: 'ca' } }],
+    [
+      'azure entra id',
+      { providerDetails: { provider: 'azure', authType: 'entraId' } },
+    ],
     ['missing host', { host: '' }],
     ['missing name', { name: '' }],
   ])('should return null for %s', (_label, overrides) => {

@@ -1,4 +1,5 @@
 import { ConnectionProvider, ConnectionType } from 'uiSrc/slices/interfaces'
+import { AzureAuthType } from 'uiSrc/slices/interfaces/azure'
 import { Instance } from 'uiSrc/slices/interfaces/instances'
 
 import {
@@ -45,7 +46,8 @@ export const buildConnectionUrl = (
 }
 
 // Returns the init target for a database, or null when the connection cannot
-// be expressed in a URL (cluster, sentinel, SSH, client or custom CA certs).
+// be expressed in a URL (cluster, sentinel, SSH, client or custom CA certs,
+// Azure Entra ID, whose credentials are temporary tokens).
 // The password is never read here; the caller supplies it when needed.
 export const resolveInitTarget = (
   instance: Partial<Instance>,
@@ -60,12 +62,20 @@ export const resolveInitTarget = (
     tls,
     caCert,
     tlsClientAuthRequired,
+    providerDetails,
     username,
     db,
     password,
   } = instance
 
   if (!name) return null
+
+  if (
+    (providerDetails as { authType?: string } | undefined)?.authType ===
+    AzureAuthType.EntraId
+  ) {
+    return null
+  }
 
   if (provider === ConnectionProvider.REDIS_CLOUD) {
     return { kind: InitTargetKind.Cloud, name }

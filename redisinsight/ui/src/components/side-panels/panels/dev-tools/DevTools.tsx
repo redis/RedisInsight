@@ -42,6 +42,9 @@ export const DevTools = () => {
   const [connectOverride, setConnectOverride] = useState<boolean | null>(null)
   const [isRevealed, setIsRevealed] = useState(false)
   const [password, setPassword] = useState<string | null>(null)
+  const [settledInstanceId, setSettledInstanceId] = useState<string | null>(
+    null,
+  )
 
   const initTarget = useMemo(
     () => (instanceId ? resolveInitTarget(connectedInstance) : null),
@@ -60,6 +63,7 @@ export const DevTools = () => {
   useEffect(() => {
     setPassword(null)
     setIsRevealed(false)
+    setSettledInstanceId(null)
 
     if (!hasPassword || !instanceId) return undefined
 
@@ -73,11 +77,16 @@ export const DevTools = () => {
       .catch(() => {
         // The command keeps a password placeholder when the lookup fails.
       })
+      .finally(() => {
+        if (!isCancelled) setSettledInstanceId(instanceId)
+      })
 
     return () => {
       isCancelled = true
     }
   }, [hasPassword, instanceId])
+
+  const isPasswordPending = hasPassword && settledInstanceId !== instanceId
 
   const buildCommand = (passwordValue: string, shouldEncode: boolean) =>
     buildInitCommand(
@@ -140,10 +149,15 @@ export const DevTools = () => {
               isRevealed ? 'devTools.password.hide' : 'devTools.password.show',
             )}
             onClick={() => setIsRevealed((value) => !value)}
+            disabled={isPasswordPending}
             data-testid="dev-tools-password-toggle"
           />
         )}
-        <CopyButton copy={copyCommand} data-testid="dev-tools-copy" />
+        <CopyButton
+          copy={copyCommand}
+          disabled={isPasswordPending}
+          data-testid="dev-tools-copy"
+        />
       </S.CommandBox>
 
       <Text size="S" color="secondary">

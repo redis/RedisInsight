@@ -156,11 +156,11 @@ describe('DevTools', () => {
 
     it('should reveal and hide the password with the toggle', async () => {
       renderComponent()
-      await waitFor(() => expect(exportInstances).toHaveBeenCalled())
+      await waitFor(() =>
+        expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled(),
+      )
 
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
-      })
+      fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
       expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
         revealedUrl,
       )
@@ -180,13 +180,34 @@ describe('DevTools', () => {
       ).not.toBeInTheDocument()
     })
 
+    it('should disable copy and reveal until the password is loaded', async () => {
+      let resolveLookup: (value: { password: string }[]) => void = () => {}
+      ;(exportInstances as jest.Mock).mockReturnValue(
+        new Promise((resolve) => {
+          resolveLookup = resolve
+        }),
+      )
+      renderComponent()
+
+      expect(screen.getByTestId('dev-tools-copy-btn')).toBeDisabled()
+      expect(screen.getByTestId('dev-tools-password-toggle')).toBeDisabled()
+
+      await act(async () => {
+        resolveLookup([{ password: 'secret' }])
+      })
+
+      expect(screen.getByTestId('dev-tools-copy-btn')).toBeEnabled()
+      expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled()
+    })
+
     it('should keep a placeholder when the password lookup fails', async () => {
       ;(exportInstances as jest.Mock).mockRejectedValue(new Error('denied'))
       renderComponent()
+      await waitFor(() =>
+        expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled(),
+      )
 
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
-      })
+      fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
 
       expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
         'redis://default:<password>@localhost:6379',
