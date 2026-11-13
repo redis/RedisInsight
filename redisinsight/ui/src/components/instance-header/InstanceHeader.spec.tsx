@@ -12,6 +12,7 @@ import {
   mockStore,
   render,
   screen,
+  userEvent,
   waitFor,
 } from 'uiSrc/utils/test-utils'
 import {
@@ -84,34 +85,27 @@ describe('InstanceHeader', () => {
 
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    expect(screen.queryByTestId('change-index-btn')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('change-index-select')).not.toBeInTheDocument()
   })
 
   it('should render change index button', () => {
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    expect(screen.getByTestId('change-index-btn')).toBeInTheDocument()
+    expect(screen.getByTestId('change-index-select')).toBeInTheDocument()
   })
 
-  it('should render change index input after click on the button', () => {
+  it('should render the picker instead of the old inline number editor', () => {
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    fireEvent.click(screen.getByTestId('change-index-btn'))
-
-    expect(screen.getByTestId('change-index-input')).toBeInTheDocument()
+    expect(screen.getByTestId('change-index-select')).toBeInTheDocument()
+    expect(screen.queryByTestId('change-index-input')).not.toBeInTheDocument()
   })
 
-  it('should call proper actions after changing database index', () => {
+  it('should call proper actions after changing database index', async () => {
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    fireEvent.click(screen.getByTestId('change-index-btn'))
-
-    fireEvent.change(screen.getByTestId('change-index-input'), {
-      target: { value: 3 },
-    })
-
-    expect(screen.getByTestId('change-index-input')).toHaveValue('3')
-    fireEvent.click(screen.getByTestId('apply-btn'))
+    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(screen.getAllByText('db3')[0])
 
     // check if store actions contain proper action: {type: "instances/checkDatabaseIndex"}
     expect(store.getActions()).toContainEqual(
@@ -126,7 +120,7 @@ describe('InstanceHeader', () => {
 
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    expect(screen.getByTestId('change-index-btn')).toBeDisabled()
+    expect(screen.getByTestId('change-index-select')).toBeDisabled()
   })
 
   it('should be disabled db index button with disabled state', () => {
@@ -136,7 +130,7 @@ describe('InstanceHeader', () => {
 
     render(<InstanceHeader {...instance(mockedProps)} />)
 
-    expect(screen.getByTestId('change-index-btn')).toBeDisabled()
+    expect(screen.getByTestId('change-index-select')).toBeDisabled()
   })
 
   it('should call history push with proper path', () => {

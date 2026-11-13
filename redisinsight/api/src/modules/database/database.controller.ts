@@ -32,6 +32,7 @@ import { ClientMetadata, SessionMetadata } from 'src/common/models';
 import { ExportDatabasesDto } from 'src/modules/database/dto/export.databases.dto';
 import { ExportDatabase } from 'src/modules/database/models/export-database';
 import { DatabaseResponse } from 'src/modules/database/dto/database.response';
+import { RedisDatabaseInfoResponse } from 'src/modules/database/dto/redis-info.dto';
 import { classToClass } from 'src/utils';
 
 @ApiTags('Database')
@@ -203,7 +204,7 @@ export class DatabaseController {
   async testConnection(
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Body() dto: CreateDatabaseDto,
-  ): Promise<void> {
+  ): Promise<RedisDatabaseInfoResponse | null> {
     return await this.service.testConnection(sessionMetadata, dto);
   }
 
@@ -229,7 +230,7 @@ export class DatabaseController {
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Param('id') id: string,
     @Body() dto: UpdateDatabaseDto,
-  ): Promise<void> {
+  ): Promise<RedisDatabaseInfoResponse | null> {
     return this.service.testConnection(sessionMetadata, dto, id);
   }
 
