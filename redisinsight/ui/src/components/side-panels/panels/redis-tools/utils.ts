@@ -47,7 +47,7 @@ export const buildConnectionUrl = (
 
 // Returns the init target for a database, or null when the connection cannot
 // be expressed in a URL (cluster, sentinel, SSH, client or custom CA certs,
-// Azure Entra ID, whose credentials are temporary tokens).
+// custom TLS server name, Azure Entra ID with its temporary tokens).
 // The password is never read here; the caller supplies it when needed.
 export const resolveInitTarget = (
   instance: Partial<Instance>,
@@ -61,6 +61,7 @@ export const resolveInitTarget = (
     ssh,
     tls,
     caCert,
+    tlsServername,
     tlsClientAuthRequired,
     providerDetails,
     username,
@@ -85,7 +86,7 @@ export const resolveInitTarget = (
     connectionType === ConnectionType.Standalone &&
     !ssh &&
     !tlsClientAuthRequired &&
-    !(tls && caCert)
+    !(tls && (caCert || tlsServername))
 
   if (!isPlainStandalone || !host || !port) return null
 

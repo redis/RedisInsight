@@ -80,6 +80,7 @@ describe('resolveInitTarget', () => {
     ['ssh tunnel', { ssh: true }],
     ['client certificate', { tlsClientAuthRequired: true }],
     ['custom ca certificate', { tls: true, caCert: { id: 'ca', name: 'ca' } }],
+    ['custom tls server name', { tls: true, tlsServername: 'redis.internal' }],
     ['azure entra id', azureProvider('entraId')],
     ['missing host', { host: '' }],
     ['missing name', { name: '' }],
