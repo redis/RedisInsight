@@ -37,7 +37,9 @@ const SidePanelsWrapper = (props: Props) => {
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
+    [FeatureFlags.devTools]: devToolsFeature,
   } = useAppSelector(appFeatureFlagsFeaturesSelector)
+  const isDevToolsAvailable = !!devToolsFeature?.flag
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
@@ -57,6 +59,12 @@ const SidePanelsWrapper = (props: Props) => {
       dispatch(changeSidePanel(null))
     }
   }, [isAnyChatAvailable, tabSelected])
+
+  useEffect(() => {
+    if (openedPanel === SidePanels.DevTools && !isDevToolsAvailable) {
+      dispatch(changeSidePanel(null))
+    }
+  }, [isDevToolsAvailable, openedPanel])
 
   useEffect(() => {
     window.addEventListener('keydown', handleEscFullScreen)
@@ -123,7 +131,7 @@ const SidePanelsWrapper = (props: Props) => {
                 onClose={handleClose}
               />
             )}
-            {openedPanel === SidePanels.DevTools && (
+            {openedPanel === SidePanels.DevTools && isDevToolsAvailable && (
               <DevToolsPanel
                 isFullScreen={isFullScreen}
                 onToggleFullScreen={handleFullScreen}

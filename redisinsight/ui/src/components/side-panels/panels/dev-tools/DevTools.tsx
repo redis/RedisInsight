@@ -39,16 +39,24 @@ export const DevTools = () => {
   const { instanceId } = useParams<{ instanceId?: string }>()
   const connectedInstance = useAppSelector(connectedInstanceSelector)
 
-  const [connectOverride, setConnectOverride] = useState<boolean | null>(null)
+  const [override, setOverride] = useState<{
+    instanceId?: string
+    value: boolean
+  } | null>(null)
   const [isRevealed, setIsRevealed] = useState(false)
   const [password, setPassword] = useState<string | null>(null)
   const [settledInstanceId, setSettledInstanceId] = useState<string | null>(
     null,
   )
 
+  // The store keeps the previous database until the new one has loaded.
+  const isInstanceLoaded = !!instanceId && connectedInstance.id === instanceId
+  const connectOverride =
+    override && override.instanceId === instanceId ? override.value : null
+
   const initTarget = useMemo(
-    () => (instanceId ? resolveInitTarget(connectedInstance) : null),
-    [instanceId, connectedInstance],
+    () => (isInstanceLoaded ? resolveInitTarget(connectedInstance) : null),
+    [isInstanceLoaded, connectedInstance],
   )
   const canConnectDatabase = !!initTarget
   const shouldConnect =
@@ -125,7 +133,9 @@ export const DevTools = () => {
           <Checkbox
             id="dev-tools-connect-database"
             checked={shouldConnect}
-            onCheckedChange={(checked) => setConnectOverride(checked === true)}
+            onCheckedChange={(checked) =>
+              setOverride({ instanceId, value: checked === true })
+            }
             label={t('devTools.connectDatabase', {
               name: connectedInstance.name,
             })}

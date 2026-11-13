@@ -39,6 +39,7 @@ describe('DevTools', () => {
       environment: Environment
       username: string
       password: true
+      id: string
     }> = {},
     instanceId: string | null = mockInstanceId,
   ) => {
@@ -46,6 +47,7 @@ describe('DevTools', () => {
       .fn()
       .mockReturnValue({ instanceId: instanceId ?? undefined })
     ;(connectedInstanceSelector as unknown as jest.Mock).mockReturnValue({
+      id: instanceId ?? undefined,
       name: databaseName,
       host: 'localhost',
       port: 6379,
@@ -98,6 +100,48 @@ describe('DevTools', () => {
     expect(screen.getByTestId('dev-tools-command')).not.toHaveTextContent(
       '--cloud',
     )
+  })
+
+  it('should ignore a previously opened database until the new one loads', () => {
+    mockConnectedInstance({ id: faker.string.uuid() })
+    renderComponent()
+
+    expect(
+      screen.queryByTestId('dev-tools-connect-database'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+      /^npx @redis\/redisctl init$/,
+    )
+  })
+
+  it('should not request a password for a previously opened database', () => {
+    mockConnectedInstance({
+      id: faker.string.uuid(),
+      provider: ConnectionProvider.LOCALHOST,
+      password: true,
+    })
+    renderComponent()
+
+    expect(exportInstances).not.toHaveBeenCalled()
+  })
+
+  it('should reset the connect choice when another database opens', () => {
+    mockConnectedInstance({ environment: Environment.Production })
+    const instance = (connectedInstanceSelector as unknown as jest.Mock)()
+    const { rerender } = renderComponent()
+    fireEvent.click(screen.getByLabelText(`Connect ${databaseName}`))
+    expect(screen.getByLabelText(`Connect ${databaseName}`)).toBeChecked()
+
+    // react-redux caches the selected value, so the mocked instance is mutated
+    // in place to simulate the store switching to the next database.
+    const otherId = faker.string.uuid()
+    instance.id = otherId
+    reactRouterDom.useParams = jest
+      .fn()
+      .mockReturnValue({ instanceId: otherId })
+    rerender(<DevTools />)
+
+    expect(screen.getByLabelText(`Connect ${databaseName}`)).not.toBeChecked()
   })
 
   it('should hide the connect option when no database is open', () => {
