@@ -9,37 +9,37 @@ import {
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { CommandLineIcon } from 'uiSrc/components/base/icons'
 
-import * as S from './DevToolsTrigger.styles'
+import * as S from './RedisToolsTrigger.styles'
 
-const DevToolsTrigger = () => {
+const RedisToolsTrigger = () => {
   const { t } = useTranslation()
   const { openedPanel } = useAppSelector(sidePanelsSelector)
   const dispatch = useAppDispatch()
 
-  const isDevToolsOpen = openedPanel === SidePanels.DevTools
+  const isRedisToolsOpen = openedPanel === SidePanels.RedisTools
 
   const handleClickTrigger = () => {
-    dispatch(toggleSidePanel(SidePanels.DevTools))
+    dispatch(toggleSidePanel(SidePanels.RedisTools))
   }
 
   return (
-    <S.DevToolsWrapper align="center" justify="end" gap="s">
+    <S.RedisToolsWrapper align="center" justify="end" gap="s">
       <S.TriggerButton
-        $isOpen={isDevToolsOpen}
+        $isOpen={isRedisToolsOpen}
         icon={CommandLineIcon}
         onClick={handleClickTrigger}
-        aria-pressed={isDevToolsOpen}
-        data-testid="dev-tools-trigger"
+        aria-pressed={isRedisToolsOpen}
+        data-testid="redis-tools-trigger"
       >
-        {t('devTools.trigger.label')}
+        {t('redisTools.trigger.label')}
         <S.NewBadge
           variant="attention"
-          label={t('devTools.trigger.badge')}
-          data-testid="dev-tools-trigger-badge"
+          label={t('redisTools.trigger.badge')}
+          data-testid="redis-tools-trigger-badge"
         />
       </S.TriggerButton>
-    </S.DevToolsWrapper>
+    </S.RedisToolsWrapper>
   )
 }
 
-export default DevToolsTrigger
+export default RedisToolsTrigger

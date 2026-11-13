@@ -3,8 +3,8 @@ import { faker } from '@faker-js/faker'
 import { ConnectionProvider, ConnectionType } from 'uiSrc/slices/interfaces'
 import { Instance } from 'uiSrc/slices/interfaces/instances'
 
-import { DEV_TOOLS_INIT_COMMAND } from './DevTools.constants'
-import { InitTargetKind } from './DevTools.types'
+import { REDIS_TOOLS_INIT_COMMAND } from './RedisTools.constants'
+import { InitTargetKind } from './RedisTools.types'
 import {
   buildConnectionUrl,
   buildInitCommand,
@@ -142,25 +142,25 @@ describe('buildInitCommand', () => {
   })
 
   it('should return the plain init command without a target', () => {
-    expect(buildInitCommand()).toBe(DEV_TOOLS_INIT_COMMAND)
-    expect(buildInitCommand(null)).toBe(DEV_TOOLS_INIT_COMMAND)
+    expect(buildInitCommand()).toBe(REDIS_TOOLS_INIT_COMMAND)
+    expect(buildInitCommand(null)).toBe(REDIS_TOOLS_INIT_COMMAND)
   })
 
   it('should append the cloud flags for a cloud target', () => {
     expect(
       buildInitCommand({ kind: InitTargetKind.Cloud, name: 'orders-dev' }),
-    ).toBe(`${DEV_TOOLS_INIT_COMMAND} --cloud --name orders-dev`)
+    ).toBe(`${REDIS_TOOLS_INIT_COMMAND} --cloud --name orders-dev`)
   })
 
   it('should append a quoted url without credentials when there is no password', () => {
     expect(buildInitCommand(urlTarget(false), 'ignored')).toBe(
-      `${DEV_TOOLS_INIT_COMMAND} --url 'redis://127.0.0.1:6379' --name local`,
+      `${REDIS_TOOLS_INIT_COMMAND} --url 'redis://127.0.0.1:6379' --name local`,
     )
   })
 
   it('should put the password in the url when the database has one', () => {
     expect(buildInitCommand(urlTarget(true), 'secret')).toBe(
-      `${DEV_TOOLS_INIT_COMMAND} --url 'redis://default:secret@127.0.0.1:6379' --name local`,
+      `${REDIS_TOOLS_INIT_COMMAND} --url 'redis://default:secret@127.0.0.1:6379' --name local`,
     )
   })
 
@@ -168,13 +168,13 @@ describe('buildInitCommand', () => {
     const name = `${faker.word.noun()} ${faker.word.noun()}`
 
     expect(buildInitCommand({ kind: InitTargetKind.Cloud, name })).toBe(
-      `${DEV_TOOLS_INIT_COMMAND} --cloud --name '${name}'`,
+      `${REDIS_TOOLS_INIT_COMMAND} --cloud --name '${name}'`,
     )
   })
 
   it('should escape single quotes in the database name', () => {
     expect(buildInitCommand({ kind: InitTargetKind.Cloud, name: "it's" })).toBe(
-      `${DEV_TOOLS_INIT_COMMAND} --cloud --name 'it'\\''s'`,
+      `${REDIS_TOOLS_INIT_COMMAND} --cloud --name 'it'\\''s'`,
     )
   })
 

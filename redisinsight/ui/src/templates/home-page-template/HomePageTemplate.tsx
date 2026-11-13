@@ -7,7 +7,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { DevToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
@@ -26,10 +26,10 @@ export interface Props {
 const HomePageTemplate = (props: Props) => {
   const { children } = props
 
-  const { [FeatureFlags.devTools]: devToolsFeature } = useAppSelector(
+  const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
-  const isDevToolsAvailable = !!devToolsFeature?.flag
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
 
   const { loading: instancesLoading } = useAppSelector(
     databaseInstancesSelector,
@@ -50,9 +50,9 @@ const HomePageTemplate = (props: Props) => {
       <PageDefaultHeader align="center" justify="between" gap="l">
         <HomeTabs />
         <FlexGroup align="center" justify="end" gap="l">
-          {isDevToolsAvailable && (
+          {isRedisToolsAvailable && (
             <FlexItem>
-              <DevToolsTrigger />
+              <RedisToolsTrigger />
             </FlexItem>
           )}
           <FlexItem>

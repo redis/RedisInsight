@@ -11,12 +11,12 @@ import {
 import { toggleSidePanel } from 'uiSrc/slices/panels/sidePanels'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 
-import DevToolsTrigger from './DevToolsTrigger'
+import RedisToolsTrigger from './RedisToolsTrigger'
 
 let store: typeof mockedStore
 
-describe('DevToolsTrigger', () => {
-  const renderComponent = () => render(<DevToolsTrigger />, { store })
+describe('RedisToolsTrigger', () => {
+  const renderComponent = () => render(<RedisToolsTrigger />, { store })
 
   beforeEach(() => {
     cleanup()
@@ -27,10 +27,10 @@ describe('DevToolsTrigger', () => {
   it('should render the button with the NEW badge', () => {
     renderComponent()
 
-    expect(screen.getByTestId('dev-tools-trigger')).toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-trigger')).toHaveTextContent(
       'Redis tools',
     )
-    expect(screen.getByTestId('dev-tools-trigger-badge')).toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-trigger-badge')).toHaveTextContent(
       'NEW',
     )
   })
@@ -38,8 +38,8 @@ describe('DevToolsTrigger', () => {
   it('should toggle the Redis tools side panel on click', () => {
     renderComponent()
 
-    fireEvent.click(screen.getByTestId('dev-tools-trigger'))
+    fireEvent.click(screen.getByTestId('redis-tools-trigger'))
 
-    expect(store.getActions()).toEqual([toggleSidePanel(SidePanels.DevTools)])
+    expect(store.getActions()).toEqual([toggleSidePanel(SidePanels.RedisTools)])
   })
 })

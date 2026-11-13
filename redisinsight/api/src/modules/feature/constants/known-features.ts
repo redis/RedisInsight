@@ -102,8 +102,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.AppUpdateStrategySettings,
     storage: FeatureStorage.Database,
   },
-  [KnownFeatures.DevTools]: {
-    name: KnownFeatures.DevTools,
+  [KnownFeatures.RedisTools]: {
+    name: KnownFeatures.RedisTools,
     storage: FeatureStorage.Database,
   },
 };

@@ -1,6 +1,6 @@
 import Header from './header'
 import InsightsPanel from './insights-panel'
 import CopilotPanel from './copilot-panel'
-import DevToolsPanel from './dev-tools-panel'
+import RedisToolsPanel from './redis-tools-panel'
 
-export { Header, InsightsPanel, CopilotPanel, DevToolsPanel }
+export { Header, InsightsPanel, CopilotPanel, RedisToolsPanel }

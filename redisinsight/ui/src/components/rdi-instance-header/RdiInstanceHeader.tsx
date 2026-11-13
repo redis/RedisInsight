@@ -2,7 +2,7 @@ import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
-import { DevToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import {
   FeatureFlagComponent,
   OAuthUserProfile,
@@ -22,10 +22,10 @@ import styles from './styles.module.scss'
 const RdiInstanceHeader = () => {
   const { t } = useTranslation()
   const { name = '' } = useAppSelector(connectedInstanceSelector)
-  const { [FeatureFlags.devTools]: devToolsFeature } = useAppSelector(
+  const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
-  const isDevToolsAvailable = !!devToolsFeature?.flag
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
   const history = useHistory()
 
   const goHome = () => {
@@ -71,9 +71,9 @@ const RdiInstanceHeader = () => {
         </div>
       </FlexItem>
 
-      {isDevToolsAvailable && (
+      {isRedisToolsAvailable && (
         <FlexItem style={{ marginRight: 12 }}>
-          <DevToolsTrigger />
+          <RedisToolsTrigger />
         </FlexItem>
       )}
       <FlexItem style={{ marginLeft: 12 }}>

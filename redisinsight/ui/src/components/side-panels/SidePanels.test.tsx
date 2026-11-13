@@ -326,28 +326,28 @@ describe('SidePanels', () => {
     expect(store.getActions()).toEqual([changeSidePanel(null)])
   })
 
-  it('should render the Redis tools panel when the devTools flag is on', () => {
+  it('should render the Redis tools panel when the redisTools flag is on', () => {
     ;(sidePanelsSelector as jest.Mock).mockReturnValue({
-      openedPanel: ISidePanels.DevTools,
+      openedPanel: ISidePanels.RedisTools,
     })
     ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-      devTools: { flag: true },
+      redisTools: { flag: true },
     })
 
     render(<SidePanels />)
-    expect(screen.getByTestId('dev-tools-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('redis-tools-panel')).toBeInTheDocument()
   })
 
-  it('should close the Redis tools panel when the devTools flag is off', () => {
+  it('should close the Redis tools panel when the redisTools flag is off', () => {
     ;(sidePanelsSelector as jest.Mock).mockReturnValue({
-      openedPanel: ISidePanels.DevTools,
+      openedPanel: ISidePanels.RedisTools,
     })
     ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-      devTools: { flag: false },
+      redisTools: { flag: false },
     })
 
     render(<SidePanels />)
-    expect(screen.queryByTestId('dev-tools-panel')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('redis-tools-panel')).not.toBeInTheDocument()
     expect(store.getActions()).toEqual([changeSidePanel(null)])
   })
 })

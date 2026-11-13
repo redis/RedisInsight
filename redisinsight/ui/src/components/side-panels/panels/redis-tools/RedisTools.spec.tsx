@@ -9,10 +9,10 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { exportInstances } from 'uiSrc/services/database/instancesService'
 
 import {
-  DEV_TOOLS_INIT_COMMAND,
-  DEV_TOOLS_PASSWORD_MASK,
-} from './DevTools.constants'
-import { DevTools } from './DevTools'
+  REDIS_TOOLS_INIT_COMMAND,
+  REDIS_TOOLS_PASSWORD_MASK,
+} from './RedisTools.constants'
+import { RedisTools } from './RedisTools'
 
 const mockInstanceId = faker.string.uuid()
 
@@ -26,7 +26,7 @@ jest.mock('uiSrc/services/database/instancesService', () => ({
   exportInstances: jest.fn(),
 }))
 
-describe('DevTools', () => {
+describe('RedisTools', () => {
   const databaseName = 'orders-dev'
 
   const mockConnectedInstance = (
@@ -58,7 +58,7 @@ describe('DevTools', () => {
     })
   }
 
-  const renderComponent = () => render(<DevTools />)
+  const renderComponent = () => render(<RedisTools />)
 
   beforeEach(() => {
     mockConnectedInstance()
@@ -68,15 +68,15 @@ describe('DevTools', () => {
   it('should show the connect command by default', () => {
     renderComponent()
 
-    expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
-      `${DEV_TOOLS_INIT_COMMAND} --cloud --name ${databaseName}`,
+    expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
+      `${REDIS_TOOLS_INIT_COMMAND} --cloud --name ${databaseName}`,
     )
   })
 
   it('should not offer a mode switch', () => {
     renderComponent()
 
-    expect(screen.queryByTestId('dev-tools-mode')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('redis-tools-mode')).not.toBeInTheDocument()
   })
 
   it('should drop the database flags when connect is unchecked', () => {
@@ -84,10 +84,10 @@ describe('DevTools', () => {
 
     fireEvent.click(screen.getByLabelText(`Connect ${databaseName}`))
 
-    expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
-      DEV_TOOLS_INIT_COMMAND,
+    expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
+      REDIS_TOOLS_INIT_COMMAND,
     )
-    expect(screen.getByTestId('dev-tools-command')).not.toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-command')).not.toHaveTextContent(
       '--cloud',
     )
   })
@@ -97,7 +97,7 @@ describe('DevTools', () => {
     renderComponent()
 
     expect(screen.getByLabelText(`Connect ${databaseName}`)).not.toBeChecked()
-    expect(screen.getByTestId('dev-tools-command')).not.toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-command')).not.toHaveTextContent(
       '--cloud',
     )
   })
@@ -107,9 +107,9 @@ describe('DevTools', () => {
     renderComponent()
 
     expect(
-      screen.queryByTestId('dev-tools-connect-database'),
+      screen.queryByTestId('redis-tools-connect-database'),
     ).not.toBeInTheDocument()
-    expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
       /^npx @redis\/redisctl init$/,
     )
   })
@@ -139,7 +139,7 @@ describe('DevTools', () => {
     reactRouterDom.useParams = jest
       .fn()
       .mockReturnValue({ instanceId: otherId })
-    rerender(<DevTools />)
+    rerender(<RedisTools />)
 
     expect(screen.getByLabelText(`Connect ${databaseName}`)).not.toBeChecked()
   })
@@ -149,7 +149,7 @@ describe('DevTools', () => {
     renderComponent()
 
     expect(
-      screen.queryByTestId('dev-tools-connect-database'),
+      screen.queryByTestId('redis-tools-connect-database'),
     ).not.toBeInTheDocument()
   })
 
@@ -157,17 +157,17 @@ describe('DevTools', () => {
     mockConnectedInstance({ provider: ConnectionProvider.LOCALHOST })
     renderComponent()
 
-    expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
-      `${DEV_TOOLS_INIT_COMMAND} --url 'redis://localhost:6379' --name ${databaseName}`,
+    expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
+      `${REDIS_TOOLS_INIT_COMMAND} --url 'redis://localhost:6379' --name ${databaseName}`,
     )
     expect(
-      screen.queryByTestId('dev-tools-password-toggle'),
+      screen.queryByTestId('redis-tools-password-toggle'),
     ).not.toBeInTheDocument()
     expect(exportInstances).not.toHaveBeenCalled()
   })
 
   describe('with a password', () => {
-    const maskedUrl = `'redis://default:${DEV_TOOLS_PASSWORD_MASK}@localhost:6379'`
+    const maskedUrl = `'redis://default:${REDIS_TOOLS_PASSWORD_MASK}@localhost:6379'`
     const revealedUrl = `'redis://default:secret@localhost:6379'`
 
     beforeEach(() => {
@@ -182,10 +182,10 @@ describe('DevTools', () => {
 
       await waitFor(() => expect(exportInstances).toHaveBeenCalled())
 
-      expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+      expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
         maskedUrl,
       )
-      expect(screen.getByTestId('dev-tools-command')).not.toHaveTextContent(
+      expect(screen.getByTestId('redis-tools-command')).not.toHaveTextContent(
         'secret',
       )
     })
@@ -201,16 +201,16 @@ describe('DevTools', () => {
     it('should reveal and hide the password with the toggle', async () => {
       renderComponent()
       await waitFor(() =>
-        expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled(),
+        expect(screen.getByTestId('redis-tools-password-toggle')).toBeEnabled(),
       )
 
-      fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
-      expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+      fireEvent.click(screen.getByTestId('redis-tools-password-toggle'))
+      expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
         revealedUrl,
       )
 
-      fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
-      expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+      fireEvent.click(screen.getByTestId('redis-tools-password-toggle'))
+      expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
         maskedUrl,
       )
     })
@@ -220,7 +220,7 @@ describe('DevTools', () => {
       fireEvent.click(screen.getByLabelText(`Connect ${databaseName}`))
 
       expect(
-        screen.queryByTestId('dev-tools-password-toggle'),
+        screen.queryByTestId('redis-tools-password-toggle'),
       ).not.toBeInTheDocument()
     })
 
@@ -233,27 +233,27 @@ describe('DevTools', () => {
       )
       renderComponent()
 
-      expect(screen.getByTestId('dev-tools-copy-btn')).toBeDisabled()
-      expect(screen.getByTestId('dev-tools-password-toggle')).toBeDisabled()
+      expect(screen.getByTestId('redis-tools-copy-btn')).toBeDisabled()
+      expect(screen.getByTestId('redis-tools-password-toggle')).toBeDisabled()
 
       await act(async () => {
         resolveLookup([{ password: 'secret' }])
       })
 
-      expect(screen.getByTestId('dev-tools-copy-btn')).toBeEnabled()
-      expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled()
+      expect(screen.getByTestId('redis-tools-copy-btn')).toBeEnabled()
+      expect(screen.getByTestId('redis-tools-password-toggle')).toBeEnabled()
     })
 
     it('should keep a placeholder when the password lookup fails', async () => {
       ;(exportInstances as jest.Mock).mockRejectedValue(new Error('denied'))
       renderComponent()
       await waitFor(() =>
-        expect(screen.getByTestId('dev-tools-password-toggle')).toBeEnabled(),
+        expect(screen.getByTestId('redis-tools-password-toggle')).toBeEnabled(),
       )
 
-      fireEvent.click(screen.getByTestId('dev-tools-password-toggle'))
+      fireEvent.click(screen.getByTestId('redis-tools-password-toggle'))
 
-      expect(screen.getByTestId('dev-tools-command')).toHaveTextContent(
+      expect(screen.getByTestId('redis-tools-command')).toHaveTextContent(
         'redis://default:<password>@localhost:6379',
       )
     })
@@ -280,7 +280,7 @@ describe('DevTools', () => {
     renderComponent()
 
     expect(
-      screen.queryByTestId('dev-tools-connect-database'),
+      screen.queryByTestId('redis-tools-connect-database'),
     ).not.toBeInTheDocument()
   })
 
@@ -288,7 +288,7 @@ describe('DevTools', () => {
     const openSpy = jest.spyOn(window, 'open').mockReturnValue(null)
     renderComponent()
 
-    fireEvent.click(screen.getByTestId('dev-tools-radar-link'))
+    fireEvent.click(screen.getByTestId('redis-tools-radar-link'))
 
     expect(openSpy).toHaveBeenCalledWith(
       expect.stringContaining('utm_campaign=redisinsight'),
@@ -301,7 +301,7 @@ describe('DevTools', () => {
   it('should mark Redvisor as coming soon', () => {
     renderComponent()
 
-    expect(screen.getByTestId('dev-tools-redvisor-badge')).toHaveTextContent(
+    expect(screen.getByTestId('redis-tools-redvisor-badge')).toHaveTextContent(
       'Coming soon',
     )
   })

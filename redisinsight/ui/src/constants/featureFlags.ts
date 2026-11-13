@@ -19,5 +19,5 @@ export enum FeatureFlags {
   vectorSearchEnhancements = 'vectorSearchEnhancements',
   valueDecoder = 'valueDecoder',
   appUpdateStrategySettings = 'appUpdateStrategySettings',
-  devTools = 'devTools',
+  redisTools = 'redisTools',
 }

@@ -3,7 +3,7 @@ import React from 'react'
 import { useTranslation } from 'uiSrc/i18n'
 import { Header } from 'uiSrc/components/side-panels/components'
 import styles from 'uiSrc/components/side-panels/styles.module.scss'
-import DevTools from 'uiSrc/components/side-panels/panels/dev-tools'
+import RedisTools from 'uiSrc/components/side-panels/panels/redis-tools'
 import { Text } from 'uiSrc/components/base/text'
 
 export interface Props {
@@ -12,7 +12,7 @@ export interface Props {
   onClose: () => void
 }
 
-const DevToolsPanel = (props: Props) => {
+const RedisToolsPanel = (props: Props) => {
   const { isFullScreen, onToggleFullScreen, onClose } = props
   const { t } = useTranslation()
 
@@ -22,19 +22,19 @@ const DevToolsPanel = (props: Props) => {
         isFullScreen={isFullScreen}
         onToggleFullScreen={onToggleFullScreen}
         onClose={onClose}
-        panelName="dev-tools"
+        panelName="redis-tools"
       >
         <div className={styles.assistantHeader}>
           <Text size="L" color="primary">
-            {t('devTools.panel.title')}
+            {t('redisTools.panel.title')}
           </Text>
         </div>
       </Header>
       <div className={styles.body}>
-        <DevTools />
+        <RedisTools />
       </div>
     </>
   )
 }
 
-export default DevToolsPanel
+export default RedisToolsPanel

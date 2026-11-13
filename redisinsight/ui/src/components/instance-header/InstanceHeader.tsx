@@ -31,7 +31,7 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { DevToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import ShortInstanceInfo from 'uiSrc/components/instance-header/components/ShortInstanceInfo'
 
 import { resetKeyInfo } from 'uiSrc/slices/browser/keys'
@@ -82,10 +82,10 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   const { databases = 0 } = useAppSelector(connectedInstanceInfoSelector)
   const returnUrl = useAppSelector(appReturnUrlSelector)
   const {
-    [FeatureFlags.devTools]: devToolsFeature,
+    [FeatureFlags.redisTools]: redisToolsFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
   } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isDevToolsAvailable = !!devToolsFeature?.flag
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
   const { environment } = useDatabaseEnvironment()
   const isProductionEnv = environment === Environment.Production
 
@@ -325,9 +325,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
 
         <FlexItem>
           <Row align="center" justify="end">
-            {isDevToolsAvailable && (
+            {isRedisToolsAvailable && (
               <FlexItem style={{ marginLeft: 12 }}>
-                <DevToolsTrigger />
+                <RedisToolsTrigger />
               </FlexItem>
             )}
 

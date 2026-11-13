@@ -26,15 +26,15 @@ import { Text } from 'uiSrc/components/base/text'
 import { Title } from 'uiSrc/components/base/text/Title'
 
 import {
-  DEV_TOOLS_PASSWORD_MASK,
-  DEV_TOOLS_PASSWORD_PLACEHOLDER,
-  DEV_TOOLS_STEPS,
-} from './DevTools.constants'
-import { InitTargetKind } from './DevTools.types'
+  REDIS_TOOLS_PASSWORD_MASK,
+  REDIS_TOOLS_PASSWORD_PLACEHOLDER,
+  REDIS_TOOLS_STEPS,
+} from './RedisTools.constants'
+import { InitTargetKind } from './RedisTools.types'
 import { buildInitCommand, buildRadarUrl, resolveInitTarget } from './utils'
-import * as S from './DevTools.styles'
+import * as S from './RedisTools.styles'
 
-export const DevTools = () => {
+export const RedisTools = () => {
   const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId?: string }>()
   const connectedInstance = useAppSelector(connectedInstanceSelector)
@@ -105,41 +105,43 @@ export const DevTools = () => {
 
   const copyCommand = password
     ? buildCommand(password, true)
-    : buildCommand(DEV_TOOLS_PASSWORD_PLACEHOLDER, false)
+    : buildCommand(REDIS_TOOLS_PASSWORD_PLACEHOLDER, false)
   const displayCommand =
     isRevealed && password
       ? buildCommand(password, true)
       : buildCommand(
-          isRevealed ? DEV_TOOLS_PASSWORD_PLACEHOLDER : DEV_TOOLS_PASSWORD_MASK,
+          isRevealed
+            ? REDIS_TOOLS_PASSWORD_PLACEHOLDER
+            : REDIS_TOOLS_PASSWORD_MASK,
           false,
         )
 
   return (
-    <S.Container gap="l" data-testid="dev-tools-panel">
+    <S.Container gap="l" data-testid="redis-tools-panel">
       <Col gap="s" grow={false}>
         <Text size="S" color="secondary">
-          {t('devTools.eyebrow')}
+          {t('redisTools.eyebrow')}
         </Text>
         <Title size="L" component="h2">
-          {t('devTools.title')}
+          {t('redisTools.title')}
         </Title>
         <Text size="M" color="secondary">
-          {t('devTools.cli.description')}
+          {t('redisTools.cli.description')}
         </Text>
       </Col>
 
       {canConnectDatabase && (
         <Row grow={false}>
           <Checkbox
-            id="dev-tools-connect-database"
+            id="redis-tools-connect-database"
             checked={shouldConnect}
             onCheckedChange={(checked) =>
               setOverride({ instanceId, value: checked === true })
             }
-            label={t('devTools.connectDatabase', {
+            label={t('redisTools.connectDatabase', {
               name: connectedInstance.name,
             })}
-            data-testid="dev-tools-connect-database"
+            data-testid="redis-tools-connect-database"
           />
         </Row>
       )}
@@ -148,7 +150,7 @@ export const DevTools = () => {
         <S.CommandText
           component="span"
           color="primary"
-          data-testid="dev-tools-command"
+          data-testid="redis-tools-command"
         >
           {displayCommand}
         </S.CommandText>
@@ -156,29 +158,31 @@ export const DevTools = () => {
           <IconButton
             icon={isRevealed ? HideIcon : ShowIcon}
             aria-label={t(
-              isRevealed ? 'devTools.password.hide' : 'devTools.password.show',
+              isRevealed
+                ? 'redisTools.password.hide'
+                : 'redisTools.password.show',
             )}
             onClick={() => setIsRevealed((value) => !value)}
             disabled={isPasswordPending}
-            data-testid="dev-tools-password-toggle"
+            data-testid="redis-tools-password-toggle"
           />
         )}
         <CopyButton
           copy={copyCommand}
           disabled={isPasswordPending}
-          data-testid="dev-tools-copy"
+          data-testid="redis-tools-copy"
         />
       </S.CommandBox>
 
       <Text size="S" color="secondary">
         {shouldConnect &&
           initTarget?.kind === InitTargetKind.Cloud &&
-          `${t('devTools.footnote.signIn')} `}
-        {t('devTools.footnote.requirements')}
+          `${t('redisTools.footnote.signIn')} `}
+        {t('redisTools.footnote.requirements')}
       </Text>
 
-      <S.StepsBox gap="l" wrap grow={false} data-testid="dev-tools-steps">
-        {DEV_TOOLS_STEPS.map(({ key, icon }) => (
+      <S.StepsBox gap="l" wrap grow={false} data-testid="redis-tools-steps">
+        {REDIS_TOOLS_STEPS.map(({ key, icon }) => (
           <Row key={key} align="center" gap="s" grow={false}>
             <Icon icon={icon} size="M" />
             <Text size="S">{t(key)}</Text>
@@ -187,42 +191,42 @@ export const DevTools = () => {
       </S.StepsBox>
 
       <Row gap="m" wrap grow={false}>
-        <S.Card gap="m" data-testid="dev-tools-redvisor-card">
+        <S.Card gap="m" data-testid="redis-tools-redvisor-card">
           <S.CardEyebrow align="center" justify="between" gap="s" grow={false}>
             <Text size="S" color="secondary">
-              {t('devTools.redvisor.eyebrow')}
+              {t('redisTools.redvisor.eyebrow')}
             </Text>
             <RiBadge
               variant="light"
-              label={t('devTools.redvisor.badge')}
-              data-testid="dev-tools-redvisor-badge"
+              label={t('redisTools.redvisor.badge')}
+              data-testid="redis-tools-redvisor-badge"
             />
           </S.CardEyebrow>
           <Row align="center" gap="s" grow={false}>
             <Icon icon={AnalysisIcon} size="M" />
             <Title size="S" component="h3">
-              {t('devTools.redvisor.title')}
+              {t('redisTools.redvisor.title')}
             </Title>
           </Row>
           <Text size="S" color="secondary">
-            {t('devTools.redvisor.description')}
+            {t('redisTools.redvisor.description')}
           </Text>
         </S.Card>
 
-        <S.Card gap="m" data-testid="dev-tools-radar-card">
+        <S.Card gap="m" data-testid="redis-tools-radar-card">
           <S.CardEyebrow align="center" gap="s" grow={false}>
             <Text size="S" color="secondary">
-              {t('devTools.radar.eyebrow')}
+              {t('redisTools.radar.eyebrow')}
             </Text>
           </S.CardEyebrow>
           <Row align="center" gap="s" grow={false}>
             <Icon icon={MetricsIcon} size="M" />
             <Title size="S" component="h3">
-              {t('devTools.radar.title')}
+              {t('redisTools.radar.title')}
             </Title>
           </Row>
           <Text size="S" color="secondary">
-            {t('devTools.radar.description')}
+            {t('redisTools.radar.description')}
           </Text>
           <Row grow={false}>
             <SecondaryButton
@@ -233,9 +237,9 @@ export const DevTools = () => {
               onClick={() =>
                 window.open(buildRadarUrl(), '_blank', 'noopener,noreferrer')
               }
-              data-testid="dev-tools-radar-link"
+              data-testid="redis-tools-radar-link"
             >
-              {t('devTools.radar.button.open')}
+              {t('redisTools.radar.button.open')}
             </SecondaryButton>
           </Row>
         </S.Card>

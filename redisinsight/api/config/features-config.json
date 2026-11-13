@@ -1,7 +1,7 @@
 {
   "version": 13,
   "features": {
-    "devTools": {
+    "redisTools": {
       "flag": true,
       "perc": [[0, 100]],
       "filters": []

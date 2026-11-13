@@ -86,7 +86,7 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.appUpdateStrategySettings]: {
         flag: false,
       },
-      [FeatureFlags.devTools]: {
+      [FeatureFlags.redisTools]: {
         flag: false,
       },
     },

@@ -4,7 +4,7 @@ import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
-export const DevToolsWrapper = styled(FlexGroup)`
+export const RedisToolsWrapper = styled(FlexGroup)`
   user-select: none;
 `
 

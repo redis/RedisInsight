@@ -3,12 +3,12 @@ import { AzureAuthType } from 'uiSrc/slices/interfaces/azure'
 import { Instance } from 'uiSrc/slices/interfaces/instances'
 
 import {
-  DEV_TOOLS_DEFAULT_USERNAME,
-  DEV_TOOLS_INIT_COMMAND,
-  DEV_TOOLS_RADAR_URL,
-  DEV_TOOLS_UTM_PARAMS,
-} from './DevTools.constants'
-import { InitTarget, InitTargetKind, UrlConnection } from './DevTools.types'
+  REDIS_TOOLS_DEFAULT_USERNAME,
+  REDIS_TOOLS_INIT_COMMAND,
+  REDIS_TOOLS_RADAR_URL,
+  REDIS_TOOLS_UTM_PARAMS,
+} from './RedisTools.constants'
+import { InitTarget, InitTargetKind, UrlConnection } from './RedisTools.types'
 
 const SAFE_SHELL_ARG = /^[\w.:/@-]+$/
 
@@ -33,7 +33,7 @@ export const buildConnectionUrl = (
   let auth = ''
 
   if (password !== undefined) {
-    const user = encodeURIComponent(username || DEV_TOOLS_DEFAULT_USERNAME)
+    const user = encodeURIComponent(username || REDIS_TOOLS_DEFAULT_USERNAME)
     const secret = shouldEncodePassword
       ? encodeURIComponent(password)
       : password
@@ -108,12 +108,12 @@ export const buildInitCommand = (
   password?: string,
   shouldEncodePassword = true,
 ): string => {
-  if (!target) return DEV_TOOLS_INIT_COMMAND
+  if (!target) return REDIS_TOOLS_INIT_COMMAND
 
   const name = quoteShellArg(target.name)
 
   if (target.kind === InitTargetKind.Cloud) {
-    return `${DEV_TOOLS_INIT_COMMAND} --cloud --name ${name}`
+    return `${REDIS_TOOLS_INIT_COMMAND} --cloud --name ${name}`
   }
 
   const url = buildConnectionUrl(
@@ -122,7 +122,7 @@ export const buildInitCommand = (
     shouldEncodePassword,
   )
 
-  return `${DEV_TOOLS_INIT_COMMAND} --url ${quoteShellArgAlways(url)} --name ${name}`
+  return `${REDIS_TOOLS_INIT_COMMAND} --url ${quoteShellArgAlways(url)} --name ${name}`
 }
 export const buildRadarUrl = (): string =>
-  `${DEV_TOOLS_RADAR_URL}?${DEV_TOOLS_UTM_PARAMS}`
+  `${REDIS_TOOLS_RADAR_URL}?${REDIS_TOOLS_UTM_PARAMS}`
