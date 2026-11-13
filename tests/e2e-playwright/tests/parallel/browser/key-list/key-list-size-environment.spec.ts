@@ -134,6 +134,8 @@ test.describe('Browser > Key List > Key size by environment', () => {
 
       await apiHelper.updateDatabase(database.id, { environment: Environment.Production });
 
+      // Reload so requests still in flight from the Development view are not collected.
+      await browserPage.page.reload();
       const requestBodies = collectSizeRequests(browserPage.page);
 
       await browserPage.goto(database.id);
