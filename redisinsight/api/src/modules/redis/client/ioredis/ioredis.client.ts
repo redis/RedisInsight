@@ -100,6 +100,8 @@ export abstract class IoredisClient extends RedisClient {
     commands: RedisClientCommand[],
     options?: IRedisClientCommandOptions,
   ): Promise<Array<[Error | null, RedisClientCommandReply]>> {
+    this.logCommands(commands, 'sendPipeline');
+
     let batch = commands.map((command) =>
       IoredisClient.prepareCommandArgs(command),
     );
@@ -119,6 +121,8 @@ export abstract class IoredisClient extends RedisClient {
     command: RedisClientCommand,
     options?: IRedisClientCommandOptions,
   ): Promise<RedisClientCommandReply> {
+    this.logCommands([command], 'sendCommand');
+
     const [cmd, ...args] = IoredisClient.prepareCommandArgs(
       command,
     ) as string[];
@@ -146,6 +150,8 @@ export abstract class IoredisClient extends RedisClient {
     command: RedisClientCommand,
     options?: IRedisClientCommandOptions,
   ): Promise<RedisClientCommandReply> {
+    this.logCommands([command], 'call');
+
     if (IoredisClient.prepareCommandOptions(options).replyEncoding === null) {
       return (await this.client.callBuffer(
         ...command,
