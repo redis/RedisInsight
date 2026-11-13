@@ -4,7 +4,12 @@ import { ConnectionProvider, ConnectionType } from 'uiSrc/slices/interfaces'
 
 import { DEV_TOOLS_INIT_COMMAND } from './DevTools.constants'
 import { InitTargetKind } from './DevTools.types'
-import { buildInitCommand, buildRadarUrl, resolveInitTarget } from './utils'
+import {
+  buildConnectionUrl,
+  buildInitCommand,
+  buildRadarUrl,
+  resolveInitTarget,
+} from './utils'
 
 describe('resolveInitTarget', () => {
   const name = 'orders-dev'
@@ -25,43 +30,34 @@ describe('resolveInitTarget', () => {
     ).toEqual({ kind: InitTargetKind.Cloud, name })
   })
 
-  it('should return a url target for a standalone database', () => {
+  it('should return a url connection for a standalone database', () => {
     expect(resolveInitTarget(standalone)).toEqual({
       kind: InitTargetKind.Url,
       name,
-      url: 'redis://localhost:6379',
+      connection: {
+        host: 'localhost',
+        port: 6379,
+        tls: false,
+        username: undefined,
+        db: undefined,
+        hasPassword: false,
+      },
     })
   })
 
-  it('should use the rediss scheme and username without a password', () => {
-    expect(
-      resolveInitTarget({ ...standalone, tls: true, username: 'default' }),
-    ).toMatchObject({ url: 'rediss://default@localhost:6379' })
-  })
+  it('should flag a password without reading it', () => {
+    const target = resolveInitTarget({
+      ...standalone,
+      tls: true,
+      username: 'app',
+      db: 3,
+      password: true as never,
+    })
 
-  it('should never put a password in the url', () => {
-    expect(
-      resolveInitTarget({ ...standalone, password: true as never }),
-    ).toEqual({
-      kind: InitTargetKind.Url,
-      name,
-      url: 'redis://localhost:6379',
+    expect(target).toMatchObject({
+      connection: { tls: true, username: 'app', db: 3, hasPassword: true },
     })
-  })
-
-  it('should append a non-zero db index', () => {
-    expect(resolveInitTarget({ ...standalone, db: 3 })).toMatchObject({
-      url: 'redis://localhost:6379/3',
-    })
-    expect(resolveInitTarget({ ...standalone, db: 0 })).toMatchObject({
-      url: 'redis://localhost:6379',
-    })
-  })
-
-  it('should wrap an IPv6 host in brackets', () => {
-    expect(resolveInitTarget({ ...standalone, host: '::1' })).toMatchObject({
-      url: 'redis://[::1]:6379',
-    })
+    expect(JSON.stringify(target)).not.toContain('"password"')
   })
 
   it.each([
@@ -77,7 +73,59 @@ describe('resolveInitTarget', () => {
   })
 })
 
+describe('buildConnectionUrl', () => {
+  const connection = {
+    host: 'localhost',
+    port: 6379,
+    tls: false,
+    hasPassword: false,
+  }
+
+  it('should omit credentials without a password or username', () => {
+    expect(buildConnectionUrl(connection)).toBe('redis://localhost:6379')
+  })
+
+  it('should use the rediss scheme and a username without a password', () => {
+    expect(
+      buildConnectionUrl({ ...connection, tls: true, username: 'app' }),
+    ).toBe('rediss://app@localhost:6379')
+  })
+
+  it('should default the username when a password is set', () => {
+    expect(buildConnectionUrl(connection, 'secret')).toBe(
+      'redis://default:secret@localhost:6379',
+    )
+  })
+
+  it('should encode special characters in the password', () => {
+    expect(buildConnectionUrl(connection, 'p@ss/w:rd')).toBe(
+      'redis://default:p%40ss%2Fw%3Ard@localhost:6379',
+    )
+  })
+
+  it('should append a non-zero db index', () => {
+    expect(buildConnectionUrl({ ...connection, db: 3 })).toBe(
+      'redis://localhost:6379/3',
+    )
+    expect(buildConnectionUrl({ ...connection, db: 0 })).toBe(
+      'redis://localhost:6379',
+    )
+  })
+
+  it('should wrap an IPv6 host in brackets', () => {
+    expect(buildConnectionUrl({ ...connection, host: '::1' })).toBe(
+      'redis://[::1]:6379',
+    )
+  })
+})
+
 describe('buildInitCommand', () => {
+  const urlTarget = (hasPassword: boolean) => ({
+    kind: InitTargetKind.Url as const,
+    name: 'local',
+    connection: { host: '127.0.0.1', port: 6379, tls: false, hasPassword },
+  })
+
   it('should return the plain init command without a target', () => {
     expect(buildInitCommand()).toBe(DEV_TOOLS_INIT_COMMAND)
     expect(buildInitCommand(null)).toBe(DEV_TOOLS_INIT_COMMAND)
@@ -89,15 +137,15 @@ describe('buildInitCommand', () => {
     ).toBe(`${DEV_TOOLS_INIT_COMMAND} --cloud --name orders-dev`)
   })
 
-  it('should append the url flags for a url target', () => {
-    expect(
-      buildInitCommand({
-        kind: InitTargetKind.Url,
-        name: 'local',
-        url: 'redis://localhost:6379',
-      }),
-    ).toBe(
-      `${DEV_TOOLS_INIT_COMMAND} --url redis://localhost:6379 --name local`,
+  it('should append a quoted url without credentials when there is no password', () => {
+    expect(buildInitCommand(urlTarget(false), 'ignored')).toBe(
+      `${DEV_TOOLS_INIT_COMMAND} --url 'redis://127.0.0.1:6379' --name local`,
+    )
+  })
+
+  it('should put the password in the url when the database has one', () => {
+    expect(buildInitCommand(urlTarget(true), 'secret')).toBe(
+      `${DEV_TOOLS_INIT_COMMAND} --url 'redis://default:secret@127.0.0.1:6379' --name local`,
     )
   })
 
@@ -115,14 +163,10 @@ describe('buildInitCommand', () => {
     )
   })
 
-  it('should quote a url that contains shell metacharacters', () => {
-    expect(
-      buildInitCommand({
-        kind: InitTargetKind.Url,
-        name: 'local',
-        url: 'redis://[::1]:6379',
-      }),
-    ).toContain("--url 'redis://[::1]:6379'")
+  it('should escape single quotes in the password', () => {
+    expect(buildInitCommand(urlTarget(true), "it's")).toContain(
+      "'redis://default:it'\\''s@127.0.0.1:6379'",
+    )
   })
 })
 

@@ -15,7 +15,7 @@ export const CommandBox = styled(Row)`
     ${({ theme }) => theme.core.space.space150}
     ${({ theme }) => theme.core.space.space200};
   background-color: ${({ theme }) =>
-    theme.semantic.color.background.neutral200};
+    theme.semantic.color.background.neutral300};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-radius: ${({ theme }) => theme.core.space.space100};
 `
@@ -26,11 +26,6 @@ export const CommandText = styled(Text)`
   overflow-x: auto;
   white-space: nowrap;
   font-family: ${({ theme }) => theme.core.font.fontFamily.sourceCodeProRegular};
-`
-
-export const PromptText = styled(Text)`
-  flex: 1;
-  margin: 0;
 `
 
 export const StepsBox = styled(Row)`
@@ -48,4 +43,9 @@ export const Card = styled(Col)`
     theme.semantic.color.background.neutral200};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-radius: ${({ theme }) => theme.core.space.space100};
+`
+
+// Both cards share the same eyebrow height, with or without a badge.
+export const CardEyebrow = styled(Row)`
+  min-height: ${({ theme }) => theme.components.badge.height};
 `

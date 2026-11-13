@@ -2,37 +2,51 @@ import { ConnectionProvider, ConnectionType } from 'uiSrc/slices/interfaces'
 import { Instance } from 'uiSrc/slices/interfaces/instances'
 
 import {
+  DEV_TOOLS_DEFAULT_USERNAME,
   DEV_TOOLS_INIT_COMMAND,
   DEV_TOOLS_RADAR_URL,
   DEV_TOOLS_UTM_PARAMS,
 } from './DevTools.constants'
-import { InitTarget, InitTargetKind } from './DevTools.types'
+import { InitTarget, InitTargetKind, UrlConnection } from './DevTools.types'
 
 const SAFE_SHELL_ARG = /^[\w.:/@-]+$/
 
+const quoteShellArgAlways = (value: string): string =>
+  `'${value.replace(/'/g, `'\\''`)}'`
+
 const quoteShellArg = (value: string): string =>
-  SAFE_SHELL_ARG.test(value) ? value : `'${value.replace(/'/g, `'\\''`)}'`
+  SAFE_SHELL_ARG.test(value) ? value : quoteShellArgAlways(value)
 
 const formatHost = (host: string): string =>
   host.includes(':') ? `[${host}]` : host
 
-const buildConnectionUrl = ({
-  host,
-  port,
-  tls,
-  username,
-  db,
-}: Instance): string => {
+// A password of undefined omits credentials; any string (including a mask or
+// placeholder) renders the password segment.
+export const buildConnectionUrl = (
+  { host, port, tls, username, db }: UrlConnection,
+  password?: string,
+  shouldEncodePassword = true,
+): string => {
   const scheme = tls ? 'rediss' : 'redis'
-  const auth = username ? `${encodeURIComponent(username)}@` : ''
   const dbIndex = db ? `/${db}` : ''
+  let auth = ''
+
+  if (password !== undefined) {
+    const user = encodeURIComponent(username || DEV_TOOLS_DEFAULT_USERNAME)
+    const secret = shouldEncodePassword
+      ? encodeURIComponent(password)
+      : password
+    auth = `${user}:${secret}@`
+  } else if (username) {
+    auth = `${encodeURIComponent(username)}@`
+  }
 
   return `${scheme}://${auth}${formatHost(host)}:${port}${dbIndex}`
 }
 
 // Returns the init target for a database, or null when the connection cannot
 // be expressed in a URL (cluster, sentinel, SSH, client or custom CA certs).
-// Credentials are never read, so the URL carries no password.
+// The password is never read here; the caller supplies it when needed.
 export const resolveInitTarget = (
   instance: Partial<Instance>,
 ): InitTarget | null => {
@@ -46,6 +60,9 @@ export const resolveInitTarget = (
     tls,
     caCert,
     tlsClientAuthRequired,
+    username,
+    db,
+    password,
   } = instance
 
   if (!name) return null
@@ -65,19 +82,37 @@ export const resolveInitTarget = (
   return {
     kind: InitTargetKind.Url,
     name,
-    url: buildConnectionUrl(instance as Instance),
+    connection: {
+      host,
+      port,
+      tls: !!tls,
+      username: username || undefined,
+      db: db || undefined,
+      hasPassword: !!password,
+    },
   }
 }
 
-export const buildInitCommand = (target?: InitTarget | null): string => {
+export const buildInitCommand = (
+  target?: InitTarget | null,
+  password?: string,
+  shouldEncodePassword = true,
+): string => {
   if (!target) return DEV_TOOLS_INIT_COMMAND
 
   const name = quoteShellArg(target.name)
 
-  return target.kind === InitTargetKind.Cloud
-    ? `${DEV_TOOLS_INIT_COMMAND} --cloud --name ${name}`
-    : `${DEV_TOOLS_INIT_COMMAND} --url ${quoteShellArg(target.url)} --name ${name}`
-}
+  if (target.kind === InitTargetKind.Cloud) {
+    return `${DEV_TOOLS_INIT_COMMAND} --cloud --name ${name}`
+  }
 
+  const url = buildConnectionUrl(
+    target.connection,
+    target.connection.hasPassword ? password : undefined,
+    shouldEncodePassword,
+  )
+
+  return `${DEV_TOOLS_INIT_COMMAND} --url ${quoteShellArgAlways(url)} --name ${name}`
+}
 export const buildRadarUrl = (): string =>
   `${DEV_TOOLS_RADAR_URL}?${DEV_TOOLS_UTM_PARAMS}`

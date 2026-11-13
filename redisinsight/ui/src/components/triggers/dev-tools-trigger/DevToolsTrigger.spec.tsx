@@ -28,14 +28,14 @@ describe('DevToolsTrigger', () => {
     renderComponent()
 
     expect(screen.getByTestId('dev-tools-trigger')).toHaveTextContent(
-      'Dev tools',
+      'Redis tools',
     )
     expect(screen.getByTestId('dev-tools-trigger-badge')).toHaveTextContent(
       'NEW',
     )
   })
 
-  it('should toggle the dev tools side panel on click', () => {
+  it('should toggle the Redis tools side panel on click', () => {
     renderComponent()
 
     fireEvent.click(screen.getByTestId('dev-tools-trigger'))

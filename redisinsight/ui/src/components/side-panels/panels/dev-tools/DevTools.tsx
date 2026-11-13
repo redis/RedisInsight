@@ -1,29 +1,34 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Environment } from 'apiClient'
 
 import { useTranslation } from 'uiSrc/i18n'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { exportInstances } from 'uiSrc/services/database/instancesService'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  IconButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import {
   AnalysisIcon,
   ArrowDiagonalIcon,
+  HideIcon,
   Icon,
   MetricsIcon,
+  ShowIcon,
 } from 'uiSrc/components/base/icons'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Title } from 'uiSrc/components/base/text/Title'
 
 import {
-  DEV_TOOLS_MODES,
+  DEV_TOOLS_PASSWORD_MASK,
+  DEV_TOOLS_PASSWORD_PLACEHOLDER,
   DEV_TOOLS_STEPS,
-  DevToolsMode,
 } from './DevTools.constants'
 import { InitTargetKind } from './DevTools.types'
 import { buildInitCommand, buildRadarUrl, resolveInitTarget } from './utils'
@@ -34,8 +39,9 @@ export const DevTools = () => {
   const { instanceId } = useParams<{ instanceId?: string }>()
   const connectedInstance = useAppSelector(connectedInstanceSelector)
 
-  const [mode, setMode] = useState<DevToolsMode>(DevToolsMode.Agent)
   const [connectOverride, setConnectOverride] = useState<boolean | null>(null)
+  const [isRevealed, setIsRevealed] = useState(false)
+  const [password, setPassword] = useState<string | null>(null)
 
   const initTarget = useMemo(
     () => (instanceId ? resolveInitTarget(connectedInstance) : null),
@@ -46,39 +52,67 @@ export const DevTools = () => {
     canConnectDatabase &&
     (connectOverride ??
       connectedInstance.environment !== Environment.Production)
+  const hasPassword =
+    shouldConnect &&
+    initTarget?.kind === InitTargetKind.Url &&
+    initTarget.connection.hasPassword
 
-  const command = useMemo(
-    () => buildInitCommand(shouldConnect ? initTarget : null),
-    [shouldConnect, initTarget],
-  )
-  const prompt = t('devTools.agent.prompt', { command })
-  const isAgentMode = mode === DevToolsMode.Agent
+  useEffect(() => {
+    setPassword(null)
+    setIsRevealed(false)
+
+    if (!hasPassword || !instanceId) return undefined
+
+    let isCancelled = false
+
+    exportInstances([instanceId], true)
+      .then((data) => {
+        const [database] = (data ?? []) as unknown as { password?: string }[]
+        if (!isCancelled) setPassword(database?.password ?? null)
+      })
+      .catch(() => {
+        // The command keeps a password placeholder when the lookup fails.
+      })
+
+    return () => {
+      isCancelled = true
+    }
+  }, [hasPassword, instanceId])
+
+  const buildCommand = (passwordValue: string, shouldEncode: boolean) =>
+    buildInitCommand(
+      shouldConnect ? initTarget : null,
+      passwordValue,
+      shouldEncode,
+    )
+
+  const copyCommand = password
+    ? buildCommand(password, true)
+    : buildCommand(DEV_TOOLS_PASSWORD_PLACEHOLDER, false)
+  const displayCommand =
+    isRevealed && password
+      ? buildCommand(password, true)
+      : buildCommand(
+          isRevealed ? DEV_TOOLS_PASSWORD_PLACEHOLDER : DEV_TOOLS_PASSWORD_MASK,
+          false,
+        )
 
   return (
     <S.Container gap="l" data-testid="dev-tools-panel">
-      <Col gap="s">
+      <Col gap="s" grow={false}>
         <Text size="S" color="secondary">
           {t('devTools.eyebrow')}
         </Text>
         <Title size="L" component="h2">
           {t('devTools.title')}
         </Title>
+        <Text size="M" color="secondary">
+          {t('devTools.cli.description')}
+        </Text>
       </Col>
 
-      <Row align="center" justify="between" gap="m" wrap>
-        <ButtonGroup data-testid="dev-tools-mode">
-          {DEV_TOOLS_MODES.map(({ value, labelKey, icon }) => (
-            <ButtonGroup.Button
-              key={value}
-              isSelected={mode === value}
-              onClick={() => setMode(value)}
-              data-testid={`dev-tools-mode-${value}`}
-            >
-              <Icon icon={icon} size="M" color="currentColor" /> {t(labelKey)}
-            </ButtonGroup.Button>
-          ))}
-        </ButtonGroup>
-        {canConnectDatabase && (
+      {canConnectDatabase && (
+        <Row grow={false}>
           <Checkbox
             id="dev-tools-connect-database"
             checked={shouldConnect}
@@ -88,44 +122,29 @@ export const DevTools = () => {
             })}
             data-testid="dev-tools-connect-database"
           />
-        )}
-      </Row>
-
-      <Text size="M" color="secondary">
-        {isAgentMode
-          ? t('devTools.agent.description')
-          : t('devTools.cli.description')}
-      </Text>
-
-      <S.CommandBox align="center" gap="m">
-        {isAgentMode ? (
-          <S.PromptText color="primary" data-testid="dev-tools-prompt">
-            {prompt}
-          </S.PromptText>
-        ) : (
-          <S.CommandText
-            component="span"
-            color="primary"
-            data-testid="dev-tools-command"
-          >
-            {command}
-          </S.CommandText>
-        )}
-        <CopyButton
-          copy={isAgentMode ? prompt : command}
-          data-testid="dev-tools-copy"
-        />
-      </S.CommandBox>
-
-      {shouldConnect && initTarget?.kind === InitTargetKind.Url && (
-        <Text
-          size="S"
-          color="warning"
-          data-testid="dev-tools-credentials-notice"
-        >
-          {t('devTools.credentialsNotice')}
-        </Text>
+        </Row>
       )}
+
+      <S.CommandBox align="center" gap="m" grow={false}>
+        <S.CommandText
+          component="span"
+          color="primary"
+          data-testid="dev-tools-command"
+        >
+          {displayCommand}
+        </S.CommandText>
+        {hasPassword && (
+          <IconButton
+            icon={isRevealed ? HideIcon : ShowIcon}
+            aria-label={t(
+              isRevealed ? 'devTools.password.hide' : 'devTools.password.show',
+            )}
+            onClick={() => setIsRevealed((value) => !value)}
+            data-testid="dev-tools-password-toggle"
+          />
+        )}
+        <CopyButton copy={copyCommand} data-testid="dev-tools-copy" />
+      </S.CommandBox>
 
       <Text size="S" color="secondary">
         {shouldConnect &&
@@ -134,7 +153,7 @@ export const DevTools = () => {
         {t('devTools.footnote.requirements')}
       </Text>
 
-      <S.StepsBox gap="l" wrap data-testid="dev-tools-steps">
+      <S.StepsBox gap="l" wrap grow={false} data-testid="dev-tools-steps">
         {DEV_TOOLS_STEPS.map(({ key, icon }) => (
           <Row key={key} align="center" gap="s" grow={false}>
             <Icon icon={icon} size="M" />
@@ -143,9 +162,9 @@ export const DevTools = () => {
         ))}
       </S.StepsBox>
 
-      <Row gap="m" wrap>
-        <S.Card gap="s" data-testid="dev-tools-redvisor-card">
-          <Row align="center" justify="between">
+      <Row gap="m" wrap grow={false}>
+        <S.Card gap="m" data-testid="dev-tools-redvisor-card">
+          <S.CardEyebrow align="center" justify="between" gap="s" grow={false}>
             <Text size="S" color="secondary">
               {t('devTools.redvisor.eyebrow')}
             </Text>
@@ -154,8 +173,8 @@ export const DevTools = () => {
               label={t('devTools.redvisor.badge')}
               data-testid="dev-tools-redvisor-badge"
             />
-          </Row>
-          <Row align="center" gap="s">
+          </S.CardEyebrow>
+          <Row align="center" gap="s" grow={false}>
             <Icon icon={AnalysisIcon} size="M" />
             <Title size="S" component="h3">
               {t('devTools.redvisor.title')}
@@ -166,11 +185,13 @@ export const DevTools = () => {
           </Text>
         </S.Card>
 
-        <S.Card gap="s" data-testid="dev-tools-radar-card">
-          <Text size="S" color="secondary">
-            {t('devTools.radar.eyebrow')}
-          </Text>
-          <Row align="center" gap="s">
+        <S.Card gap="m" data-testid="dev-tools-radar-card">
+          <S.CardEyebrow align="center" gap="s" grow={false}>
+            <Text size="S" color="secondary">
+              {t('devTools.radar.eyebrow')}
+            </Text>
+          </S.CardEyebrow>
+          <Row align="center" gap="s" grow={false}>
             <Icon icon={MetricsIcon} size="M" />
             <Title size="S" component="h3">
               {t('devTools.radar.title')}
@@ -179,7 +200,7 @@ export const DevTools = () => {
           <Text size="S" color="secondary">
             {t('devTools.radar.description')}
           </Text>
-          <Row>
+          <Row grow={false}>
             <SecondaryButton
               filled
               size="small"
