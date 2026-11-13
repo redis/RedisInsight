@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 
 import { ConnectionProvider, ConnectionType } from 'uiSrc/slices/interfaces'
+import { Instance } from 'uiSrc/slices/interfaces/instances'
 
 import { DEV_TOOLS_INIT_COMMAND } from './DevTools.constants'
 import { InitTargetKind } from './DevTools.types'
@@ -20,6 +21,10 @@ describe('resolveInitTarget', () => {
     provider: ConnectionProvider.LOCALHOST,
     connectionType: ConnectionType.Standalone,
   }
+
+  // The generated provider type is a strict enum; tests only need the strings.
+  const azureProvider = (authType: string): Partial<Instance> =>
+    ({ providerDetails: { provider: 'azure', authType } }) as never
 
   it('should return a cloud target for a Redis Cloud database', () => {
     expect(
@@ -64,8 +69,8 @@ describe('resolveInitTarget', () => {
     expect(
       resolveInitTarget({
         ...standalone,
-        providerDetails: { provider: 'azure', authType: 'accessKey' },
-      } as never),
+        ...azureProvider('accessKey'),
+      }),
     ).toMatchObject({ kind: InitTargetKind.Url })
   })
 
@@ -75,10 +80,7 @@ describe('resolveInitTarget', () => {
     ['ssh tunnel', { ssh: true }],
     ['client certificate', { tlsClientAuthRequired: true }],
     ['custom ca certificate', { tls: true, caCert: { id: 'ca', name: 'ca' } }],
-    [
-      'azure entra id',
-      { providerDetails: { provider: 'azure', authType: 'entraId' } },
-    ],
+    ['azure entra id', azureProvider('entraId')],
     ['missing host', { host: '' }],
     ['missing name', { name: '' }],
   ])('should return null for %s', (_label, overrides) => {
