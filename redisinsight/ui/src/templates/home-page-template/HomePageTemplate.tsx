@@ -4,11 +4,10 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import HomeTabs from 'uiSrc/components/home-tabs'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
@@ -27,14 +26,10 @@ export interface Props {
 const HomePageTemplate = (props: Props) => {
   const { children } = props
 
-  const {
-    [FeatureFlags.databaseChat]: databaseChatFeature,
-    [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isAnyChatAvailable = isAnyFeatureEnabled([
-    databaseChatFeature,
-    documentationChatFeature,
-  ])
+  const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
 
   const { loading: instancesLoading } = useAppSelector(
     databaseInstancesSelector,
@@ -55,9 +50,9 @@ const HomePageTemplate = (props: Props) => {
       <PageDefaultHeader align="center" justify="between" gap="l">
         <HomeTabs />
         <FlexGroup align="center" justify="end" gap="l">
-          {isAnyChatAvailable && (
+          {isRedisToolsAvailable && (
             <FlexItem>
-              <CopilotTrigger />
+              <RedisToolsTrigger />
             </FlexItem>
           )}
           <FlexItem>

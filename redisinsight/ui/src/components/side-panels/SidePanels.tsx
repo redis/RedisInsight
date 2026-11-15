@@ -21,7 +21,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
-import { CopilotPanel, InsightsPanel } from './components'
+import { CopilotPanel, RedisToolsPanel, InsightsPanel } from './components'
 
 import { StyledInnerSidePanel, StyledSidePanel } from './SidePanels.styles'
 
@@ -37,7 +37,9 @@ const SidePanelsWrapper = (props: Props) => {
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
+    [FeatureFlags.redisTools]: redisToolsFeature,
   } = useAppSelector(appFeatureFlagsFeaturesSelector)
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
@@ -57,6 +59,12 @@ const SidePanelsWrapper = (props: Props) => {
       dispatch(changeSidePanel(null))
     }
   }, [isAnyChatAvailable, tabSelected])
+
+  useEffect(() => {
+    if (openedPanel === SidePanels.RedisTools && !isRedisToolsAvailable) {
+      dispatch(changeSidePanel(null))
+    }
+  }, [isRedisToolsAvailable, openedPanel])
 
   useEffect(() => {
     window.addEventListener('keydown', handleEscFullScreen)
@@ -118,6 +126,13 @@ const SidePanelsWrapper = (props: Props) => {
           <StyledInnerSidePanel>
             {openedPanel === SidePanels.AiAssistant && (
               <CopilotPanel
+                isFullScreen={isFullScreen}
+                onToggleFullScreen={handleFullScreen}
+                onClose={handleClose}
+              />
+            )}
+            {openedPanel === SidePanels.RedisTools && isRedisToolsAvailable && (
+              <RedisToolsPanel
                 isFullScreen={isFullScreen}
                 onToggleFullScreen={handleFullScreen}
                 onClose={handleClose}
