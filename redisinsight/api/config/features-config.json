@@ -48,25 +48,11 @@
     },
     "documentationChat": {
       "flag": false,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "perc": [[0, 100]]
     },
     "databaseChat": {
       "flag": false,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "perc": [[0, 100]]
     },
     "cloudSso": {
       "flag": true,
