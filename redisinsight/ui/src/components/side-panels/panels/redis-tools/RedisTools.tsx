@@ -201,7 +201,7 @@ export const RedisTools = () => {
               data-testid="redis-tools-redvisor-badge"
             />
           </S.CardEyebrow>
-          <Row align="center" gap="s" grow={false}>
+          <Row align="center" gap="m" grow={false}>
             <S.FixedIcon
               icon={AnalysisIcon}
               size="M"
@@ -222,7 +222,7 @@ export const RedisTools = () => {
               {t('redisTools.radar.eyebrow')}
             </Text>
           </S.CardEyebrow>
-          <Row align="center" gap="s" grow={false}>
+          <Row align="center" gap="m" grow={false}>
             <S.FixedIcon
               icon={MetricsIcon}
               size="M"
