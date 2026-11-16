@@ -8,8 +8,8 @@ export const version3100: WhatsNewVersion = {
   cards: [
     {
       id: 'redis-tools',
-      title: 'Copilot is retired, try Redis tools',
-      body: 'Your own coding agent replaces the Redis Copilot. Run one command, npx @redis/redisctl init, and Redis tools detects your stack and agents, connects your database, teaches your agent Redis, and adds the MCP server.',
+      title: 'Copilot is retired. Set up your coding agent for Redis',
+      body: 'Your own coding agent replaces the Redis Copilot. Run one command, npx @redis/redisctl init, and it detects your stack and agents, connects your database, teaches your agent Redis, and adds the MCP server.',
       location: 'Page header - Redis tools',
       featureFlag: FeatureFlags.redisTools,
     },
