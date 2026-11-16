@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 
+import { Icon } from 'uiSrc/components/base/icons'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { Title } from 'uiSrc/components/base/text/Title'
 
 export const Container = styled(Col)`
   height: 100%;
@@ -35,14 +37,34 @@ export const StepsBox = styled(Row)`
   border-radius: ${({ theme }) => theme.core.space.space100};
 `
 
+// The cards share a row while both fit, and stack below this width.
+const CARD_MIN_WIDTH_UNITS = 5
+
 export const Card = styled(Col)`
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 1 1
+    ${({ theme }) =>
+      `calc(${theme.core.space.space500} * ${CARD_MIN_WIDTH_UNITS})`};
+  min-width: min(
+    100%,
+    ${({ theme }) =>
+      `calc(${theme.core.space.space500} * ${CARD_MIN_WIDTH_UNITS})`}
+  );
   padding: ${({ theme }) => theme.core.space.space200};
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral200};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-radius: ${({ theme }) => theme.core.space.space100};
+`
+
+// Keeps its size when the text next to it wraps.
+export const FixedIcon = styled(Icon)`
+  flex-shrink: 0;
+`
+
+// Wraps inside the card even when a word is wider than the space left next to the icon.
+export const CardTitle = styled(Title)`
+  min-width: 0;
+  overflow-wrap: anywhere;
 `
 
 // Both cards share the same eyebrow height, with or without a badge.
