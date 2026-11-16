@@ -39,6 +39,7 @@
   },
   "mas": {
     "mergeASARs": false,
+    "x64ArchFiles": "**/better-sqlite3/prebuilds/darwin-*.node",
     "entitlements": "resources/entitlements.mas.plist",
     "entitlementsInherit": "resources/entitlements.mas.inherit.plist",
     "entitlementsLoginHelper": "resources/entitlements.mas.loginhelper.plist",
@@ -55,6 +56,7 @@
   },
   "masDev": {
     "mergeASARs": false,
+    "x64ArchFiles": "**/better-sqlite3/prebuilds/darwin-*.node",
     "entitlements": "resources/entitlements.mas.plist",
     "entitlementsInherit": "resources/entitlements.mas.inherit.plist",
     "entitlementsLoginHelper": "resources/entitlements.mas.loginhelper.plist",
