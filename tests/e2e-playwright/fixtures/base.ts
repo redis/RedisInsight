@@ -11,6 +11,7 @@ import {
   EulaPage,
   SidebarPanel,
   InsightsPanel,
+  RedisToolsPanel,
   ProfilerPanel,
   TypeToConfirmModal,
   VectorSearchPage,
@@ -50,6 +51,7 @@ type Fixtures = {
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
   insightsPanel: InsightsPanel;
+  redisToolsPanel: RedisToolsPanel;
   profilerPanel: ProfilerPanel;
   typeToConfirmModal: TypeToConfirmModal;
   vectorSearchPage: VectorSearchPage;
@@ -278,6 +280,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   insightsPanel: async ({ page }, use) => {
     await use(new InsightsPanel(page));
+  },
+
+  redisToolsPanel: async ({ page }, use) => {
+    await use(new RedisToolsPanel(page));
   },
 
   profilerPanel: async ({ page }, use) => {

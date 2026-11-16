@@ -17,7 +17,6 @@ import {
   AnalysisIcon,
   ArrowDiagonalIcon,
   HideIcon,
-  Icon,
   MetricsIcon,
   ShowIcon,
 } from 'uiSrc/components/base/icons'
@@ -184,7 +183,7 @@ export const RedisTools = () => {
       <S.StepsBox gap="l" wrap grow={false} data-testid="redis-tools-steps">
         {REDIS_TOOLS_STEPS.map(({ key, icon }) => (
           <Row key={key} align="center" gap="s" grow={false}>
-            <Icon icon={icon} size="M" />
+            <S.FixedIcon icon={icon} size="M" />
             <Text size="S">{t(key)}</Text>
           </Row>
         ))}
@@ -203,10 +202,14 @@ export const RedisTools = () => {
             />
           </S.CardEyebrow>
           <Row align="center" gap="s" grow={false}>
-            <Icon icon={AnalysisIcon} size="M" />
-            <Title size="S" component="h3">
+            <S.FixedIcon
+              icon={AnalysisIcon}
+              size="M"
+              data-testid="redis-tools-redvisor-icon"
+            />
+            <S.CardTitle size="S" component="h3">
               {t('redisTools.redvisor.title')}
-            </Title>
+            </S.CardTitle>
           </Row>
           <Text size="S" color="secondary">
             {t('redisTools.redvisor.description')}
@@ -220,10 +223,14 @@ export const RedisTools = () => {
             </Text>
           </S.CardEyebrow>
           <Row align="center" gap="s" grow={false}>
-            <Icon icon={MetricsIcon} size="M" />
-            <Title size="S" component="h3">
+            <S.FixedIcon
+              icon={MetricsIcon}
+              size="M"
+              data-testid="redis-tools-radar-icon"
+            />
+            <S.CardTitle size="S" component="h3">
               {t('redisTools.radar.title')}
-            </Title>
+            </S.CardTitle>
           </Row>
           <Text size="S" color="secondary">
             {t('redisTools.radar.description')}
