@@ -21,6 +21,8 @@ export class UserSession {
 
   private subscriptions: Map<string, ISubscription> = new Map();
 
+  private pendingUnsubscribes = 0;
+
   constructor(userClient: UserClient, redisClient: RedisClientSubscriber) {
     this.id = userClient.getId();
     this.userClient = userClient;
@@ -79,14 +81,23 @@ export class UserSession {
     this.logger.debug(`Unsubscribe ${subscription} ${this}`);
 
     this.subscriptions.delete(subscription.getId());
+    this.pendingUnsubscribes += 1;
 
-    const client = await this.redisClient?.getClient();
+    try {
+      const client = await this.redisClient?.getClient();
 
-    if (client) {
+      if (!client) {
+        return;
+      }
+
       this.logger.debug(`Unsubscribe from Redis ${subscription} ${this}`);
       await subscription.unsubscribe(client);
+    } finally {
+      this.pendingUnsubscribes -= 1;
 
-      if (!this.subscriptions.size) {
+      // Concurrent unsubscribes share one client, so the last one to finish destroys it,
+      // even when its own unsubscribe fails.
+      if (!this.subscriptions.size && !this.pendingUnsubscribes) {
         this.logger.debug(`Unsubscribe: Destroy RedisClient ${this}`);
         this.redisClient.destroy();
       }
