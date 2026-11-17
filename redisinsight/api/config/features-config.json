@@ -1,6 +1,11 @@
 {
-  "version": 12,
+  "version": 13,
   "features": {
+    "redisTools": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": []
+    },
     "dev-rdiUi": {
       "flag": true,
       "perc": [[0, 0]],
@@ -47,26 +52,12 @@
       "perc": [[0, 100]]
     },
     "documentationChat": {
-      "flag": true,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "flag": false,
+      "perc": [[0, 100]]
     },
     "databaseChat": {
-      "flag": true,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "flag": false,
+      "perc": [[0, 100]]
     },
     "cloudSso": {
       "flag": true,

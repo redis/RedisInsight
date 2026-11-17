@@ -8,11 +8,10 @@ import { resetDataRedisCloud } from 'uiSrc/slices/instances/cloud'
 import { resetDataRedisCluster } from 'uiSrc/slices/instances/cluster'
 import { resetDataSentinel } from 'uiSrc/slices/instances/sentinel'
 
-import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
@@ -31,14 +30,10 @@ interface Props {
 const PageHeader = (props: Props) => {
   const { title, subtitle, showInsights, children, className } = props
 
-  const {
-    [FeatureFlags.databaseChat]: databaseChatFeature,
-    [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isAnyChatAvailable = isAnyFeatureEnabled([
-    databaseChatFeature,
-    documentationChatFeature,
-  ])
+  const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
 
   const history = useHistory()
   const dispatch = useAppDispatch()
@@ -70,9 +65,9 @@ const PageHeader = (props: Props) => {
         {children ? <>{children}</> : ''}
         {showInsights ? (
           <Row style={{ flexGrow: 0 }} align="center">
-            {isAnyChatAvailable && (
+            {isRedisToolsAvailable && (
               <FlexItem style={{ marginRight: 12 }}>
-                <CopilotTrigger />
+                <RedisToolsTrigger />
               </FlexItem>
             )}
             <FlexItem>

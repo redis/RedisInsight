@@ -2,7 +2,7 @@ import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
-import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import {
   FeatureFlagComponent,
   OAuthUserProfile,
@@ -12,7 +12,6 @@ import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
@@ -23,14 +22,10 @@ import styles from './styles.module.scss'
 const RdiInstanceHeader = () => {
   const { t } = useTranslation()
   const { name = '' } = useAppSelector(connectedInstanceSelector)
-  const {
-    [FeatureFlags.databaseChat]: databaseChatFeature,
-    [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isAnyChatAvailable = isAnyFeatureEnabled([
-    databaseChatFeature,
-    documentationChatFeature,
-  ])
+  const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
   const history = useHistory()
 
   const goHome = () => {
@@ -76,9 +71,9 @@ const RdiInstanceHeader = () => {
         </div>
       </FlexItem>
 
-      {isAnyChatAvailable && (
+      {isRedisToolsAvailable && (
         <FlexItem style={{ marginRight: 12 }}>
-          <CopilotTrigger />
+          <RedisToolsTrigger />
         </FlexItem>
       )}
       <FlexItem style={{ marginLeft: 12 }}>

@@ -41,6 +41,7 @@ export enum KnownFeatures {
   VectorSearchEnhancements = 'vectorSearchEnhancements',
   ValueDecoder = 'valueDecoder',
   AppUpdateStrategySettings = 'appUpdateStrategySettings',
+  RedisTools = 'redisTools',
 }
 
 export interface IFeatureFlag {
