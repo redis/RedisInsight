@@ -55,11 +55,14 @@ jobs:
           # the combined zip exceeds VirusTotal's ~650MB upload limit once arm64
           # binaries are included. Both virtual scans still download the same
           # linux-builds artifact; the split happens at zip time via file filters.
+          # docker-builds is split the same way (x64 and arm64) for the same reason.
           ARTIFACTS_JSON=$(echo "$ARTIFACTS" | jq -R -s -c '
             split("\n")[:-1]
             | reduce .[] as $a ([];
                 if $a == "linux-builds"
                 then . + ["linux-x86_64-builds", "linux-arm64-builds"]
+                elif $a == "docker-builds"
+                then . + ["docker-x64-builds", "docker-arm64-builds"]
                 else . + [$a]
                 end)
           ')
@@ -82,9 +85,10 @@ jobs:
         if: needs.download_artifacts.outputs.artifact_exists == 'true'
         uses: actions/download-artifact@v8
         with:
-          # linux-x86_64-builds and linux-arm64-builds are virtual scan entries;
-          # both resolve to the single linux-builds artifact uploaded by the build.
-          name: ${{ (matrix.artifact == 'linux-x86_64-builds' || matrix.artifact == 'linux-arm64-builds') && 'linux-builds' || matrix.artifact }}
+          # linux-x86_64-builds, linux-arm64-builds, docker-x64-builds and docker-arm64-builds
+          # are virtual scan entries; each pair resolves to the single linux-builds or
+          # docker-builds artifact uploaded by the build.
+          name: ${{ (matrix.artifact == 'linux-x86_64-builds' || matrix.artifact == 'linux-arm64-builds') && 'linux-builds' || (matrix.artifact == 'docker-x64-builds' || matrix.artifact == 'docker-arm64-builds') && 'docker-builds' || matrix.artifact }}
           path: ./release
 
       - name: Send File to scan
@@ -97,10 +101,14 @@ jobs:
           #   - macos-*            : exclude bundled redisstack and archives
           #   - linux-x86_64-builds: exclude arm64/aarch64 binaries
           #   - linux-arm64-builds : exclude x86_64/amd64 binaries
+          #   - docker-x64-builds  : exclude arm64/aarch64 files
+          #   - docker-arm64-builds: exclude x64/x86_64/amd64 files
           zip -r "${uploadZipFile}" "./release" \
             ${{ startsWith(matrix.artifact, 'macos-')      && '-x "*/redisstack/*" "*.tar.gz" "*.zip"' || '' }} \
             ${{ matrix.artifact == 'linux-x86_64-builds'    && '-x "*arm64*" "*aarch64*"'              || '' }} \
-            ${{ matrix.artifact == 'linux-arm64-builds'     && '-x "*x86_64*" "*amd64*"'               || '' }}
+            ${{ matrix.artifact == 'linux-arm64-builds'     && '-x "*x86_64*" "*amd64*"'               || '' }} \
+            ${{ matrix.artifact == 'docker-x64-builds'      && '-x "*arm64*" "*aarch64*"'              || '' }} \
+            ${{ matrix.artifact == 'docker-arm64-builds'    && '-x "*x64*" "*x86_64*" "*amd64*"'       || '' }}
 
           echo "File to upload: ${uploadZipFile} ($(du -h "${uploadZipFile}" | cut -f1))"
 
