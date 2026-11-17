@@ -123,6 +123,32 @@ describe('UserSession', () => {
 
       expect(nodeClient.quit).toHaveBeenCalledTimes(1);
     });
+
+    it('should destroy the Redis client when the last concurrent unsubscribe fails', async () => {
+      await userSession.subscribe(mockSubscription);
+      await userSession.subscribe(mockPSubscription);
+
+      let failPUnsubscribe!: (error: Error) => void;
+      nodeClient.unsubscribe.mockResolvedValue(undefined);
+      nodeClient.pUnsubscribe.mockReturnValue(
+        new Promise<void>((_, reject) => {
+          failPUnsubscribe = reject;
+        }),
+      );
+
+      const unsubscribed = Promise.allSettled([
+        userSession.unsubscribe(mockSubscription),
+        userSession.unsubscribe(mockPSubscription),
+      ]);
+      await new Promise(setImmediate);
+
+      failPUnsubscribe(new Error('NOPERM'));
+      const [first, last] = await unsubscribed;
+
+      expect(first.status).toEqual('fulfilled');
+      expect(last.status).toEqual('rejected');
+      expect(nodeClient.quit).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handleMessage', () => {

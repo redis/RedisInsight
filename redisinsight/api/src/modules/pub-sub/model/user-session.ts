@@ -94,12 +94,13 @@ export class UserSession {
       await subscription.unsubscribe(client);
     } finally {
       this.pendingUnsubscribes -= 1;
-    }
 
-    // Concurrent unsubscribes share one client, so the last one to finish destroys it.
-    if (!this.subscriptions.size && !this.pendingUnsubscribes) {
-      this.logger.debug(`Unsubscribe: Destroy RedisClient ${this}`);
-      this.redisClient.destroy();
+      // Concurrent unsubscribes share one client, so the last one to finish destroys it,
+      // even when its own unsubscribe fails.
+      if (!this.subscriptions.size && !this.pendingUnsubscribes) {
+        this.logger.debug(`Unsubscribe: Destroy RedisClient ${this}`);
+        this.redisClient.destroy();
+      }
     }
   }
 
