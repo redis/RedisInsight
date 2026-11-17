@@ -97,6 +97,32 @@ describe('UserSession', () => {
       await userSession.unsubscribe(mockPSubscription);
       expect(userSession['subscriptions'].size).toEqual(0);
     });
+
+    it('should keep the Redis client until every concurrent unsubscribe is done', async () => {
+      await userSession.subscribe(mockSubscription);
+      await userSession.subscribe(mockPSubscription);
+
+      let finishPUnsubscribe!: () => void;
+      nodeClient.unsubscribe.mockResolvedValue(undefined);
+      nodeClient.pUnsubscribe.mockReturnValue(
+        new Promise<void>((resolve) => {
+          finishPUnsubscribe = resolve;
+        }),
+      );
+
+      const unsubscribed = Promise.all([
+        userSession.unsubscribe(mockSubscription),
+        userSession.unsubscribe(mockPSubscription),
+      ]);
+      await new Promise(setImmediate);
+
+      expect(nodeClient.quit).not.toHaveBeenCalled();
+
+      finishPUnsubscribe();
+      await unsubscribed;
+
+      expect(nodeClient.quit).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handleMessage', () => {
