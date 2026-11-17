@@ -58,11 +58,13 @@ describe('LocalNotificationRepository', () => {
     });
   });
   describe('readNotifications', () => {
-    it('should read all notifications', async () => {
+    it('should read all notifications without an empty where clause', async () => {
       repository.createQueryBuilder().execute.mockResolvedValueOnce(undefined);
 
       expect(await service.readNotifications(mockSessionMetadata)).toEqual([]);
-      expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({});
+      // Empty criteria must NOT call .where({}) — since TypeORM 0.3.31 that
+      // throws; the update intentionally affects all rows instead.
+      expect(repository.createQueryBuilder().where).not.toHaveBeenCalled();
     });
     it('should read particular notification by timestamp', async () => {
       repository.createQueryBuilder().execute.mockResolvedValueOnce(undefined);

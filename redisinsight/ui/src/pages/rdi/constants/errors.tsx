@@ -1,13 +1,14 @@
 import { upperFirst } from 'lodash'
 import React from 'react'
+import i18n from 'uiSrc/i18n'
 
 export const rdiErrorMessages = {
   invalidStructure: (
-    name = 'Value',
-    msg = 'Failed to convert YAML to JSON structure',
+    name: string = i18n.t('rdi.pipeline.error.defaultName'),
+    msg: string = i18n.t('rdi.pipeline.error.defaultMsg'),
   ) => (
     <>
-      {`${upperFirst(name)} has an invalid structure.`}
+      {i18n.t('rdi.pipeline.invalidStructure', { name: upperFirst(name) })}
       <br />
       {msg}
     </>

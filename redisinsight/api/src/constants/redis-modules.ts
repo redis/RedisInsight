@@ -54,7 +54,10 @@ export const REDIS_MODULES_COMMANDS = new Map([
   ],
   [AdditionalRedisModuleName.RedisJSON, ['json.get']],
   [AdditionalRedisModuleName.RediSearch, ['ft.info']],
-  [AdditionalRedisModuleName.RedisTimeSeries, ['ts.mrange', 'ts.info']],
+  [
+    AdditionalRedisModuleName.RedisTimeSeries,
+    ['ts.mrange', 'ts.info', 'ts.range', 'ts.revrange'],
+  ],
 ]);
 
 export const REDISEARCH_MODULES: string[] = [

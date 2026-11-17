@@ -5,6 +5,7 @@ import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -14,6 +15,7 @@ export interface Props {
 
 const KeyRowName = (props: Props) => {
   const { nameString, shortName } = props
+  const { t } = useTranslation()
 
   if (isUndefined(shortName)) {
     return (
@@ -42,7 +44,7 @@ const KeyRowName = (props: Props) => {
           data-testid={`key-${shortName}`}
         >
           <RiTooltip
-            title="Key Name"
+            title={t('browser.keyList.name.tooltipTitle')}
             className={styles.tooltip}
             position="bottom"
             content={nameTooltipContent}

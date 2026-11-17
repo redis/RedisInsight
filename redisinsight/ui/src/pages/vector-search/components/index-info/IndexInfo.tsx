@@ -30,6 +30,7 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
   const prefixes = formatPrefixes(indexDefinition.prefixes)
   const keyType = indexDefinition.keyType
   const showOptions = hasIndexOptions(indexOptions)
+  const attributeRows = parseIndexAttributes(indexInfo)
 
   return (
     <IndexInfoContainer gap="s" data-testid={dataTestId ?? 'index-info'}>
@@ -65,8 +66,8 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
 
       {/* Attributes Table */}
       <Table
-        columns={getTableColumns()}
-        data={parseIndexAttributes(indexInfo)}
+        columns={getTableColumns(attributeRows)}
+        data={attributeRows}
         enableColumnResizing
       />
 

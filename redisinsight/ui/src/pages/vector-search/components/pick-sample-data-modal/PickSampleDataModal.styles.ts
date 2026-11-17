@@ -77,8 +77,10 @@ export const RadioCard = styled.label<
   ${({ $selected, theme }) =>
     $selected &&
     css`
-      border-color: ${theme.components.boxSelectionGroup.item.states.checked
-        ?.normal?.borderColor ?? theme.semantic.color.border.informative400};
+      border-color: ${
+        theme.components.boxSelectionGroup.item.states.checked?.normal
+          ?.borderColor ?? theme.semantic.color.border.informative400
+      };
     `}
 `
 

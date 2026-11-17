@@ -3,10 +3,11 @@ import cx from 'classnames'
 import { isNull } from 'lodash'
 import styled from 'styled-components'
 import { useAppSelector } from 'uiSrc/slices/hooks'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 
 import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
+import { getTextUnprintableCharacters } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import {
   initialKeyInfo,
@@ -53,6 +54,7 @@ export interface Props {
 const COPY_KEY_NAME_ICON = 'copyKeyNameIcon'
 
 const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
+  const { t } = useTranslation()
   const { loading } = useAppSelector(selectedKeySelector)
   const {
     ttl: ttlProp,
@@ -106,14 +108,18 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       !isNull(keyProp)
     ) {
       requestConfirmation({
-        title: 'Rename key on production database?',
+        title: t('browser.keyDetails.name.renameConfirm.title'),
         actionDescription: (
-          <>
-            You are about to rename <strong>{keyProp}</strong> to{' '}
-            <strong>{key}</strong> on a production database.
-          </>
+          <Trans
+            i18nKey="browser.keyDetails.name.renameConfirm.description"
+            values={{
+              oldName: escapeTrans(`${keyProp}`),
+              newName: escapeTrans(`${key}`),
+            }}
+            components={{ bold: <strong /> }}
+          />
         ),
-        confirmButtonText: 'Rename',
+        confirmButtonText: t('browser.keyDetails.name.renameConfirm.button'),
         commandId: BrowserConfirmationCommandId.RenameKey,
         disableConfirmationInput: true,
         onConfirm: () =>
@@ -162,7 +168,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       data-testid="edit-key-btn"
     >
       <RiTooltip
-        title="Key Name"
+        title={t('browser.keyDetails.name.tooltipTitle')}
         position="left"
         content={tooltipContent}
         anchorClassName={styles.toolTipAnchorKey}
@@ -170,7 +176,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         <InlineItemEditor
           onApply={() => applyEditKey()}
           isDisabled={!keyIsEditable}
-          disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+          disabledTooltipText={getTextUnprintableCharacters(t)}
           onDecline={(event) => cancelEditKey(event)}
           viewChildrenMode={!keyIsEditing}
           isLoading={loading}
@@ -208,7 +214,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
             id={COPY_KEY_NAME_ICON}
             tooltipConfig={{ anchorClassName: styles.copyKey }}
             data-testid="copy-key-name"
-            aria-label="Copy Key Name"
+            aria-label={t('browser.keyDetails.name.copyAria')}
           />
         </Row>
       )}

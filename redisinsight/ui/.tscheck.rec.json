@@ -22,11 +22,6 @@
   "../../node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
     "TS6133": 1
   },
-  "../api-client/core/queryKeySerializer.gen.ts": {
-    "TS2339": 1,
-    "TS2345": 1,
-    "TS2488": 1
-  },
   "../desktop/preload.ts": {
     "TS2307": 1
   },
@@ -48,10 +43,6 @@
     "TS2339": 5,
     "TS7016": 1
   },
-  "src/components/charts/bar-chart/BarChart.spec.tsx": {
-    "TS2554": 1,
-    "TS7031": 1
-  },
   "src/components/cli/components/cli-input/CliAutocomplete/CliAutocomplete.stories.tsx": {
     "TS2322": 3
   },
@@ -61,12 +52,6 @@
   },
   "src/components/config/Config.spec.tsx": {
     "TS2339": 14
-  },
-  "src/components/consents-settings/ConsentsNotifications/ConsentsNotifications.tsx": {
-    "TS7053": 1
-  },
-  "src/components/consents-settings/ConsentsPrivacy/ConsentsPrivacy.tsx": {
-    "TS7053": 1
   },
   "src/components/consents-settings/ConsentsSettings.tsx": {
     "TS2339": 1
@@ -92,9 +77,6 @@
   },
   "src/components/main-router/constants/defaultRoutes.ts": {
     "TS2322": 4
-  },
-  "src/components/markdown/CloudLink/CloudLink.spec.tsx": {
-    "TS2741": 2
   },
   "src/components/markdown/CloudLink/CloudLink.tsx": {
     "TS2345": 1
@@ -205,7 +187,7 @@
   "src/components/virtual-grid/VirtualGrid.tsx": {
     "TS18048": 1,
     "TS2339": 8,
-    "TS2345": 3,
+    "TS2345": 1,
     "TS2769": 1,
     "TS7031": 1
   },
@@ -216,9 +198,6 @@
     "TS2345": 1,
     "TS2698": 1,
     "TS2769": 4
-  },
-  "src/components/virtual-list/VirtualList.tsx": {
-    "TS18048": 1
   },
   "src/components/virtual-table/VirtualTable.tsx": {
     "TS2322": 2,
@@ -377,10 +356,6 @@
   },
   "src/pages/browser/components/add-key/AddKeyZset/AddKeyZset.tsx": {
     "TS2322": 2
-  },
-  "src/pages/browser/components/bulk-actions/BulkDelete/BulkDeleteContent/BulkDeleteContent.tsx": {
-    "TS18048": 1,
-    "TS2769": 1
   },
   "src/pages/browser/components/key-list/KeyList.spec.tsx": {
     "TS2322": 9,
@@ -703,9 +678,6 @@
   "src/pages/vector-search/components/index-info/IndexInfo.stories.tsx": {
     "TS2322": 9
   },
-  "src/pages/vector-search/components/index-info/IndexInfo.utils.spec.ts": {
-    "TS2322": 1
-  },
   "src/pages/vector-search/hooks/useCreateIndexFlow/useCreateIndexFlow.spec.ts": {
     "TS2345": 1
   },
@@ -737,10 +709,6 @@
   "src/pages/workbench/utils/tests/query.spec.ts": {
     "TS7053": 1
   },
-  "src/plugins/pluginImport.spec.ts": {
-    "TS2322": 1,
-    "TS7017": 1
-  },
   "src/services/commands-history/database/CommandsHistoryIndexedDB.spec.ts": {
     "TS2339": 2,
     "TS2345": 4,
@@ -755,18 +723,8 @@
     "TS2339": 5,
     "TS2345": 4
   },
-  "src/services/formatter/FormatSelector.spec.ts": {
-    "TS18046": 1
-  },
-  "src/services/formatter/MarkdownToJsxString.ts": {
-    "TS2345": 4,
-    "TS2769": 3
-  },
   "src/services/query-library/QueryLibraryService.spec.ts": {
     "TS2322": 1
-  },
-  "src/services/tests/formatter/MarkdownToJsxString.spec.ts": {
-    "TS2352": 1
   },
   "src/setup-env.ts": {
     "TS2307": 1
@@ -1012,9 +970,6 @@
   },
   "src/utils/tests/events/handleDownloadButton.spec.ts": {
     "TS2345": 1
-  },
-  "src/utils/tests/formatters/markdown/remarkRedisUpload.spec.ts": {
-    "TS2339": 3
   },
   "src/utils/tests/formatters/valueFormatters.spec.ts": {
     "TS2769": 2

@@ -47,6 +47,8 @@ services:
       RI_SECRET_STORAGE_PASSWORD: 'somepassword'
       RI_NOTIFICATION_UPDATE_URL: 'https://s3.amazonaws.com/redisinsight.test/public/tests/notifications.json'
       RI_FEATURES_CONFIG_URL: 'http://test:5551/remote/features-config.json'
+      # The test certificates do not name the test hosts.
+      RI_TLS_SKIP_HOSTNAME_VERIFICATION: 'true'
 
 networks:
   default:

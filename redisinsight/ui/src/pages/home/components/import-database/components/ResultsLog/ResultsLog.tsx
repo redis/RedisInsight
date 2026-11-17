@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { ParseKeys } from 'i18next'
 
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -7,6 +8,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { ImportDatabaseResultType } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 import TableResult from '../TableResult'
 import { StyledColWrapper } from './ResultLog.styles'
@@ -18,10 +20,11 @@ interface Props {
 
 export interface TableResultData {
   type: ImportDatabaseResultType
-  title: string
+  title: ParseKeys
 }
 
 const ResultsLog = ({ data }: Props) => {
+  const { t } = useTranslation()
   const [openedNav, setOpenedNav] =
     useState<Nullable<ImportDatabaseResultType>>(null)
 
@@ -52,7 +55,7 @@ const ResultsLog = ({ data }: Props) => {
             key={item.type}
             title={
               <Row gap="s">
-                <Text data-testid="nav-group-title">{item.title}:</Text>
+                <Text data-testid="nav-group-title">{t(item.title)}:</Text>
                 <Text data-testid="number-of-dbs">
                   {data?.[item.type]?.length ?? 0}
                 </Text>

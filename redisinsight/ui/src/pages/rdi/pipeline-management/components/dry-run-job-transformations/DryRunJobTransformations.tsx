@@ -3,11 +3,10 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { rdiDryRunJobSelector } from 'uiSrc/slices/rdi/dryRun'
 import MonacoJson from 'uiSrc/components/monaco-editor/components/monaco-json'
-
-const NO_TRANSFORMATION_MESSAGE =
-  'No transformation results provided by the server.'
+import { useTranslation } from 'uiSrc/i18n'
 
 const DryRunJobTransformations = () => {
+  const { t } = useTranslation()
   const { results } = useAppSelector(rdiDryRunJobSelector)
 
   const [transformations, setTransformations] = useState('')
@@ -17,13 +16,15 @@ const DryRunJobTransformations = () => {
       return
     }
 
+    const noTransformationMessage = t('rdi.pipeline.dryRun.noTransformation')
+
     try {
       const transformations = JSON.stringify(results?.transformation, null, 2)
-      setTransformations(transformations || NO_TRANSFORMATION_MESSAGE)
+      setTransformations(transformations || noTransformationMessage)
     } catch (e) {
-      setTransformations(NO_TRANSFORMATION_MESSAGE)
+      setTransformations(noTransformationMessage)
     }
-  }, [results])
+  }, [results, t])
 
   return (
     <>

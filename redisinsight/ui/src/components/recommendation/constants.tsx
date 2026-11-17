@@ -9,16 +9,16 @@ export const badgesContent = [
   {
     id: 'code_changes',
     icon: <CodeIcon className={styles.badgeIcon} />,
-    name: 'Code Changes',
+    nameKey: 'tips.badge.codeChanges',
   },
   {
     id: 'configuration_changes',
     icon: <ConfigurationIcon className={styles.badgeIcon} />,
-    name: 'Configuration Changes',
+    nameKey: 'tips.badge.configurationChanges',
   },
   {
     id: 'upgrade',
     icon: <UpgradeIcon className={styles.badgeIcon} />,
-    name: 'Upgrade',
+    nameKey: 'tips.badge.upgrade',
   },
-]
+] as const

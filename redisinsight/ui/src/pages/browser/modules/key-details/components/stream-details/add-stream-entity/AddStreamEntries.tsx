@@ -31,6 +31,7 @@ import {
 } from 'uiSrc/components/production-write-confirmation'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
+import { useTranslation } from 'uiSrc/i18n'
 import { Panel } from 'uiSrc/components/panel'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
@@ -55,6 +56,7 @@ const AddStreamEntries = (props: Props) => {
   ])
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
@@ -140,10 +142,9 @@ const AddStreamEntries = (props: Props) => {
   const handleSubmit = () => {
     if (!isFormValid) return
     requestConfirmation({
-      title: 'Add entry on production database?',
-      actionDescription:
-        'You are about to add a new entry to a stream on a production database.',
-      confirmButtonText: 'Add entry',
+      title: t('browser.stream.addEntry.confirmTitle'),
+      actionDescription: t('browser.stream.addEntry.confirmMessage'),
+      confirmButtonText: t('browser.stream.addEntry.confirmButton'),
       commandId: BrowserConfirmationCommandId.AddStreamEntry,
       disableConfirmationInput: true,
       onConfirm: submitData,
@@ -166,7 +167,7 @@ const AddStreamEntries = (props: Props) => {
           onClick={() => closePanel(true)}
           data-testid="cancel-members-btn"
         >
-          Cancel
+          {t('browser.stream.addEntry.cancel')}
         </SecondaryButton>
         <PrimaryButton
           size="m"
@@ -175,7 +176,7 @@ const AddStreamEntries = (props: Props) => {
           disabled={!isFormValid}
           data-testid="save-elements-btn"
         >
-          Save
+          {t('browser.stream.addEntry.save')}
         </PrimaryButton>
       </Panel>
     </Col>

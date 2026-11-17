@@ -9,7 +9,7 @@ import {
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 import { MOCK_TRUNCATED_STRING_VALUE } from 'uiSrc/mocks/data/bigString'
-import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
+
 import PopoverDelete, { Props } from './PopoverDelete'
 
 const mockedProps = mock<Props>()
@@ -56,7 +56,7 @@ describe('PopoverDelete', () => {
     await waitForRiTooltipVisible()
 
     expect(screen.getByTestId('remove-tooltip')).toHaveTextContent(
-      TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+      'This action is disabled because the key or value is too large to process within Redis Insight.',
     )
   })
 

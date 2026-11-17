@@ -5,10 +5,11 @@ import { instancesSelector, setShownColumns } from 'uiSrc/slices/rdi/instances'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RDI_COLUMN_FIELD_NAME_MAP, RdiListColumn } from 'uiSrc/constants'
+import { getRdiColumnFieldNameMap, RdiListColumn } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
 import { PlusIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 import SearchRdiList from '../search/SearchRdiList'
 
 export interface Props {
@@ -16,6 +17,7 @@ export interface Props {
 }
 
 const RdiHeader = ({ onRdiInstanceClick }: Props) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { data: instances, shownColumns } = useAppSelector(instancesSelector)
 
@@ -43,13 +45,13 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
             data-testid="rdi-instance"
             icon={PlusIcon}
           >
-            RDI Instance
+            {t('rdi.home.header.addButton')}
           </PrimaryButton>
         </FlexItem>
         {instances.length > 0 && (
           <Row justify="end" align="center" gap="l">
             <ColumnsConfigPopover
-              columnsMap={RDI_COLUMN_FIELD_NAME_MAP}
+              columnsMap={getRdiColumnFieldNameMap(t)}
               shownColumns={shownColumns}
               onChange={handleColumnsChange}
             />

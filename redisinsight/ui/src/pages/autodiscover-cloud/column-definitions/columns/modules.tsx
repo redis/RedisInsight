@@ -1,17 +1,15 @@
 import React from 'react'
+import i18n from 'uiSrc/i18n'
 
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { DatabaseListModules } from 'uiSrc/components'
-import {
-  AutoDiscoverCloudIds,
-  AutoDiscoverCloudTitles,
-} from 'uiSrc/pages/autodiscover-cloud/constants/constants'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const modulesColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
-    header: AutoDiscoverCloudTitles.Capabilities,
+    header: i18n.t('autodiscover.cloud.column.capabilities'),
     id: AutoDiscoverCloudIds.Modules,
     accessorKey: AutoDiscoverCloudIds.Modules,
     enableSorting: true,

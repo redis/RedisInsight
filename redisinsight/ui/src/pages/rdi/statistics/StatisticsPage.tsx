@@ -16,6 +16,7 @@ import {
   sendPageViewTelemetry,
 } from 'uiSrc/telemetry'
 import { formatLongName, Nullable, setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import { PageNames } from 'uiSrc/constants'
 import { Loader } from 'uiSrc/components/base/display'
@@ -51,6 +52,7 @@ const renderStatisticsSection = (section: IStatisticsSection) => {
 }
 
 const StatisticsPage = () => {
+  const { t } = useTranslation()
   const [pageLoading, setPageLoading] = useState(true)
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const [lastRefreshTime, setLastRefreshTime] = React.useState(Date.now())
@@ -63,7 +65,7 @@ const StatisticsPage = () => {
     connectedInstanceSelector,
   )
   const rdiInstanceName = formatLongName(connectedRdiInstanceName, 33, 0, '...')
-  setTitle(`${rdiInstanceName} - Pipeline Status`)
+  setTitle(t('rdi.statistics.pageTitle', { name: rdiInstanceName }))
 
   const onRefresh = (section: string) => {
     dispatch(fetchRdiStatistics(rdiInstanceId, section))
@@ -130,9 +132,7 @@ const StatisticsPage = () => {
   // todo add interface
   if (statisticsResults.status === 'failed') {
     return (
-      <Text style={{ margin: '20px auto' }}>
-        Unexpected error in your RDI endpoint, please refresh the page
-      </Text>
+      <Text style={{ margin: '20px auto' }}>{t('rdi.statistics.error')}</Text>
     )
   }
 

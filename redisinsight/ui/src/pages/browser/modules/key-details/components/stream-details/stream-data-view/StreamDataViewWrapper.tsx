@@ -17,11 +17,7 @@ import {
 } from 'uiSrc/slices/browser/stream'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import {
-  KeyTypes,
-  TableCellTextAlignment,
-  TEXT_FAILED_CONVENT_FORMATTER,
-} from 'uiSrc/constants'
+import { KeyTypes, TableCellTextAlignment } from 'uiSrc/constants'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
@@ -38,6 +34,7 @@ import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { FormatedDate } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { StreamEntryDto } from 'apiClient'
 import StreamDataView from './StreamDataView'
 import styles from './StreamDataView/styles.module.scss'
@@ -55,6 +52,7 @@ export interface Props {
 }
 
 const StreamDataViewWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const {
     entries: loadedEntries = [],
     keyName: key,
@@ -159,7 +157,9 @@ const StreamDataViewWrapper = (props: Props) => {
                           title={
                             isValid
                               ? 'Field'
-                              : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                              : t('browser.keyDetails.failedConvertFormatter', {
+                                  format: viewFormatProp,
+                                })
                           }
                           tooltipContent={tooltipContent}
                         />
@@ -182,7 +182,7 @@ const StreamDataViewWrapper = (props: Props) => {
     const headerRow = {
       id: {
         id: 'id',
-        label: 'Entry ID',
+        label: t('browser.stream.column.entryId'),
         sortable: true,
       },
       ...columnsNames,
@@ -297,7 +297,9 @@ const StreamDataViewWrapper = (props: Props) => {
               title={
                 isValid
                   ? 'Value'
-                  : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                  : t('browser.keyDetails.failedConvertFormatter', {
+                      format: viewFormatProp,
+                    })
               }
               tooltipContent={tooltipContent}
               expanded={expanded}
@@ -312,7 +314,7 @@ const StreamDataViewWrapper = (props: Props) => {
 
   const idColumn: ITableColumn = {
     id: 'id',
-    label: 'Entry ID',
+    label: t('browser.stream.column.entryId'),
     maxWidth: minColumnWidth,
     minWidth: minColumnWidth,
     isSortable: true,

@@ -1,4 +1,5 @@
 import React from 'react'
+import { ParseKeys, TFunction } from 'i18next'
 
 import {
   CellContext,
@@ -113,6 +114,7 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
 
 const buildAttributeColumn = (
   key: string,
+  t: TFunction,
 ): ColumnDef<VectorSetSimilarityMatch> => ({
   id: `${SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX}${key}`,
   header: key,
@@ -144,7 +146,9 @@ const buildAttributeColumn = (
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}
       >
         {isMissing ? (
-          <S.NilAttributeValue variant="italic">Empty</S.NilAttributeValue>
+          <S.NilAttributeValue variant="italic">
+            {t('browser.vectorSet.results.emptyAttr')}
+          </S.NilAttributeValue>
         ) : (
           renderAttributeValue(value)
         )}
@@ -177,12 +181,21 @@ const actionsColumn: ColumnDef<VectorSetSimilarityMatch> = {
   },
 }
 
+const withLocalizedHeader = (
+  col: ColumnDef<VectorSetSimilarityMatch>,
+  t: TFunction,
+): ColumnDef<VectorSetSimilarityMatch> =>
+  typeof col.header === 'string'
+    ? { ...col, header: t(col.header as ParseKeys) }
+    : col
+
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
+  t: TFunction,
 ): ColumnDef<VectorSetSimilarityMatch>[] => [
-  rankColumn,
-  nameColumn,
-  ...attributeKeys.map(buildAttributeColumn),
-  similarityColumn,
+  withLocalizedHeader(rankColumn, t),
+  withLocalizedHeader(nameColumn, t),
+  ...attributeKeys.map((key) => buildAttributeColumn(key, t)),
+  withLocalizedHeader(similarityColumn, t),
   actionsColumn,
 ]

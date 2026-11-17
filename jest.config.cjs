@@ -34,12 +34,7 @@ module.exports = {
     '@redislabsdev/redis-ui-table': '@redis-ui/table',
     'monaco-editor': '<rootDir>/redisinsight/__mocks__/monacoMock.js',
     'monaco-yaml': '<rootDir>/redisinsight/__mocks__/monacoYamlMock.js',
-    unified: '<rootDir>/redisinsight/__mocks__/unified.js',
-    'remark-parse': '<rootDir>/redisinsight/__mocks__/remarkParse.js',
-    'remark-gfm': '<rootDir>/redisinsight/__mocks__/remarkGfm.js',
-    'remark-rehype': '<rootDir>/redisinsight/__mocks__/remarkRehype.js',
-    'rehype-stringify': '<rootDir>/redisinsight/__mocks__/rehypeStringify.js',
-    'unist-util-visit': '<rootDir>/redisinsight/__mocks__/unistUtilsVisit.js',
+    '@rdi-ui/pipeline': '<rootDir>/redisinsight/__mocks__/rdiUiPipelineMock.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),
@@ -59,8 +54,10 @@ module.exports = {
     '\\.[jt]sx?$': 'babel-jest',
     '\\.mjs$': 'babel-jest',
   },
+  // ESM packages that need transpiling. The `.*` matches an allow-listed name
+  // at any depth, so an entry holds whether npm hoists or nests the package.
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid|react-jsx-parser)/)',
+    'node_modules/(?!.*(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|@open-draft/deferred-promise|uuid|react-markdown|devlop|hast-util-.*|comma-separated-tokens|property-information|space-separated-tokens|unist-util-.*|vfile|vfile-message|html-url-attributes|mdast-util-.*|micromark.*|decode-named-character-reference|character-entities.*|trim-lines|remark-.*|rehype-.*|unified|bail|is-plain-obj|trough|estree-util-is-identifier-name|hastscript|web-namespaces|zwitch|ccount|escape-string-regexp|markdown-table|longest-streak|html-void-elements|stringify-entities)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [

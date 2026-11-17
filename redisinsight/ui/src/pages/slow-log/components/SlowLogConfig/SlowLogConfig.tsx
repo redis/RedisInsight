@@ -2,6 +2,7 @@ import { toNumber } from 'lodash'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import {
   DEFAULT_SLOWLOG_DURATION_UNIT,
   DEFAULT_SLOWLOG_MAX_LEN,
@@ -42,7 +43,14 @@ export interface Props {
 }
 
 const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
-  const options = DURATION_UNITS
+  const { t } = useTranslation()
+  const options = DURATION_UNITS.map((option) => ({
+    ...option,
+    inputDisplay:
+      option.value === DurationUnits.milliSeconds
+        ? t('analytics.units.msec')
+        : t('analytics.units.microseconds'),
+  }))
   const { instanceId } = useParams<{ instanceId: string }>()
   const connectionType = useConnectionType()
   const { loading } = useAppSelector(slowLogSelector)
@@ -120,45 +128,46 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
   const clusterContent = () => (
     <>
       <Text color="primary">
-        Each node can have different Slow Log configuration in a clustered
-        database.
-        <Spacer size="s" />
-        {'Use '}
-        <code>CONFIG SET slowlog-log-slower-than</code>
-        {' or '}
-        <code>CONFIG SET slowlog-max-len</code>
-        {' for a specific node in redis-cli to configure it.'}
+        <Trans
+          i18nKey="analytics.slowLog.config.cluster"
+          components={{
+            spacer: <Spacer size="s" />,
+            code: <code />,
+          }}
+        />
       </Text>
       <Row justify="end">
         <PrimaryButton
           onClick={closePopover}
           data-testid="slowlog-config-ok-btn"
         >
-          Ok
+          {t('analytics.slowLog.config.button.ok')}
         </PrimaryButton>
       </Row>
     </>
   )
 
   const unitConverter = () => {
+    const msecLabel = t('analytics.units.msec')
+
     if (Number.isNaN(toNumber(slowerThan))) {
-      return `- ${DurationUnits.mSeconds}`
+      return `- ${msecLabel}`
     }
 
     if (slowerThan === `${MINUS_ONE}`) {
-      return `-1 ${DurationUnits.mSeconds}`
+      return `-1 ${msecLabel}`
     }
 
     if (durationUnit === DurationUnits.microSeconds) {
       const value = numberWithSpaces(
         convertNumberByUnits(toNumber(slowerThan), DurationUnits.milliSeconds),
       )
-      return `${value} ${DurationUnits.mSeconds}`
+      return `${value} ${msecLabel}`
     }
 
     if (durationUnit === DurationUnits.milliSeconds) {
       const value = numberWithSpaces(toNumber(slowerThan) * 1000)
-      return `${value} ${DurationUnits.microSeconds}`
+      return `${value} ${t('analytics.units.microseconds')}`
     }
     return null
   }
@@ -190,9 +199,10 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                       size="s"
                       data-testid="unit-converter"
                     >
-                      Execution time to exceed in order to log the command.
-                      <br />
-                      -1 disables Slow Log. 0 logs each command.
+                      <Trans
+                        i18nKey="analytics.slowLog.config.slowerThan.help"
+                        components={{ br: <br /> }}
+                      />
                     </Text>
                   </FlexItem>
                 }
@@ -224,10 +234,10 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 label={<Text color="primary">slowlog-max-len</Text>}
                 additionalText={
                   <Text color="secondary" size="s">
-                    The length of the Slow Log. When a new command is logged the
-                    oldest
-                    <br />
-                    one is removed from the queue of logged commands.
+                    <Trans
+                      i18nKey="analytics.slowLog.config.maxLen.help"
+                      components={{ br: <br /> }}
+                    />
                   </Text>
                 }
               >
@@ -249,7 +259,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
           <Row justify="between" align="center">
             <FlexItem>
               <Text size="s" color="secondary">
-                NOTE: This is server configuration
+                {t('analytics.slowLog.config.note')}
               </Text>
             </FlexItem>
             <Row align="center" gap="m" grow={false}>
@@ -258,20 +268,20 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 onClick={handleDefault}
                 data-testid="slowlog-config-default-btn"
               >
-                Default
+                {t('analytics.slowLog.config.button.default')}
               </EmptyButton>
               <SecondaryButton
                 onClick={handleCancel}
                 data-testid="slowlog-config-cancel-btn"
               >
-                Cancel
+                {t('analytics.slowLog.config.button.cancel')}
               </SecondaryButton>
               <PrimaryButton
                 disabled={disabledApplyBtn()}
                 onClick={handleSave}
                 data-testid="slowlog-config-save-btn"
               >
-                Save
+                {t('analytics.slowLog.config.button.save')}
               </PrimaryButton>
             </Row>
           </Row>

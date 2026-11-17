@@ -15,6 +15,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { formatLongName } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { HoverableIconButton } from './DatabasesListCellControls.styles'
 import {
@@ -32,6 +33,7 @@ import {
 const suffix = '_db_instance'
 
 const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
+  const { t } = useTranslation()
   const instance = row.original
   const { setOpenDialog } = useHomePageDataProvider()
   const [isControlsPopoverOpen, setControlsPopoverOpen] = useState(false)
@@ -50,10 +52,12 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
       onClick={(e) => e.stopPropagation()}
     >
       <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
-        <RiTooltip content="Manage Tags">
+        <RiTooltip content={t('home.databaseList.controls.tooltip.manageTags')}>
           <HoverableIconButton
             icon={TagIcon}
-            aria-label="Manage Instance Tags"
+            aria-label={t(
+              'home.databaseList.controls.ariaLabel.manageInstanceTags',
+            )}
             data-testid={`manage-instance-tags-${instance.id}`}
             onClick={() => {
               handleManageInstanceTags(instance)
@@ -63,7 +67,7 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
         </RiTooltip>
       </FeatureFlagComponent>
       {instance.cloudDetails && (
-        <RiTooltip content="Go to Redis Cloud">
+        <RiTooltip content={t('home.databaseList.controls.tooltip.goToCloud')}>
           <Link
             target="_blank"
             href={EXTERNAL_LINKS.cloudConsole}
@@ -85,7 +89,9 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
           button={
             <IconButton
               icon={MoreactionsIcon}
-              aria-label="Controls icon"
+              aria-label={t(
+                'home.databaseList.controls.ariaLabel.controlsIcon',
+              )}
               data-testid={`controls-button-${instance.id}`}
             />
           }
@@ -96,18 +102,20 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
               justify="start"
               icon={EditIcon}
               className="editInstanceBtn"
-              aria-label="Edit instance"
+              aria-label={t(
+                'home.databaseList.controls.ariaLabel.editInstance',
+              )}
               onClick={() => {
                 handleClickEditInstance(instance)
                 setOpenDialog(OpenDialogName.EditDatabase) // if instance?
               }}
               data-testid={`edit-instance-${instance.id}`}
             >
-              Edit database
+              {t('home.databaseList.controls.button.editDatabase')}
             </EmptyButton>
             <PopoverDelete
               header={formatLongName(instance.name, 50, 10, '...')}
-              text="will be removed from Redis Insight."
+              text={t('home.databaseList.controls.deleteConfirm.text')}
               item={instance.id}
               suffix={suffix}
               deleting={deletingId}
@@ -121,7 +129,9 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
               }}
               handleButtonClick={() => handleClickDeleteInstance(instance)}
               testid={`delete-instance-${instance.id}`}
-              buttonLabel="Remove database"
+              buttonLabel={t(
+                'home.databaseList.controls.button.removeDatabase',
+              )}
             />
           </Col>
         </RiPopover>

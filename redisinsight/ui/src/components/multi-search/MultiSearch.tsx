@@ -27,6 +27,7 @@ import {
 } from './MultiSearch.styles'
 
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 interface MultiSearchSuggestion {
   options: null | Array<{
@@ -58,6 +59,7 @@ export interface Props {
 }
 
 const MultiSearch = (props: Props) => {
+  const { t } = useTranslation()
   const {
     value,
     options = [],
@@ -163,7 +165,7 @@ const MultiSearch = (props: Props) => {
   const SubmitBtn = () => (
     <IconButton
       icon={SearchIcon}
-      aria-label="Search"
+      aria-label={t('browser.search.input.aria')}
       disabled={disableSubmit}
       size="S"
       onClick={handleSubmit}
@@ -235,7 +237,7 @@ const MultiSearch = (props: Props) => {
                         <StyledSuggestionRemoveBtn
                           icon={CancelSlimIcon}
                           color="primary"
-                          aria-label="Remove History Record"
+                          aria-label={t('browser.search.removeHistoryRecord')}
                           onClick={(e: React.MouseEvent) => {
                             e.stopPropagation()
                             handleDeleteSuggestion([id])
@@ -257,17 +259,20 @@ const MultiSearch = (props: Props) => {
               >
                 <RiIcon type="EraserIcon" style={{ marginRight: 6 }} />
                 <Text component="span" size="m">
-                  Clear history
+                  {t('browser.search.clearHistory')}
                 </Text>
               </StyledClearHistory>
             </StyledAutoSuggestions>
           )}
           {(value || !!options.length) && (
-            <RiTooltip content="Reset Filters" position="bottom">
+            <RiTooltip
+              content={t('browser.search.resetFilters')}
+              position="bottom"
+            >
               <StyledClearButton
                 icon={CancelSlimIcon}
                 size="XS"
-                aria-label="Reset Filters"
+                aria-label={t('browser.search.resetFilters')}
                 onClick={onClear}
                 data-testid="reset-filter-btn"
                 variant="secondary"

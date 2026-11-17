@@ -1,8 +1,8 @@
-FROM node:22.22.0-alpine
+FROM node:24.22.2-alpine
 
 WORKDIR /app
 
-RUN yarn add express
+RUN npm install express
 
 COPY static.ts .
 

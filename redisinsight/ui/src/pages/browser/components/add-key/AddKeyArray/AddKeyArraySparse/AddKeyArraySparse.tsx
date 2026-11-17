@@ -5,7 +5,8 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 
-import { AddArrayFormConfig as config } from '../../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddArrayFormConfig } from '../../constants/fields-config'
 import AddMultipleFields from '../../../add-multiple-fields'
 import {
   IArraySparseElement,
@@ -15,6 +16,8 @@ import { AddKeyArraySparseProps } from './AddKeyArraySparse.types'
 
 const AddKeyArraySparse = (props: AddKeyArraySparseProps) => {
   const { disabled, value, onChange } = props
+  const { t } = useTranslation()
+  const config = getAddArrayFormConfig(t)
   const { elements } = value
 
   const setElements = (next: IArraySparseElement[]) =>

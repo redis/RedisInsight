@@ -1,5 +1,6 @@
+import { TFunction } from 'i18next'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
-import { RDI_COLUMN_FIELD_NAME_MAP, RdiListColumn } from 'uiSrc/constants'
+import { getRdiColumnFieldNameMap, RdiListColumn } from 'uiSrc/constants'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 
 import RdiInstancesListCellSelect from './components/RdiInstancesListCellSelect/RdiInstancesListCellSelect'
@@ -9,62 +10,66 @@ import RdiInstancesListCell from './components/RdiInstancesListCell/RdiInstances
 export const SELECT_COL_ID = 'select-col-rdi'
 export const ENABLE_PAGINATION_COUNT = 15
 
-export const BASE_COLUMNS: ColumnDef<RdiInstance>[] = [
-  {
-    id: SELECT_COL_ID,
-    size: 40,
-    isHeaderCustom: true,
-    enableSorting: false,
-    header: Table.HeaderMultiRowSelectionButton,
-    cell: RdiInstancesListCellSelect,
-  },
-  {
-    id: RdiListColumn.Name,
-    accessorKey: RdiListColumn.Name,
-    header: RDI_COLUMN_FIELD_NAME_MAP.get(RdiListColumn.Name),
-    enableSorting: true,
-    cell: RdiInstancesListCell,
-    sortingFn: (rowA, rowB) =>
-      `${rowA.original.name?.toLowerCase()}`.localeCompare(
-        `${rowB.original.name?.toLowerCase()}`,
-      ),
-  },
-  {
-    id: RdiListColumn.Url,
-    accessorKey: RdiListColumn.Url,
-    header: RDI_COLUMN_FIELD_NAME_MAP.get(RdiListColumn.Url),
-    enableSorting: true,
-    cell: RdiInstancesListCell,
-    sortingFn: (rowA, rowB) =>
-      `${rowA.original.url?.toLowerCase()}`.localeCompare(
-        `${rowB.original.url?.toLowerCase()}`,
-      ),
-  },
-  {
-    id: RdiListColumn.Version,
-    accessorKey: RdiListColumn.Version,
-    header: RDI_COLUMN_FIELD_NAME_MAP.get(RdiListColumn.Version),
-    enableSorting: true,
-    cell: RdiInstancesListCell,
-  },
-  {
-    id: RdiListColumn.LastConnection,
-    accessorKey: RdiListColumn.LastConnection,
-    header: RDI_COLUMN_FIELD_NAME_MAP.get(RdiListColumn.LastConnection),
-    enableSorting: true,
-    cell: RdiInstancesListCell,
-    sortingFn: (rowA, rowB) => {
-      const a = rowA.original.lastConnection
-      const b = rowB.original.lastConnection
-      const getTime = (v: any) => (v ? new Date(`${v}`).getTime() : -Infinity)
-      return getTime(a) - getTime(b)
+export const getBaseColumns = (t: TFunction): ColumnDef<RdiInstance>[] => {
+  const columnNameMap = getRdiColumnFieldNameMap(t)
+
+  return [
+    {
+      id: SELECT_COL_ID,
+      size: 40,
+      isHeaderCustom: true,
+      enableSorting: false,
+      header: Table.HeaderMultiRowSelectionButton,
+      cell: RdiInstancesListCellSelect,
     },
-  },
-  {
-    id: RdiListColumn.Controls,
-    accessorKey: RdiListColumn.Controls,
-    header: '',
-    enableSorting: false,
-    cell: RdiInstancesListCellControls,
-  },
-]
+    {
+      id: RdiListColumn.Name,
+      accessorKey: RdiListColumn.Name,
+      header: columnNameMap.get(RdiListColumn.Name),
+      enableSorting: true,
+      cell: RdiInstancesListCell,
+      sortingFn: (rowA, rowB) =>
+        `${rowA.original.name?.toLowerCase()}`.localeCompare(
+          `${rowB.original.name?.toLowerCase()}`,
+        ),
+    },
+    {
+      id: RdiListColumn.Url,
+      accessorKey: RdiListColumn.Url,
+      header: columnNameMap.get(RdiListColumn.Url),
+      enableSorting: true,
+      cell: RdiInstancesListCell,
+      sortingFn: (rowA, rowB) =>
+        `${rowA.original.url?.toLowerCase()}`.localeCompare(
+          `${rowB.original.url?.toLowerCase()}`,
+        ),
+    },
+    {
+      id: RdiListColumn.Version,
+      accessorKey: RdiListColumn.Version,
+      header: columnNameMap.get(RdiListColumn.Version),
+      enableSorting: true,
+      cell: RdiInstancesListCell,
+    },
+    {
+      id: RdiListColumn.LastConnection,
+      accessorKey: RdiListColumn.LastConnection,
+      header: columnNameMap.get(RdiListColumn.LastConnection),
+      enableSorting: true,
+      cell: RdiInstancesListCell,
+      sortingFn: (rowA, rowB) => {
+        const a = rowA.original.lastConnection
+        const b = rowB.original.lastConnection
+        const getTime = (v: any) => (v ? new Date(`${v}`).getTime() : -Infinity)
+        return getTime(a) - getTime(b)
+      },
+    },
+    {
+      id: RdiListColumn.Controls,
+      accessorKey: RdiListColumn.Controls,
+      header: '',
+      enableSorting: false,
+      cell: RdiInstancesListCellControls,
+    },
+  ]
+}

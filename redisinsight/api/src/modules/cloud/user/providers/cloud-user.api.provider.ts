@@ -1,12 +1,16 @@
 import { get } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { ICloudApiAccount, ICloudApiUser } from 'src/modules/cloud/user/models';
-import { wrapCloudApiError } from 'src/modules/cloud/common/exceptions';
+import {
+  CloudApiMfaRequiredException,
+  wrapCloudApiError,
+} from 'src/modules/cloud/common/exceptions';
 import {
   CloudRequestUtm,
   ICloudApiCredentials,
 } from 'src/modules/cloud/common/models';
 import { CloudApiProvider } from 'src/modules/cloud/common/providers/cloud.api.provider';
+import { CloudApiMfaType } from 'src/modules/cloud/common/constants';
 
 @Injectable()
 export class CloudUserApiProvider extends CloudApiProvider {
@@ -32,13 +36,16 @@ export class CloudUserApiProvider extends CloudApiProvider {
   /**
    * Login user to api using accessToken from oauth flow
    * returns JSESSIONID
+   * When the login was challenged for MFA, re-call with mfaCode to complete it
    * @param credentials
    * @param utm
+   * @param mfaCode
    * @private
    */
   async getApiSessionId(
     credentials: ICloudApiCredentials,
     utm?: CloudRequestUtm,
+    mfaCode?: string,
   ): Promise<string> {
     try {
       const { headers } = await this.api.post(
@@ -46,18 +53,31 @@ export class CloudUserApiProvider extends CloudApiProvider {
         {
           ...CloudApiProvider.generateUtmBody(utm),
           auth_mode: credentials?.idpType,
+          ...(mfaCode
+            ? { mfa_code: mfaCode, mfa_type: CloudApiMfaType.Totp }
+            : {}),
         },
-        {
-          ...CloudApiProvider.getHeaders(credentials),
-        },
+        CloudApiProvider.getHeaders(credentials),
       );
 
-      return get(headers, 'set-cookie', [])
-        .find((header) => header.indexOf('JSESSIONID=') > -1)
-        ?.match(/JSESSIONID=([^;]+)/)?.[1];
+      return CloudUserApiProvider.getJsessionId(headers);
     } catch (e) {
-      throw wrapCloudApiError(e);
+      const error = wrapCloudApiError(e);
+
+      if (error instanceof CloudApiMfaRequiredException) {
+        error.apiSessionId = CloudUserApiProvider.getJsessionId(
+          e?.response?.headers,
+        );
+      }
+
+      throw error;
     }
+  }
+
+  private static getJsessionId(headers: unknown): string | undefined {
+    return (get(headers, 'set-cookie', []) as string[])
+      .find((header) => header.indexOf('JSESSIONID=') > -1)
+      ?.match(/JSESSIONID=([^;]+)/)?.[1];
   }
 
   /**

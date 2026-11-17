@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormikErrors } from 'formik'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { ParseKeys } from 'i18next'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
@@ -12,6 +13,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   submitIsDisable: () => boolean
@@ -24,6 +26,8 @@ export interface Props {
 }
 
 const FooterActions = (props: Props) => {
+  const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const {
     isLoading,
     submitButtonText,
@@ -57,7 +61,7 @@ const FooterActions = (props: Props) => {
         icon={submitIsDisabled ? InfoIcon : undefined}
         data-testid="btn-submit"
       >
-        {text}
+        {text && t(text as ParseKeys)}
       </PrimaryButton>
     </RiTooltip>
   )
@@ -83,7 +87,7 @@ const FooterActions = (props: Props) => {
             loading={isLoading}
             data-testid="btn-test-connection"
           >
-            Test Connection
+            {t('home.form.footer.button.testConnection')}
           </EmptyButton>
         </RiTooltip>
       </FlexItem>
@@ -97,7 +101,7 @@ const FooterActions = (props: Props) => {
               data-testid="btn-cancel"
               style={{ marginRight: 12 }}
             >
-              Cancel
+              {t('home.form.footer.button.cancel')}
             </SecondaryButton>
           )}
           <SubmitButton

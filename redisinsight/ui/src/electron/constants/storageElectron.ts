@@ -5,10 +5,14 @@ enum ElectronStorageItem {
   isUpdateAvailable = 'isUpdateAvailable',
   isDisplayAppInTray = 'isDisplayAppInTray',
   updatePreviousVersion = 'updatePreviousVersion',
+  updateStrategy = 'updateStrategy',
+  updateSkippedVersion = 'updateSkippedVersion',
+  updateDownloadedStrategy = 'updateDownloadedStrategy',
   zoomFactor = 'zoomFactor',
   themeSource = 'themeSource',
   bounds = 'bounds',
   analyticsConsent = 'analyticsConsent',
+  analyticsInstallationId = 'analyticsInstallationId',
 }
 
 export default ElectronStorageItem

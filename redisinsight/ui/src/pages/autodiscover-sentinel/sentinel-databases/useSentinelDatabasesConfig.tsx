@@ -14,6 +14,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 import { CreateSentinelDatabaseDto } from 'apiClient'
 import {
   ColumnDef,
@@ -82,7 +83,7 @@ export const useSentinelDatabasesConfig = () => {
     }
   }, [masters.length])
 
-  useEffect(() => setTitle('Auto-Discover Redis Sentinel Primary Groups'), [])
+  useEffect(() => setTitle(i18n.t('autodiscover.sentinel.databases.title')), [])
   const handleClose = useCallback(() => {
     sendCancelEvent()
     dispatch(resetDataSentinel())

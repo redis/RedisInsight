@@ -12,10 +12,6 @@ export const FEATURES_DATA_MOCK = {
       name: 'envDependent',
       flag: true,
     },
-    whatsNew: {
-      name: 'whatsNew',
-      flag: true,
-    },
     cloudSso: {
       name: 'cloudSso',
       flag: true,

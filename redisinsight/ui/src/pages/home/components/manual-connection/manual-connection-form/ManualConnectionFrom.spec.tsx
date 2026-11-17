@@ -13,8 +13,6 @@ import { appRedirectionSelector } from 'uiSrc/slices/app/url-handling'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { ADD_NEW_CA_CERT, SshPassType } from 'uiSrc/pages/home/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FeatureFlags } from 'uiSrc/constants/featureFlags'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import ManualConnectionForm, { Props } from './ManualConnectionForm'
 
@@ -1440,27 +1438,7 @@ describe('InstanceForm', () => {
   })
 
   describe('Database mode select', () => {
-    it('should not render the dropdown when the prodMode flag is off', () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
-        [FeatureFlags.prodMode]: { flag: false },
-      })
-
-      render(
-        <ManualConnectionForm
-          {...instance(mockedProps)}
-          isEditMode={false}
-          formFields={formFields}
-        />,
-      )
-
-      expect(screen.queryByTestId('select-environment')).not.toBeInTheDocument()
-    })
-
-    it('should render the dropdown when the prodMode flag is on', () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-        [FeatureFlags.prodMode]: { flag: true },
-      })
-
+    it('should render the dropdown', () => {
       render(
         <ManualConnectionForm
           {...instance(mockedProps)}
@@ -1470,7 +1448,6 @@ describe('InstanceForm', () => {
       )
 
       expect(screen.getByTestId('select-environment')).toBeInTheDocument()
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReset()
     })
   })
 })

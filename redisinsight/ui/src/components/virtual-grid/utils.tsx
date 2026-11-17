@@ -230,6 +230,29 @@ export const useInnerElementType = (
     [Cell, columnWidth, rowHeight, columnCount, tableWidth],
   )
 
+/**
+ * Row height for a virtual-grid row. Expanded rows use the tallest recorded
+ * column height; everything else uses the default.
+ *
+ * A row can be flagged expanded before any column height has been recorded (or
+ * after the height map is reset), so `rowHeights[index]` may be missing/empty.
+ * Fall back to the default in that case rather than calling `Object.values()`
+ * on `undefined` ("Cannot convert undefined or null to object") or `Math.max()`
+ * with no args (`-Infinity`).
+ */
+export const getExpandedRowHeight = (
+  index: number,
+  expandedRows: number[],
+  rowHeights: { [key: number]: { [key: number]: number } },
+  defaultRowHeight: number,
+): number => {
+  if (expandedRows.indexOf(index) === -1) return defaultRowHeight
+
+  const columnHeights = rowHeights[index]
+  const sizes = columnHeights ? Object.values(columnHeights) : []
+  return sizes.length ? Math.max(...sizes) : defaultRowHeight
+}
+
 export const getColumnWidth = (
   i: number,
   width: number,

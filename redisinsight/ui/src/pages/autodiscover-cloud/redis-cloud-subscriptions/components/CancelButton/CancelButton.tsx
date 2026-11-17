@@ -5,6 +5,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
+import { useTranslation } from 'uiSrc/i18n'
 
 import styles from '../../styles.module.scss'
 import { type CancelButtonProps } from './CancelButton.types'
@@ -14,36 +15,37 @@ export const CancelButton = ({
   onClose,
   onShowPopover,
   onClosePopover,
-}: CancelButtonProps) => (
-  <RiPopover
-    anchorPosition="upCenter"
-    isOpen={isPopoverOpen}
-    closePopover={onClosePopover}
-    panelClassName={styles.panelCancelBtn}
-    panelPaddingSize="l"
-    button={
-      <SecondaryButton
-        onClick={onShowPopover}
-        className="btn-cancel"
-        data-testid="btn-cancel"
-      >
-        Cancel
-      </SecondaryButton>
-    }
-  >
-    <Text size="m">
-      Your changes have not been saved.&#10;&#13; Do you want to proceed to the
-      list of databases?
-    </Text>
-    <br />
-    <div>
-      <DestructiveButton
-        size="s"
-        onClick={onClose}
-        data-testid="btn-cancel-proceed"
-      >
-        Proceed
-      </DestructiveButton>
-    </div>
-  </RiPopover>
-)
+}: CancelButtonProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <RiPopover
+      anchorPosition="upCenter"
+      isOpen={isPopoverOpen}
+      closePopover={onClosePopover}
+      panelClassName={styles.panelCancelBtn}
+      panelPaddingSize="l"
+      button={
+        <SecondaryButton
+          onClick={onShowPopover}
+          className="btn-cancel"
+          data-testid="btn-cancel"
+        >
+          {t('autodiscover.cloud.cancel.button')}
+        </SecondaryButton>
+      }
+    >
+      <Text size="m">{t('autodiscover.cloud.cancel.confirm')}</Text>
+      <br />
+      <div>
+        <DestructiveButton
+          size="s"
+          onClick={onClose}
+          data-testid="btn-cancel-proceed"
+        >
+          {t('autodiscover.cloud.cancel.proceed')}
+        </DestructiveButton>
+      </div>
+    </RiPopover>
+  )
+}

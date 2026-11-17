@@ -121,6 +121,10 @@ export class AddKeyDialog {
     }
   }
 
+  async expectHidden(): Promise<void> {
+    await expect(this.title).toBeHidden();
+  }
+
   async selectKeyType(type: KeyType): Promise<void> {
     await this.keyTypeSelect.click();
     await this.page.getByRole('option', { name: type, exact: true }).click();

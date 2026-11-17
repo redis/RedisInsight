@@ -2,18 +2,22 @@ import { cloneDeep } from 'lodash'
 
 import { GetServerInfoResponse } from 'apiClient'
 import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
-import { FeatureFlagsMap, whatsNewFeed } from 'uiSrc/utils'
+import { whatsNewFeed } from 'uiSrc/utils'
 import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
-import { FeatureFlags } from 'uiSrc/constants'
+import { TelemetryEvent } from 'uiSrc/telemetry'
+import { AppUpdateStrategy } from 'uiSrc/electron/constants'
 import { ipcCheckUpdates, ipcSendEvents } from '../ipcCheckUpdates'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const { sendEventTelemetry } = jest.requireMock('uiSrc/telemetry')
 
 const serverInfoMock = (appVersion: string): GetServerInfoResponse =>
   ({ appVersion }) as unknown as GetServerInfoResponse
-
-const whatsNewOnFeatures: FeatureFlagsMap = {
-  [FeatureFlags.whatsNew]: { flag: true },
-}
 
 const invokeMock = jest.fn()
 let store: typeof mockedStore
@@ -39,48 +43,26 @@ describe('ipcCheckUpdates', () => {
     expect(invokeMock).toBeCalled()
   })
 
-  it('should open Whats New when enabled and the version is eligible', async () => {
+  it('should open Whats New when the version is eligible', async () => {
     const version = whatsNewFeed[0].version
     invokeMock
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(version)
 
-    await ipcCheckUpdates(
-      serverInfoMock(version),
-      store.dispatch,
-      whatsNewOnFeatures,
-    )
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch)
 
     expect(store.getActions()).toContainEqual(openWhatsNew(version))
   })
 
-  it('should not open Whats New for an ineligible version even when enabled', async () => {
+  it('should fall back to the update toast for an ineligible version', async () => {
     const version = '0.0.1'
     invokeMock
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(version)
 
-    await ipcCheckUpdates(
-      serverInfoMock(version),
-      store.dispatch,
-      whatsNewOnFeatures,
-    )
-
-    const actionTypes = store.getActions().map((action) => action.type)
-    expect(actionTypes).not.toContain(openWhatsNew.type)
-    expect(actionTypes).toContain(addMessageNotification.type)
-  })
-
-  it('should fall back to the update toast when Whats New is disabled', async () => {
-    const version = whatsNewFeed[0].version
-    invokeMock
-      .mockReturnValueOnce(true)
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(version)
-
-    await ipcCheckUpdates(serverInfoMock(version), store.dispatch, {})
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch)
 
     const actionTypes = store.getActions().map((action) => action.type)
     expect(actionTypes).not.toContain(openWhatsNew.type)
@@ -96,11 +78,7 @@ describe('ipcCheckUpdates', () => {
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(version)
 
-    await ipcCheckUpdates(
-      serverInfoMock(version),
-      store.dispatch,
-      whatsNewOnFeatures,
-    )
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch)
 
     expect(store.getActions()).toContainEqual(openWhatsNew(version))
   })
@@ -113,5 +91,25 @@ describe('ipcSendEvents', () => {
     ipcSendEvents({ appVersion: appVersionMock })
 
     expect(invokeMock).toBeCalled()
+  })
+
+  it('should default the strategy to auto for a legacy download with no stored strategy', async () => {
+    invokeMock
+      .mockReturnValueOnce(true) // isUpdateDownloadedForTelemetry
+      .mockReturnValueOnce(false) // isUpdateAvailable
+      .mockReturnValueOnce('2.0.0') // newVer
+      .mockReturnValueOnce('1.0.0') // prevVer
+      .mockReturnValueOnce(undefined) // updateDownloadedStrategy - never written by a pre-feature build
+
+    await ipcSendEvents(serverInfoMock('2.0.0'))
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: TelemetryEvent.APPLICATION_UPDATED,
+        eventData: expect.objectContaining({
+          strategy: AppUpdateStrategy.auto,
+        }),
+      }),
+    )
   })
 })

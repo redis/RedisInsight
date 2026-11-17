@@ -20,6 +20,9 @@ export class DatabaseSettingsData {
 
   @Expose()
   treeViewSort?: string;
+
+  @Expose()
+  treeViewDelimiterPrefixLength?: number;
 }
 
 export class DatabaseSettings {

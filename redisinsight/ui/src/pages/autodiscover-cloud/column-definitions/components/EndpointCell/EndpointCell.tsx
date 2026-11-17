@@ -8,10 +8,13 @@ import {
 } from 'uiSrc/components/auto-discover'
 import { RiTooltip } from 'uiSrc/components'
 import { formatLongName } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { EndpointCellProps } from './EndpointCell.types'
 
 export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
+  const { t } = useTranslation()
+
   if (!publicEndpoint) {
     return <CellText>-</CellText>
   }
@@ -20,7 +23,7 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
     <CopyTextContainer>
       <RiTooltip
         position="bottom"
-        title="Endpoint"
+        title={t('autodiscover.cloud.column.endpoint')}
         content={formatLongName(publicEndpoint)}
       >
         <CopyPublicEndpointText>{publicEndpoint}</CopyPublicEndpointText>
@@ -28,7 +31,7 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
 
       <CopyBtnWrapper
         copy={publicEndpoint}
-        aria-label="Copy public endpoint"
+        aria-label={t('autodiscover.cloud.cell.copyEndpointAria')}
         successLabel=""
       />
     </CopyTextContainer>

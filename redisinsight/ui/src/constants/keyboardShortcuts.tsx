@@ -1,151 +1,106 @@
 import React from 'react'
+import { ParseKeys } from 'i18next'
 import { isMacOs } from 'uiSrc/utils/dom'
 
-// TODO: use i18n file for labels & descriptions
-const COMMON_SHORTCUTS = {
-  _separator: '+',
+export interface Shortcut {
+  descriptionKey: ParseKeys
+  keys: (string | JSX.Element)[]
+}
+
+interface KeyboardShortcuts {
+  _separator: string
+  desktop: Record<'newWindow' | 'reloadPage', Shortcut>
+  cli: Record<
+    | 'autocompleteNext'
+    | 'autocompletePrev'
+    | 'clearSearch'
+    | 'prevCommand'
+    | 'nextCommand',
+    Shortcut
+  >
+  workbench: Record<
+    | 'runQuery'
+    | 'nextLine'
+    | 'listOfCommands'
+    | 'triggerHints'
+    | 'quickHistoryAccess'
+    | 'nonRedisEditor',
+    Shortcut
+  >
+  rdi: Record<'openDedicatedEditor', Shortcut>
+}
+
+const isMac = isMacOs()
+
+const CMD = <span className="cmdSymbol">⌘</span>
+const SHIFT = <span className="shiftSymbol">⇧</span>
+const ARROW_UP = <span className="badgeArrowUp">↑</span>
+const ARROW_DOWN = <span className="badgeArrowDown">↓</span>
+
+export const KEYBOARD_SHORTCUTS: KeyboardShortcuts = {
+  _separator: isMac ? '' : '+',
   desktop: {
     newWindow: {
-      description: 'Open a new window',
-      keys: ['Ctrl', 'N'],
+      descriptionKey: 'shortcuts.desktop.newWindow',
+      keys: isMac ? [CMD, 'N'] : ['Ctrl', 'N'],
     },
     reloadPage: {
-      description: 'Reload the page',
-      keys: ['Ctrl', 'R'],
+      descriptionKey: 'shortcuts.desktop.reloadPage',
+      keys: isMac ? [CMD, 'R'] : ['Ctrl', 'R'],
     },
   },
   cli: {
     autocompleteNext: {
-      description: 'Autocomplete with the next command',
+      descriptionKey: 'shortcuts.cli.autocompleteNext',
       keys: ['Tab'],
     },
     autocompletePrev: {
-      description: 'Autocomplete with the previous command',
-      keys: ['Shift', 'Tab'],
+      descriptionKey: 'shortcuts.cli.autocompletePrev',
+      keys: isMac ? [SHIFT, 'Tab'] : ['Shift', 'Tab'],
     },
     clearSearch: {
-      description: 'Clear the screen',
-      keys: ['Ctrl', 'L'],
+      descriptionKey: 'shortcuts.cli.clearSearch',
+      keys: isMac ? [CMD, 'K'] : ['Ctrl', 'L'],
     },
     prevCommand: {
-      description: 'Return to the previous command',
-      keys: ['Up Arrow'],
+      descriptionKey: 'shortcuts.cli.prevCommand',
+      keys: isMac ? [ARROW_UP] : ['Up Arrow'],
     },
     nextCommand: {
-      description:
-        'Scroll the list of commands in the opposite direction to the Up Arrow',
-      keys: ['Down Arrow'],
+      descriptionKey: 'shortcuts.cli.nextCommand',
+      keys: isMac ? [ARROW_DOWN] : ['Down Arrow'],
     },
   },
   workbench: {
     runQuery: {
-      label: 'Run',
-      description: 'Run Command',
-      keys: ['Ctrl', 'Enter'],
+      descriptionKey: 'shortcuts.workbench.runQuery',
+      keys: isMac ? [CMD, 'Enter'] : ['Ctrl', 'Enter'],
     },
     nextLine: {
-      description: 'Go to the next line',
+      descriptionKey: 'shortcuts.workbench.nextLine',
       keys: ['Enter'],
     },
     listOfCommands: {
-      description:
-        'Display the list of commands and information about commands and their arguments in the suggestion list',
-      keys: ['Ctrl', 'Space'],
+      descriptionKey: 'shortcuts.workbench.listOfCommands',
+      keys: isMac ? [CMD, 'Space'] : ['Ctrl', 'Space'],
     },
     triggerHints: {
-      description: 'Trigger Command Hints',
-      keys: ['Ctrl', 'Shift', 'Space'],
+      descriptionKey: 'shortcuts.workbench.triggerHints',
+      keys: isMac ? [CMD, SHIFT, 'Space'] : ['Ctrl', 'Shift', 'Space'],
     },
     quickHistoryAccess: {
-      description: 'Quick-access to command history',
+      descriptionKey: 'shortcuts.workbench.quickHistoryAccess',
       keys: ['Up Arrow'],
     },
     nonRedisEditor: {
-      description: 'Use Non-Redis Editor',
-      keys: ['Shift', 'Space'],
+      descriptionKey: 'shortcuts.workbench.nonRedisEditor',
+      keys: isMac ? [SHIFT, 'Space'] : ['Shift', 'Space'],
     },
   },
   rdi: {
     openDedicatedEditor: {
-      description: 'Open a dedicated SQL or JMESPath editor:',
-      keys: ['Shift', 'Space'],
+      descriptionKey: 'shortcuts.rdi.openDedicatedEditor',
+      keys: isMac ? [SHIFT, 'Space'] : ['Shift', 'Space'],
     },
   },
 }
-
-const MAC_SHORTCUTS = {
-  _separator: '',
-  desktop: {
-    newWindow: {
-      description: 'Open a new window',
-      keys: [<span className="cmdSymbol">⌘</span>, 'N'],
-    },
-    reloadPage: {
-      description: 'Reload the page',
-      keys: [<span className="cmdSymbol">⌘</span>, 'R'],
-    },
-  },
-  cli: {
-    autocompleteNext: {
-      description: 'Autocomplete with the next command',
-      keys: ['Tab'],
-    },
-    autocompletePrev: {
-      description: 'Autocomplete with the previous command',
-      keys: [<span className="shiftSymbol">⇧</span>, 'Tab'],
-    },
-    clearSearch: {
-      description: 'Clear the screen',
-      keys: [<span className="cmdSymbol">⌘</span>, 'K'],
-    },
-    prevCommand: {
-      description: 'Return to the previous command',
-      keys: [<span className="badgeArrowUp">↑</span>],
-    },
-    nextCommand: {
-      description:
-        'Scroll the list of commands in the opposite direction to the Up Arrow',
-      keys: [<span className="badgeArrowDown">↓</span>],
-    },
-  },
-  workbench: {
-    runQuery: {
-      label: 'Run commands',
-      description: 'Run Commands',
-      keys: [<span className="cmdSymbol">⌘</span>, 'Enter'],
-    },
-    nextLine: {
-      description: 'Go to the next line',
-      keys: ['Enter'],
-    },
-    listOfCommands: {
-      description:
-        'Display the list of commands and information about commands and their arguments in the suggestion list',
-      keys: [<span className="cmdSymbol">⌘</span>, 'Space'],
-    },
-    triggerHints: {
-      description: 'Trigger Command Hints',
-      keys: [
-        <span className="cmdSymbol">⌘</span>,
-        <span className="shiftSymbol">⇧</span>,
-        'Space',
-      ],
-    },
-    quickHistoryAccess: {
-      description: 'Quick-access to command history',
-      keys: ['Up Arrow'],
-    },
-    nonRedisEditor: {
-      description: 'Use Non-Redis Editor',
-      keys: [<span className="shiftSymbol">⇧</span>, 'Space'],
-    },
-  },
-  rdi: {
-    openDedicatedEditor: {
-      description: 'Open a dedicated SQL or JMESPath editor',
-      keys: [<span className="shiftSymbol">⇧</span>, 'Space'],
-    },
-  },
-}
-
-export const KEYBOARD_SHORTCUTS = isMacOs() ? MAC_SHORTCUTS : COMMON_SHORTCUTS

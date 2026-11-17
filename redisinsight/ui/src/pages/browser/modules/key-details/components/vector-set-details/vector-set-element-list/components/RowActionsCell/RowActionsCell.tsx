@@ -6,6 +6,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { SearchIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import {
   bufferToString,
@@ -33,6 +34,7 @@ export const RowActionsCell = ({
   viewFormat,
   testIdPrefix,
 }: RowActionsCellProps) => {
+  const { t } = useTranslation()
   const { name: nameBuffer } = target
   const { elementDeleteConfig, onViewElement, onSearchByElement } =
     actionsConfig
@@ -57,14 +59,17 @@ export const RowActionsCell = ({
         variant="primary-inline"
         color="informative400"
       >
-        View
+        {t('browser.vectorSet.list.viewAction')}
       </S.ActionTextButton>
-      <RiTooltip content="Find similar elements" position="top">
+      <RiTooltip
+        content={t('browser.vectorSet.list.findSimilar')}
+        position="top"
+      >
         <IconButton
           size="S"
           icon={SearchIcon}
           onClick={() => onSearchByElement(target)}
-          aria-label="Find similar elements"
+          aria-label={t('browser.vectorSet.list.findSimilar')}
           data-testid={`${testIdPrefix}-search-similar-btn-${name}`}
         />
       </RiTooltip>

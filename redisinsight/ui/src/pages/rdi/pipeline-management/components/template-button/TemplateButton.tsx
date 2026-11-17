@@ -10,6 +10,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
 
@@ -19,6 +20,7 @@ export interface TemplateButtonProps {
 }
 
 const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { loading, data } = useAppSelector(rdiPipelineStrategiesSelector)
@@ -53,13 +55,13 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
       <SecondaryButton
         inverted
         size="s"
-        aria-label="Insert template"
+        aria-label={t('rdi.pipeline.template.insertAria')}
         loading={loading}
         disabled={!templateOption || !!value}
         onClick={handleApply}
         data-testid="template-btn"
       >
-        Insert template
+        {t('rdi.pipeline.template.insertButton')}
       </SecondaryButton>
     </RiTooltip>
   )

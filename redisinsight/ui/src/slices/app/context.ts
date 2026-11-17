@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Environment } from 'apiClient'
 import { EuiComboBoxOptionOption } from '@elastic/eui'
 import { RelativeWidthSizes } from 'uiSrc/components/virtual-table/interfaces'
 import {
@@ -69,6 +70,7 @@ export const initialState: StateAppContext = {
     slowLogDurationUnit: DEFAULT_SLOWLOG_DURATION_UNIT,
     showHiddenRecommendations: DEFAULT_SHOW_HIDDEN_RECOMMENDATIONS,
     shownColumns: DEFAULT_SHOWN_COLUMNS,
+    treeViewDelimiterPrefixLength: 0,
   },
   dbIndex: {
     disabled: false,
@@ -178,6 +180,8 @@ const appContextSlice = createSlice({
         payload?.showHiddenRecommendations
       state.dbConfig.shownColumns =
         payload?.shownColumns ?? DEFAULT_SHOWN_COLUMNS
+      state.dbConfig.treeViewDelimiterPrefixLength =
+        payload?.treeViewDelimiterPrefixLength ?? 0
     },
     setSlowLogUnits: (state, { payload }) => {
       state.dbConfig.slowLogDurationUnit = payload
@@ -195,6 +199,14 @@ const appContextSlice = createSlice({
       setDBConfigStorageField(
         state.contextInstanceId,
         BrowserStorageItem.treeViewDelimiter,
+        payload,
+      )
+    },
+    setBrowserTreePrefixLength: (state, { payload }: { payload: number }) => {
+      state.dbConfig.treeViewDelimiterPrefixLength = payload
+      setDBConfigStorageField(
+        state.contextInstanceId,
+        BrowserStorageItem.treeViewPrefixLength,
         payload,
       )
     },
@@ -374,6 +386,7 @@ export const {
   setBrowserPanelSizes,
   setBrowserTreeNodesOpen,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   resetBrowserTree,
   setWorkbenchScript,
   setWorkbenchVerticalPanelSizes,
@@ -399,6 +412,22 @@ export const {
 export const appContextSelector = (state: RootState) => state.app.context
 export const appContextDbConfig = (state: RootState) =>
   state.app.context.dbConfig
+export const isKeySizeAvailableSelector = (state: RootState) => {
+  const { environment, isEnvironmentPending } =
+    state.connections.instances.connectedInstance
+
+  return !isEnvironmentPending && environment !== Environment.Production
+}
+export const appContextShownColumnsSelector = createSelector(
+  [
+    (state: RootState) => state.app.context.dbConfig.shownColumns,
+    isKeySizeAvailableSelector,
+  ],
+  (shownColumns, isKeySizeAvailable) =>
+    isKeySizeAvailable
+      ? shownColumns
+      : shownColumns.filter((col) => col !== BrowserColumns.Size),
+)
 export const appContextBrowser = (state: RootState) => state.app.context.browser
 export const appContextBrowserTree = (state: RootState) =>
   state.app.context.browser.tree

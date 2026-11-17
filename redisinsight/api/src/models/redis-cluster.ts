@@ -15,15 +15,3 @@ export interface IRedisClusterNodeAddress {
   host: string;
   port: number;
 }
-
-export interface IRedisClusterNode extends IRedisClusterNodeAddress {
-  id: string;
-  replicaOf: string;
-  linkState: RedisClusterNodeLinkState;
-  slot: string;
-}
-
-export enum RedisClusterNodeLinkState {
-  Connected = 'connected',
-  Disconnected = 'disconnected',
-}

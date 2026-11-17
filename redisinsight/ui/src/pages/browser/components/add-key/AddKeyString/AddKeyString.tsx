@@ -9,7 +9,8 @@ import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { SetStringWithExpireDto } from 'apiClient'
-import { AddStringFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddStringFormConfig } from '../constants/fields-config'
 
 export interface Props {
   keyName: string
@@ -19,6 +20,8 @@ export interface Props {
 
 const AddKeyString = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddStringFormConfig(t)
   const { loading } = useAppSelector(addKeyStateSelector)
   const [value, setValue] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
@@ -63,7 +66,7 @@ const AddKeyString = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-string-btn"

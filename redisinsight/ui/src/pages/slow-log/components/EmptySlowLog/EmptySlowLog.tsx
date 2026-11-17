@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTheme } from '@redis-ui/styles'
+import { useTranslation } from 'uiSrc/i18n'
 import { DurationUnits } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
@@ -18,28 +19,33 @@ export interface Props {
 
 const EmptySlowLog = (props: Props) => {
   const { durationUnit, slowlogLogSlowerThan } = props
+  const { t } = useTranslation()
   const theme = useTheme()
   const icon =
     theme.name === 'dark' ? NoQueryResultsIconDark : NoQueryResultsIcon
 
+  const value = numberWithSpaces(
+    convertNumberByUnits(slowlogLogSlowerThan, durationUnit),
+  )
+  const unit =
+    durationUnit === DurationUnits.milliSeconds
+      ? t('analytics.units.msec')
+      : t('analytics.units.microseconds')
+
   return (
     <Col justify="center" grow data-testid="empty-slow-log">
       <Col align="center" justify="center" gap="xxl">
-        <StyledImage as="img" src={icon} alt="No Slow Logs" />
+        <StyledImage
+          as="img"
+          src={icon}
+          alt={t('analytics.slowLog.empty.imageAlt')}
+        />
         <Col align="center" gap="m" grow={false}>
           <Title size="M" color="primary">
-            No Slow Logs found
+            {t('analytics.slowLog.empty.title')}
           </Title>
           <Text color="primary">
-            Either no commands exceeding&nbsp;
-            {numberWithSpaces(
-              convertNumberByUnits(slowlogLogSlowerThan, durationUnit),
-            )}
-            &nbsp;
-            {durationUnit === DurationUnits.milliSeconds
-              ? DurationUnits.mSeconds
-              : DurationUnits.microSeconds}
-            &nbsp;were found or Slow Log is disabled on the server.
+            {t('analytics.slowLog.empty.description', { value, unit })}
           </Text>
         </Col>
       </Col>

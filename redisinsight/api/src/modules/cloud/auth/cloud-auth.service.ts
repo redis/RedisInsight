@@ -9,6 +9,7 @@ import {
 import { CloudAuthStrategy } from 'src/modules/cloud/auth/auth-strategy/cloud-auth.strategy';
 import { SessionMetadata } from 'src/common/models';
 import { CloudSessionService } from 'src/modules/cloud/session/cloud-session.service';
+import { CloudSession } from 'src/modules/cloud/session/models/cloud-session';
 import { GithubIdpCloudAuthStrategy } from 'src/modules/cloud/auth/auth-strategy/github-idp.cloud.auth-strategy';
 import { SsoIdpCloudAuthStrategy } from 'src/modules/cloud/auth/auth-strategy/sso-idp.cloud.auth-strategy';
 import { wrapHttpError } from 'src/common/utils';
@@ -253,11 +254,12 @@ export class CloudAuthService {
 
   private async revokeRefreshToken(
     sessionMetadata: SessionMetadata,
+    capturedSession?: CloudSession,
   ): Promise<void> {
     try {
-      const session = await this.sessionService.getSession(
-        sessionMetadata.sessionId,
-      );
+      const session =
+        capturedSession ??
+        (await this.sessionService.getSession(sessionMetadata.sessionId));
       if (!session?.refreshToken) {
         return;
       }
@@ -383,9 +385,16 @@ export class CloudAuthService {
     try {
       this.logger.debug('Logout cloud user', sessionMetadata);
 
-      await this.revokeRefreshToken(sessionMetadata);
+      // clear the local session first, then revoke with the captured token: a
+      // slow remote revocation must not delete a session that a concurrent
+      // sign-in may have re-credentialed in the meantime
+      const session = await this.sessionService.getSession(
+        sessionMetadata.sessionId,
+      );
 
       await this.sessionService.deleteSessionData(sessionMetadata.sessionId);
+
+      await this.revokeRefreshToken(sessionMetadata, session);
 
       this.eventEmitter.emit(CloudAuthServerEvent.Logout, sessionMetadata);
     } catch (e) {

@@ -76,10 +76,11 @@ const verifyBinaries = (config, unpackedDirs) => {
   const checks = []
   unpackedDirs.forEach((entry) => {
     config.linuxRequiredNodeBinaries.forEach((binaryPath) => {
+      const resolvedPath = binaryPath.replace('{arch}', targetArch)
       checks.push({
         unpackedDirName: entry.name,
-        expectedPath: binaryPath,
-        absolutePath: path.join(entry.asarUnpackedPath, binaryPath),
+        expectedPath: resolvedPath,
+        absolutePath: path.join(entry.asarUnpackedPath, resolvedPath),
       })
     })
   })

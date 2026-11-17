@@ -165,7 +165,6 @@ export class AddDatabaseDialog {
 
   /**
    * Select an environment in the connection form's Environment dropdown.
-   * The dropdown is only rendered when the `prodMode` feature flag is enabled.
    *
    * Each `Environment` enum value (`unspecified` | `production` | `development`)
    * is rendered by the form as its capitalized counterpart in

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { TFunction } from 'i18next'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
@@ -15,7 +16,7 @@ import {
 } from 'uiSrc/telemetry'
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
-import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
+import { getAddListFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
@@ -28,6 +29,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -40,21 +42,24 @@ export const TAIL_DESTINATION: ListElementDestination =
 export const HEAD_DESTINATION: ListElementDestination =
   ListElementDestination.Head
 
-export const optionsDestinations = [
+const getPushDestinations = (t: TFunction) => [
   {
     value: TAIL_DESTINATION,
-    inputDisplay: 'Push to tail',
-    label: 'Push to tail',
+    inputDisplay: t('browser.list.destination.tail'),
+    label: t('browser.list.destination.tail'),
   },
   {
     value: HEAD_DESTINATION,
-    inputDisplay: 'Push to head',
-    label: 'Push to head',
+    inputDisplay: t('browser.list.destination.head'),
+    label: t('browser.list.destination.head'),
   },
 ]
 
 const AddListElements = (props: Props) => {
   const { closePanel } = props
+  const { t } = useTranslation()
+  const config = getAddListFormConfig(t)
+  const optionsDestinations = getPushDestinations(t)
 
   const [elements, setElements] = useState<string[]>([''])
   const [destination, setDestination] =
@@ -125,14 +130,11 @@ const AddListElements = (props: Props) => {
 
   const handleSubmit = () => {
     requestConfirmation({
-      title: 'Add elements on production database?',
-      actionDescription: (
-        <>
-          You are about to push {elements.length} element
-          {elements.length === 1 ? '' : 's'} to a list on a production database.
-        </>
-      ),
-      confirmButtonText: 'Add elements',
+      title: t('browser.list.add.confirmTitle'),
+      actionDescription: t('browser.list.add.confirmMessage', {
+        count: elements.length,
+      }),
+      confirmButtonText: t('browser.list.add.confirmButton'),
       commandId: BrowserConfirmationCommandId.AddListElements,
       disableConfirmationInput: true,
       onConfirm: submitData,
@@ -177,7 +179,7 @@ const AddListElements = (props: Props) => {
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
-              Cancel
+              {t('browser.list.add.cancel')}
             </SecondaryButton>
           </div>
         </FlexItem>
@@ -187,7 +189,7 @@ const AddListElements = (props: Props) => {
               onClick={handleSubmit}
               data-testid="save-elements-btn"
             >
-              Save
+              {t('browser.list.add.save')}
             </PrimaryButton>
           </div>
         </FlexItem>

@@ -1,4 +1,5 @@
 import { isString, sortBy } from 'lodash'
+import i18n from 'uiSrc/i18n'
 import { IRecommendationsStatic } from 'uiSrc/slices/interfaces/recommendations'
 
 const replaceVariables = (
@@ -27,4 +28,14 @@ const sortRecommendations = (
     ({ name }) => name,
   ])
 
-export { sortRecommendations, replaceVariables }
+function getTranslatedTipTitle(name: string, fallback: string): string
+function getTranslatedTipTitle(
+  name: string,
+  fallback?: string,
+): string | undefined
+function getTranslatedTipTitle(name: string, fallback?: string) {
+  const key = `tips.content.${name}.title`
+  return i18n.exists(key) ? i18n.t(key as never) : fallback
+}
+
+export { sortRecommendations, replaceVariables, getTranslatedTipTitle }

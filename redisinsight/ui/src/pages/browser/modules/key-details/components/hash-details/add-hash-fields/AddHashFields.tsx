@@ -36,6 +36,7 @@ import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -46,6 +47,7 @@ export interface Props {
 
 const AddHashFields = (props: Props) => {
   const { isExpireFieldsAvailable, closePanel } = props
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [fields, setFields] = useState<IHashFieldState[]>([
     { ...INITIAL_HASH_FIELD_STATE },
@@ -165,14 +167,11 @@ const AddHashFields = (props: Props) => {
 
   const handleSubmit = () => {
     requestConfirmation({
-      title: 'Add fields on production database?',
-      actionDescription: (
-        <>
-          You are about to add {fields.length} field
-          {fields.length === 1 ? '' : 's'} to a hash on a production database.
-        </>
-      ),
-      confirmButtonText: 'Add fields',
+      title: t('browser.hash.add.confirmTitle'),
+      actionDescription: t('browser.hash.add.confirmMessage', {
+        count: fields.length,
+      }),
+      confirmButtonText: t('browser.hash.add.confirmButton'),
       commandId: BrowserConfirmationCommandId.AddHashFields,
       disableConfirmationInput: true,
       onConfirm: submitData,
@@ -199,7 +198,7 @@ const AddHashFields = (props: Props) => {
                   <TextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
-                    placeholder="Enter Field"
+                    placeholder={t('browser.hash.fieldPlaceholder')}
                     value={item.fieldName}
                     disabled={loading}
                     onChange={(value) =>
@@ -217,7 +216,7 @@ const AddHashFields = (props: Props) => {
                   <TextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
-                    placeholder="Enter Value"
+                    placeholder={t('browser.hash.valuePlaceholder')}
                     value={item.fieldValue}
                     disabled={loading}
                     onChange={(value) =>
@@ -233,7 +232,7 @@ const AddHashFields = (props: Props) => {
                     <TextInput
                       name={`fieldTTL-${item.id}`}
                       id={`fieldTTL-${item.id}`}
-                      placeholder="Enter TTL"
+                      placeholder={t('browser.hash.ttlPlaceholder')}
                       value={item.fieldTTL || ''}
                       disabled={loading}
                       onChange={(value) =>
@@ -259,7 +258,7 @@ const AddHashFields = (props: Props) => {
               onClick={() => closePanel(true)}
               data-testid="cancel-fields-btn"
             >
-              Cancel
+              {t('browser.hash.add.cancel')}
             </SecondaryButton>
           </div>
         </FlexItem>
@@ -271,7 +270,7 @@ const AddHashFields = (props: Props) => {
               onClick={handleSubmit}
               data-testid="save-fields-btn"
             >
-              Save
+              {t('browser.hash.add.save')}
             </PrimaryButton>
           </div>
         </FlexItem>

@@ -12,15 +12,18 @@ import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
 
-import { FILTER_EXAMPLES, FILTER_OPERATORS } from './constants'
+import { FILTER_EXAMPLES, getFilterOperators } from './constants'
 import * as S from './FilterSyntaxHelpPopover.styles'
 
 const TEST_ID = 'similarity-search-filter-help'
 
 export const FilterSyntaxHelpPopover = () => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
+  const filterOperators = getFilterOperators(t)
 
   const handleTriggerClick = () => {
     setIsOpen((prev) => {
@@ -44,28 +47,25 @@ export const FilterSyntaxHelpPopover = () => {
       trigger={
         <IconButton
           icon={InfoIcon}
-          aria-label="Filter syntax help"
+          aria-label={t('browser.vectorSet.filterHelp.aria')}
           onClick={handleTriggerClick}
           data-testid={`${TEST_ID}-trigger`}
         />
       }
     >
       <S.HelpPopoverContainer data-testid={`${TEST_ID}-panel`} gap="s">
-        <Title size="XS">Filter syntax</Title>
-        <Text size="s">
-          Filters use a small expression language evaluated against each
-          element&apos;s attributes.
-        </Text>
+        <Title size="XS">{t('browser.vectorSet.filterHelp.title')}</Title>
+        <Text size="s">{t('browser.vectorSet.filterHelp.intro')}</Text>
         <Text size="s" color="secondary">
-          Operators
+          {t('browser.vectorSet.filterHelp.operatorsLabel')}
         </Text>
         <S.HelpExampleList>
-          {FILTER_OPERATORS.map((line) => (
+          {filterOperators.map((line) => (
             <li key={line}>{line}</li>
           ))}
         </S.HelpExampleList>
         <Text size="s" color="secondary">
-          Examples
+          {t('browser.vectorSet.filterHelp.examplesLabel')}
         </Text>
         <S.HelpExampleList>
           {FILTER_EXAMPLES.map((line) => (
@@ -80,7 +80,7 @@ export const FilterSyntaxHelpPopover = () => {
             onClick={() => setIsOpen(false)}
             data-testid={`${TEST_ID}-close`}
           >
-            Close
+            {t('browser.vectorSet.filterHelp.close')}
           </SecondaryButton>
         </Row>
       </S.HelpPopoverContainer>

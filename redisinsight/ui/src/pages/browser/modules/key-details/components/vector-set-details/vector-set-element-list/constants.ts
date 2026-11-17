@@ -1,9 +1,11 @@
+import { ParseKeys } from 'i18next'
 import { VectorSetColumn } from './VectorSetElementList.types'
 
 export const DEFAULT_PAGE_SIZE = 10
 
+// Header values are i18n keys resolved with t() at render; Actions has no title.
 export const VECTOR_SET_COLUMN_HEADERS: Record<VectorSetColumn, string> = {
-  [VectorSetColumn.Name]: 'Element',
+  [VectorSetColumn.Name]: 'browser.vectorSet.list.elementColumn',
   [VectorSetColumn.Actions]: '',
 }
 
@@ -20,8 +22,10 @@ export const MIN_COLUMN_WIDTH = 100
 export const MIN_TABLE_WIDTH_FLOOR = 550
 
 /** Empty-state messages shown in the element-list table. */
-export const ELEMENT_LIST_LOADING_MESSAGE = 'Loading...'
-export const ELEMENT_LIST_EMPTY_MESSAGE = 'No results found.'
+export const ELEMENT_LIST_LOADING_MESSAGE: ParseKeys =
+  'browser.vectorSet.list.loading'
+export const ELEMENT_LIST_EMPTY_MESSAGE: ParseKeys =
+  'browser.vectorSet.list.empty'
 
 /**
  * Appended to a row id to scope the delete-confirmation popover to the

@@ -1,6 +1,7 @@
 import React from 'react'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { ColorText } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import * as S from './Account.style'
 import { type AccountProps, type AccountValueProps } from './Account.types'
@@ -23,31 +24,43 @@ const AccountValue = ({ value, ...rest }: AccountValueProps) => {
 
 export const Account = ({
   account: { accountId, accountName, ownerEmail, ownerName },
-}: AccountProps) => (
-  <S.AccountWrapper>
-    {accountId && (
-      <S.AccountItem>
-        <S.AccountItemTitle>Account ID:</S.AccountItemTitle>
-        <AccountValue data-testid="account-id" value={accountId} />
-      </S.AccountItem>
-    )}
-    {accountName && (
-      <S.AccountItem>
-        <S.AccountItemTitle>Name:</S.AccountItemTitle>
-        <AccountValue data-testid="account-name" value={accountName} />
-      </S.AccountItem>
-    )}
-    {ownerName && (
-      <S.AccountItem>
-        <S.AccountItemTitle>Owner Name:</S.AccountItemTitle>
-        <AccountValue data-testid="account-owner-name" value={ownerName} />
-      </S.AccountItem>
-    )}
-    {ownerEmail && (
-      <S.AccountItem>
-        <S.AccountItemTitle>Owner Email:</S.AccountItemTitle>
-        <AccountValue data-testid="account-owner-email" value={ownerEmail} />
-      </S.AccountItem>
-    )}
-  </S.AccountWrapper>
-)
+}: AccountProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <S.AccountWrapper>
+      {accountId && (
+        <S.AccountItem>
+          <S.AccountItemTitle>
+            {t('autodiscover.cloud.account.accountId')}
+          </S.AccountItemTitle>
+          <AccountValue data-testid="account-id" value={accountId} />
+        </S.AccountItem>
+      )}
+      {accountName && (
+        <S.AccountItem>
+          <S.AccountItemTitle>
+            {t('autodiscover.cloud.account.name')}
+          </S.AccountItemTitle>
+          <AccountValue data-testid="account-name" value={accountName} />
+        </S.AccountItem>
+      )}
+      {ownerName && (
+        <S.AccountItem>
+          <S.AccountItemTitle>
+            {t('autodiscover.cloud.account.ownerName')}
+          </S.AccountItemTitle>
+          <AccountValue data-testid="account-owner-name" value={ownerName} />
+        </S.AccountItem>
+      )}
+      {ownerEmail && (
+        <S.AccountItem>
+          <S.AccountItemTitle>
+            {t('autodiscover.cloud.account.ownerEmail')}
+          </S.AccountItemTitle>
+          <AccountValue data-testid="account-owner-email" value={ownerEmail} />
+        </S.AccountItem>
+      )}
+    </S.AccountWrapper>
+  )
+}

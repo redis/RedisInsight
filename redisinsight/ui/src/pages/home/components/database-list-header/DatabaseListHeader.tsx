@@ -29,6 +29,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
+import { useTranslation } from 'uiSrc/i18n'
 import handleClickFreeCloudDb from './handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
 
@@ -39,6 +40,7 @@ export interface Props {
 }
 
 const DatabaseListHeader = ({ onAddInstance }: Props) => {
+  const { t } = useTranslation()
   const { data: instances, shownColumns } = useAppSelector(instancesSelector)
   const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
   const { loading, data } = useAppSelector(contentSelector)
@@ -109,7 +111,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
         onClick={handleClickFreeCloudDb}
         data-testid={`${CREATE_CLOUD_DB_ID}-button`}
       >
-        Create free Cloud database
+        {t('home.header.button.createCloudDb')}
       </PrimaryButton>
     </FeatureFlagComponent>
   )
@@ -122,7 +124,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
         data-testid="add-redis-database-short"
         icon={PlusIcon}
       >
-        Connect existing database
+        {t('home.header.button.connectExistingDb')}
       </EmptyButton>
     </FeatureFlagComponent>
   )

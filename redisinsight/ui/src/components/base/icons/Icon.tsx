@@ -8,9 +8,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 type BaseIconProps = Omit<MonochromeIconProps, 'color' | 'size'> & {
   icon: React.ComponentType<any>
   color?:
-    | keyof Theme['semantic']['color']['icon']
-    | 'currentColor'
-    | (string & {})
+    keyof Theme['semantic']['color']['icon'] | 'currentColor' | (string & {})
   size?: IconSizeType | null
   isSvg?: boolean
   style?: React.CSSProperties

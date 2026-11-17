@@ -3,6 +3,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
@@ -29,6 +30,7 @@ const SimilaritySearchResultsTable = memo(
     parsedAttributesCache,
     actionsConfig,
   }: SimilaritySearchResultsTableProps) => {
+    const { t } = useTranslation()
     const { compressor = null } = useAppSelector(connectedInstanceSelector)
     const { viewFormat } = useAppSelector(selectedKeySelector)
 
@@ -79,7 +81,7 @@ const SimilaritySearchResultsTable = memo(
           enableColumnResizing
           minWidth={tableMinWidth}
           paginationEnabled={false}
-          emptyState={SIMILARITY_RESULTS_EMPTY_MESSAGE}
+          emptyState={t(SIMILARITY_RESULTS_EMPTY_MESSAGE)}
           data-testid={`${TEST_ID}-table`}
         />
       </S.Container>

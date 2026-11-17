@@ -16,23 +16,28 @@ import {
 } from 'src/__mocks__';
 import * as utils from 'src/common/utils';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  InvalidCaCertificateBodyException,
-  InvalidCertificateNameException,
-  InvalidClientCertificateBodyException,
-  InvalidClientPrivateKeyException,
-} from 'src/modules/database-import/exceptions';
+import config, { Config } from 'src/utils/config';
+import { BuildType } from 'src/modules/server/models/server';
 import { CertificateImportService } from 'src/modules/database-import/certificate-import.service';
 import { EncryptionService } from 'src/modules/encryption/encryption.service';
 import { Repository } from 'typeorm';
 import { CaCertificateEntity } from 'src/modules/certificate/entities/ca-certificate.entity';
 import { ClientCertificateEntity } from 'src/modules/certificate/entities/client-certificate.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import {
+  InvalidCaCertificateBodyException,
+  InvalidCertificateNameException,
+  InvalidClientCertificateBodyException,
+  InvalidClientPrivateKeyException,
+} from 'src/modules/database-import/exceptions';
 
 jest.mock('src/common/utils', () => ({
   ...(jest.requireActual('src/common/utils') as object),
   getPemBodyFromFileSync: jest.fn(),
 }));
+
+const mockServerConfig = config.get('server') as Config['server'];
+const originalBuildType = mockServerConfig.buildType;
 
 describe('CertificateImportService', () => {
   let service: CertificateImportService;
@@ -96,10 +101,10 @@ describe('CertificateImportService', () => {
       });
   });
 
-  let determineAvailableNameSpy;
-  let getPemBodyFromFileSyncSpy;
-  let prepareCaCertificateForImportSpy;
-  let prepareClientCertificateForImportSpy;
+  let determineAvailableNameSpy: jest.SpyInstance;
+  let getPemBodyFromFileSyncSpy: jest.SpyInstance;
+  let prepareCaCertificateForImportSpy: jest.SpyInstance;
+  let prepareClientCertificateForImportSpy: jest.SpyInstance;
 
   describe('processCaCertificate', () => {
     beforeEach(() => {
@@ -136,32 +141,62 @@ describe('CertificateImportService', () => {
       }
     });
 
-    it('should successfully process certificate from file', async () => {
-      const response = await service['processCaCertificate']({
-        certificate: '/path/ca.crt',
+    describe('from filesystem path (desktop build)', () => {
+      beforeEach(() => {
+        mockServerConfig.buildType = BuildType.Electron;
       });
 
-      expect(response).toEqual(mockCaCertificate);
-      expect(prepareCaCertificateForImportSpy).toHaveBeenCalledWith({
-        name: 'ca',
-        certificate: mockCaCertificate.certificate,
+      afterEach(() => {
+        mockServerConfig.buildType = originalBuildType;
+      });
+
+      it('should successfully process certificate from file', async () => {
+        const response = await service['processCaCertificate']({
+          certificate: '/path/ca.crt',
+        });
+
+        expect(response).toEqual(mockCaCertificate);
+        expect(prepareCaCertificateForImportSpy).toHaveBeenCalledWith({
+          name: 'ca',
+          certificate: mockCaCertificate.certificate,
+        });
+      });
+
+      it('should fail when no file found', async () => {
+        getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+        try {
+          await service['processCaCertificate']({
+            name: undefined,
+            certificate: '/path/ca.crt',
+          });
+          fail();
+        } catch (e) {
+          expect(e).toBeInstanceOf(InvalidCaCertificateBodyException);
+        }
       });
     });
 
-    it('should fail when no file found', async () => {
-      getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
-        throw new Error();
+    describe('from filesystem path (network build)', () => {
+      beforeEach(() => {
+        mockServerConfig.buildType = BuildType.DockerOnPremise;
       });
 
-      try {
-        await service['processCaCertificate']({
-          name: undefined,
-          certificate: '/path/ca.crt',
-        });
-        fail();
-      } catch (e) {
-        expect(e).toBeInstanceOf(InvalidCaCertificateBodyException);
-      }
+      afterEach(() => {
+        mockServerConfig.buildType = originalBuildType;
+      });
+
+      it('should reject a path without reading any file', async () => {
+        await expect(
+          service['processCaCertificate']({
+            certificate: '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
+          }),
+        ).rejects.toBeInstanceOf(InvalidCaCertificateBodyException);
+
+        expect(getPemBodyFromFileSyncSpy).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -264,60 +299,93 @@ describe('CertificateImportService', () => {
       }
     });
 
-    it('should successfully process certificate from file', async () => {
-      getPemBodyFromFileSyncSpy.mockReturnValueOnce(
-        mockClientCertificate.certificate,
-      );
-      getPemBodyFromFileSyncSpy.mockReturnValueOnce(mockClientCertificate.key);
-
-      const response = await service['processClientCertificate']({
-        certificate: '/path/client.crt',
-        key: '/path/key.key',
+    describe('from filesystem path (desktop build)', () => {
+      beforeEach(() => {
+        mockServerConfig.buildType = BuildType.Electron;
       });
 
-      expect(response).toEqual(mockClientCertificate);
-      expect(prepareClientCertificateForImportSpy).toHaveBeenCalledWith({
-        name: 'client',
-        certificate: mockClientCertificate.certificate,
-        key: mockClientCertificate.key,
-      });
-    });
-
-    it('should fail when no cert file found', async () => {
-      getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
-        throw new Error();
+      afterEach(() => {
+        mockServerConfig.buildType = originalBuildType;
       });
 
-      try {
-        await service['processClientCertificate']({
-          name: undefined,
-          certificate: '/path/client1.crt',
-          key: '/path/key1.key',
-        });
-        fail();
-      } catch (e) {
-        expect(e).toBeInstanceOf(InvalidClientCertificateBodyException);
-      }
-    });
+      it('should successfully process certificate from file', async () => {
+        getPemBodyFromFileSyncSpy.mockReturnValueOnce(
+          mockClientCertificate.certificate,
+        );
+        getPemBodyFromFileSyncSpy.mockReturnValueOnce(
+          mockClientCertificate.key,
+        );
 
-    it('should fail when no key file found', async () => {
-      getPemBodyFromFileSyncSpy.mockReturnValueOnce(
-        mockClientCertificate.certificate,
-      );
-      getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
-        throw new Error();
-      });
-
-      try {
-        await service['processClientCertificate']({
-          name: undefined,
+        const response = await service['processClientCertificate']({
           certificate: '/path/client.crt',
           key: '/path/key.key',
         });
-        fail();
-      } catch (e) {
-        expect(e).toBeInstanceOf(InvalidClientPrivateKeyException);
-      }
+
+        expect(response).toEqual(mockClientCertificate);
+        expect(prepareClientCertificateForImportSpy).toHaveBeenCalledWith({
+          name: 'client',
+          certificate: mockClientCertificate.certificate,
+          key: mockClientCertificate.key,
+        });
+      });
+
+      it('should fail when no cert file found', async () => {
+        getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+        try {
+          await service['processClientCertificate']({
+            name: undefined,
+            certificate: '/path/client1.crt',
+            key: '/path/key1.key',
+          });
+          fail();
+        } catch (e) {
+          expect(e).toBeInstanceOf(InvalidClientCertificateBodyException);
+        }
+      });
+
+      it('should fail when no key file found', async () => {
+        getPemBodyFromFileSyncSpy.mockReturnValueOnce(
+          mockClientCertificate.certificate,
+        );
+        getPemBodyFromFileSyncSpy.mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+        try {
+          await service['processClientCertificate']({
+            name: undefined,
+            certificate: '/path/client.crt',
+            key: '/path/key.key',
+          });
+          fail();
+        } catch (e) {
+          expect(e).toBeInstanceOf(InvalidClientPrivateKeyException);
+        }
+      });
+    });
+
+    describe('from filesystem path (network build)', () => {
+      beforeEach(() => {
+        mockServerConfig.buildType = BuildType.DockerOnPremise;
+      });
+
+      afterEach(() => {
+        mockServerConfig.buildType = originalBuildType;
+      });
+
+      it('should reject cert and key paths without reading any file', async () => {
+        await expect(
+          service['processClientCertificate']({
+            certificate: '/etc/redis/tls/redis.crt',
+            key: '/etc/redis/tls/redis.key',
+          }),
+        ).rejects.toBeInstanceOf(InvalidClientCertificateBodyException);
+
+        expect(getPemBodyFromFileSyncSpy).not.toHaveBeenCalled();
+      });
     });
   });
 

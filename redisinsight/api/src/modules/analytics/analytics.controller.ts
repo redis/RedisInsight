@@ -7,14 +7,23 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
-import { SendEventDto } from 'src/modules/analytics/dto/analytics.dto';
+import {
+  SendEventDto,
+  SendPageDto,
+} from 'src/modules/analytics/dto/analytics.dto';
 import { AnalyticsService } from 'src/modules/analytics/analytics.service';
 import { RequestSessionMetadata } from 'src/common/decorators';
 import { SessionMetadata } from 'src/common/models';
 
 @ApiTags('Analytics')
 @Controller('analytics')
-@UsePipes(new ValidationPipe({ transform: true }))
+@UsePipes(
+  new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+  }),
+)
 export class AnalyticsController {
   constructor(private service: AnalyticsService) {}
 
@@ -46,7 +55,7 @@ export class AnalyticsController {
     ],
   })
   async sendPage(
-    @Body() dto: SendEventDto,
+    @Body() dto: SendPageDto,
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
   ): Promise<void> {
     return this.service.sendPage(sessionMetadata, dto);

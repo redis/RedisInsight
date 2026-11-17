@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { isNull } from 'lodash'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
+import { useTranslation } from 'uiSrc/i18n'
 import { EmptyMessage } from 'uiSrc/pages/database-analysis/constants'
 import { EmptyAnalysisMessage } from 'uiSrc/pages/database-analysis/components'
 import {
@@ -34,6 +35,7 @@ export interface Props {
 const DatabaseAnalysisTabs = (props: Props) => {
   const { loading, reports, data } = props
 
+  const { t } = useTranslation()
   const viewTab = useAppSelector(dbAnalysisViewTabSelector)
   const { id: instanceId = '', provider } = useAppSelector(
     connectedInstanceSelector,
@@ -47,14 +49,14 @@ const DatabaseAnalysisTabs = (props: Props) => {
   const tabs: TabInfo[] = useMemo(
     () => [
       {
-        label: <Text>Data Summary</Text>,
+        label: <Text>{t('analytics.databaseAnalysis.tabs.dataSummary')}</Text>,
         value: DatabaseAnalysisViewTab.DataSummary,
         content: <AnalysisDataView />,
       },
       {
         label: renderOnboardingTourWithChild(
           <Text>
-            Tips{' '}
+            {t('analytics.databaseAnalysis.tabs.tips')}{' '}
             {data?.recommendations?.length
               ? `(${data.recommendations.length})`
               : ''}
@@ -70,7 +72,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
         content: <Recommendations />,
       },
     ],
-    [viewTab, data?.recommendations],
+    [t, viewTab, data?.recommendations],
   )
 
   const handleTabChange = (id: string) => {

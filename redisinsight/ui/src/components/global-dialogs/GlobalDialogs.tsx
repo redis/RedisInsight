@@ -15,9 +15,7 @@ const GlobalDialogs = () => (
       <OAuthSelectPlan />
       <OAuthSsoDialog />
     </FeatureFlagComponent>
-    <FeatureFlagComponent name={FeatureFlags.whatsNew}>
-      <WhatsNewModal />
-    </FeatureFlagComponent>
+    <WhatsNewModal />
   </>
 )
 

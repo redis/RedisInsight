@@ -66,11 +66,6 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
       flag: SERVER_CONFIG.customTutorials,
     }),
   },
-  [KnownFeatures.VectorSearchV2]: {
-    name: KnownFeatures.VectorSearchV2,
-    storage: FeatureStorage.Database,
-  },
-
   [KnownFeatures.AzureEntraId]: {
     name: KnownFeatures.AzureEntraId,
     storage: FeatureStorage.Database,
@@ -83,28 +78,32 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevBrowser,
     storage: FeatureStorage.Database,
   },
-  [KnownFeatures.VectorSet]: {
-    name: KnownFeatures.VectorSet,
-    storage: FeatureStorage.Database,
-  },
   [KnownFeatures.Array]: {
     name: KnownFeatures.Array,
-    storage: FeatureStorage.Database,
-  },
-  [KnownFeatures.ProdMode]: {
-    name: KnownFeatures.ProdMode,
     storage: FeatureStorage.Database,
   },
   [KnownFeatures.DevLanguage]: {
     name: KnownFeatures.DevLanguage,
     storage: FeatureStorage.Database,
   },
-  [KnownFeatures.WhatsNew]: {
-    name: KnownFeatures.WhatsNew,
+  [KnownFeatures.DevRdiUi]: {
+    name: KnownFeatures.DevRdiUi,
+    storage: FeatureStorage.Database,
+  },
+  [KnownFeatures.VectorSearchEnhancements]: {
+    name: KnownFeatures.VectorSearchEnhancements,
     storage: FeatureStorage.Database,
   },
   [KnownFeatures.ValueDecoder]: {
     name: KnownFeatures.ValueDecoder,
+    storage: FeatureStorage.Database,
+  },
+  [KnownFeatures.AppUpdateStrategySettings]: {
+    name: KnownFeatures.AppUpdateStrategySettings,
+    storage: FeatureStorage.Database,
+  },
+  [KnownFeatures.RedisTools]: {
+    name: KnownFeatures.RedisTools,
     storage: FeatureStorage.Database,
   },
 };

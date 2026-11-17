@@ -16,6 +16,7 @@ import {
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
 import { removeEmpty, setTitle } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 import { pick } from 'lodash'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
@@ -97,7 +98,7 @@ export const useSentinelDatabasesResultConfig = () => {
       history.push(Pages.home)
       return
     }
-    setTitle('Redis Sentinel Primary Groups Added')
+    setTitle(i18n.t('autodiscover.sentinel.result.pageTitle'))
 
     setIsInvalid(true)
     setItems(masters)

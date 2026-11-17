@@ -14,6 +14,7 @@ import { autoFillFormDetails } from 'uiSrc/pages/home/utils'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { useTranslation } from 'uiSrc/i18n'
 import ClusterConnectionForm from './cluster-connection-form/ClusterConnectionForm'
 
 import { ContentWrapper } from '../ManualConnection.styles'
@@ -23,6 +24,7 @@ export interface Props {
 }
 
 const ClusterConnectionFormWrapper = ({ onClose }: Props) => {
+  const { t } = useTranslation()
   const [initialValues, setInitialValues] = useState({
     host: '',
     port: '',
@@ -38,14 +40,20 @@ const ClusterConnectionFormWrapper = ({ onClose }: Props) => {
 
   const { loading, credentials } = useAppSelector(clusterSelector)
 
-  useEffect(() => {
-    setModalHeader(<Title size="M">Redis Software</Title>, true)
-
-    return () => {
+  useEffect(
+    () => () => {
       setModalHeader(null)
       dispatch(resetErrors())
-    }
-  }, [])
+    },
+    [],
+  )
+
+  useEffect(() => {
+    setModalHeader(
+      <Title size="M">{t('home.form.cluster.modalTitle')}</Title>,
+      true,
+    )
+  }, [t])
 
   useEffect(() => {
     if (credentials) {

@@ -10,6 +10,7 @@ import {
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { useTranslation } from 'uiSrc/i18n'
 import { ItemsWrapper } from './AddMultipleFields.styles'
 
 export interface ColumnLabel {
@@ -36,17 +37,21 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
     onClickAdd,
     columnLabels,
   } = props
+  const { t } = useTranslation()
 
   const renderItem = (child: React.ReactNode, item: T, index?: number) => (
     <FlexItem key={index} grow>
       <Row align="center" gap="m">
         <FlexItem grow>{child}</FlexItem>
         <FlexItem>
-          <RiTooltip content="Remove" position="left">
+          <RiTooltip
+            content={t('browser.addMultipleFields.removeTooltip')}
+            position="left"
+          >
             <IconButton
               icon={DeleteIcon}
               disabled={isClearDisabled(item, index)}
-              aria-label="Remove Item"
+              aria-label={t('browser.addMultipleFields.removeAria')}
               onClick={() => onClickRemove(item, index)}
               data-testid="remove-item"
             />
@@ -89,11 +94,15 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
         )}
       </ItemsWrapper>
       <Row align="center" justify="end">
-        <RiTooltip content="Add" position="left" delay={500}>
+        <RiTooltip
+          content={t('browser.addMultipleFields.addTooltip')}
+          position="left"
+          delay={500}
+        >
           <ActionIconButton
             variant="secondary"
             icon={PlusIcon}
-            aria-label="Add new item"
+            aria-label={t('browser.addMultipleFields.addAria')}
             onClick={onClickAdd}
             data-testid="add-item"
           />

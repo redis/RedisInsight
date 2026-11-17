@@ -15,6 +15,8 @@ import {
   useResponsivePreviewLabel,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { ARRAY_COMMAND_PREVIEW_TEST_ID } from '../constants'
 import * as RangeStyles from '../array-range-form/ArrayRangeForm.styles'
 import * as S from './ArrayAggregateForm.styles'
@@ -58,6 +60,7 @@ export const ArrayAggregateForm = ({
   onReset,
   disabled = false,
 }: ArrayAggregateFormProps) => {
+  const { t } = useTranslation()
   const [previewVisible, setPreviewVisible] = useState(false)
   const { containerRef, isWide } = useResponsivePreviewLabel()
 
@@ -77,11 +80,11 @@ export const ArrayAggregateForm = ({
   // omitted `value` field, which the form never produces (defaults to '').
   const formInvalid = startInvalid || endInvalid || spanInvalid
 
-  const startError = startInvalid ? INVALID_INDEX_MESSAGE : undefined
+  const startError = startInvalid ? t(INVALID_INDEX_MESSAGE) : undefined
   const endError = endInvalid
-    ? INVALID_INDEX_MESSAGE
+    ? t(INVALID_INDEX_MESSAGE)
     : spanInvalid
-      ? INVALID_RANGE_TOO_LARGE_MESSAGE
+      ? t(INVALID_RANGE_TOO_LARGE_MESSAGE)
       : undefined
 
   const command = useMemo(() => {
@@ -97,7 +100,7 @@ export const ArrayAggregateForm = ({
     <RangeStyles.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
       <Row align="end" gap="m">
         <FlexItem>
-          <FormField label="Start index">
+          <FormField label={t('browser.array.form.startIndex')}>
             <TextInput
               value={start}
               onChange={onChangeStart}
@@ -109,7 +112,7 @@ export const ArrayAggregateForm = ({
           </FormField>
         </FlexItem>
         <FlexItem>
-          <FormField label="End index">
+          <FormField label={t('browser.array.form.endIndex')}>
             <TextInput
               value={end}
               onChange={onChangeEnd}
@@ -121,7 +124,7 @@ export const ArrayAggregateForm = ({
           </FormField>
         </FlexItem>
         <FlexItem grow={false}>
-          <FormField label="Operation">
+          <FormField label={t('browser.array.aggregate.operationLabel')}>
             <S.OperationSelect
               options={OPERATION_OPTIONS.map((option) => ({
                 ...option,
@@ -139,12 +142,12 @@ export const ArrayAggregateForm = ({
         </FlexItem>
         {operation === ArrayAggregateOperation.Match && (
           <FlexItem>
-            <FormField label="Value">
+            <FormField label={t('browser.array.aggregate.valueLabel')}>
               <TextInput
                 value={value}
                 onChange={onChangeValue}
                 data-testid={`${TEST_ID}-value`}
-                placeholder="value to match"
+                placeholder={t('browser.array.aggregate.valuePlaceholder')}
                 disabled={disabled}
               />
             </FormField>
@@ -171,13 +174,13 @@ export const ArrayAggregateForm = ({
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>
-            <RiTooltip content={RESET_TOOLTIP} position="top">
+            <RiTooltip content={t(RESET_TOOLTIP)} position="top">
               <IconButton
                 size="M"
                 icon={ResetIcon}
                 onClick={onReset}
                 disabled={loading || disabled}
-                aria-label="Reset array aggregate form"
+                aria-label={t('browser.array.aggregate.resetAria')}
                 data-testid={`${TEST_ID}-reset`}
               />
             </RiTooltip>
@@ -189,7 +192,7 @@ export const ArrayAggregateForm = ({
             disabled={formInvalid || loading || disabled}
             data-testid={`${TEST_ID}-run`}
           >
-            {RUN_BUTTON_LABEL}
+            {t(RUN_BUTTON_LABEL)}
           </PrimaryButton>
         </FlexItem>
       </RangeStyles.ActionRow>

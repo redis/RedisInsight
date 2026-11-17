@@ -3,8 +3,10 @@ import styled from 'styled-components'
 import { useTheme } from '@redis-ui/styles'
 import { Spacer } from '../spacer'
 
-interface RiEmptyPromptProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+interface RiEmptyPromptProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title'
+> {
   body?: React.ReactNode
   title?: React.ReactNode
   icon?: React.ReactNode

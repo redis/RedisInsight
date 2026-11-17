@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Trans } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, forEach } from 'lodash'
@@ -19,6 +20,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { useTranslation } from 'uiSrc/i18n'
 import ConsentOption from './ConsentOption'
 
 import styles from './styles.module.scss'
@@ -54,6 +56,7 @@ export interface Props {
 }
 
 const ConsentsSettings = ({ onSubmitted }: Props) => {
+  const { t } = useTranslation()
   const [consents, setConsents] = useState<IConsent[]>([])
   const [privacyConsents, setPrivacyConsents] = useState<IConsent[]>([])
   const [notificationConsents, setNotificationConsents] = useState<IConsent[]>(
@@ -227,10 +230,12 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                   />
                 </FlexItem>
                 <FlexItem>
-                  <Text color="primary">Use recommended settings</Text>
+                  <Text color="primary">
+                    {t('consentsSettings.recommendedSettings.label')}
+                  </Text>
                   <Spacer size="xs" />
                   <Text size="s" color="secondary">
-                    Select to activate all listed options.
+                    {t('consentsSettings.recommendedSettings.description')}
                   </Text>
                 </FlexItem>
               </Row>
@@ -248,11 +253,11 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
           <>
             <Spacer size="l" />
             <Title size="M" color="primary">
-              Privacy settings
+              {t('consentsSettings.privacy.title')}
             </Title>
             <Spacer size="xs" />
             <Text size="s" color="secondary">
-              To optimize your experience, Redis Insight uses third-party tools.
+              {t('consentsSettings.privacy.description')}
             </Text>
             <Spacer size="m" />
           </>
@@ -273,7 +278,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
           <>
             <Spacer size="m" />
             <Title size="M" color="primary">
-              Notifications
+              {t('consentsSettings.notifications.title')}
             </Title>
             <Spacer size="m" />
           </>
@@ -294,27 +299,29 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         <>
           <Spacer size="l" />
           <Text color="secondary" size="s">
-            Use of Redis Insight is governed by your signed agreement with
-            Redis, or, if none, by the{' '}
-            <Link
-              variant="inline"
-              size="S"
-              color="secondary"
-              target="_blank"
-              href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
-            >
-              Redis Enterprise Software Subscription Agreement
-            </Link>
-            . If no agreement applies, use is subject to the{' '}
-            <Link
-              variant="inline"
-              size="S"
-              color="secondary"
-              target="_blank"
-              href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
-            >
-              Server Side Public License
-            </Link>
+            <Trans
+              i18nKey="consentsSettings.agreement"
+              components={{
+                eulaLink: (
+                  <Link
+                    variant="inline"
+                    size="S"
+                    color="secondary"
+                    target="_blank"
+                    href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
+                  />
+                ),
+                licenseLink: (
+                  <Link
+                    variant="inline"
+                    size="S"
+                    color="secondary"
+                    target="_blank"
+                    href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
+                  />
+                ),
+              }}
+            />
           </Text>
           <Spacer size="m" />
         </>
@@ -360,7 +367,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               icon={submitIsDisabled() ? InfoIcon : undefined}
               data-testid="btn-submit"
             >
-              Submit
+              {t('common.button.submit')}
             </PrimaryButton>
           </RiTooltip>
         </FlexItem>

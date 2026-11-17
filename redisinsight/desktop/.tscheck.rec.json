@@ -22,11 +22,6 @@
   "../../node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
     "TS6133": 1
   },
-  "../api-client/core/queryKeySerializer.gen.ts": {
-    "TS2339": 1,
-    "TS2345": 1,
-    "TS2488": 1
-  },
   "../api/src/modules/cloud/auth/exceptions/cloud-oauth.canceled.exception.ts": {
     "TS2307": 2
   },

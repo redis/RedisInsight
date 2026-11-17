@@ -2,6 +2,7 @@ import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import {
   extrapolate,
   formatBytes,
@@ -54,6 +55,7 @@ const NameSpacesTable = ({
   extrapolation,
   dataTestid = '',
 }: Props) => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useAppDispatch()
 
@@ -103,7 +105,7 @@ const NameSpacesTable = ({
           >
             <TruncatedContent align="center">
               <RiTooltip
-                title="Key Pattern"
+                title={t('analytics.databaseAnalysis.topNamespaces.keyPattern')}
                 position="bottom"
                 content={`${item.nsp}:*`}
               >
@@ -140,7 +142,7 @@ const NameSpacesTable = ({
 
   const columns: ColumnDef<NspSummary>[] = [
     {
-      header: 'Key Pattern',
+      header: t('analytics.databaseAnalysis.topNamespaces.keyPattern'),
       id: 'nsp',
       accessorKey: 'nsp',
       enableSorting: true,
@@ -155,7 +157,7 @@ const NameSpacesTable = ({
         const tooltipContent = formatLongName(textWithDelimiter)
         return (
           <RiTooltip
-            title="Key Pattern"
+            title={t('analytics.databaseAnalysis.topNamespaces.keyPattern')}
             position="bottom"
             content={tooltipContent}
           >
@@ -169,7 +171,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Data Type',
+      header: t('analytics.databaseAnalysis.topNamespaces.dataType'),
       id: 'types',
       accessorKey: 'types',
       cell: ({
@@ -185,7 +187,7 @@ const NameSpacesTable = ({
       ),
     },
     {
-      header: 'Total Memory',
+      header: t('analytics.databaseAnalysis.topNamespaces.totalMemory'),
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,
@@ -209,7 +211,7 @@ const NameSpacesTable = ({
 
         return (
           <RiTooltip
-            content={`${formatValueBytes} B`}
+            content={`${formatValueBytes} ${t('analytics.units.bytes')}`}
             data-testid="usedMemory-tooltip"
           >
             <CellText data-testid={`nsp-usedMemory-value=${value}`}>
@@ -220,7 +222,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Total Keys',
+      header: t('analytics.databaseAnalysis.topNamespaces.totalKeys'),
       id: 'keys',
       accessorKey: 'keys',
       enableSorting: true,

@@ -6,8 +6,10 @@ import { sendCopyTelemetry } from './methods/handlers'
 import { IDatabaseListCell } from '../../DatabasesList.types'
 import { HostPortContainer } from './DatabasesListCellHost.styles'
 import { CellText } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 
 const DatabasesListCellHost: IDatabaseListCell = ({ row }) => {
+  const { t } = useTranslation()
   const instance = row.original
   const { host, port, id } = instance
   const text = `${host}:${port}`
@@ -17,7 +19,7 @@ const DatabasesListCellHost: IDatabaseListCell = ({ row }) => {
       <CellText>{text}</CellText>
       <CopyButton
         copy={text}
-        aria-label="Copy host:port"
+        aria-label={t('home.databaseList.cellHost.ariaLabel.copyHostPort')}
         onCopy={() => sendCopyTelemetry(id)}
       />
     </HostPortContainer>

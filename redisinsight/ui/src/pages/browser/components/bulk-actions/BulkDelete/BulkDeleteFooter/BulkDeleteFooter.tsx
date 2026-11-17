@@ -36,6 +36,7 @@ import { isProcessedBulkAction } from '../../utils'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { ConfirmationPopover, RiTooltip } from 'uiSrc/components'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { useTranslation } from 'uiSrc/i18n'
 import { BulkDeleteFooterContainer } from './BulkDeleteFooter.styles'
 
 export interface Props {
@@ -44,6 +45,7 @@ export interface Props {
 
 const BulkDeleteFooter = (props: Props) => {
   const { onCancel } = props
+  const { t } = useTranslation()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { scanned, total } = useAppSelector(keysDataSelector)
   const { loading, generateReport, filter, search } = useAppSelector(
@@ -136,12 +138,12 @@ const BulkDeleteFooter = (props: Props) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               dispatch(setBulkDeleteGenerateReport(e.target.checked))
             }
-            label="Download report"
+            label={t('browser.bulkActions.delete.downloadReport')}
             data-testid="download-report-checkbox"
           />
 
           <RiTooltip
-            content="Download a detailed report of deleted keys."
+            content={t('browser.bulkActions.delete.downloadReportTooltip')}
             position="left"
           >
             <RiIcon
@@ -157,7 +159,9 @@ const BulkDeleteFooter = (props: Props) => {
             onClick={handleCancel}
             data-testid="bulk-action-cancel-btn"
           >
-            {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
+            {isProcessedBulkAction(status)
+              ? t('browser.bulkActions.button.close')
+              : t('browser.bulkActions.button.cancel')}
           </SecondaryButton>
         )}
         {loading && (
@@ -165,7 +169,7 @@ const BulkDeleteFooter = (props: Props) => {
             onClick={handleStop}
             data-testid="bulk-action-stop-btn"
           >
-            Stop
+            {t('browser.bulkActions.button.stop')}
           </SecondaryButton>
         )}
 
@@ -184,19 +188,16 @@ const BulkDeleteFooter = (props: Props) => {
                 onClick={handleDeleteWarning}
                 data-testid="bulk-action-warning-btn"
               >
-                Delete
+                {t('browser.bulkActions.button.delete')}
               </PrimaryButton>
             }
-            title={'Are you sure you want to perform this action?'}
-            message={
-              'This will delete all keys matching the selected type and pattern.'
-            }
+            title={t('browser.bulkActions.confirmTitle')}
+            message={t('browser.bulkActions.delete.confirmMessage')}
             appendInfo={
               <Row align="center" gap="m">
                 <RiIcon size="xl" type="ToastDangerIcon" />
                 <Text size="s">
-                  Bulk deletion may impact performance and cause memory spikes.
-                  Avoid running in production.
+                  {t('browser.bulkActions.delete.confirmWarning')}
                 </Text>
               </Row>
             }
@@ -206,7 +207,7 @@ const BulkDeleteFooter = (props: Props) => {
                 onClick={handleDelete}
                 data-testid="bulk-action-apply-btn"
               >
-                Delete
+                {t('browser.bulkActions.button.delete')}
               </DestructiveButton>
             }
           />
@@ -219,20 +220,17 @@ const BulkDeleteFooter = (props: Props) => {
               onClick={handleOpenTypeToConfirm}
               data-testid="bulk-action-warning-btn"
             >
-              Delete
+              {t('browser.bulkActions.button.delete')}
             </PrimaryButton>
             {isTypeToConfirmOpen && (
               <TypeToConfirmModal
-                title="Delete all matching keys"
+                title={t('browser.bulkActions.delete.typeToConfirmTitle')}
                 confirmationText={confirmationText}
-                confirmButtonText="Delete"
-                actionDescription={
-                  <>
-                    This will delete all keys matching the selected type and
-                    pattern. Bulk deletion may impact performance and cause
-                    memory spikes.
-                  </>
-                }
+                confirmButtonText={t('browser.bulkActions.button.delete')}
+                cancelButtonText={t('browser.bulkActions.button.cancel')}
+                actionDescription={t(
+                  'browser.bulkActions.delete.typeToConfirmDescription',
+                )}
                 onConfirm={handleTypeToConfirm}
                 onCancel={() => setIsTypeToConfirmOpen(false)}
               />
@@ -245,7 +243,7 @@ const BulkDeleteFooter = (props: Props) => {
             onClick={handleStartNew}
             data-testid="bulk-action-start-again-btn"
           >
-            Start New
+            {t('browser.bulkActions.button.startNew')}
           </PrimaryButton>
         )}
       </BulkDeleteFooterContainer>

@@ -13,6 +13,7 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   trigger?: React.ReactElement
@@ -20,6 +21,7 @@ export interface Props {
 }
 
 const DownloadFromServerModal = (props: Props) => {
+  const { t } = useTranslation()
   const { trigger, onClose } = props
 
   const { loading, data } = useAppSelector(rdiPipelineSelector)
@@ -70,10 +72,9 @@ const DownloadFromServerModal = (props: Props) => {
       {button && <Modal.Trigger>{button}</Modal.Trigger>}
       <Modal.Content.Compose persistent>
         <Modal.Content.Close />
-        <Modal.Content.Header title="Download a pipeline from the server" />
+        <Modal.Content.Header title={t('rdi.pipeline.download.title')} />
         <Modal.Content.Body.Compose>
-          When downloading the pipeline configuration from the server, it will
-          overwrite the existing one displayed in Redis Insight.
+          {t('rdi.pipeline.download.body')}
         </Modal.Content.Body.Compose>
         <Modal.Content.Footer.Compose>
           <Download
@@ -81,13 +82,13 @@ const DownloadFromServerModal = (props: Props) => {
             trigger={
               <TextButton>
                 <Button.Icon icon={SaveIcon} />
-                Save to file
+                {t('rdi.pipeline.download.saveToFile')}
               </TextButton>
             }
           />
           <Modal.Content.Footer.Group>
             <SecondaryButton size="l" onClick={onClose}>
-              Cancel
+              {t('rdi.pipeline.download.cancel')}
             </SecondaryButton>
             <PrimaryButton
               size="l"
@@ -95,7 +96,7 @@ const DownloadFromServerModal = (props: Props) => {
               loading={loading}
               data-testid="upload-confirm-btn"
             >
-              Download from server
+              {t('rdi.pipeline.download.confirm')}
             </PrimaryButton>
           </Modal.Content.Footer.Group>
         </Modal.Content.Footer.Compose>

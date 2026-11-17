@@ -11,6 +11,7 @@ import {
   truncateNumberToFirstUnit,
   truncateTTLToSeconds,
 } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,6 +23,7 @@ export interface Props {
 
 const KeyRowTTL = (props: Props) => {
   const { ttl, nameString, deletePopoverId, rowId } = props
+  const { t } = useTranslation()
 
   if (isUndefined(ttl)) {
     return (
@@ -41,7 +43,7 @@ const KeyRowTTL = (props: Props) => {
         color="secondary"
         data-testid={`ttl-${nameString}`}
       >
-        No limit
+        {t('browser.keyList.ttl.noLimit')}
       </ColorText>
     )
   }
@@ -60,7 +62,7 @@ const KeyRowTTL = (props: Props) => {
         data-testid={`ttl-${nameString}`}
       >
         <RiTooltip
-          title="Time to Live"
+          title={t('browser.keyList.ttl.tooltipTitle')}
           className={styles.tooltip}
           anchorClassName="truncateText"
           position="right"

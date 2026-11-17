@@ -3,7 +3,7 @@ import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { sendWbQueryAction } from 'uiSrc/slices/workbench/wb-results'
 import { CodeButtonBlock } from 'uiSrc/components/markdown'
-import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
+import { ButtonLang } from 'uiSrc/utils/formatters/markdown/buttonLang'
 import { AdditionalRedisModule } from 'apiClient'
 
 export interface Props {

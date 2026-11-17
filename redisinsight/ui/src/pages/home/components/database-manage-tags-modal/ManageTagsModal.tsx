@@ -16,6 +16,7 @@ import {
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useTranslation } from 'uiSrc/i18n'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'
@@ -36,6 +37,7 @@ export const ManageTagsModal = ({
   instance,
   onClose,
 }: ManageTagsModalProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const editedInstanceTags = useMemo(
     () => (instance?.tags || []).map(({ key, value }) => ({ key, value })),
@@ -111,9 +113,11 @@ export const ManageTagsModal = ({
       onClose={onClose}
       header={
         <Col gap="xl">
-          <Title size="L">Manage tags for {instance.name}</Title>
+          <Title size="L">
+            {t('home.databaseList.manageTags.title', { name: instance.name })}
+          </Title>
           <Text size="m" color="secondary">
-            Tags are key-value pairs that let you categorize your databases.
+            {t('home.databaseList.manageTags.description')}
           </Text>
         </Col>
       }
@@ -123,21 +127,22 @@ export const ManageTagsModal = ({
             <WarningBannerWrapper>
               <RiIcon type="ToastNotificationIcon" color="notice600" size="m" />
               <Text size="m">
-                Tag changes in Redis Insight apply locally and are not synced
-                with Redis {isCloudDb ? 'Cloud' : 'Software'}.
+                {t('home.databaseList.manageTags.warning', {
+                  product: isCloudDb ? 'Cloud' : 'Software',
+                })}
               </Text>
             </WarningBannerWrapper>
           )}
           <Row justify="end" gap="m">
             <SecondaryButton onClick={onClose} data-testid="close-button">
-              Cancel
+              {t('home.databaseList.manageTags.button.cancel')}
             </SecondaryButton>
             <PrimaryButton
               onClick={handleSave}
               disabled={isSaveButtonDisabled}
               data-testid="save-tags-button"
             >
-              Save tags
+              {t('home.databaseList.manageTags.button.save')}
             </PrimaryButton>
           </Row>
         </>
@@ -146,8 +151,12 @@ export const ManageTagsModal = ({
       <Col gap="l">
         <TagFormWrapper>
           <HeaderWrapper>
-            <Text color="primary">Key</Text>
-            <Text color="primary">Value</Text>
+            <Text color="primary">
+              {t('home.databaseList.manageTags.header.key')}
+            </Text>
+            <Text color="primary">
+              {t('home.databaseList.manageTags.header.value')}
+            </Text>
           </HeaderWrapper>
           <Col gap="none">
             {tags.map((tag, index) => {
@@ -159,7 +168,9 @@ export const ManageTagsModal = ({
                     errorMessage={keyError}
                     value={tag.key}
                     currentTagKeys={currentTagKeys}
-                    placeholder="Select a key or type your own"
+                    placeholder={t(
+                      'home.databaseList.manageTags.placeholder.key',
+                    )}
                     onChange={(value) => {
                       handleTagChange(index, 'key', value)
                     }}
@@ -171,7 +182,9 @@ export const ManageTagsModal = ({
                     value={tag.value}
                     currentTagKeys={currentTagKeys}
                     suggestedTagKey={tag.key}
-                    placeholder="Select a value or type your own"
+                    placeholder={t(
+                      'home.databaseList.manageTags.placeholder.value',
+                    )}
                     onChange={(value) => {
                       handleTagChange(index, 'value', value)
                     }}
@@ -195,7 +208,7 @@ export const ManageTagsModal = ({
             size="small"
             data-testid="add-tag-button"
           >
-            Add additional tag
+            {t('home.databaseList.manageTags.button.addTag')}
           </EmptyButton>
         </div>
       </Col>

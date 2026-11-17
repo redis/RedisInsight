@@ -1,18 +1,21 @@
 import { ToastVariant } from 'uiSrc/components/base/display/toast/RiToast'
+import i18n from 'uiSrc/i18n'
 
 import { VEC2WORD_COLLECTION_NAME } from './data'
 
 /** Toast shown when the bulk-import POST for `vec2word` fails. */
 export const loadSampleDatasetFailedNotification = () => ({
-  title: 'Failed to create vector set',
-  message: 'Please try again.',
+  title: i18n.t('notification.error.createVectorSet.title'),
+  message: i18n.t('notification.error.createVectorSet.message'),
   variant: 'danger' as ToastVariant,
 })
 
 /** Green success toast shown after the bulk-import POST for `vec2word` succeeds. */
 export const sampleDatasetLoadedNotification = () => ({
-  title: 'Sample vector set added',
-  message: `The '${VEC2WORD_COLLECTION_NAME}' sample vector set has been successfully added.`,
+  title: i18n.t('notification.success.sampleVectorSetAdded.title'),
+  message: i18n.t('notification.success.sampleVectorSetAdded.message', {
+    keyName: VEC2WORD_COLLECTION_NAME,
+  }),
   showCloseButton: false,
 })
 
@@ -23,8 +26,10 @@ export const sampleDatasetLoadedNotification = () => ({
  * stays generic.
  */
 export const keyAlreadyExistsNotification = () => ({
-  title: 'Key already exists',
-  message: `A key named '${VEC2WORD_COLLECTION_NAME}' already exists in this database.`,
+  title: i18n.t('notification.warning.keyExists.title'),
+  message: i18n.t('notification.warning.keyExists.message', {
+    keyName: VEC2WORD_COLLECTION_NAME,
+  }),
   variant: 'notice' as ToastVariant,
   showCloseButton: false,
 })

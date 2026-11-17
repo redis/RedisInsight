@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { isUndefined } from 'lodash';
-import { getPemBodyFromFileSync, isValidSshPrivateKey } from 'src/common/utils';
+import {
+  getPemBodyFromFileSync,
+  isImportFromFileAllowed,
+  isValidSshPrivateKey,
+} from 'src/common/utils';
 import {
   InvalidSshPrivateKeyBodyException,
   InvalidSshBodyException,
@@ -31,13 +35,15 @@ export class SshImportService {
 
       if (isValidSshPrivateKey(data.sshPrivateKey)) {
         sshOptions.privateKey = data.sshPrivateKey;
-      } else {
+      } else if (isImportFromFileAllowed()) {
         try {
           sshOptions.privateKey = getPemBodyFromFileSync(data.sshPrivateKey);
         } catch (e) {
           // ignore error
           sshOptions = null;
         }
+      } else {
+        throw new InvalidSshPrivateKeyBodyException();
       }
     } else {
       sshOptions.password = data.sshPassword || null;

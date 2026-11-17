@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 import { Environment } from 'apiClient'
 
 import { useAppSelector } from 'uiSrc/slices/hooks'
-import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import {
   connectedInstanceOverviewSelector,
   connectedInstanceSelector,
@@ -23,7 +22,6 @@ import { UsePromoteProductionPromptResult } from '../PromoteProductionPrompt.typ
  */
 export const usePromoteProductionPrompt =
   (): UsePromoteProductionPromptResult => {
-    const prodModeEnabled = useAppSelector(appFeatureFlagProdModeSelector)
     const { id, environment, host, tls, connectionType, username, password } =
       useAppSelector(connectedInstanceSelector)
     const { totalKeys } = useAppSelector(connectedInstanceOverviewSelector)
@@ -54,7 +52,6 @@ export const usePromoteProductionPrompt =
     })
 
     const shouldPromote =
-      prodModeEnabled &&
       instancesLoaded &&
       !featureDiscovered &&
       !alreadyActioned &&

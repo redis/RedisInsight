@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -50,6 +51,7 @@ const ImportFileModal = <T,>({
   submitBtnText,
   acceptedFileExtension,
 }: Props<T>) => {
+  const { t } = useTranslation()
   const isShowForm = !loading && !data && !error
   return (
     <Modal.Compose open>
@@ -62,7 +64,9 @@ const ImportFileModal = <T,>({
 
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title data-testid="import-file-modal-title">
-            {!data && !error ? title : resultsTitle || 'Import Results'}
+            {!data && !error
+              ? title
+              : resultsTitle || t('importFileModal.resultsTitle')}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
@@ -76,14 +80,13 @@ const ImportFileModal = <T,>({
                   <>
                     <RiFilePicker
                       id="import-file-modal-filepicker"
-                      initialPromptText="Select or drag and drop a file"
                       className={styles.fileDrop}
                       isInvalid={isInvalid}
                       onChange={onFileChange}
                       display="large"
                       accept={acceptedFileExtension}
                       data-testid="import-file-modal-filepicker"
-                      aria-label="Select or drag and drop file"
+                      aria-label={t('importFileModal.dropAriaLabel')}
                     />
                     {isInvalid && (
                       <ColorText
@@ -103,7 +106,7 @@ const ImportFileModal = <T,>({
                   >
                     <Loader size="xl" />
                     <Text color="subdued" style={{ marginTop: 12 }}>
-                      Uploading...
+                      {t('importFileModal.uploading')}
                     </Text>
                   </div>
                 )}
@@ -143,7 +146,7 @@ const ImportFileModal = <T,>({
                   onClick={onClose}
                   data-testid="cancel-btn"
                 >
-                  Cancel
+                  {t('common.button.cancel')}
                 </SecondaryButton>
                 <PrimaryButton
                   size="l"
@@ -151,11 +154,15 @@ const ImportFileModal = <T,>({
                   disabled={isSubmitDisabled}
                   data-testid="submit-btn"
                 >
-                  {submitBtnText || 'Import'}
+                  {submitBtnText || t('importFileModal.importButton')}
                 </PrimaryButton>
               </Row>
             )}
-            {data && <PrimaryButton onClick={onClose}>OK</PrimaryButton>}
+            {data && (
+              <PrimaryButton onClick={onClose}>
+                {t('common.button.ok')}
+              </PrimaryButton>
+            )}
           </Modal.Content.Footer.Group>
         </Modal.Content.Footer.Compose>
       </Modal.Content.Compose>

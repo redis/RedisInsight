@@ -45,7 +45,7 @@ const monacoStyle = (theme: Theme) => {
     --monaco-color-submit: ${colors.icon.success500};
     --monaco-color-bg: ${bgColor};
     --monaco-color-params: ${colors.text.discovery200};
-    
+
     /* Font sizes */
     --monaco-font-size-s: ${fontSize.s13};
     --monaco-font-size-m: ${fontSize.s16};

@@ -17,11 +17,12 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import { getFormatTime, getNextId } from 'uiSrc/utils/streamUtils'
-import { SortOrder, TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
+import { SortOrder } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
   AckPendingEntriesResponse,
@@ -44,6 +45,7 @@ const ackPrefix = '-ack'
 export interface Props {}
 
 const MessagesViewWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const {
     lastRefreshTime,
     data: loadedMessages = [],
@@ -116,7 +118,7 @@ const MessagesViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'id',
-      label: 'Entry ID',
+      label: t('browser.stream.column.entryId'),
       absoluteWidth: minColumnWidth,
       minWidth: minColumnWidth,
       className: styles.cell,
@@ -148,7 +150,7 @@ const MessagesViewWrapper = (props: Props) => {
     },
     {
       id: 'idle',
-      label: 'Last Message Delivered',
+      label: t('browser.stream.messages.lastDeliveredColumn'),
       minWidth: 256,
       absoluteWidth: 106,
       truncateText: true,
@@ -171,7 +173,7 @@ const MessagesViewWrapper = (props: Props) => {
     },
     {
       id: 'delivered',
-      label: 'Times Message Delivered',
+      label: t('browser.stream.messages.timesDeliveredColumn'),
       minWidth: 106,
       truncateText: true,
       headerClassName: cx('streamItemHeader', styles.deliveredHeaderCell),
@@ -219,7 +221,9 @@ const MessagesViewWrapper = (props: Props) => {
         loadMoreItems={loadMoreItems}
         {...props}
         noItemsMessageString={
-          isTruncatedConsumerName ? TEXT_CONSUMER_NAME_TOO_LONG : undefined
+          isTruncatedConsumerName
+            ? t('browser.stream.consumers.nameTooLong')
+            : undefined
         }
       />
     </>

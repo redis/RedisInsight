@@ -108,11 +108,4 @@ export class BrowserPage extends InstancePage {
   getViewIndexMenuItem(indexName: string): Locator {
     return this.page.getByRole('menuitem', { name: indexName, exact: true });
   }
-
-  /**
-   * Get the "Index" button that appears on a folder node when hovered
-   */
-  getIndexFolderButton(folderName: string): Locator {
-    return this.page.getByTestId(`index-folder-btn-${folderName}`);
-  }
 }

@@ -9,14 +9,7 @@ export type IconComponentProps = Omit<IconProps, 'icon' | 'size'> &
   Omit<SVGProps<SVGSVGElement>, 'color' | 'size'> & {
     type: AllIconsType
     size?:
-      | IconProps['size']
-      | 'm'
-      | 's'
-      | 'xs'
-      | 'l'
-      | 'xl'
-      | 'xxl'
-      | 'original'
+      IconProps['size'] | 'm' | 's' | 'xs' | 'l' | 'xl' | 'xxl' | 'original'
   }
 
 export const RiIcon = ({ type, size, ...props }: IconComponentProps) => {

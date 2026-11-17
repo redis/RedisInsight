@@ -34,17 +34,24 @@ export const toNodeReplyArray = (obj: Record<string, any>): any[] => {
 };
 
 export const clusterShardNodeRawFactory = Factory.define<ClusterShardNodeRaw>(
-  () => ({
-    id: faker.string.hexadecimal({ length: 40, prefix: '' }),
-    port: faker.number.int({ min: 6379, max: 6400 }),
-    ip: faker.internet.ipv4(),
-    endpoint: faker.internet.ipv4(),
-    hostname: '',
-    role: 'master',
-    'replication-offset': faker.number.int({ min: 0, max: 200000 }),
-    health: faker.helpers.arrayElement(Object.values(HealthStatus)),
-    'tls-port': undefined,
-  }),
+  () => {
+    const ip = faker.internet.ipv4();
+
+    return {
+      id: faker.string.hexadecimal({ length: 40, prefix: '' }),
+      port: faker.number.int({ min: 6379, max: 6400 }),
+      ip,
+      // `cluster-preferred-endpoint-type ip` is Redis's own default, so the
+      // preferred endpoint equals the ip unless a test explicitly overrides
+      // it to simulate a `hostname` or unknown-endpoint configuration.
+      endpoint: ip,
+      hostname: '',
+      role: 'master',
+      'replication-offset': faker.number.int({ min: 0, max: 200000 }),
+      health: faker.helpers.arrayElement(Object.values(HealthStatus)),
+      'tls-port': undefined,
+    };
+  },
 );
 
 export const clusterShardRawFactory = Factory.define<ClusterShardRaw>(

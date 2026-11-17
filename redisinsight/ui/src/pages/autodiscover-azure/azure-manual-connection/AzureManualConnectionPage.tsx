@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
+import i18n, { useTranslation } from 'uiSrc/i18n'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { Spacer } from 'uiSrc/components/base/layout'
@@ -33,22 +34,23 @@ const getFormErrors = (
   const errs: FormikErrors<AzureManualConnectionFormValues> = {}
 
   if (!values.host) {
-    errs.host = 'Host is required'
+    errs.host = i18n.t('autodiscover.azure.manual.hostRequired')
   }
   if (!values.port) {
-    errs.port = 'Port is required'
+    errs.port = i18n.t('autodiscover.azure.manual.portRequired')
   }
   if (!values.name) {
-    errs.name = 'Database alias is required'
+    errs.name = i18n.t('autodiscover.azure.manual.aliasRequired')
   }
   if (values.sni && !values.servername) {
-    errs.servername = 'Server Name is required when SNI is enabled'
+    errs.servername = i18n.t('autodiscover.azure.manual.serverNameRequired')
   }
 
   return errs
 }
 
 const AzureManualConnectionPage = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useAppDispatch()
   const account = useAppSelector(azureAuthAccountSelector)
@@ -82,7 +84,7 @@ const AzureManualConnectionPage = () => {
   // Send telemetry only once on initial page load (skip if not authenticated)
   useEffect(() => {
     if (!account) return
-    setTitle('Azure Manual Connection')
+    setTitle(i18n.t('autodiscover.azure.manual.pageTitle'))
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_MANUAL_CONNECTION_OPENED,
     })
@@ -175,9 +177,9 @@ const AzureManualConnectionPage = () => {
     <AutodiscoveryPageTemplate>
       <FormContainer justify="start">
         <Header
-          title="Manual Azure Connection"
+          title={t('autodiscover.azure.manual.title')}
           onBack={handleBack}
-          backButtonText="Databases"
+          backButtonText={t('autodiscover.azure.manual.backButton')}
         />
         <Spacer size="m" />
         <FormWrapper>
@@ -190,7 +192,7 @@ const AzureManualConnectionPage = () => {
       <AutoDiscoverFooter>
         <Row justify="end" gap="m" grow={false}>
           <SecondaryButton data-testid="btn-cancel" onClick={handleClose}>
-            Cancel
+            {t('autodiscover.azure.button.cancel')}
           </SecondaryButton>
           <PrimaryButton
             data-testid="btn-submit"
@@ -198,7 +200,7 @@ const AzureManualConnectionPage = () => {
             loading={loading}
             onClick={() => formik.handleSubmit()}
           >
-            Add Database
+            {t('autodiscover.azure.button.addDatabase')}
           </PrimaryButton>
         </Row>
       </AutoDiscoverFooter>

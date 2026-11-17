@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { CopyButton } from 'uiSrc/components/copy-button'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { PreviewBar, PreviewText } from './CommandPreview.styles'
 import { CommandPreviewProps } from './CommandPreview.types'
 
 const DEFAULT_TEST_ID = 'command-preview'
-const LOADING_PLACEHOLDER = 'Building command…'
 
 /**
  * Inline single-line preview of the Redis command that the current form
@@ -17,10 +17,11 @@ export const CommandPreview = ({
   loading = false,
   'data-testid': dataTestId = DEFAULT_TEST_ID,
 }: CommandPreviewProps) => {
+  const { t } = useTranslation()
   const isEmpty = command.length === 0
   let displayText = command
   if (loading) {
-    displayText = LOADING_PLACEHOLDER
+    displayText = t('browser.keyDetails.commandPreview.building')
   } else if (isEmpty) {
     displayText = ''
   }
@@ -34,7 +35,7 @@ export const CommandPreview = ({
         copy={command}
         disabled={isEmpty}
         data-testid={`${dataTestId}-copy`}
-        aria-label="Copy command"
+        aria-label={t('browser.keyDetails.commandPreview.copyAria')}
       />
     </PreviewBar>
   )

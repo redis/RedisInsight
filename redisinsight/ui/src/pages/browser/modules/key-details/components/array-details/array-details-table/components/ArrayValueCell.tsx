@@ -1,9 +1,8 @@
 import React from 'react'
 
 import {
-  TEXT_FAILED_CONVENT_FORMATTER,
-  TEXT_INVALID_VALUE,
-  TEXT_UNPRINTABLE_CHARACTERS,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import {
   createTooltipContent,
@@ -15,6 +14,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { getArrayElementEditState } from '../getArrayElementEditState'
 import { ArrayValueCellProps } from './ArrayValueCell.types'
@@ -44,6 +44,7 @@ export const ArrayValueCell = ({
   onEdit,
   onApply,
 }: ArrayValueCellProps) => {
+  const { t } = useTranslation()
   // Treat null and undefined identically — `JSON.stringify` drops keys
   // whose values are undefined, so an undefined `value` here means the
   // slot arrived without a buffer payload.
@@ -53,7 +54,7 @@ export const ArrayValueCell = ({
         variant="italic"
         data-testid={`${TEST_ID_PREFIX}-empty-${index}`}
       >
-        Empty
+        {t('browser.array.emptyValue')}
       </S.EmptyValue>
     )
   }
@@ -62,7 +63,7 @@ export const ArrayValueCell = ({
   // RedisString to RedisResponseBuffer at the rendering boundary.
   const buffer = value as RedisResponseBuffer
   const { decompressedBuffer, formatted, isValid, isUnprintable, serialize } =
-    getArrayElementEditState(buffer, compressor, viewFormat)
+    getArrayElementEditState(buffer, compressor, viewFormat, t)
   const tooltipContent = createTooltipContent(
     formatted,
     decompressedBuffer,
@@ -79,8 +80,8 @@ export const ArrayValueCell = ({
       // effect could otherwise be Saved into and overwrite the patch.
       isLoading={updating || loading}
       isDisabled={isUnprintable}
-      disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
-      approveText={TEXT_INVALID_VALUE}
+      disabledTooltipText={getTextUnprintableCharacters(t)}
+      approveText={getTextInvalidValue(t)}
       approveByValidation={(editedValue) =>
         !!formattingBuffer(
           stringToSerializedBufferFormat(viewFormat, editedValue),
@@ -101,7 +102,13 @@ export const ArrayValueCell = ({
         <FormattedValue
           value={formatted}
           expanded={false}
-          title={isValid ? 'Value' : TEXT_FAILED_CONVENT_FORMATTER(viewFormat)}
+          title={
+            isValid
+              ? t('browser.array.column.value')
+              : t('browser.keyDetails.failedConvertFormatter', {
+                  format: viewFormat,
+                })
+          }
           tooltipContent={tooltipContent}
           position="bottom"
         />

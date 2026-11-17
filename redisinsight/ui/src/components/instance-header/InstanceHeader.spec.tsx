@@ -271,15 +271,7 @@ describe('InstanceHeader', () => {
         environment: env,
       })
 
-      const state = set(
-        cloneDeep(initialStateDefault),
-        `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
-        { flag: true },
-      )
-
-      return render(<InstanceHeader {...instance(mockedProps)} />, {
-        store: mockStore(state),
-      })
+      return render(<InstanceHeader {...instance(mockedProps)} />)
     }
 
     it('renders the PROD badge and marks the header as production', () => {
@@ -319,34 +311,6 @@ describe('InstanceHeader', () => {
       expect(
         screen.queryByTestId(`environment-badge-${Environment.Development}`),
       ).not.toBeInTheDocument()
-    })
-
-    it('does not render the badge when the prodMode flag is off', () => {
-      mockedConnectedInstanceSelector.mockReturnValue({
-        username: 'username',
-        id: 'instanceId',
-        loading: false,
-        environment: Environment.Production,
-      })
-
-      const state = set(
-        cloneDeep(initialStateDefault),
-        `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
-        { flag: false },
-      )
-
-      render(<InstanceHeader {...instance(mockedProps)} />, {
-        store: mockStore(state),
-      })
-
-      expect(
-        screen.queryByTestId(`environment-badge-${Environment.Production}`),
-      ).not.toBeInTheDocument()
-      // hook returns Unspecified when the flag is off, even if the stored env is Production
-      expect(screen.getByTestId('instance-header')).toHaveAttribute(
-        'data-environment',
-        Environment.Unspecified,
-      )
     })
   })
 

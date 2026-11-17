@@ -1,6 +1,7 @@
 import React from 'react'
 import { isArray, isString } from 'lodash'
 import cx from 'classnames'
+import { useTranslation } from 'uiSrc/i18n'
 import { OAuthSsoHandlerDialog, OAuthConnectFreeDb } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { replaceVariables } from 'uiSrc/utils/recommendation'
@@ -33,6 +34,7 @@ const ContentElement = (props: Props) => {
     insights,
     idx,
   } = props
+  const { t } = useTranslation()
   const { type, value, parameter } = content
 
   const replacedValue = replaceVariables(value, parameter, params)
@@ -187,7 +189,7 @@ const ContentElement = (props: Props) => {
         />
       )
     default:
-      return isString(value) ? <>{value}</> : <b>*Unknown format*</b>
+      return isString(value) ? <>{value}</> : <b>{t('tips.unknownFormat')}</b>
   }
 }
 

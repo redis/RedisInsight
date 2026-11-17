@@ -1,5 +1,12 @@
 import React from 'react'
-import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  render,
+  screen,
+  fireEvent,
+  mockedStore,
+  mockStore,
+} from 'uiSrc/utils/test-utils'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { getConfig } from 'uiSrc/config'
@@ -139,6 +146,31 @@ describe('RowActionsCell — edit + expand', () => {
 
     fireEvent.click(screen.getByTestId('array-expand-btn-5'))
     expect(onOpenValueEditor).toHaveBeenCalledWith('5')
+  })
+
+  it('warns before inline edit when a non-Unicode format is selected', () => {
+    const onEditElement = jest.fn()
+    const state = cloneDeep(mockedStore.getState())
+    state.browser.keys.selectedKey.viewFormat = KeyValueFormat.JSON
+    const jsonStore = mockStore(state)
+
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({
+          viewFormat: KeyValueFormat.JSON,
+          onEditElement,
+        })}
+      />,
+      { store: jsonStore },
+    )
+
+    fireEvent.click(screen.getByTestId('array-edit-btn-5'))
+
+    expect(onEditElement).not.toHaveBeenCalled()
+    expect(
+      screen.getByTestId('non-unicode-edit-to-unicode'),
+    ).toBeInTheDocument()
   })
 
   it('hides edit, expand and delete while this row is being edited', () => {

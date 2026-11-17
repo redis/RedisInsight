@@ -4,6 +4,7 @@ import { CopyButton } from 'uiSrc/components/copy-button'
 import { Text } from 'uiSrc/components/base/text'
 import { lastConnectionFormat } from 'uiSrc/utils'
 import { RdiListColumn } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { sendCopyUrlTelemetry } from '../../methods/handlers'
 import { IRdiListCell } from '../../RdiInstancesList.types'
@@ -18,6 +19,7 @@ const fieldFormatters: Record<string, (v: any) => string> = {
 }
 
 const RdiInstancesListCell: IRdiListCell = ({ row, column }) => {
+  const { t } = useTranslation()
   const item = row.original
   const id = item.id
   const field = column.id as keyof typeof item
@@ -41,7 +43,7 @@ const RdiInstancesListCell: IRdiListCell = ({ row, column }) => {
         <CopyButton
           copy={text}
           onCopy={() => sendCopyUrlTelemetry(id)}
-          aria-label="Copy URL"
+          aria-label={t('rdi.home.instanceCell.copyUrlAria')}
         />
       )}
     </CellContainer>

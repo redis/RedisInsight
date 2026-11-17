@@ -3,6 +3,7 @@ import React from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -54,6 +55,7 @@ const TopKeysTable = ({
   delimiter = ':',
   dataTestid = '',
 }: Props) => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useAppDispatch()
 
@@ -89,7 +91,7 @@ const TopKeysTable = ({
 
   const columns: ColumnDef<Key>[] = [
     {
-      header: 'Key Type',
+      header: t('analytics.databaseAnalysis.topKeys.keyType'),
       id: 'type',
       accessorKey: 'type',
       enableSorting: true,
@@ -100,7 +102,7 @@ const TopKeysTable = ({
       }) => <GroupBadge key={type} type={type} />,
     },
     {
-      header: 'Key Name',
+      header: t('analytics.databaseAnalysis.topKeys.keyName'),
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
@@ -118,7 +120,7 @@ const TopKeysTable = ({
         return (
           <div data-testid="top-keys-table-name">
             <RiTooltip
-              title="Key Name"
+              title={t('analytics.databaseAnalysis.topKeys.keyName')}
               position="bottom"
               content={tooltipContent}
             >
@@ -131,7 +133,7 @@ const TopKeysTable = ({
       },
     },
     {
-      header: 'TTL',
+      header: t('analytics.databaseAnalysis.topKeys.ttl'),
       id: 'ttl',
       accessorKey: 'ttl',
       enableSorting: true,
@@ -145,17 +147,21 @@ const TopKeysTable = ({
         }
         if (value === -1) {
           return (
-            <CellText data-testid={`ttl-no-limit-${name}`}>No limit</CellText>
+            <CellText data-testid={`ttl-no-limit-${name}`}>
+              {t('analytics.databaseAnalysis.topKeys.noLimit')}
+            </CellText>
           )
         }
 
         return (
           <RiTooltip
-            title="Time to Live"
+            title={t('analytics.databaseAnalysis.topKeys.timeToLive')}
             anchorClassName="truncateText"
             position="bottom"
             content={
               <>
+                {/* seconds suffix kept literal to match the untranslated
+                    duration from truncateNumberToDuration below */}
                 {`${truncateTTLToSeconds(value)} s`}
                 <br />
                 {`(${truncateNumberToDuration(value)})`}
@@ -170,7 +176,7 @@ const TopKeysTable = ({
       },
     },
     {
-      header: 'Key Size',
+      header: t('analytics.databaseAnalysis.topKeys.keySize'),
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,
@@ -190,11 +196,11 @@ const TopKeysTable = ({
               <>
                 {isHighlight ? (
                   <>
-                    Consider splitting it into multiple keys
+                    {t('analytics.databaseAnalysis.topKeys.considerSplitting')}
                     <br />
                   </>
                 ) : null}
-                {numberWithSpaces(value)} B
+                {numberWithSpaces(value)} {t('analytics.units.bytes')}
               </>
             }
             data-testid="usedMemory-tooltip"
@@ -209,7 +215,7 @@ const TopKeysTable = ({
       },
     },
     {
-      header: 'Length',
+      header: t('analytics.databaseAnalysis.topKeys.length'),
       id: 'length',
       accessorKey: 'length',
       enableSorting: true,
@@ -226,7 +232,9 @@ const TopKeysTable = ({
         return (
           <RiTooltip
             content={
-              isHighlight ? 'Consider splitting it into multiple keys' : ''
+              isHighlight
+                ? t('analytics.databaseAnalysis.topKeys.considerSplitting')
+                : ''
             }
             data-testid="usedMemory-tooltip"
           >

@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { LoadedCloud } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
+import i18n from 'uiSrc/i18n'
 import { colFactory } from '../utils/colFactory'
 import { UseCloudDatabasesResultConfigReturn } from './useCloudDatabasesResultConfig.types'
 
@@ -25,7 +26,7 @@ export const useCloudDatabasesResultConfig =
       if (!instances.length) {
         history.push(Pages.home)
       }
-      setTitle('Redis Enterprise Databases Added')
+      setTitle(i18n.t('autodiscover.cloud.result.title'))
     }, [instances.length, history])
 
     const handleClose = useCallback(() => {

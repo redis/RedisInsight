@@ -15,7 +15,7 @@ description: >-
 
 ## Critical Rules
 
-- **ALWAYS run linter** after code changes: `yarn lint`
+- **ALWAYS run linter** after code changes: `npm run lint`
 - Linter must pass before committing
 - No console.log in production code (use console.warn/error only)
 
@@ -117,7 +117,7 @@ Also avoid:
 
 When updating npm packages (especially `@redis-ui/*` packages):
 
-1. **Clear Vite cache** after `yarn install`:
+1. **Clear Vite cache** after `npm install`:
 
    ```bash
    rm -rf node_modules/.vite
@@ -130,7 +130,7 @@ When updating npm packages (especially `@redis-ui/*` packages):
 
 ## Pre-Commit Checklist
 
-- [ ] `yarn lint` passes
+- [ ] `npm run lint` passes
 - [ ] No TypeScript errors
 - [ ] Import order is correct
 - [ ] No `any` types without reason

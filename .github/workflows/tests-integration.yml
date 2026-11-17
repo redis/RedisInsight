@@ -115,7 +115,7 @@ jobs:
       matrix:
         rte: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       # SSH Debug
       - name: Enable SSH
@@ -257,7 +257,7 @@ jobs:
       actions: write
       contents: read
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Merge coverage artifacts
         id: merge-artifacts

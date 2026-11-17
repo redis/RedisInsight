@@ -2,10 +2,8 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory, StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 
-test.describe('Browser > Vector Set > Gating > Redis below 8.0, flag on', () => {
+test.describe('Browser > Vector Set > Gating > Redis below 8.0', () => {
   // V8 factory points at redis:8.0-M02, which reports redis_version:7.9.225.
-  test.use({ featureFlags: { vectorSet: true } });
-
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -31,27 +29,30 @@ test.describe('Browser > Vector Set > Gating > Redis below 8.0, flag on', () => 
     ).toHaveCount(0);
   });
 
-  test('hides Vector Set from the Add Key type dropdown', async ({ browserPage }) => {
+  test('shows Vector Set as disabled in the Add Key type dropdown', async ({ browserPage }) => {
     await browserPage.goto(database.id);
     await browserPage.openAddKeyDialog();
 
     await browserPage.addKeyDialog.keyTypeSelect.click();
     await expect(browserPage.addKeyDialog.keyTypeDropdown).toBeVisible();
 
-    await expect(
-      browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', { name: 'Vector Set', exact: true }),
-    ).toHaveCount(0);
+    // The type is promoted (visible) but disabled instead of being hidden.
+    const vectorSetOption = browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', {
+      name: 'Vector Set',
+      exact: true,
+    });
+    await expect(vectorSetOption).toBeVisible();
+    await expect(vectorSetOption).toBeDisabled();
+    await expect(browserPage.addKeyDialog.keyTypeDropdown.getByTestId('vectorset-disabled')).toBeVisible();
   });
 });
 
-test.describe('Browser > Vector Set > Gating > Redis 8.8.0, flag off', () => {
-  test.use({ featureFlags: { vectorSet: false } });
-
+test.describe('Browser > Vector Set > Gating > Redis 8.8.0', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
-      StandaloneV880ConfigFactory.build({ name: 'test-vector-set-gating-flag' }),
+      StandaloneV880ConfigFactory.build({ name: 'test-vector-set-gating-version-supported' }),
     );
   });
 
@@ -61,7 +62,7 @@ test.describe('Browser > Vector Set > Gating > Redis 8.8.0, flag off', () => {
     }
   });
 
-  test('hides Vector Set from the key-type filter dropdown', async ({ browserPage }) => {
+  test('shows Vector Set in the key-type filter dropdown', async ({ browserPage }) => {
     await browserPage.goto(database.id);
 
     await browserPage.keyList.keyTypeFilter.click();
@@ -69,18 +70,22 @@ test.describe('Browser > Vector Set > Gating > Redis 8.8.0, flag off', () => {
 
     await expect(
       browserPage.keyList.keyTypeFilterDropdown.getByRole('option', { name: 'Vector Set', exact: true }),
-    ).toHaveCount(0);
+    ).toBeVisible();
   });
 
-  test('hides Vector Set from the Add Key type dropdown', async ({ browserPage }) => {
+  test('shows Vector Set as enabled in the Add Key type dropdown', async ({ browserPage }) => {
     await browserPage.goto(database.id);
     await browserPage.openAddKeyDialog();
 
     await browserPage.addKeyDialog.keyTypeSelect.click();
     await expect(browserPage.addKeyDialog.keyTypeDropdown).toBeVisible();
 
-    await expect(
-      browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', { name: 'Vector Set', exact: true }),
-    ).toHaveCount(0);
+    const vectorSetOption = browserPage.addKeyDialog.keyTypeDropdown.getByRole('option', {
+      name: 'Vector Set',
+      exact: true,
+    });
+    await expect(vectorSetOption).toBeVisible();
+    await expect(vectorSetOption).toBeEnabled();
+    await expect(browserPage.addKeyDialog.keyTypeDropdown.getByTestId('vectorset-disabled')).toHaveCount(0);
   });
 });

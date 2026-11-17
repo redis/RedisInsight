@@ -3,8 +3,7 @@ import styled, { css } from 'styled-components'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 
-interface InstanceHeaderContainerProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface InstanceHeaderContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   $isProductionEnv?: boolean
 }
 

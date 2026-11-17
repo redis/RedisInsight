@@ -1,3 +1,4 @@
+import { ParseKeys } from 'i18next'
 import { CreateArrayWithExpireDto } from 'apiClient'
 
 import type { PopulateOption } from './AddKeyArray.types'
@@ -7,16 +8,21 @@ export type ArrayCreationMode = CreateArrayWithExpireDto['mode']
 export const CONTIGUOUS_MODE: ArrayCreationMode = 'contiguous'
 export const SPARSE_MODE: ArrayCreationMode = 'sparse'
 
-export const CREATION_MODE_OPTIONS = [
+// inputDisplay/label hold i18n keys, resolved with t() at render time.
+export const CREATION_MODE_OPTIONS: {
+  value: ArrayCreationMode
+  inputDisplay: ParseKeys
+  label: ParseKeys
+}[] = [
   {
     value: CONTIGUOUS_MODE,
-    inputDisplay: 'Contiguous (sequential indexes)',
-    label: 'Contiguous (sequential indexes)',
+    inputDisplay: 'browser.addKey.array.mode.contiguous',
+    label: 'browser.addKey.array.mode.contiguous',
   },
   {
     value: SPARSE_MODE,
-    inputDisplay: 'Sparse (explicit indexes)',
-    label: 'Sparse (explicit indexes)',
+    inputDisplay: 'browser.addKey.array.mode.sparse',
+    label: 'browser.addKey.array.mode.sparse',
   },
 ]
 
@@ -32,19 +38,20 @@ export enum PopulateMode {
   Manual = 'manual',
 }
 
+// label/description hold i18n keys, resolved with t() at render time.
 export const POPULATE_OPTIONS: PopulateOption[] = [
   {
     value: PopulateMode.Sample,
-    label: 'Load sample data',
-    description: 'Explore arrays with one of the bundled sample datasets.',
+    label: 'browser.addKey.array.populate.sample.label',
+    description: 'browser.addKey.array.populate.sample.description',
     id: 'populate-sample',
   },
   {
     value: PopulateMode.Manual,
-    label: 'Create manually',
-    description: 'Define your own key, indexes, and values from scratch.',
+    label: 'browser.addKey.array.populate.manual.label',
+    description: 'browser.addKey.array.populate.manual.description',
     id: 'populate-manual',
   },
 ]
 
-export const POPULATE_LABEL = 'How would you like to populate this array?'
+export const POPULATE_LABEL: ParseKeys = 'browser.addKey.array.populateLabel'

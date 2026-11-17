@@ -195,49 +195,22 @@ describe('FilterKeyType', () => {
     expect(graphElement).not.toBeInTheDocument()
   })
 
-  it('should show Vector Set when vector set feature flag is enabled and redis version >= 8.0', async () => {
+  it('should show Vector Set when redis version >= 8.0', async () => {
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
       version: '8.0.0',
     }))
-    const initialStoreState = set(
-      cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
-      { flag: true },
-    )
-    const { queryByText } = render(<FilterKeyType />, {
-      store: mockStore(initialStoreState),
-    })
+    const { queryByText } = render(<FilterKeyType />)
 
     await userEvent.click(screen.getByTestId(filterSelectId))
 
     expect(queryByText('Vector Set')).toBeInTheDocument()
   })
 
-  it('should hide Vector Set when vector set feature flag is disabled', () => {
-    // Ensure the version gate is satisfied so the assertion truly
-    // exercises the feature-flag path and not the version path.
-    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
-      version: '8.0.0',
-    }))
-    const { queryByText } = render(<FilterKeyType />)
-
-    fireEvent.click(screen.getByTestId(filterSelectId))
-
-    expect(queryByText('Vector Set')).not.toBeInTheDocument()
-  })
-
-  it('should hide Vector Set when redis version < 8.0 even if feature flag is enabled', async () => {
+  it('should hide Vector Set when redis version < 8.0', async () => {
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
       version: '7.4.0',
     }))
-    const initialStoreState = set(
-      cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
-      { flag: true },
-    )
-    const { queryByText } = render(<FilterKeyType />, {
-      store: mockStore(initialStoreState),
-    })
+    const { queryByText } = render(<FilterKeyType />)
 
     await userEvent.click(screen.getByTestId(filterSelectId))
 

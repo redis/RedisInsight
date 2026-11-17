@@ -7,6 +7,7 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -14,6 +15,7 @@ export interface Props {
 }
 
 const DbIndex = (props: Props) => {
+  const { t } = useTranslation()
   const { formik } = props
 
   const handleChangeDbIndexCheckbox = (
@@ -38,7 +40,7 @@ const DbIndex = (props: Props) => {
               id={id}
               name="showDb"
               labelSize="M"
-              label="Select Logical Database"
+              label={t('home.form.dbIndex.selectLogicalDb')}
               checked={!!formik.values.showDb}
               onChange={handleChangeDbIndexCheckbox}
               data-testid="showDb"
@@ -50,14 +52,14 @@ const DbIndex = (props: Props) => {
       {formik.values.showDb && (
         <Row gap="m" responsive>
           <FlexItem grow className={styles.dbInput}>
-            <FormField label="Database Index">
+            <FormField label={t('home.form.dbIndex.field.databaseIndex')}>
               <NumericInput
                 autoValidate
                 min={0}
                 name="db"
                 id="db"
                 data-testid="db"
-                placeholder="Enter Database Index"
+                placeholder={t('home.form.dbIndex.placeholder.databaseIndex')}
                 value={Number(formik.values.db)}
                 onChange={(value) => formik.setFieldValue('db', value)}
               />

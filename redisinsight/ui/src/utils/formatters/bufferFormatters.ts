@@ -111,7 +111,7 @@ const ASCIIToBuffer = (strInit: string) => {
     .replace(/\\n/g, '\n')
     .replace(/\\r/g, '\r')
 
-  for (let i = 0; i < str.length; ) {
+  for (let i = 0; i < str.length;) {
     if (str.substring(i, i + 2) === '\\x') {
       result += str.substring(i + 2, i + 4)
       i += 4

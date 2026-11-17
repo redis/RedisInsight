@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
+import { useTranslation } from 'uiSrc/i18n'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { putRecommendationVote } from 'uiSrc/slices/analytics/dbAnalysis'
@@ -20,7 +21,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
-import { getVotedText, iconType, voteTooltip } from './utils'
+import { iconType } from './utils'
 import styles from './styles.module.scss'
 import styled from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
@@ -78,6 +79,7 @@ const VoteOption = (props: Props) => {
     name,
   } = props
 
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { id: instanceId = '', provider } = useAppSelector(
     connectedInstanceSelector,
@@ -120,8 +122,12 @@ const VoteOption = (props: Props) => {
 
   const getTooltipContent = (voteOption: Vote) =>
     isAnalyticsEnable
-      ? voteTooltip[voteOption]
-      : 'Enable Analytics on the Settings page to vote for a tip'
+      ? t(
+          voteOption === Vote.Like
+            ? 'tips.voting.useful'
+            : 'tips.voting.notUseful',
+        )
+      : t('tips.voting.disabledTooltip')
 
   return (
     <RiPopover
@@ -140,7 +146,7 @@ const VoteOption = (props: Props) => {
             disabled={!isAnalyticsEnable}
             icon={iconType[voteOption] ?? 'LikeIcon'}
             className={cx('vote__btn', { selected: vote === voteOption })}
-            aria-label="vote useful"
+            aria-label={t('tips.voting.voteUsefulAria')}
             data-testid={`${voteOption}-vote-btn`}
             onClick={() => handleClick(name)}
           />
@@ -160,10 +166,14 @@ const VoteOption = (props: Props) => {
               <FlexItem grow>
                 <div>
                   <Text className={styles.text} data-testid="common-text">
-                    Thank you for the feedback.
+                    {t('tips.voting.thanks')}
                   </Text>
                   <Text className={styles.text} data-testid="custom-text">
-                    {getVotedText(voteOption)}
+                    {t(
+                      voteOption === Vote.Like
+                        ? 'tips.voting.likeFollowUp'
+                        : 'tips.voting.dislikeFollowUp',
+                    )}
                   </Text>
                 </div>
               </FlexItem>
@@ -171,7 +181,7 @@ const VoteOption = (props: Props) => {
                 <IconButton
                   icon={CancelSlimIcon}
                   id="close-voting-popover"
-                  aria-label="close popover"
+                  aria-label={t('tips.voting.closePopoverAria')}
                   data-testid="close-popover"
                   className={styles.closeBtn}
                   onClick={() => setPopover('')}
@@ -189,12 +199,12 @@ const VoteOption = (props: Props) => {
             >
               <RiIcon
                 className={styles.githubIcon}
-                aria-label="redis insight github issues"
+                aria-label={t('tips.voting.githubRepoAria')}
                 type="GithubIcon"
                 color="informative100"
                 data-testid="github-repo-icon"
               />
-              To Github
+              {t('tips.voting.githubLink')}
             </GitHubLink>
           </FlexItem>
         </Col>

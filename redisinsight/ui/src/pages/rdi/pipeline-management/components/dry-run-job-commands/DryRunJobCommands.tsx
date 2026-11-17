@@ -6,14 +6,14 @@ import { monaco } from 'react-monaco-editor'
 import { CodeBlock } from 'uiSrc/components'
 import { rdiDryRunJobSelector } from 'uiSrc/slices/rdi/dryRun'
 import { MonacoLanguage } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   target?: string
 }
 
-const NO_COMMANDS_MESSAGE = 'No Redis commands provided by the server.'
-
 const DryRunJobCommands = ({ target }: Props) => {
+  const { t } = useTranslation()
   const { results } = useAppSelector(rdiDryRunJobSelector)
   const [commands, setCommands] = useState<string>('')
 
@@ -22,13 +22,15 @@ const DryRunJobCommands = ({ target }: Props) => {
       return
     }
 
+    const noCommandsMessage = t('rdi.pipeline.dryRun.noCommands')
+
     try {
       const targetCommands = results?.output?.find(
         (el) => el.connection === target,
       )?.commands
 
       if (!targetCommands) {
-        setCommands(NO_COMMANDS_MESSAGE)
+        setCommands(noCommandsMessage)
         return
       }
       monaco.editor
@@ -41,9 +43,9 @@ const DryRunJobCommands = ({ target }: Props) => {
           setCommands(data)
         })
     } catch (e) {
-      setCommands(NO_COMMANDS_MESSAGE)
+      setCommands(noCommandsMessage)
     }
-  }, [results, target])
+  }, [results, target, t])
 
   return (
     <div className="rdi-dry-run__codeBlock" data-testid="commands-output">

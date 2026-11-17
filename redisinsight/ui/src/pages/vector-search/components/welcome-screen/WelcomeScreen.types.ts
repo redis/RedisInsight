@@ -8,6 +8,12 @@ export interface WelcomeScreenProps {
    * Callback when "Create index" button is clicked.
    */
   onUseMyDatabaseClick?: () => void
+
+  useMyDatabaseText?: string
+
+  useMyDatabaseDisabled?: {
+    tooltip: string
+  }
 }
 
 export interface Feature {

@@ -7,6 +7,7 @@ import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { truncateText } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 const StyledWrapper = styled(Row)`
   position: relative;
@@ -75,13 +76,14 @@ const ClearButton = ({
   onClick: () => void
   shouldRender: boolean
 }) => {
+  const { t } = useTranslation()
   if (!shouldRender) {
     return null
   }
   return (
     <IconButton
       data-test-subj="autoTagClearButton"
-      title="Clear"
+      title={t('common.button.clear')}
       style={{
         position: 'absolute',
         right: '4px',

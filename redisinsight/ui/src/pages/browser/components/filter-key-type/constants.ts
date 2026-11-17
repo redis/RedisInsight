@@ -5,72 +5,68 @@ import {
   FeatureFlags,
 } from 'uiSrc/constants'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
-import {
-  isArrayEnabledSelector,
-  isVectorSetEnabledSelector,
-} from 'uiSrc/slices/app/features'
+import { isArrayEnabledSelector } from 'uiSrc/slices/app/features'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { FilterKeyTypeOption } from './FilterKeyType.types'
 
 export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
   {
-    text: 'Hash',
+    text: 'common.keyType.hash',
     value: KeyTypes.Hash,
     color: GROUP_TYPES_COLORS[KeyTypes.Hash],
   },
   {
-    text: 'List',
+    text: 'common.keyType.list',
     value: KeyTypes.List,
     color: GROUP_TYPES_COLORS[KeyTypes.List],
   },
   {
-    text: 'Array',
+    text: 'common.keyType.array',
     value: KeyTypes.Array,
     color: GROUP_TYPES_COLORS[KeyTypes.Array],
     minVersion: CommandsVersions.ARRAY.since,
     isEnabledSelector: isArrayEnabledSelector,
   },
   {
-    text: 'Set',
+    text: 'common.keyType.set',
     value: KeyTypes.Set,
     color: GROUP_TYPES_COLORS[KeyTypes.Set],
   },
   {
-    text: 'Sorted Set',
+    text: 'common.keyType.sortedSet',
     value: KeyTypes.ZSet,
     color: GROUP_TYPES_COLORS[KeyTypes.ZSet],
   },
   {
-    text: 'String',
+    text: 'common.keyType.string',
     value: KeyTypes.String,
     color: GROUP_TYPES_COLORS[KeyTypes.String],
   },
   {
-    text: 'JSON',
+    text: 'common.keyType.json',
     value: KeyTypes.ReJSON,
     color: GROUP_TYPES_COLORS[KeyTypes.ReJSON],
   },
   {
-    text: 'Stream',
+    text: 'common.keyType.stream',
     value: KeyTypes.Stream,
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
   {
-    text: 'Vector Set',
+    text: 'common.keyType.vectorSet',
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,
-    isEnabledSelector: isVectorSetEnabledSelector,
   },
   {
-    text: 'Graph',
+    text: 'common.keyType.graph',
     value: ModulesKeyTypes.Graph,
     color: GROUP_TYPES_COLORS[ModulesKeyTypes.Graph],
     skipIfNoModule: RedisDefaultModules.Graph,
     featureFlag: FeatureFlags.envDependent,
   },
   {
-    text: 'Time Series',
+    text: 'common.keyType.timeSeries',
     value: ModulesKeyTypes.TimeSeries,
     color: GROUP_TYPES_COLORS[ModulesKeyTypes.TimeSeries],
   },

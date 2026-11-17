@@ -1,60 +1,65 @@
+import { ParseKeys } from 'i18next'
 import { KeyTypes, KeyValueFormat, ModulesKeyTypes } from 'uiSrc/constants'
 
-export const KEY_VALUE_FORMATTER_OPTIONS = [
+// `text` holds an i18n key resolved with t() at render time.
+export const KEY_VALUE_FORMATTER_OPTIONS: {
+  text: ParseKeys
+  value: KeyValueFormat
+}[] = [
   {
-    text: 'Unicode',
+    text: 'browser.keyDetails.formatter.unicode',
     value: KeyValueFormat.Unicode,
   },
   {
-    text: 'ASCII',
+    text: 'browser.keyDetails.formatter.ascii',
     value: KeyValueFormat.ASCII,
   },
   {
-    text: 'Binary',
+    text: 'browser.keyDetails.formatter.binary',
     value: KeyValueFormat.Binary,
   },
   {
-    text: 'HEX',
+    text: 'browser.keyDetails.formatter.hex',
     value: KeyValueFormat.HEX,
   },
   {
-    text: 'JSON',
+    text: 'browser.keyDetails.formatter.json',
     value: KeyValueFormat.JSON,
   },
   {
-    text: 'Markdown',
+    text: 'browser.keyDetails.formatter.markdown',
     value: KeyValueFormat.Markdown,
   },
   {
-    text: 'Msgpack',
+    text: 'browser.keyDetails.formatter.msgpack',
     value: KeyValueFormat.Msgpack,
   },
   {
-    text: 'Pickle',
+    text: 'browser.keyDetails.formatter.pickle',
     value: KeyValueFormat.Pickle,
   },
   {
-    text: 'Protobuf',
+    text: 'browser.keyDetails.formatter.protobuf',
     value: KeyValueFormat.Protobuf,
   },
   {
-    text: 'PHP serialized',
+    text: 'browser.keyDetails.formatter.php',
     value: KeyValueFormat.PHP,
   },
   {
-    text: 'Java serialized',
+    text: 'browser.keyDetails.formatter.java',
     value: KeyValueFormat.JAVA,
   },
   {
-    text: 'Vector 32-bit',
+    text: 'browser.keyDetails.formatter.vector32',
     value: KeyValueFormat.Vector32Bit,
   },
   {
-    text: 'Vector 64-bit',
+    text: 'browser.keyDetails.formatter.vector64',
     value: KeyValueFormat.Vector64Bit,
   },
   {
-    text: 'Timestamp to DateTime',
+    text: 'browser.keyDetails.formatter.dateTime',
     value: KeyValueFormat.DateTime,
   },
 ]

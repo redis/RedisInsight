@@ -70,7 +70,7 @@ jobs:
             needsSystemFpm: true
 
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       # SSH Debug
       - name: Enable SSH
@@ -87,7 +87,7 @@ jobs:
           cache-node-modules: '0'
 
       - name: Install plugins dependencies and build plugins
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: Resolve linux targets for matrix arch
         id: resolve-targets
@@ -129,7 +129,8 @@ jobs:
           && (steps.resolve-targets.outputs.mode == 'default'
               || contains(steps.resolve-targets.outputs.custom_targets, 'snap'))
         run: |
-          sudo snap install snapcraft --classic
+          # snapcraft 9.x can't resolve snap/gui desktop files on core24, so stay on 8.x.
+          sudo snap install snapcraft --classic --channel=8.x/stable
           sudo snap install lxd
           sudo lxd waitready --timeout=60
           sudo lxd init --auto
@@ -147,11 +148,11 @@ jobs:
 
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && steps.resolve-targets.outputs.mode == 'default'
-        run: yarn package:prod --linux ${{ matrix.defaultTargets }}
+        run: npm run package:prod -- --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (staging)
         if: (vars.ENV == 'staging' || vars.ENV == 'development') && steps.resolve-targets.outputs.mode == 'default'
-        run: yarn package:stage --linux ${{ matrix.defaultTargets }}
+        run: npm run package:stage -- --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (custom)
         if: steps.resolve-targets.outputs.mode == 'custom'
@@ -160,9 +161,9 @@ jobs:
           CUSTOM_TARGETS: ${{ steps.resolve-targets.outputs.custom_targets }}
         run: |
           if [ "$IS_PRODUCTION" == "true" ]; then
-            yarn package:prod --linux $CUSTOM_TARGETS
+            npm run package:prod -- --linux $CUSTOM_TARGETS
           else
-            yarn package:stage --linux $CUSTOM_TARGETS
+            npm run package:stage -- --linux $CUSTOM_TARGETS
           fi
 
       - name: Verify native binaries

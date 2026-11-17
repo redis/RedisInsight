@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { DonutChart } from 'uiSrc/components/charts'
 import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { GROUP_TYPES_COLORS, GroupTypesColors } from 'uiSrc/constants'
@@ -89,6 +90,7 @@ const SummaryPerData = ({
   extrapolation,
   onSwitchExtrapolation,
 }: Props) => {
+  const { t } = useTranslation()
   const { totalMemory, totalKeys } = data || {}
   const [memoryData, setMemoryData] = useState<ChartData[]>([])
   const [keysData, setKeysData] = useState<ChartData[]>([])
@@ -123,7 +125,8 @@ const SummaryPerData = ({
       <LabelTooltip data-testid="tooltip-memory">
         <span data-testid="tooltip-key-type">{name}: </span>
         <TooltipPercentage data-testid="tooltip-key-percent">
-          {getPercentage(value, totalMemory?.total)}%
+          {getPercentage(value, totalMemory?.total)}
+          {t('analytics.units.percent')}
         </TooltipPercentage>
         <span data-testid="tooltip-total-memory">
           (&thinsp;
@@ -136,7 +139,7 @@ const SummaryPerData = ({
         </span>
       </LabelTooltip>
     ),
-    [totalMemory, extrapolation, isExtrapolated],
+    [t, totalMemory, extrapolation, isExtrapolated],
   )
 
   const renderKeysTooltip = useCallback(
@@ -144,7 +147,8 @@ const SummaryPerData = ({
       <LabelTooltip data-testid="tooltip-keys">
         <span data-testid="tooltip-key-type">{name}: </span>
         <TooltipPercentage data-testid="tooltip-key-percent">
-          {getPercentage(value, totalKeys?.total)}%
+          {getPercentage(value, totalKeys?.total)}
+          {t('analytics.units.percent')}
         </TooltipPercentage>
         <span data-testid="tooltip-total-keys">
           (&thinsp;
@@ -157,7 +161,7 @@ const SummaryPerData = ({
         </span>
       </LabelTooltip>
     ),
-    [totalKeys, extrapolation, isExtrapolated],
+    [t, totalKeys, extrapolation, isExtrapolated],
   )
 
   if (loading) {
@@ -181,10 +185,12 @@ const SummaryPerData = ({
   return (
     <Section data-testid="summary-per-data">
       <SectionTitleWrapper>
-        <Title size="M">SUMMARY PER DATA TYPE</Title>
+        <Title size="M">
+          {t('analytics.databaseAnalysis.summaryPerData.title')}
+        </Title>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <SwitchExtrapolateResults
-            title="Extrapolate results"
+            title={t('analytics.databaseAnalysis.extrapolateResults')}
             checked={isExtrapolated}
             onCheckedChange={(checked) => {
               setIsExtrapolated(checked)
@@ -206,7 +212,7 @@ const SummaryPerData = ({
           title={
             <DonutChartTitle
               icon="MemoryIconIcon"
-              title="Memory"
+              title={t('analytics.databaseAnalysis.summaryPerData.memory')}
               testId="memory"
               value={extrapolate(
                 totalMemory?.total || 0,
@@ -227,7 +233,7 @@ const SummaryPerData = ({
           title={
             <DonutChartTitle
               icon="KeyIconIcon"
-              title="Keys"
+              title={t('analytics.databaseAnalysis.summaryPerData.keys')}
               testId="keys"
               value={extrapolate(
                 totalKeys?.total || 0,

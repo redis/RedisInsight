@@ -11,6 +11,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import * as keys from 'uiSrc/constants/keys'
 
 import { SUGGESTIONS_HINT } from './constants'
+import { useTranslation } from 'uiSrc/i18n'
 import * as S from './FilterInputWithSuggestions.styles'
 import { FilterInputWithSuggestionsProps } from './FilterInputWithSuggestions.types'
 import {
@@ -27,6 +28,7 @@ export const FilterInputWithSuggestions = ({
   disabled,
   testId,
 }: FilterInputWithSuggestionsProps) => {
+  const { t } = useTranslation()
   const inputRef = useRef<HTMLInputElement>(null)
   const [caret, setCaret] = useState<number>(value.length)
   const [isFocused, setIsFocused] = useState(false)
@@ -182,7 +184,7 @@ export const FilterInputWithSuggestions = ({
           <S.SuggestionsHint
             data-testid={testId ? `${testId}-suggestions-hint` : undefined}
           >
-            {SUGGESTIONS_HINT}
+            {t(SUGGESTIONS_HINT)}
           </S.SuggestionsHint>
           <S.SuggestionsList
             id={listboxId}

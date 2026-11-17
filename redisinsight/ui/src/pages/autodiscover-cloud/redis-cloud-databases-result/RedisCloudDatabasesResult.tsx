@@ -17,6 +17,7 @@ import {
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 import { SummaryText } from './components'
 
 export interface Props {
@@ -26,15 +27,16 @@ export interface Props {
   onBack: () => void
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found'
-
 const RedisCloudDatabaseListResult = ({
   instances,
   columns,
   onBack,
   onView,
 }: Props) => {
+  const { t } = useTranslation()
+  const loadingMsg = t('autodiscover.cloud.loading')
+  const notFoundMsg = t('autodiscover.cloud.notFound')
+
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
 
@@ -70,7 +72,7 @@ const RedisCloudDatabaseListResult = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
         <Header
-          title="Redis Enterprise Databases Added"
+          title={t('autodiscover.cloud.result.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
         />
@@ -111,7 +113,7 @@ const RedisCloudDatabaseListResult = ({
             data-testid="btn-view-databases"
             disabled={items.length === 0}
           >
-            View Databases
+            {t('autodiscover.cloud.result.viewDatabases')}
           </PrimaryButton>
         </Row>
       </Footer>

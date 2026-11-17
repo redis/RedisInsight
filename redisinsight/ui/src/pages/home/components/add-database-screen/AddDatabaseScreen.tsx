@@ -22,6 +22,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
@@ -51,17 +52,17 @@ const getPayload = (connectionUrl: string, returnOnError = false) => {
   }
 }
 
-const ConnectionUrlError = (
-  <>
-    The connection URL format provided is not supported.
-    <br />
-    Try adding a database using a connection form.
-  </>
-)
-
 const AddDatabaseScreen = (props: Props) => {
+  const { t } = useTranslation()
   const { onSelectOption, onClose } = props
   const [isInvalid, setIsInvalid] = useState<Boolean>(false)
+
+  const connectionUrlError = (
+    <Trans
+      i18nKey="addDatabase.connectionUrl.error"
+      components={{ br: <br /> }}
+    />
+  )
   const { loadingChanging: isLoading } = useAppSelector(instancesSelector)
 
   const dispatch = useAppDispatch()
@@ -120,7 +121,7 @@ const AddDatabaseScreen = (props: Props) => {
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
-              content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
+              content={isInvalid ? <span>{connectionUrlError}</span> : null}
             >
               <EmptyButton
                 size="small"
@@ -131,7 +132,7 @@ const AddDatabaseScreen = (props: Props) => {
                 loading={isLoading}
                 data-testid="btn-test-connection"
               >
-                Test connection
+                {t('addDatabase.button.testConnection')}
               </EmptyButton>
             </RiTooltip>
           </FlexItem>
@@ -142,14 +143,14 @@ const AddDatabaseScreen = (props: Props) => {
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
-                  Connection settings
+                  {t('addDatabase.button.connectionSettings')}
                 </SecondaryButton>
               </FlexItem>
               <FlexItem>
                 <RiTooltip
                   position="top"
                   anchorClassName="euiToolTip__btn-disabled"
-                  content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
+                  content={isInvalid ? <span>{connectionUrlError}</span> : null}
                 >
                   <PrimaryButton
                     type="submit"
@@ -158,7 +159,7 @@ const AddDatabaseScreen = (props: Props) => {
                     icon={isInvalid ? InfoIcon : undefined}
                     data-testid="btn-submit"
                   >
-                    Add database
+                    {t('addDatabase.button.addDatabase')}
                   </PrimaryButton>
                 </RiTooltip>
               </FlexItem>
@@ -167,7 +168,7 @@ const AddDatabaseScreen = (props: Props) => {
         </Row>
       </form>
       <Spacer />
-      <CustomHorizontalRule>Or</CustomHorizontalRule>
+      <CustomHorizontalRule>{t('addDatabase.divider.or')}</CustomHorizontalRule>
       <Spacer />
       <ConnectivityOptions
         onClickOption={handleProceedForm}

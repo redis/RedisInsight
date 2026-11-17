@@ -1,4 +1,5 @@
 import { monaco as monacoEditor } from 'react-monaco-editor'
+import { ParseKeys } from 'i18next'
 
 export const ATTRIBUTES_EDITOR_OPTIONS: Partial<monacoEditor.editor.IStandaloneEditorConstructionOptions> =
   {
@@ -22,8 +23,8 @@ export const ATTRIBUTES_EDITOR_OPTIONS: Partial<monacoEditor.editor.IStandaloneE
     },
   }
 
-export const ATTRIBUTES_WARNING_MESSAGE =
-  'Non-JSON attributes are not supported as filter expressions in similarity search queries.'
+export const ATTRIBUTES_WARNING_MESSAGE: ParseKeys =
+  'browser.vectorSet.attributeEditor.warning'
 
 export const JSON_VALIDATION_DEBOUNCE_MS = 500
 

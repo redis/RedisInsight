@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { Col } from 'uiSrc/components/base/layout/flex'
@@ -17,43 +18,45 @@ export interface Props {
 const EmptyMessagesList = ({
   connectionType,
   isSpublishNotSupported,
-}: Props) => (
-  <Wrapper>
-    <InnerContainer
-      align="center"
-      justify="center"
-      data-testid="empty-messages-list"
-      gap="xxl"
-    >
-      <HeroImage src={LightBulbImage} alt="Pub/Sub" />
+}: Props) => {
+  const { t } = useTranslation()
 
-      <Col align="center" justify="center" grow={false} gap="s">
-        <Title size="XXL">You are not subscribed</Title>
+  return (
+    <Wrapper>
+      <InnerContainer
+        align="center"
+        justify="center"
+        data-testid="empty-messages-list"
+        gap="xxl"
+      >
+        <HeroImage src={LightBulbImage} alt={t('pubsub.empty.imageAlt')} />
 
-        <Text>
-          Subscribe to the Channel to see all the messages published to your
-          database
-        </Text>
-      </Col>
+        <Col align="center" justify="center" grow={false} gap="s">
+          <Title size="XXL">{t('pubsub.empty.title')}</Title>
 
-      <SubscribeForm grow={false} />
+          <Text>{t('pubsub.empty.description')}</Text>
+        </Col>
 
-      <CallOut variant="attention">
-        Running in production may decrease performance and memory available.
-      </CallOut>
+        <SubscribeForm grow={false} />
 
-      {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
-        <>
-          <Banner
-            data-testid="empty-messages-list-cluster"
-            variant="attention"
-            showIcon={true}
-            message="Messages published with SPUBLISH will not appear in this channel"
-          />
-        </>
-      )}
-    </InnerContainer>
-  </Wrapper>
-)
+        <CallOut variant="attention">
+          {t('pubsub.empty.productionWarning')}
+        </CallOut>
+
+        {connectionType === ConnectionType.Cluster &&
+          isSpublishNotSupported && (
+            <>
+              <Banner
+                data-testid="empty-messages-list-cluster"
+                variant="attention"
+                showIcon={true}
+                message={t('pubsub.empty.spublishWarning')}
+              />
+            </>
+          )}
+      </InnerContainer>
+    </Wrapper>
+  )
+}
 
 export default EmptyMessagesList

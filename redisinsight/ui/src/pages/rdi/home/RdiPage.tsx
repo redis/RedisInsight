@@ -17,6 +17,7 @@ import {
 } from 'uiSrc/telemetry'
 import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { Rdi as RdiInstanceResponse } from 'apiClient'
 import { dispatch } from 'uiSrc/slices/store'
@@ -41,6 +42,7 @@ const handleOpenPage = (data: RdiInstance[]) => {
 }
 
 const RdiPage = () => {
+  const { t } = useTranslation()
   const {
     editInstance,
     setEditInstance,
@@ -54,7 +56,7 @@ const RdiPage = () => {
   useEffect(() => {
     dispatch(fetchInstancesAction(handleOpenPage))
 
-    setTitle('Redis Data Integration')
+    setTitle(t('rdi.home.pageTitle'))
   }, [])
 
   const handleFormSubmit = (instance: Partial<RdiInstance>) => {

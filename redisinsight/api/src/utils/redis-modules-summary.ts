@@ -11,8 +11,10 @@ interface IModuleSummary {
   version?: number;
   semanticVersion?: number;
 }
-interface IRedisModulesSummary
-  extends Record<keyof typeof AdditionalRedisModuleName, IModuleSummary> {
+interface IRedisModulesSummary extends Record<
+  keyof typeof AdditionalRedisModuleName,
+  IModuleSummary
+> {
   customModules: AdditionalRedisModule[];
 }
 export const DEFAULT_SUMMARY: IRedisModulesSummary = Object.freeze({

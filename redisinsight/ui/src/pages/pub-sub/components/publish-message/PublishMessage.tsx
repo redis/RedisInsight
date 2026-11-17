@@ -8,6 +8,7 @@ import {
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
@@ -24,6 +25,7 @@ import {
 const HIDE_BADGE_TIMER = 3000
 
 const PublishMessage = () => {
+  const { t } = useTranslation()
   const { channel: channelContext, message: messageContext } =
     useAppSelector(appContextPubSub)
   const connectionType = useConnectionType()
@@ -76,19 +78,21 @@ const PublishMessage = () => {
   }
 
   const getClientsText = (clients?: number) =>
-    typeof clients !== 'number' ? 'Published' : `Published (${clients})`
+    typeof clients !== 'number'
+      ? t('pubsub.publish.published')
+      : t('pubsub.publish.publishedWithClients', { clients })
 
   return (
     <form onSubmit={onFormSubmit}>
       <Row justify="between" gap="xl" align="end">
         <Row grow={true} gap="m">
           <ChannelColumn grow={false} gap="s">
-            <Text>Channel name</Text>
+            <Text>{t('pubsub.publish.channelLabel')}</Text>
             <FormField>
               <TextInput
                 name="channel"
                 id="channel"
-                placeholder="Enter Channel Name"
+                placeholder={t('pubsub.publish.channelPlaceholder')}
                 value={channel}
                 onChange={(value) => setChannel(value)}
                 autoComplete="off"
@@ -98,11 +102,11 @@ const PublishMessage = () => {
           </ChannelColumn>
 
           <Col gap="s">
-            <Text>Message</Text>
+            <Text>{t('pubsub.publish.messageLabel')}</Text>
             <TextInput
               name="message"
               id="message"
-              placeholder="Enter Message"
+              placeholder={t('pubsub.publish.messagePlaceholder')}
               value={message}
               onChange={(value) => setMessage(value)}
               autoComplete="off"
@@ -136,7 +140,7 @@ const PublishMessage = () => {
                 type="submit"
                 data-testid="publish-message-submit"
               >
-                Publish
+                {t('pubsub.publish.button')}
               </PrimaryButton>
             </FlexItem>
           </ButtonWrapper>

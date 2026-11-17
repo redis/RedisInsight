@@ -9,6 +9,7 @@ import {
   resetInstancesRedisCluster,
 } from 'uiSrc/slices/instances/cluster'
 import { Maybe, Nullable, setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
@@ -50,6 +51,7 @@ const sendCancelEvent = () => {
   })
 }
 export const useClusterDatabasesConfig = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const history = useHistory()
 
@@ -61,7 +63,7 @@ export const useClusterDatabasesConfig = () => {
   } = useAppSelector(clusterSelector)
 
   useEffect(() => {
-    setTitle('Auto-Discover Redis Enterprise Databases')
+    setTitle(t('cluster.databases.title'))
   }, [])
 
   const handleClose = useCallback(

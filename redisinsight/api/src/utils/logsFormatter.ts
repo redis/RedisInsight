@@ -1,4 +1,4 @@
-import { format } from 'winston';
+import { format, Logform } from 'winston';
 import { isArray, isObject, isPlainObject, omit } from 'lodash';
 import { inspect } from 'util';
 import config, { Config } from 'src/utils/config';
@@ -68,11 +68,15 @@ export const sanitizeErrors = <T>(
   return clone;
 };
 
-export const prepareLogsData = format((info, opts: SanitizeOptions = {}) => {
-  return sanitizeErrors(info, opts);
-});
+// logform types format options as `unknown`, and is installed twice, so the
+// formats below need narrowing and an explicit type.
+export const prepareLogsData: Logform.FormatWrap = format(
+  (info, opts?: unknown) => {
+    return sanitizeErrors(info, (opts as SanitizeOptions) ?? {});
+  },
+);
 
-export const prettyFileFormat = format.printf((info) => {
+export const prettyFileFormat: Logform.Format = format.printf((info) => {
   const separator = ' | ';
   const timestamp = new Date().toLocaleString();
   const { level, context, message } = info;

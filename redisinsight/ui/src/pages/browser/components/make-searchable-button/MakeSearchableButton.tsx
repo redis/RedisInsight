@@ -3,6 +3,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 import { KEY_TYPE_MAP } from 'uiSrc/pages/vector-search/constants'
 import { extractNamespace } from 'uiSrc/pages/vector-search/utils'
 import { useMakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
@@ -17,6 +18,7 @@ export const MakeSearchableButton = ({
   keyNameString,
   keyType,
 }: MakeSearchableButtonProps) => {
+  const { t } = useTranslation()
   const { openMakeSearchableModal } = useMakeSearchableModal()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
@@ -52,9 +54,11 @@ export const MakeSearchableButton = ({
       position="top"
       content={
         <span>
-          Index data with the "<strong>{prefix}</strong>" prefix so you can
-          query it using full-text, vector, exact matching, and geospatial
-          search.
+          <Trans
+            i18nKey="browser.makeSearchable.tooltip"
+            values={{ prefix: escapeTrans(prefix) }}
+            components={{ bold: <strong /> }}
+          />
         </span>
       }
     >
@@ -63,7 +67,7 @@ export const MakeSearchableButton = ({
         onClick={handleOpen}
         data-testid="make-searchable-btn"
       >
-        Make searchable
+        {t('browser.makeSearchable.button.trigger')}
       </PrimaryButton>
     </RiTooltip>
   )

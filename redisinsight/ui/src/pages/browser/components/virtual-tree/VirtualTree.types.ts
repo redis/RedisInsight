@@ -77,6 +77,7 @@ export interface VirtualTreeProps {
   items: IKeyPropTypes[]
   delimiterPattern: string
   delimiters: string[]
+  prefixLength?: number
   loadingIcon?: string
   loading: boolean
   deleting: boolean

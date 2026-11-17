@@ -1,0 +1,116 @@
+name: Delete old deployments
+
+on:
+  workflow_dispatch:
+    inputs:
+      older_than_days:
+        description: 'Delete deployments older than this many days (0 = delete all)'
+        type: number
+        default: 30
+      max_deletions:
+        description: 'Maximum deployments to delete in this run'
+        type: number
+        default: 200
+      dry_run:
+        description: 'Only list what would be deleted'
+        type: boolean
+        default: true
+  schedule:
+    - cron: '0 3 * * *' # daily, 03:00 UTC
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  delete:
+    name: Delete old deployments
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      deployments: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      # Empty on scheduled runs. The script applies the defaults, because `0` is
+      # falsy in expressions and `inputs.x || default` would swallow it.
+      OLDER_THAN_DAYS: ${{ inputs.older_than_days }}
+      # GitHub allows about 500 content-creating requests per hour. Each
+      # deployment costs up to 2 (mark inactive, delete), so the default stays below that.
+      MAX_DELETIONS: ${{ inputs.max_deletions }}
+      DRY_RUN: ${{ inputs.dry_run || false }}
+      # Spacing between write requests to stay under the secondary rate limit.
+      PAUSE_SECONDS: 1
+    steps:
+      - name: Delete deployments
+        # Explicit bash runs with pipefail, so a failed listing request fails the step.
+        shell: bash
+        run: |
+          OLDER_THAN_DAYS="${OLDER_THAN_DAYS:-30}"
+          MAX_DELETIONS="${MAX_DELETIONS:-200}"
+
+          for value in "${OLDER_THAN_DAYS}" "${MAX_DELETIONS}"; do
+            if ! [[ "${value}" =~ ^[0-9]+$ ]]; then
+              echo "::error::Expected a non-negative integer, got '${value}'"
+              exit 1
+            fi
+          done
+
+          cutoff=$(date -u -d "${OLDER_THAN_DAYS} days ago" +%Y-%m-%dT%H:%M:%SZ)
+
+          # Oldest first, so a capped run always makes progress on the backlog.
+          candidates=$(gh api --paginate "repos/${REPO}/deployments?per_page=100" \
+            --jq ".[] | select(.created_at < \"${cutoff}\") | [.created_at, .id, .environment] | @tsv" \
+            | sort | awk -v max="${MAX_DELETIONS}" 'NR <= max')
+
+          # Returns 1 to skip the deployment and 2 to stop the run on a rate limit.
+          api_call() {
+            local output
+            if output=$(gh api "$@" 2>&1); then
+              return 0
+            fi
+            if grep -qi 'rate limit' <<< "${output}"; then
+              echo "::warning::Stopped at ${id}: ${output}"
+              return 2
+            fi
+            echo "::warning::Skipped ${id}: ${output}"
+            return 1
+          }
+
+          deleted=0
+          skipped=0
+          while IFS=$'\t' read -r created id environment; do
+            [ -n "${id}" ] || continue
+
+            if [ "${DRY_RUN}" = "true" ]; then
+              echo "Would delete ${id} (${environment}, ${created})"
+              deleted=$((deleted + 1))
+              continue
+            fi
+
+            # An active deployment cannot be deleted until it is marked inactive.
+            state=$(gh api "repos/${REPO}/deployments/${id}/statuses?per_page=1" --jq '.[0].state // "none"') || state=unknown
+            if [ "${state}" = "success" ]; then
+              rc=0
+              api_call -X POST "repos/${REPO}/deployments/${id}/statuses" -f state=inactive || rc=$?
+              if [ "${rc}" -eq 2 ]; then break; fi
+              if [ "${rc}" -ne 0 ]; then skipped=$((skipped + 1)); continue; fi
+              sleep "${PAUSE_SECONDS}"
+            fi
+
+            rc=0
+            api_call -X DELETE "repos/${REPO}/deployments/${id}" || rc=$?
+            if [ "${rc}" -eq 2 ]; then break; fi
+            if [ "${rc}" -ne 0 ]; then skipped=$((skipped + 1)); continue; fi
+            echo "Deleted ${id} (${environment}, ${created})"
+            deleted=$((deleted + 1))
+            sleep "${PAUSE_SECONDS}"
+          done <<< "${candidates}"
+
+          verb="Deleted"
+          [ "${DRY_RUN}" = "true" ] && verb="Would delete"
+          echo "${verb} ${deleted} deployment(s) older than ${OLDER_THAN_DAYS} days, skipped ${skipped}." | tee -a "${GITHUB_STEP_SUMMARY}"

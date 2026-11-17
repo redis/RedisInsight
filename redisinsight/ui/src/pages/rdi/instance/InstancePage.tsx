@@ -1,84 +1,73 @@
 import React, { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
-import {
-  appContextSelector,
-  resetDatabaseContext,
-  resetRdiContext,
-  setAppContextConnectedRdiInstanceId,
-} from 'uiSrc/slices/app/context'
+import { appContextSelector } from 'uiSrc/slices/app/context'
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
-import {
-  fetchConnectedInstanceAction,
-  fetchInstancesAction as fetchRdiInstancesAction,
-  instancesSelector as rdiInstancesSelector,
-} from 'uiSrc/slices/rdi/instances'
-import {
-  fetchInstancesAction,
-  instancesSelector as dbInstancesSelector,
-  resetConnectedInstance as resetConnectedDatabaseInstance,
-} from 'uiSrc/slices/instances/instances'
+import { Nullable } from 'uiSrc/utils'
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Loader } from 'uiSrc/components/base/display'
+import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
+import { useRdiPipelineUi } from '../hooks/useRdiPipelineUi'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
-import { Nullable } from 'uiSrc/utils'
-import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 
 export interface Props {
   routes: IRoute[]
 }
 
 const RdiInstancePage = ({ routes = [] }: Props) => {
-  const dispatch = useAppDispatch()
   const history = useHistory()
-  const { pathname } = useLocation()
+  const location = useLocation<{ skipLastPageRestore?: boolean }>()
+  const { pathname } = location
   const { privateRdiRoutes } = useNavigation()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { lastPage, contextRdiInstanceId } = useAppSelector(appContextSelector)
-  const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
-  const { data: dbInstances } = useAppSelector(dbInstancesSelector)
+  const rdiPipelineUi = useRdiPipelineUi(rdiInstanceId)
 
   const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
-
-  useEffect(() => {
-    if (!dbInstances?.length) {
-      dispatch(fetchInstancesAction())
-    }
-    if (!rdiInstances?.length) {
-      dispatch(fetchRdiInstancesAction())
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!contextRdiInstanceId || contextRdiInstanceId !== rdiInstanceId) {
-      dispatch(resetRdiContext())
-      dispatch(fetchConnectedInstanceAction(rdiInstanceId))
-    }
-    dispatch(setAppContextConnectedRdiInstanceId(rdiInstanceId))
-
-    // clear database context
-    dispatch(resetConnectedDatabaseInstance())
-    dispatch(resetDatabaseContext())
-  }, [rdiInstanceId])
 
   useEffect(() => {
     // redirect only if there is no exact path
     if (pathname === Pages.rdiPipeline(rdiInstanceId)) {
       if (
+        !location.state?.skipLastPageRestore &&
         lastPage === PageNames.rdiStatistics &&
         contextRdiInstanceId === rdiInstanceId
       ) {
-        history.push(Pages.rdiStatistics(rdiInstanceId))
+        // replace, not push - the bare URL isn't a real page, so it
+        // shouldn't become a dead history entry that Back can land on
+        history.replace(Pages.rdiStatistics(rdiInstanceId))
         return
       }
-      history.push(Pages.rdiPipelineManagement(rdiInstanceId))
+
+      if (rdiPipelineUi.status === 'loading') {
+        return
+      }
+
+      history.replace(
+        rdiPipelineUi.target === 'v2'
+          ? Pages.rdiPipelineManagementV2(rdiInstanceId)
+          : Pages.rdiPipelineManagement(rdiInstanceId),
+      )
     }
-  }, [])
+  }, [pathname, location.state, contextRdiInstanceId, rdiPipelineUi])
+
+  // The bare URL never actually renders as a page - the effect above always
+  // replaces it with something else. Render a loader instead of the v1
+  // shell (tabs, status bar) below, so that shell can't flash on screen for
+  // an instance about to redirect away from it.
+  if (pathname === Pages.rdiPipeline(rdiInstanceId)) {
+    return (
+      <Row justify="center" align="center">
+        <Loader />
+      </Row>
+    )
+  }
 
   return (
     <Col className={styles.page} gap="none" responsive={false}>

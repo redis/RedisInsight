@@ -6,12 +6,14 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
 }
 
 const KeyFormatSelector = (props: Props) => {
+  const { t } = useTranslation()
   const { formik } = props
 
   const options = [
@@ -28,10 +30,10 @@ const KeyFormatSelector = (props: Props) => {
   return (
     <Row gap="m">
       <FlexItem grow>
-        <FormField label="Key name format">
+        <FormField label={t('home.form.keyFormat.label')}>
           <RiSelect
             name="key-name-format"
-            placeholder="Key name format"
+            placeholder={t('home.form.keyFormat.label')}
             // TODO: fix the type
             value={
               (formik.values.keyNameFormat as unknown as string) ||

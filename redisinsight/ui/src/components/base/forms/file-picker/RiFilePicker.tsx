@@ -1,4 +1,5 @@
 import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import cx from 'classnames'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import { Loader } from 'uiSrc/components/base/display'
@@ -44,7 +45,7 @@ export type RiFilePickerProps = CommonProps &
   }
 
 export const RiFilePicker = ({
-  initialPromptText = <span>Select or drag and drop a file</span>,
+  initialPromptText,
   onChange,
   disabled,
   id,
@@ -55,6 +56,11 @@ export const RiFilePicker = ({
   display,
   ...props
 }: RiFilePickerProps) => {
+  const { t } = useTranslation()
+  const resolvedPromptText = initialPromptText ?? (
+    <span>{t('common.filePicker.prompt')}</span>
+  )
+
   const [promptText, setPromptText] = useState<string | null>(null)
 
   const [isHoveringDrop, setIsHoveringDrop] = useState(false)
@@ -64,7 +70,11 @@ export const RiFilePicker = ({
     if (!fileInput.current) return
 
     if (fileInput.current.files && fileInput.current.files.length > 1) {
-      setPromptText(`${fileInput.current.files.length} files selected`)
+      setPromptText(
+        t('common.filePicker.filesSelected', {
+          count: fileInput.current.files.length,
+        }),
+      )
     } else if (
       fileInput.current.files &&
       fileInput.current.files.length === 0
@@ -129,7 +139,7 @@ export const RiFilePicker = ({
     if (normalFormControl) {
       clearButton = (
         <SecondaryButton
-          aria-label="Remove selected files"
+          aria-label={t('common.filePicker.removeAriaLabel')}
           className="RI-File-Picker__clearButton"
           onClick={removeFiles}
           size={compressed ? 's' : 'm'}
@@ -138,12 +148,12 @@ export const RiFilePicker = ({
     } else {
       clearButton = (
         <EmptyButton
-          aria-label="Remove selected files"
+          aria-label={t('common.filePicker.removeAriaLabel')}
           className="RI-File-Picker__clearButton"
           size="small"
           onClick={removeFiles}
         >
-          <ColorText color="default">Remove</ColorText>
+          <ColorText color="default">{t('common.button.remove')}</ColorText>
         </EmptyButton>
       )
     }
@@ -185,7 +195,7 @@ export const RiFilePicker = ({
           aria-hidden="true"
         />
         <FilePickerPromptText size="s" className="RI-File-Picker__promptText">
-          {promptText || initialPromptText}
+          {promptText || resolvedPromptText}
         </FilePickerPromptText>
         {clearButton}
         {loader}

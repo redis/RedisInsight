@@ -13,11 +13,7 @@ import {
   createTooltipContent,
   formattingBuffer,
 } from 'uiSrc/utils'
-import {
-  KeyTypes,
-  OVER_RENDER_BUFFER_COUNT,
-  TEXT_FAILED_CONVENT_FORMATTER,
-} from 'uiSrc/constants'
+import { KeyTypes, OVER_RENDER_BUFFER_COUNT } from 'uiSrc/constants'
 import {
   sendEventTelemetry,
   TelemetryEvent,
@@ -49,6 +45,7 @@ import {
 } from 'uiSrc/components/virtual-table/interfaces'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
+import { useTranslation } from 'uiSrc/i18n'
 import { GetSetMembersResponse } from 'apiClient'
 import styles from './styles.module.scss'
 
@@ -69,6 +66,7 @@ export interface Props {
 
 const SetDetailsTable = (props: Props) => {
   const { onRemoveKey } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(setSelector)
   const {
@@ -215,7 +213,7 @@ const SetDetailsTable = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Member',
+      label: t('browser.set.column.member'),
       isSearchable: true,
       staySearchAlwaysOpen: true,
       initialSearchValue: '',
@@ -256,8 +254,10 @@ const SetDetailsTable = (props: Props) => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Member'
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    ? t('browser.set.column.member')
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
                 position="left"

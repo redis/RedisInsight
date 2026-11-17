@@ -6,15 +6,22 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 
 import * as S from './ColumnsMenu.styles'
 
 export interface ColumnsMenuProps {
   shownColumns: BrowserColumns[]
+  isKeySizeAvailable?: boolean
   onToggleColumn: (checked: boolean, column: BrowserColumns) => void
 }
 
-const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
+const ColumnsMenu = ({
+  shownColumns,
+  isKeySizeAvailable = true,
+  onToggleColumn,
+}: ColumnsMenuProps) => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleVisibility = () => setIsOpen(!isOpen)
@@ -29,50 +36,52 @@ const ColumnsMenu = ({ shownColumns, onToggleColumn }: ColumnsMenuProps) => {
         <S.ColumnsButton
           onPressedChange={toggleVisibility}
           data-testid="btn-columns-actions"
-          aria-label="columns"
+          aria-label={t('browser.keysHeader.columnsAria')}
           pressed={isOpen}
         >
           <RiIcon size="m" type="ColumnsIcon" />
-          <Text size="s">Columns</Text>
+          <Text size="s">{t('browser.keysHeader.columns')}</Text>
         </S.ColumnsButton>
       }
     >
       <Col gap="m">
-        <FlexItem>
-          <Row align="center" gap="m">
-            <FlexItem grow>
-              <S.StyledCheckbox
-                id="show-key-size"
-                name="show-key-size"
-                label="Key size"
-                checked={shownColumns.includes(BrowserColumns.Size)}
-                onChange={(e) =>
-                  onToggleColumn(e.target.checked, BrowserColumns.Size)
-                }
-                data-testid="show-key-size"
-              />
-            </FlexItem>
-            <FlexItem>
-              <RiTooltip
-                content="Hide the key size to avoid performance issues when working with large keys."
-                position="top"
-                anchorClassName="flex-row"
-              >
-                <RiIcon
-                  type="InfoIcon"
-                  size="m"
-                  style={{ cursor: 'pointer' }}
-                  data-testid="key-size-info-icon"
+        {isKeySizeAvailable && (
+          <FlexItem>
+            <Row align="center" gap="m">
+              <FlexItem grow>
+                <S.StyledCheckbox
+                  id="show-key-size"
+                  name="show-key-size"
+                  label={t('browser.keysHeader.keySize')}
+                  checked={shownColumns.includes(BrowserColumns.Size)}
+                  onChange={(e) =>
+                    onToggleColumn(e.target.checked, BrowserColumns.Size)
+                  }
+                  data-testid="show-key-size"
                 />
-              </RiTooltip>
-            </FlexItem>
-          </Row>
-        </FlexItem>
+              </FlexItem>
+              <FlexItem>
+                <RiTooltip
+                  content={t('browser.keysHeader.keySizeTooltip')}
+                  position="top"
+                  anchorClassName="flex-row"
+                >
+                  <RiIcon
+                    type="InfoIcon"
+                    size="m"
+                    style={{ cursor: 'pointer' }}
+                    data-testid="key-size-info-icon"
+                  />
+                </RiTooltip>
+              </FlexItem>
+            </Row>
+          </FlexItem>
+        )}
         <FlexItem>
           <Checkbox
             id="show-ttl"
             name="show-ttl"
-            label="TTL"
+            label={t('browser.keysHeader.ttl')}
             checked={shownColumns.includes(BrowserColumns.TTL)}
             onChange={(e) =>
               onToggleColumn(e.target.checked, BrowserColumns.TTL)

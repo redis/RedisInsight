@@ -21,8 +21,14 @@ export const mockVectorSetKeyInfo = {
 export const mockVectorSetElementAttributes = (): string =>
   JSON.stringify({ [faker.word.noun()]: faker.word.adjective() })
 
-const buildBaseElement = (): Omit<VectorSetElement, 'attributes'> => ({
-  name: stringToBuffer(faker.word.words({ count: { min: 1, max: 3 } })),
+const buildBaseElement = (
+  sequence: number,
+): Omit<VectorSetElement, 'attributes'> => ({
+  // suffix with the factory sequence so a buildList never repeats a name;
+  // faker.word.words alone can collide and break name-matched reducers
+  name: stringToBuffer(
+    `${faker.word.words({ count: { min: 1, max: 3 } })} ${sequence}`,
+  ),
   vector: faker.helpers.arrayElements(
     Array.from({ length: 128 }, () =>
       faker.number.float({ min: -1, max: 1, fractionDigits: 6 }),
@@ -31,13 +37,15 @@ const buildBaseElement = (): Omit<VectorSetElement, 'attributes'> => ({
   ),
 })
 
-export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
-  ...buildBaseElement(),
-}))
+export const vectorSetElementFactory = Factory.define<VectorSetElement>(
+  ({ sequence }) => ({
+    ...buildBaseElement(sequence),
+  }),
+)
 
 export const vectorSetElementWithAttributesFactory =
-  Factory.define<VectorSetElement>(() => ({
-    ...buildBaseElement(),
+  Factory.define<VectorSetElement>(({ sequence }) => ({
+    ...buildBaseElement(sequence),
     attributes: mockVectorSetElementAttributes(),
   }))
 

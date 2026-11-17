@@ -32,16 +32,16 @@ export enum KnownFeatures {
   EnhancedCloudUI = 'enhancedCloudUI',
   DatabaseManagement = 'databaseManagement',
   CustomTutorials = 'customTutorials',
-  VectorSearchV2 = 'vectorSearchV2',
   AzureEntraId = 'azureEntraId',
   DevAzureEntraId = 'dev-azureEntraId',
   DevBrowser = 'dev-browser',
-  VectorSet = 'vectorSet',
   Array = 'array',
-  ProdMode = 'prodMode',
   DevLanguage = 'dev-language',
-  WhatsNew = 'whatsNew',
+  DevRdiUi = 'dev-rdiUi',
+  VectorSearchEnhancements = 'vectorSearchEnhancements',
   ValueDecoder = 'valueDecoder',
+  AppUpdateStrategySettings = 'appUpdateStrategySettings',
+  RedisTools = 'redisTools',
 }
 
 export interface IFeatureFlag {

@@ -1,8 +1,9 @@
+import { ParseKeys } from 'i18next'
 import { FeatureFlags } from 'uiSrc/constants'
 import { RootState } from 'uiSrc/slices/store'
 
 export type FilterKeyTypeOption = {
-  text: string
+  text: ParseKeys
   value: string
   color: string
   minVersion?: string

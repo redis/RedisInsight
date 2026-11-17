@@ -6,6 +6,7 @@ import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ISwitchType, ViewSwitchProps } from './ViewSwitch.types'
 import * as S from './ViewSwitch.styles'
@@ -15,20 +16,21 @@ const ViewSwitch = ({
   isTreeViewDisabled = false,
   onChange,
 }: ViewSwitchProps) => {
+  const { t } = useTranslation()
   const viewTypes: ISwitchType[] = [
     {
       type: KeyViewType.Browser,
-      tooltipText: 'List View',
-      ariaLabel: 'List view button',
+      tooltipText: t('browser.keysHeader.view.listTooltip'),
+      ariaLabel: t('browser.keysHeader.view.listAria'),
       dataTestId: 'view-type-browser-btn',
       getIconType: () => EqualIcon,
     },
     {
       type: KeyViewType.Tree,
       tooltipText: isTreeViewDisabled
-        ? 'Tree View is unavailable when the HEX key name format is selected.'
-        : 'Tree View',
-      ariaLabel: 'Tree view button',
+        ? t('browser.keysHeader.view.treeDisabledTooltip')
+        : t('browser.keysHeader.view.treeTooltip'),
+      ariaLabel: t('browser.keysHeader.view.treeAria'),
       dataTestId: 'view-type-list-btn',
       disabled: isTreeViewDisabled,
       getIconType: () => FoldersIcon,

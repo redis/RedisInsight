@@ -7,13 +7,7 @@ import { CommonProps } from 'uiSrc/components/base/theme/types'
 export type BodyProps = React.ComponentProps<typeof Typography.Body>
 
 export type EuiColorNames =
-  | 'default'
-  | 'subdued'
-  | 'danger'
-  | 'ghost'
-  | 'accent'
-  | 'warning'
-  | 'success'
+  'default' | 'subdued' | 'danger' | 'ghost' | 'accent' | 'warning' | 'success'
 
 export type ColorType = BodyProps['color'] | EuiColorNames | (string & {})
 export interface MapProps extends HTMLAttributes<HTMLElement> {

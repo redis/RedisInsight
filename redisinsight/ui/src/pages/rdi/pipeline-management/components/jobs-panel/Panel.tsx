@@ -36,6 +36,7 @@ import {
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { DryRunPanelContainer } from 'uiSrc/pages/rdi/pipeline-management/components/jobs-panel/styles'
 import { Button, TextButton } from '@redis-ui/components'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   job: string
@@ -55,6 +56,7 @@ const getTargetOption = (value: string) => {
 }
 
 const DryRunJobPanel = (props: Props) => {
+  const { t } = useTranslation()
   const { job, name, onClose } = props
   const { loading: isDryRunning, results } =
     useAppSelector(rdiDryRunJobSelector)
@@ -129,7 +131,11 @@ const DryRunJobPanel = (props: Props) => {
           createAxiosError({
             message: (
               <>
-                <Text>{`${upperFirst(name)} has an invalid structure.`}</Text>
+                <Text>
+                  {t('rdi.pipeline.invalidStructure', {
+                    name: upperFirst(name),
+                  })}
+                </Text>
                 <Text>{msg}</Text>
               </>
             ),
@@ -159,15 +165,15 @@ const DryRunJobPanel = (props: Props) => {
         <RiTooltip
           content={
             <Text>
-              Displays the results of the transformations you defined. The data
-              is presented in JSON format.
-              <br />
-              No data is written to the target database.
+              <Trans
+                i18nKey="rdi.pipeline.dryRun.transformationTooltip"
+                components={{ break: <br /> }}
+              />
             </Text>
           }
           data-testid="transformation-output-tooltip"
         >
-          <Text>Transformation output</Text>
+          <Text>{t('rdi.pipeline.dryRun.transformationOutput')}</Text>
         </RiTooltip>
       ),
       content: null,
@@ -178,15 +184,15 @@ const DryRunJobPanel = (props: Props) => {
         <RiTooltip
           content={
             <Text>
-              Displays the list of Redis commands that will be generated based
-              on your job details.
-              <br />
-              No data is written to the target database.
+              <Trans
+                i18nKey="rdi.pipeline.dryRun.jobOutputTooltip"
+                components={{ break: <br /> }}
+              />
             </Text>
           }
           data-testid="job-output-tooltip"
         >
-          <Text>Job output</Text>
+          <Text>{t('rdi.pipeline.dryRun.jobOutput')}</Text>
         </RiTooltip>
       ),
       content: null,
@@ -209,32 +215,32 @@ const DryRunJobPanel = (props: Props) => {
       <FlexItem>
         <Row align="center" justify="between">
           <Title size="L" color="primary">
-            Test transformation logic
+            {t('rdi.pipeline.dryRun.title')}
           </Title>
           <FlexItem>
             <Row gap="s">
               <IconButton
                 icon={isFullScreen ? ShrinkIcon : ExtendIcon}
-                aria-label="toggle fullscrenn dry run panel"
+                aria-label={t('rdi.pipeline.dryRun.fullscreenAria')}
                 onClick={handleFullScreen}
                 data-testid="fullScreen-dry-run-btn"
               />
               <IconButton
                 icon={CancelSlimIcon}
-                aria-label="close dry run panel"
+                aria-label={t('rdi.pipeline.dryRun.closeAria')}
                 onClick={onClose}
                 data-testid="close-dry-run-btn"
               />
             </Row>
           </FlexItem>
         </Row>
-        <Text>Add input data to test the transformation logic.</Text>
+        <Text>{t('rdi.pipeline.dryRun.inputHelp')}</Text>
       </FlexItem>
       {/* Input section */}
       <FlexItem>
         <Col gap="s">
           <Title size="S" color="primary">
-            Input
+            {t('rdi.pipeline.dryRun.inputTitle')}
           </Title>
           <MonacoJson
             value={input}
@@ -246,7 +252,9 @@ const DryRunJobPanel = (props: Props) => {
           <Row responsive justify="end">
             <FlexItem>
               <RiTooltip
-                content={isFormValid ? null : 'Input should have JSON format'}
+                content={
+                  isFormValid ? null : t('rdi.pipeline.dryRun.inputInvalid')
+                }
                 position="top"
               >
                 <TextButton
@@ -256,7 +264,7 @@ const DryRunJobPanel = (props: Props) => {
                   data-testid="dry-run-btn"
                 >
                   <Button.Icon icon={PlayFilledIcon} customSize="12" />
-                  Dry run
+                  {t('rdi.pipeline.dryRun.runButton')}
                 </TextButton>
               </RiTooltip>
             </FlexItem>

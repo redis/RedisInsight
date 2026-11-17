@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { map, pick } from 'lodash'
 
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -14,6 +14,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   ColumnDef,
   RowSelectionState,
@@ -48,11 +49,6 @@ interface IPopoverProps {
   isPopoverOpen: boolean
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found'
-const noResultsMessage =
-  'Your Redis Enterprise Cloud has no databases available'
-
 const RedisCloudDatabasesPage = ({
   columns,
   selection,
@@ -63,6 +59,12 @@ const RedisCloudDatabasesPage = ({
   onBack,
   onSubmit,
 }: Props) => {
+  const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
+  const loadingMsg = t('autodiscover.cloud.loading')
+  const notFoundMsg = t('autodiscover.cloud.notFound')
+  const noResultsMessage = t('autodiscover.cloud.databases.noResults')
+
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -125,14 +127,11 @@ const RedisCloudDatabasesPage = ({
           className="btn-cancel"
           data-testid="btn-cancel"
         >
-          Cancel
+          {t('autodiscover.cloud.cancel.button')}
         </SecondaryButton>
       }
     >
-      <Text size="m">
-        Your changes have not been saved.&#10;&#13; Do you want to proceed to
-        the list of databases?
-      </Text>
+      <Text size="m">{t('autodiscover.cloud.cancel.confirm')}</Text>
       <br />
       <div>
         <DestructiveButton
@@ -140,7 +139,7 @@ const RedisCloudDatabasesPage = ({
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
-          Proceed
+          {t('autodiscover.cloud.cancel.proceed')}
         </DestructiveButton>
       </div>
     </RiPopover>
@@ -165,7 +164,7 @@ const RedisCloudDatabasesPage = ({
         icon={isDisabled ? InfoIcon : undefined}
         data-testid="btn-add-databases"
       >
-        Add selected Databases
+        {t('autodiscover.cloud.databases.addSelected')}
       </PrimaryButton>
     </RiTooltip>
   )
@@ -174,14 +173,12 @@ const RedisCloudDatabasesPage = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Redis Cloud Databases"
+          title={t('autodiscover.cloud.databases.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
-          subTitle={`
-            These are ${items.length > 1 ? 'databases ' : 'database '}
-            in your Redis Cloud. Select the
-            ${items.length > 1 ? ' databases ' : ' database '} that you want to
-            add.`}
+          subTitle={t('autodiscover.cloud.databases.subtitle', {
+            count: items.length,
+          })}
         />
         <Spacer size="m" />
         <DatabaseWrapper>

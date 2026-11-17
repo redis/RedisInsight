@@ -8,6 +8,7 @@ import {
   isSchemaValid,
   areDecodersValid,
   normalizeRule,
+  toNumericOptions,
 } from './schemaUtils'
 import { BinaryFieldDefinition } from './types'
 
@@ -17,6 +18,32 @@ describe('schemaUtils validation', () => {
     name: 'flag',
     dataType: 'uint8',
     size: 1,
+  })
+
+  describe('toNumericOptions', () => {
+    it('labels unique names with type only', () => {
+      expect(
+        toNumericOptions([
+          { id: 'a', name: 'len', dataType: 'uint8' },
+          { id: 'b', name: 'count', dataType: 'uint16le' },
+        ]),
+      ).toEqual([
+        { value: 'a', label: 'len (uint8)' },
+        { value: 'b', label: 'count (uint16le)' },
+      ])
+    })
+
+    it('disambiguates duplicate names with id', () => {
+      expect(
+        toNumericOptions([
+          { id: 'a', name: 'len', dataType: 'uint8' },
+          { id: 'b', name: 'len', dataType: 'uint16le' },
+        ]),
+      ).toEqual([
+        { value: 'a', label: 'len (uint8) · a' },
+        { value: 'b', label: 'len (uint16le) · b' },
+      ])
+    })
   })
 
   describe('normalizeRule', () => {

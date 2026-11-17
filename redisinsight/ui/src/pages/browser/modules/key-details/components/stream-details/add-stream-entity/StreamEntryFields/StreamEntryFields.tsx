@@ -10,6 +10,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Text } from 'uiSrc/components/base/text'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { streamIDTooltipText } from 'uiSrc/constants/texts'
+import { useTranslation } from 'uiSrc/i18n'
 import { EntryIdContainer, FieldsWrapper } from '../AddStreamEntries.styles'
 import { InlineRow } from './StreamEntryFields.styles'
 import {
@@ -30,6 +31,7 @@ const MIN_ENTRY_ID_VALUE = '0-1'
 
 const StreamEntryFields = (props: Props) => {
   const { entryID, setEntryID, entryIdError, fields, setFields } = props
+  const { t } = useTranslation()
 
   const [isEntryIdFocused, setIsEntryIdFocused] = React.useState(false)
   const prevCountFields = useRef<number>(0)
@@ -124,14 +126,14 @@ const StreamEntryFields = (props: Props) => {
                 anchorClassName="inputAppendIcon"
                 className={styles.entryIdTooltip}
                 position="left"
-                title="Enter Valid ID or *"
+                title={t('browser.stream.entryFields.idTooltipTitle')}
                 content={streamIDTooltipText}
               >
                 <TimeStampInfoIcon />
               </RiTooltip>
               {!showEntryError && (
                 <Text component="span" size="XS" color="primary">
-                  Timestamp - Sequence Number or *
+                  {t('browser.stream.entryFields.idFormatHint')}
                 </Text>
               )}
               {showEntryError && (

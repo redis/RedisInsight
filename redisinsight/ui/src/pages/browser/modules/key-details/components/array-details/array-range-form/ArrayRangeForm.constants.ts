@@ -1,9 +1,11 @@
+import { ParseKeys } from 'i18next'
+
 export const ARRAY_RANGE_FORM_TEST_ID = 'array-range-form'
 
-export const RUN_BUTTON_LABEL = 'Run'
-export const RESET_TOOLTIP = 'Reset to defaults'
-export const INVALID_INDEX_MESSAGE =
-  'Index must be a valid 64-bit unsigned integer'
+export const RUN_BUTTON_LABEL: ParseKeys = 'browser.array.form.run'
+export const RESET_TOOLTIP: ParseKeys = 'browser.array.form.resetTooltip'
+export const INVALID_INDEX_MESSAGE: ParseKeys =
+  'browser.array.form.invalidIndex'
 
 /**
  * Mirror of the backend's `ARRAY_RANGE_MAX_ELEMENTS` cap used by
@@ -12,5 +14,5 @@ export const INVALID_INDEX_MESSAGE =
  * form already does without any precision-losing Number conversions.
  */
 export const ARRAY_RANGE_MAX_SPAN = 1_000_000n
-export const INVALID_RANGE_TOO_LARGE_MESSAGE =
-  'Range too large — request at most 1,000,000 indexes per query'
+export const INVALID_RANGE_TOO_LARGE_MESSAGE: ParseKeys =
+  'browser.array.range.tooLarge'

@@ -11,6 +11,7 @@ import {
 } from 'uiSrc/telemetry'
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
@@ -27,6 +28,7 @@ const FooterPanel = styled(FlexItem)`
 `
 
 const PubSubPage = () => {
+  const { t } = useTranslation()
   const { name: connectedInstanceName, db } = useAppSelector(
     connectedInstanceSelector,
   )
@@ -37,7 +39,7 @@ const PubSubPage = () => {
   const dispatch = useAppDispatch()
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Pub/Sub`)
+  setTitle(t('pubsub.pageTitle', { dbName }))
 
   useEffect(
     () => () => {

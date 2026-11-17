@@ -13,8 +13,6 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * because the confirm branch issues `FLUSHDB`, which would otherwise wipe
  * keys other tests rely on on the shared standalone Redis.
  */
-test.use({ featureFlags: { prodMode: true } });
-
 test.describe('Workbench > Command Execution — environment gating', () => {
   test.describe('Production DB', () => {
     let database: DatabaseInstance;

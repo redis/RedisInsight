@@ -1,14 +1,12 @@
-import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
+import { ParseKeys } from 'i18next'
+import { KEYBOARD_SHORTCUTS, Shortcut } from 'uiSrc/constants'
 import { BuildType } from 'uiSrc/constants/env'
 
-export interface Shortcut {
-  label?: string
-  description: string
-  keys: (string | JSX.Element)[]
-}
+export type { Shortcut }
 
 export interface ShortcutGroup {
   name: string
+  nameKey: ParseKeys
   items: Shortcut[]
   excludeFor?: BuildType[]
 }
@@ -18,6 +16,7 @@ export const separator = KEYBOARD_SHORTCUTS._separator
 export const SHORTCUTS: ShortcutGroup[] = [
   {
     name: 'Desktop application',
+    nameKey: 'shortcuts.group.desktop',
     excludeFor: [BuildType.RedisStack, BuildType.DockerOnPremise],
     items: [
       KEYBOARD_SHORTCUTS.desktop.newWindow,
@@ -26,6 +25,7 @@ export const SHORTCUTS: ShortcutGroup[] = [
   },
   {
     name: 'CLI',
+    nameKey: 'shortcuts.group.cli',
     items: [
       KEYBOARD_SHORTCUTS.cli.autocompleteNext,
       KEYBOARD_SHORTCUTS.cli.autocompletePrev,
@@ -36,6 +36,7 @@ export const SHORTCUTS: ShortcutGroup[] = [
   },
   {
     name: 'Workbench',
+    nameKey: 'shortcuts.group.workbench',
     items: [
       KEYBOARD_SHORTCUTS.workbench.runQuery,
       KEYBOARD_SHORTCUTS.workbench.nextLine,

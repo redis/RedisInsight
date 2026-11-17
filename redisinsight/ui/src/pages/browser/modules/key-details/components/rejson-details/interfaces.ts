@@ -14,10 +14,7 @@ export enum ObjectTypes {
 }
 export type JSONArrayValue = IJSONObject | JSONObjectValue
 export type IJSONValue =
-  | JSONScalarValue
-  | IJSONObject
-  | JSONObjectValue
-  | JSONArrayValue[]
+  JSONScalarValue | IJSONObject | JSONObjectValue | JSONArrayValue[]
 
 export interface IJSONDocument {
   key: string

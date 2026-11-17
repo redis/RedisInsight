@@ -11,8 +11,10 @@ import {
 
 import { Menu } from '@redis-ui/components'
 import DownloadFromServerModal from 'uiSrc/pages/rdi/pipeline-management/components/download-from-server-modal/DownloadFromServerModal'
+import { useTranslation } from 'uiSrc/i18n'
 
 const RdiConfigFileActionMenu = () => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   const closeMenu = () => setIsOpen(false)
@@ -34,7 +36,7 @@ const RdiConfigFileActionMenu = () => {
           onClose={closeMenu}
           trigger={
             <Menu.Content.Item
-              text="Download deployed pipeline"
+              text={t('rdi.instance.configMenu.downloadDeployed')}
               icon={DownloadIcon}
               onClick={(e) => e.preventDefault()}
               aria-labelledby="Upload pipeline button"
@@ -46,7 +48,7 @@ const RdiConfigFileActionMenu = () => {
           onClose={closeMenu}
           trigger={
             <Menu.Content.Item
-              text="Import pipeline from ZIP file"
+              text={t('rdi.instance.configMenu.importZip')}
               icon={UploadIcon}
               onClick={(e) => e.preventDefault()}
               aria-labelledby="Upload file button"
@@ -57,7 +59,7 @@ const RdiConfigFileActionMenu = () => {
         <Download
           trigger={
             <Menu.Content.Item
-              text="Save pipeline to ZIP file"
+              text={t('rdi.instance.configMenu.saveZip')}
               icon={SaveIcon}
               aria-labelledby="Download pipeline button"
               data-testid="download-pipeline-btn"

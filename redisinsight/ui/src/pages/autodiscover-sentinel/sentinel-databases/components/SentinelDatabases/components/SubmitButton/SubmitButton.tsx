@@ -2,7 +2,8 @@ import React from 'react'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components/base'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { type SubmitButtonProps } from './SubmitButton.types'
 
@@ -24,6 +25,8 @@ export const SubmitButton = ({
   onClick,
   isDisabled,
 }: SubmitButtonProps) => {
+  const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   let title: string | null = null
   let content: string | null = null
   const emptyAliases = selection.filter(({ alias }) => !alias)
@@ -35,7 +38,7 @@ export const SubmitButton = ({
 
   if (emptyAliases.length !== 0) {
     title = validationErrors.REQUIRED_TITLE(emptyAliases.length)
-    content = 'Database Alias'
+    content = t('autodiscover.sentinel.aliasRequiredContent')
   }
 
   return (
@@ -51,7 +54,7 @@ export const SubmitButton = ({
       }
       data-testid="btn-add-primary-group"
     >
-      Add Primary Group
+      {t('autodiscover.sentinel.button.addPrimaryGroup')}
     </PrimaryButton>
   )
 }

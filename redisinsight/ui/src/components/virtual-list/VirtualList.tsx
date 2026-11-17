@@ -83,23 +83,37 @@ const VirtualList = (props: Props) => {
     )
   }
 
-  return (
-    <AutoSizer disableHeight={!!dynamicHeight} onResize={() => forceRender({})}>
-      {({ width, height = 0 }) => (
-        <List
-          itemCount={items.length}
-          itemSize={getRowHeight}
-          ref={listRef}
-          className={styles.listContent}
-          outerRef={outerRef}
-          overscanCount={overscanCount}
-          height={height || listHeight}
-          width={width - PROTRUDING_OFFSET}
-        >
-          {Row}
-        </List>
-      )}
+  // AutoSizer types disableHeight as a literal, so the two modes cannot share a
+  // single element with a computed value. Both branches render the same list.
+  const renderList = ({
+    width,
+    height = 0,
+  }: {
+    width: number
+    height?: number
+  }) => (
+    <List
+      itemCount={items.length}
+      itemSize={getRowHeight}
+      ref={listRef}
+      className={styles.listContent}
+      outerRef={outerRef}
+      overscanCount={overscanCount}
+      height={height || listHeight}
+      width={width - PROTRUDING_OFFSET}
+    >
+      {Row}
+    </List>
+  )
+
+  const handleResize = () => forceRender({})
+
+  return dynamicHeight ? (
+    <AutoSizer disableHeight onResize={handleResize}>
+      {renderList}
     </AutoSizer>
+  ) : (
+    <AutoSizer onResize={handleResize}>{renderList}</AutoSizer>
   )
 }
 

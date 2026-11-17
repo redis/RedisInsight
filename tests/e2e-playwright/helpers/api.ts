@@ -1,6 +1,7 @@
 import { request, APIRequestContext } from '@playwright/test';
 import { AddDatabaseConfig, DatabaseInstance, IndexSchemaField } from 'e2eSrc/types';
 import { TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
+import { retry } from './retry';
 
 /**
  * API Helper for database operations
@@ -30,9 +31,51 @@ export class ApiHelper {
   }
 
   /**
-   * Create a database via API
+   * Create a database via API.
+   *
+   * Retried because creation makes the app open a Redis connection to validate the
+   * target, so a transient connection fault fails the whole call. The app reports
+   * such a fault as `404 Cannot POST /api/databases`, which is indistinguishable
+   * from a genuinely missing route, so the status cannot be used to decide whether
+   * retrying is worthwhile.
+   *
+   * This covers brief faults only. A sustained one needs its own cause found: the
+   * long stalls once seen in the Docker job came from the app being unable to
+   * resolve the hostnames the cluster advertises, fixed in the compose file rather
+   * than by waiting longer here.
    */
   async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
+    let attempts = 0;
+
+    return retry(
+      async () => {
+        attempts += 1;
+
+        // A create can succeed on the server and still fail the client, e.g. a
+        // reset connection while reading the response. Retrying blindly would add
+        // a second database, and duplicate names are allowed, so adopt the one a
+        // previous attempt left behind instead. Matched on the connection details
+        // too, so a same-named database pointing elsewhere is never adopted.
+        if (attempts > 1) {
+          const existing = (await this.getDatabases()).find(
+            (database) =>
+              database.name === config.name && database.host === config.host && database.port === config.port,
+          );
+          if (existing) return existing;
+        }
+
+        return this.postDatabase(config);
+      },
+      {
+        maxAttempts: 4,
+        delayMs: 2000,
+        backoffFactor: 2,
+        errorMessage: 'Gave up creating database',
+      },
+    );
+  }
+
+  private async postDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
     const ctx = await this.getContext();
     const response = await ctx.post('/api/databases', {
       data: {

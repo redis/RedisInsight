@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useRedisInstanceCompatibility } from '../../hooks'
 import { UpgradeRedisBanner } from '../../components/upgrade-redis-banner'
@@ -15,13 +15,14 @@ import * as S from './VectorSearchListPage.styles'
  */
 export const VectorSearchListPage = () => {
   const { hasSupportedVersion } = useRedisInstanceCompatibility()
+  const [search, setSearch] = useState('')
 
   return (
     <S.PageLayout data-testid="vector-search--list--page">
       {hasSupportedVersion === false && <UpgradeRedisBanner />}
 
-      <ListHeader />
-      <ListContent />
+      <ListHeader search={search} onSearchChange={setSearch} />
+      <ListContent search={search} />
     </S.PageLayout>
   )
 }

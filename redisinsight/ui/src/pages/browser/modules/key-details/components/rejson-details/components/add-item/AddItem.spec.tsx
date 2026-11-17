@@ -4,6 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
+import i18n from 'uiSrc/i18n'
 import AddItem, { Props } from './AddItem'
 import { JSONErrors } from '../../constants'
 
@@ -40,7 +41,7 @@ describe('AddItem', () => {
     fireEvent.click(screen.getByTestId('apply-btn'))
 
     expect(screen.getByTestId('edit-json-error')).toHaveTextContent(
-      JSONErrors.keyCorrectSyntax,
+      i18n.t(JSONErrors.keyCorrectSyntax),
     )
   })
 
@@ -55,7 +56,7 @@ describe('AddItem', () => {
     fireEvent.click(screen.getByTestId('apply-btn'))
 
     expect(screen.getByTestId('edit-json-error')).toHaveTextContent(
-      JSONErrors.valueJSONFormat,
+      i18n.t(JSONErrors.valueJSONFormat),
     )
   })
 

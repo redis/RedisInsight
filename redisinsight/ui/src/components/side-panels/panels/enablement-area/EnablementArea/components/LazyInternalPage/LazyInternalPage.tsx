@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { startCase } from 'lodash'
-import { useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 
@@ -20,7 +19,6 @@ import {
   setExplorePanelSearch,
   setExplorePanelScrollTop,
 } from 'uiSrc/slices/panels/sidePanels'
-import FormatSelector from 'uiSrc/services/formatter/FormatSelector'
 import InternalPage from '../InternalPage'
 import {
   getFileInfo,
@@ -62,7 +60,6 @@ const LazyInternalPage = ({
   manifestPath,
   search,
 }: Props) => {
-  const history = useHistory()
   const {
     itemScrollTop,
     data: contentContext,
@@ -122,7 +119,6 @@ const LazyInternalPage = ({
         throw new Error('Custom tutorials are disabled')
       }
 
-      const formatter = FormatSelector.selectFor(pageInfo.extension)
       let content = contentContext
 
       if (url !== path || !contentContext) {
@@ -134,11 +130,7 @@ const LazyInternalPage = ({
       }
 
       dispatch(setExplorePanelSearch(search))
-      const contentData = await formatter.format(
-        { data: content, path },
-        { history },
-      )
-      setPageData((prevState) => ({ ...prevState, content: contentData }))
+      setPageData((prevState) => ({ ...prevState, content: content ?? '' }))
       setLoading(false)
     } catch (error) {
       setLoading(false)

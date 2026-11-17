@@ -39,7 +39,10 @@ test.describe('Browser > Key Filtering Patterns', () => {
   test.afterAll(async ({ apiHelper }) => {
     // Clean up the test database
     if (database?.id) {
-      await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+      // Matched on this run's suffix rather than the shared key prefix: these
+      // specs share one Redis, so removing every prefixed key would delete keys
+      // the specs on other workers are still using.
+      await apiHelper.deleteKeysByPattern(database.id, `*${uniqueSuffix}`);
       await apiHelper.deleteDatabase(database.id);
     }
   });

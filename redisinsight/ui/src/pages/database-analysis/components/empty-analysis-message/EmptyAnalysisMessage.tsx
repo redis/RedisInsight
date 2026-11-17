@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Text } from 'uiSrc/components/base/text'
 
 import { Pages } from 'uiSrc/constants'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 
@@ -13,37 +14,39 @@ interface Props {
   name: EmptyMessage
 }
 
-const emptyMessageContent: { [key in EmptyMessage]: Content } = {
-  [EmptyMessage.Reports]: {
-    title: 'No Reports found',
-    text: () => 'Click "Analyze" to generate the first report.',
-  },
-  [EmptyMessage.Keys]: {
-    title: 'No keys to display',
-    text: (path) => (
-      <>
-        <Link
-          {...getRouterLinkProps(path)}
-          className={styles.summary}
-          data-test-subj="workbench-page-btn"
-        >
-          Use Workbench Guides and Tutorials
-        </Link>
-        {' to quickly load the data.'}
-      </>
-    ),
-  },
-  [EmptyMessage.Encrypt]: {
-    title: 'Encrypted data',
-    text: () =>
-      'Unable to decrypt. Check the system keychain or re-run the report generation.',
-  },
-}
-
 const EmptyAnalysisMessage = (props: Props) => {
   const { name } = props
 
+  const { t } = useTranslation()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
+
+  const emptyMessageContent: { [key in EmptyMessage]: Content } = {
+    [EmptyMessage.Reports]: {
+      title: t('analytics.databaseAnalysis.empty.reports.title'),
+      text: () => t('analytics.databaseAnalysis.empty.reports.text'),
+    },
+    [EmptyMessage.Keys]: {
+      title: t('analytics.databaseAnalysis.empty.keys.title'),
+      text: (path) => (
+        <Trans
+          i18nKey="analytics.databaseAnalysis.empty.keys.text"
+          components={{
+            workbenchLink: (
+              <Link
+                {...getRouterLinkProps(path)}
+                className={styles.summary}
+                data-test-subj="workbench-page-btn"
+              />
+            ),
+          }}
+        />
+      ),
+    },
+    [EmptyMessage.Encrypt]: {
+      title: t('analytics.databaseAnalysis.empty.encrypt.title'),
+      text: () => t('analytics.databaseAnalysis.empty.encrypt.text'),
+    },
+  }
 
   const { text, title } = emptyMessageContent[name]
 

@@ -94,7 +94,10 @@ npx playwright test                           # All projects
 
 Put a test in `tests/serial/` when it:
 - Shares database state across tests via `beforeAll`
-- Runs dangerous commands or mutates global app state
+- Runs dangerous commands or mutates global app state. Settings are global:
+  `scanThreshold`, `dateFormat`, `timezone` and `batchSize` are one shared resource,
+  so a spec that changes one and holds it across other work breaks every concurrent
+  test that reads it
 - Cannot tolerate concurrent execution with other tests
 - Would cause flakiness when run with other tests
 - Require special environment configuration
@@ -310,14 +313,35 @@ const config = ConfigFactory.build({ name: 'custom-name' });
 
 ### Cleanup Pattern
 
-Always prefix test data with `test-` for easy cleanup:
+Prefix test data with `test-` so leftovers are identifiable, but **never clean up by
+that prefix**. Specs share a Redis instance and different files run on different
+workers, so deleting every `test-*` key also removes keys the specs alongside it are
+still asserting on, and their rows disappear mid-test.
+
+Track what a test creates and delete only that:
 
 ```typescript
-// In apiHelper
-async deleteTestData(): Promise<number> {
-  return this.deleteByPattern(new RegExp(`^${TEST_PREFIX}`));
-}
+import { createKeyTracker } from 'e2eSrc/helpers';
+
+test.describe('Browser > Add Key', () => {
+  const keys = createKeyTracker();
+
+  test.afterEach(async ({ apiHelper }) => {
+    await keys.cleanup(apiHelper, database.id);
+  });
+
+  test('should add a Hash key', async ({ browserPage }) => {
+    const keyData = keys.track(HashKeyFactory.build());
+    // keys.add(name) records a name built without a factory, e.g. a rename target.
+  });
+});
 ```
+
+Miss a `track()` and the key is never deleted, which is harmless in CI (the test
+environment is recreated per run) but accumulates locally until the RTE restarts.
+
+Databases need no such care: each spec deletes its own in `afterAll`, and
+`browser.setup` clears leftover `test-` databases once before the run.
 
 ## Fixtures
 

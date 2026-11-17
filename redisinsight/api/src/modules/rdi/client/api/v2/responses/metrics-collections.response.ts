@@ -81,6 +81,5 @@ export interface CollectorMetricsResponse extends ComponentMetricsResponse {
 }
 
 export type GetMetricsCollectionResponse = (
-  | ProcessorMetricsResponse
-  | CollectorMetricsResponse
+  ProcessorMetricsResponse | CollectorMetricsResponse
 )[];

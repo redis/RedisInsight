@@ -8,8 +8,6 @@ const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `test-vs-save-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-save-${uniqueId}-idx`;
 
-test.use({ featureFlags: { vectorSearchV2: true } });
-
 /**
  * Vector Search > Save Query
  *

@@ -19,11 +19,13 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import type { SubscribeFormProps } from './SubscribeForm.types'
 import * as S from './SubscribeForm.styles'
 import SubscribeInformation from '../subscribe-information'
 
 const SubscribeForm = (props: SubscribeFormProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const { isSubscribed, subscriptions, loading, count } =
@@ -65,8 +67,8 @@ const SubscribeForm = (props: SubscribeFormProps) => {
           disabled={isSubscribed}
           onChange={(value) => setChannels(value)}
           onBlur={onFocusOut}
-          placeholder="Enter Pattern"
-          aria-label="channel names for filtering"
+          placeholder={t('pubsub.subscribe.patternPlaceholder')}
+          aria-label={t('pubsub.subscribe.channelsAriaLabel')}
           data-testid="channels-input"
         />
       </FormField>
@@ -81,14 +83,16 @@ const SubscribeForm = (props: SubscribeFormProps) => {
         onClick={toggleSubscribe}
         disabled={loading}
       >
-        {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
+        {isSubscribed
+          ? t('pubsub.subscribe.button.unsubscribe')
+          : t('pubsub.subscribe.button.subscribe')}
       </Button>
-      <RiTooltip content={!!count ? 'Clear Messages' : ''}>
+      <RiTooltip content={!!count ? t('pubsub.subscribe.clearTooltip') : ''}>
         <IconButton
           disabled={!count}
           icon={DeleteIcon}
           onClick={onClickClear}
-          aria-label="clear pub sub"
+          aria-label={t('pubsub.subscribe.clearAriaLabel')}
           data-testid="clear-pubsub-btn"
         />
       </RiTooltip>

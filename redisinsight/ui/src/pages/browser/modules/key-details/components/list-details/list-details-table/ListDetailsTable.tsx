@@ -34,12 +34,8 @@ import {
   KeyTypes,
   OVER_RENDER_BUFFER_COUNT,
   TableCellAlignment,
-  TEXT_INVALID_VALUE,
-  TEXT_DISABLED_FORMATTER_EDITING,
-  TEXT_UNPRINTABLE_CHARACTERS,
-  TEXT_DISABLED_COMPRESSED_VALUE,
-  TEXT_FAILED_CONVENT_FORMATTER,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+  getTextInvalidValue,
+  getTextUnprintableCharacters,
 } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -72,6 +68,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { SetListElementDto, SetListElementResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
@@ -89,6 +86,7 @@ const cellCache = new CellMeasurerCache({
 interface IListElement extends SetListElementResponse {}
 
 const ListDetailsTable = () => {
+  const { t } = useTranslation()
   const { loading } = useAppSelector(listSelector)
   const { loading: updateLoading } = useAppSelector(
     updateListValueStateSelector,
@@ -245,13 +243,13 @@ const ListDetailsTable = () => {
   const columns: ITableColumn[] = [
     {
       id: 'index',
-      label: 'Index',
+      label: t('browser.list.column.index'),
       minWidth: 120,
       relativeWidth: listSizes?.index || 30,
       truncateText: true,
       isSearchable: true,
       isResizable: true,
-      prependSearchName: 'Index:',
+      prependSearchName: t('browser.list.searchIndexPrefix'),
       initialSearchValue: '',
       searchValidation: validateListIndex,
       className: 'value-table-separate-border',
@@ -268,7 +266,7 @@ const ListDetailsTable = () => {
               data-testid={`list-index-value-${index}`}
             >
               <RiTooltip
-                title="Index"
+                title={t('browser.list.column.index')}
                 className={styles.tooltip}
                 anchorClassName="truncateText"
                 position="bottom"
@@ -283,7 +281,7 @@ const ListDetailsTable = () => {
     },
     {
       id: 'element',
-      label: 'Element',
+      label: t('browser.list.column.element'),
       minWidth: 150,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -316,10 +314,10 @@ const ListDetailsTable = () => {
           viewFormatProp,
         )
         const editTooltipContent = isCompressed
-          ? TEXT_DISABLED_COMPRESSED_VALUE
+          ? t('browser.keyDetails.compressedValueDisabled')
           : isTruncatedValue
-            ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
-            : TEXT_DISABLED_FORMATTER_EDITING
+            ? t('browser.keyDetails.truncatedActionDisabled')
+            : t('browser.keyDetails.formatterEditingDisabled')
         const serializedValue = isEditing
           ? bufferToSerializedFormat(viewFormat, elementItem, 4)
           : ''
@@ -331,10 +329,10 @@ const ListDetailsTable = () => {
             isDisabled={disabled}
             isEditing={isEditing}
             isEditDisabled={!isEditable || updateLoading}
-            disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+            disabledTooltipText={getTextUnprintableCharacters(t)}
             onDecline={() => handleEditElement(index, false)}
             onApply={(value) => handleApplyEditElement(index, value)}
-            approveText={TEXT_INVALID_VALUE}
+            approveText={getTextInvalidValue(t)}
             approveByValidation={(value) =>
               formattingBuffer(
                 stringToSerializedBufferFormat(viewFormat, value),
@@ -353,8 +351,10 @@ const ListDetailsTable = () => {
                 expanded={expanded}
                 title={
                   isValid
-                    ? 'Element'
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    ? t('browser.list.column.element')
+                    : t('browser.keyDetails.failedConvertFormatter', {
+                        format: viewFormatProp,
+                      })
                 }
                 tooltipContent={tooltipContent}
               />

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Button, DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Col, FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
 import { Title, Text } from 'uiSrc/components/base/text'
@@ -21,6 +22,8 @@ export const ClearSlowLogModal = ({
   onClose,
   onClear,
 }: ClearSlowLogModalProps) => {
+  const { t } = useTranslation()
+
   const handleClearClick = () => {
     onClear()
     onClose()
@@ -31,7 +34,9 @@ export const ClearSlowLogModal = ({
       isOpen={isOpen}
       onClose={onClose}
       data-testid="clear-slow-log-modal"
-      header={<Title size="XL">Clear slow log</Title>}
+      header={
+        <Title size="XL">{t('analytics.slowLog.clearModal.title')}</Title>
+      }
       footer={
         <Row justify="end" gap="m">
           <Button
@@ -40,7 +45,7 @@ export const ClearSlowLogModal = ({
             onClick={onClose}
             data-testid="reset-cancel-btn"
           >
-            Cancel
+            {t('analytics.slowLog.clearModal.button.cancel')}
           </Button>
           <DestructiveButton
             size="large"
@@ -48,7 +53,7 @@ export const ClearSlowLogModal = ({
             onClick={() => handleClearClick()}
             data-testid="reset-confirm-btn"
           >
-            Clear
+            {t('analytics.slowLog.clearModal.button.clear')}
           </DestructiveButton>
         </Row>
       }
@@ -57,10 +62,10 @@ export const ClearSlowLogModal = ({
       <FlexGroup direction="column" gap="l">
         <Col>
           <Text size="m" color="primary">
-            Slow Log will be cleared for&nbsp;{name}
+            {t('analytics.slowLog.clearModal.message', { name })}
           </Text>
           <Text size="m" color="secondary">
-            NOTE: This is server configuration
+            {t('analytics.slowLog.clearModal.note')}
           </Text>
         </Col>
       </FlexGroup>

@@ -1,12 +1,15 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
   createFreeDbJob,
   fetchPlans,
+  fetchProfile,
   fetchUserInfo,
+  oauthCloudMfaSelector,
   setJob,
+  setMfaProfileRestore,
   setOAuthCloudSource,
   setSocialDialogState,
   showOAuthProgress,
@@ -36,12 +39,15 @@ import {
 } from 'uiSrc/components/notifications/components'
 import { localStorageService } from 'uiSrc/services'
 import { CustomError, OAuthSocialAction } from 'uiSrc/slices/interfaces'
+import { OAuthMfaDialog } from 'uiSrc/components/oauth'
 
 const ConfigOAuth = () => {
   const { ssoFlow, isRecommendedSettings } = useAppSelector(cloudSelector)
+  const { isProfileRestore } = useAppSelector(oauthCloudMfaSelector)
 
   const ssoFlowRef = useRef(ssoFlow)
   const isRecommendedSettingsRef = useRef(isRecommendedSettings)
+  const isProfileRestoreRef = useRef(isProfileRestore)
   const isFlowInProgress = useRef(false)
 
   const history = useHistory()
@@ -62,6 +68,10 @@ const ConfigOAuth = () => {
   useEffect(() => {
     isRecommendedSettingsRef.current = isRecommendedSettings
   }, [isRecommendedSettings])
+
+  useEffect(() => {
+    isProfileRestoreRef.current = isProfileRestore
+  }, [isProfileRestore])
 
   const fetchUserInfoSuccess = (isSelectAccout: boolean) => {
     if (isSelectAccout) return
@@ -155,7 +165,23 @@ const ConfigOAuth = () => {
     }
   }
 
-  return null
+  const onMfaVerified = () => {
+    dispatch(addInfiniteNotification(INFINITE_MESSAGES.AUTHENTICATING()))
+    const isProfileRestoreVerified = isProfileRestoreRef.current
+    // the origin has been consumed; clear it so it can't leak into a later flow
+    dispatch(setMfaProfileRestore(false))
+    // a startup restore only needs its profile re-fetched; routing it through
+    // fetchUserInfo would open the interactive create/select-database flow
+    if (isProfileRestoreVerified) {
+      dispatch(
+        fetchProfile(closeInfinityNotification, closeInfinityNotification),
+      )
+      return
+    }
+    dispatch(fetchUserInfo(fetchUserInfoSuccess, closeInfinityNotification))
+  }
+
+  return <OAuthMfaDialog onVerified={onMfaVerified} />
 }
 
 export default ConfigOAuth

@@ -13,7 +13,8 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateRejsonRlWithExpireDto } from 'apiClient'
 
-import { AddJSONFormConfig as config } from '../constants/fields-config'
+import { useTranslation } from 'uiSrc/i18n'
+import { getAddJSONFormConfig } from '../constants/fields-config'
 
 export interface Props {
   keyName: string
@@ -23,6 +24,8 @@ export interface Props {
 
 const AddKeyReJSON = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
+  const { t } = useTranslation()
+  const config = getAddJSONFormConfig(t)
   const { loading } = useAppSelector(addKeyStateSelector)
   const [ReJSONValue, setReJSONValue] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
@@ -96,7 +99,7 @@ const AddKeyReJSON = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText={t('browser.addKey.button.submit')}
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-json-btn"

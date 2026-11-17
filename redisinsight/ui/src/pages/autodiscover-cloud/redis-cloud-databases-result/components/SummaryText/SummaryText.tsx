@@ -1,22 +1,36 @@
 import React from 'react'
 
 import { ColorText, Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import type { SummaryTextProps } from './SummaryText.types'
 
 export const SummaryText = ({
   countSuccessAdded,
   countFailAdded,
-}: SummaryTextProps) => (
-  <Text size="M">
-    <ColorText variant="semiBold">Summary: </ColorText>{' '}
-    {countSuccessAdded ? (
-      <span>
-        Successfully added {countSuccessAdded} database(s)
-        {countFailAdded ? '. ' : '.'}
-      </span>
-    ) : null}
-    {countFailAdded ? (
-      <span>Failed to add {countFailAdded} database(s).</span>
-    ) : null}
-  </Text>
-)
+}: SummaryTextProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <Text size="M">
+      <ColorText variant="semiBold">
+        {t('autodiscover.cloud.summary.prefix')}
+      </ColorText>{' '}
+      {countSuccessAdded ? (
+        <span>
+          {t('autodiscover.cloud.summary.databasesSuccess', {
+            count: countSuccessAdded,
+          })}
+          {countFailAdded ? '. ' : '.'}
+        </span>
+      ) : null}
+      {countFailAdded ? (
+        <span>
+          {t('autodiscover.cloud.summary.databasesFail', {
+            count: countFailAdded,
+          })}
+          .
+        </span>
+      ) : null}
+    </Text>
+  )
+}

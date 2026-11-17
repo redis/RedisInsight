@@ -21,9 +21,7 @@ export enum FeatureConfigFilterCondition {
 }
 
 export type FeatureConfigFilterType =
-  | FeatureConfigFilter
-  | FeatureConfigFilterOr
-  | FeatureConfigFilterAnd;
+  FeatureConfigFilter | FeatureConfigFilterOr | FeatureConfigFilterAnd;
 
 export class FeatureConfigFilter {
   @Expose()

@@ -27,7 +27,7 @@ import {
   resetCliSettings,
 } from 'uiSrc/slices/cli/cli-settings'
 import { setMonitorInitialState, showMonitor } from 'uiSrc/slices/cli/monitor'
-import { FeatureFlags, Pages } from 'uiSrc/constants'
+import { Pages } from 'uiSrc/constants'
 import {
   dbAnalysisSelector,
   setDatabaseAnalysisViewTab,
@@ -602,37 +602,7 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should skip vector search step and navigate to workbench on next when vectorSearchV2 is off', () => {
-      const pushMock = jest.fn()
-      reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
-
-      render(
-        <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_PROFILER}>
-          <span />
-        </OnboardingTour>,
-      )
-      fireEvent.click(screen.getByTestId('next-btn'))
-
-      expect(pushMock).toHaveBeenCalledWith(Pages.workbench(''))
-
-      const expectedActions = [
-        resetCliSettings(),
-        resetCliHelperSettings(),
-        setMonitorInitialState(),
-        setOnboardNextStep(),
-        setOnboardNextStep(),
-      ]
-      expect(clearStoreActions(store.getActions())).toEqual(
-        clearStoreActions(expectedActions),
-      )
-    })
-
-    it('should navigate to vector search on next when vectorSearchV2 is on', () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
-        databaseChat: { flag: false },
-        [FeatureFlags.vectorSearchV2]: { flag: true },
-      })
-
+    it('should navigate to vector search on next', () => {
       const pushMock = jest.fn()
       reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 
@@ -905,35 +875,7 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should skip vector search step and navigate to browser on back when vectorSearchV2 is off', () => {
-      const pushMock = jest.fn()
-      reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
-
-      render(
-        <OnboardingTour options={ONBOARDING_FEATURES.WORKBENCH_PAGE}>
-          <span />
-        </OnboardingTour>,
-      )
-      fireEvent.click(screen.getByTestId('back-btn'))
-
-      expect(pushMock).toHaveBeenCalledWith(Pages.browser(''))
-
-      const expectedActions = [
-        setOnboardPrevStep(),
-        showMonitor(),
-        setOnboardPrevStep(),
-      ]
-      expect(clearStoreActions(store.getActions().slice(-3))).toEqual(
-        clearStoreActions(expectedActions),
-      )
-    })
-
-    it('should navigate to vector search on back when vectorSearchV2 is on', () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
-        databaseChat: { flag: false },
-        [FeatureFlags.vectorSearchV2]: { flag: true },
-      })
-
+    it('should navigate to vector search on back', () => {
       const pushMock = jest.fn()
       reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 

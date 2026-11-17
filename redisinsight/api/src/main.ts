@@ -95,12 +95,13 @@ export default async function bootstrap(apiPort?: number): Promise<IApp> {
         },
       },
     );
+
+    app.useWebSocketAdapter(new SessionMetadataAdapter(app));
   } else {
     app.setGlobalPrefix(serverConfig.globalPrefix);
+    // Must be the only web socket adapter here or the window-id auth gate is lost.
     app.useWebSocketAdapter(new WindowsAuthAdapter(app));
   }
-
-  app.useWebSocketAdapter(new SessionMetadataAdapter(app));
 
   const logFileProvider = app.get(LogFileProvider);
 

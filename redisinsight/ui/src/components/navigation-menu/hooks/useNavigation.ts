@@ -1,4 +1,5 @@
 import { useHistory, useLocation } from 'react-router-dom'
+import { useTranslation } from 'uiSrc/i18n'
 import { last } from 'lodash'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
@@ -6,12 +7,13 @@ import { useEffect, useState } from 'react'
 import { Props as HighlightedFeatureProps } from 'uiSrc/components/hightlighted-feature/HighlightedFeature'
 import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-routes'
 import {
-  appFeatureFlagsFeaturesSelector,
   appFeaturePagesHighlightingSelector,
+  isDevRdiUiEnabledSelector,
   removeFeatureFromHighlighting,
 } from 'uiSrc/slices/app/features'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { connectedInstanceSelector as connectedRdiInstanceSelector } from 'uiSrc/slices/rdi/instances'
+import { shouldUseRdiUiPipeline } from 'uiSrc/utils/rdi'
 
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BUILD_FEATURES } from 'uiSrc/constants/featuresHighlighting'
@@ -33,6 +35,7 @@ import { INavigations } from '../navigation.types'
 const pubSubPath = `/${PageNames.pubSub}`
 
 export function useNavigation() {
+  const { t } = useTranslation()
   const history = useHistory()
   const location = useLocation()
   const dispatch = useAppDispatch()
@@ -44,13 +47,10 @@ export function useNavigation() {
   const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { id: connectedRdiInstanceId = '' } = useAppSelector(
-    connectedRdiInstanceSelector,
-  )
+  const { id: connectedRdiInstanceId = '', version: connectedRdiVersion = '' } =
+    useAppSelector(connectedRdiInstanceSelector)
+  const isDevRdiUiEnabled = useAppSelector(isDevRdiUiEnabledSelector)
   const highlightedPages = useAppSelector(appFeaturePagesHighlightingSelector)
-  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useAppSelector(
-    appFeatureFlagsFeaturesSelector,
-  )
 
   const isRdiWorkspace = workspace === AppWorkspace.RDI
 
@@ -89,20 +89,20 @@ export function useNavigation() {
 
   const privateRoutes: INavigations[] = [
     {
-      tooltipText: 'Browse',
+      tooltipText: t('navigation.page.browser.tooltip'),
       pageName: PageNames.browser,
       isActivePage: activePage === `/${PageNames.browser}`,
-      ariaLabel: 'Browser page button',
+      ariaLabel: t('navigation.page.browser.ariaLabel'),
       onClick: () => handleGoPage(Pages.browser(connectedInstanceId)),
       dataTestId: 'browser-page-btn',
       connectedInstanceId,
       iconType: BrowserIcon,
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
     },
-    vectorSearchFeature?.flag && {
-      tooltipText: 'Search',
+    {
+      tooltipText: t('navigation.page.search.tooltip'),
       pageName: PageNames.vectorSearch,
-      ariaLabel: 'Search',
+      ariaLabel: t('navigation.page.search.ariaLabel'),
       onClick: () => handleGoPage(Pages.vectorSearch(connectedInstanceId)),
       dataTestId: 'vector-search-page-btn',
       connectedInstanceId,
@@ -111,9 +111,9 @@ export function useNavigation() {
       onboard: ONBOARDING_FEATURES.VECTOR_SEARCH_PAGE,
     },
     {
-      tooltipText: 'Workbench',
+      tooltipText: t('navigation.page.workbench.tooltip'),
       pageName: PageNames.workbench,
-      ariaLabel: 'Workbench page button',
+      ariaLabel: t('navigation.page.workbench.ariaLabel'),
       onClick: () => handleGoPage(Pages.workbench(connectedInstanceId)),
       dataTestId: 'workbench-page-btn',
       connectedInstanceId,
@@ -122,9 +122,9 @@ export function useNavigation() {
       onboard: ONBOARDING_FEATURES.WORKBENCH_PAGE,
     },
     {
-      tooltipText: 'Analyze',
+      tooltipText: t('navigation.page.analyze.tooltip'),
       pageName: PageNames.analytics,
-      ariaLabel: 'Analyze page button',
+      ariaLabel: t('navigation.page.analyze.ariaLabel'),
       onClick: () => handleGoPage(Pages.analytics(connectedInstanceId)),
       dataTestId: 'analytics-page-btn',
       connectedInstanceId,
@@ -133,9 +133,9 @@ export function useNavigation() {
       featureFlag: FeatureFlags.envDependent,
     },
     {
-      tooltipText: 'Pub/Sub',
+      tooltipText: t('navigation.page.pubSub.tooltip'),
       pageName: PageNames.pubSub,
-      ariaLabel: 'Pub/Sub page button',
+      ariaLabel: t('navigation.page.pubSub.ariaLabel'),
       onClick: () => handleGoPage(Pages.pubSub(connectedInstanceId)),
       dataTestId: 'pub-sub-page-btn',
       connectedInstanceId,
@@ -146,21 +146,28 @@ export function useNavigation() {
     },
   ].filter((tab) => !!tab) as INavigations[]
 
+  const pipelineManagementPage = shouldUseRdiUiPipeline(
+    connectedRdiVersion,
+    isDevRdiUiEnabled,
+  )
+    ? Pages.rdiPipelineManagementV2(connectedRdiInstanceId)
+    : Pages.rdiPipelineManagement(connectedRdiInstanceId)
+
   const privateRdiRoutes: INavigations[] = [
     {
-      tooltipText: 'Pipeline',
+      tooltipText: t('navigation.page.pipeline.tooltip'),
       pageName: PageNames.rdiPipelineManagement,
-      ariaLabel: 'Pipeline Management page button',
+      ariaLabel: t('navigation.page.pipeline.ariaLabel'),
       onClick: () =>
-        handleGoPage(Pages.rdiPipelineManagement(connectedRdiInstanceId)),
+        connectedRdiInstanceId && handleGoPage(pipelineManagementPage),
       dataTestId: 'pipeline-management-page-btn',
       isActivePage: isPipelineManagementPath(),
       iconType: PipelineManagementIcon,
     },
     {
-      tooltipText: 'Analytics',
+      tooltipText: t('navigation.page.statistics.tooltip'),
       pageName: PageNames.rdiStatistics,
-      ariaLabel: 'Pipeline Status page button',
+      ariaLabel: t('navigation.page.statistics.ariaLabel'),
       onClick: () => handleGoPage(Pages.rdiStatistics(connectedRdiInstanceId)),
       dataTestId: 'pipeline-status-page-btn',
       isActivePage: activePage === `/${PageNames.rdiStatistics}`,
@@ -170,9 +177,9 @@ export function useNavigation() {
 
   const publicRoutes: INavigations[] = [
     {
-      tooltipText: 'Settings',
+      tooltipText: t('navigation.page.settings.tooltip'),
       pageName: PageNames.settings,
-      ariaLabel: 'Settings page button',
+      ariaLabel: t('navigation.page.settings.ariaLabel'),
       onClick: () => handleGoPage(Pages.settings),
       dataTestId: 'settings-page-btn',
       isActivePage: activePage === Pages.settings,

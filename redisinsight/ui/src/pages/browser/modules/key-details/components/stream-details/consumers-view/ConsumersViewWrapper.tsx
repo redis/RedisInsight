@@ -11,11 +11,7 @@ import {
 } from 'uiSrc/slices/browser/stream'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import {
-  TableCellAlignment,
-  TableCellTextAlignment,
-  TEXT_CONSUMER_GROUP_NAME_TOO_LONG,
-} from 'uiSrc/constants'
+import { TableCellAlignment, TableCellTextAlignment } from 'uiSrc/constants'
 import { StreamViewType } from 'uiSrc/slices/interfaces/stream'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import {
@@ -27,6 +23,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { Trans, useTranslation, escapeTrans } from 'uiSrc/i18n'
 import { ConsumerDto } from 'apiClient'
 import ConsumersView from './ConsumersView'
 
@@ -38,6 +35,7 @@ const actionsWidth = 50
 export interface Props {}
 
 const ConsumersViewWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: '',
   }
@@ -115,7 +113,7 @@ const ConsumersViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Consumer Name',
+      label: t('browser.stream.consumers.nameColumn'),
       minWidth: 200,
       truncateText: true,
       isSortable: true,
@@ -148,7 +146,7 @@ const ConsumersViewWrapper = (props: Props) => {
     },
     {
       id: 'pending',
-      label: 'Pending',
+      label: t('browser.stream.consumers.pendingColumn'),
       minWidth: 106,
       maxWidth: 106,
       absoluteWidth: 106,
@@ -160,7 +158,7 @@ const ConsumersViewWrapper = (props: Props) => {
     },
     {
       id: 'idle',
-      label: 'Idle Time, msec',
+      label: t('browser.stream.consumers.idleColumn'),
       minWidth: 140,
       maxWidth: 140,
       absoluteWidth: 140,
@@ -188,10 +186,11 @@ const ConsumersViewWrapper = (props: Props) => {
             <PopoverDelete
               header={viewName}
               text={
-                <>
-                  will be removed from Consumer Group{' '}
-                  <b>{selectedGroupNameString}</b>
-                </>
+                <Trans
+                  i18nKey="browser.stream.consumers.deleteMessage"
+                  values={{ group: escapeTrans(selectedGroupNameString) }}
+                  components={{ bold: <b /> }}
+                />
               }
               item={viewName}
               suffix={suffix}
@@ -218,7 +217,9 @@ const ConsumersViewWrapper = (props: Props) => {
         onSelectConsumer={handleSelectConsumer}
         {...props}
         noItemsMessageString={
-          isTruncatedGroupName ? TEXT_CONSUMER_GROUP_NAME_TOO_LONG : undefined
+          isTruncatedGroupName
+            ? t('browser.stream.groups.nameTooLong')
+            : undefined
         }
       />
     </>

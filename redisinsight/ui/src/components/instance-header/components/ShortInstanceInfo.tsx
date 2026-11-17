@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { capitalize } from 'lodash'
 
 import {
@@ -38,6 +39,7 @@ export interface Props {
   modules: AdditionalRedisModule[]
 }
 const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
+  const { t } = useTranslation()
   const { name, host, port, connectionType, version, user } = info
   const { theme } = useContext(ThemeContext)
 
@@ -65,14 +67,17 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
         {databases > 1 && (
           <DbIndexInfoWrapper align="center" gap="l">
             <Col>
-              <RiImage src={MessageInfoSvg} alt="Database Info" $size="xs" />
+              <RiImage
+                src={MessageInfoSvg}
+                alt={t('instanceHeader.databaseInfo')}
+                $size="xs"
+              />
             </Col>
             <Col gap="xs">
-              <Text size="m">Logical databases</Text>
+              <Text size="m">{t('instanceHeader.logicalDatabases')}</Text>
               <Text color="secondary" size="s">
                 <WordBreakWrapper>
-                  Select logical databases to work with in Browser, Workbench,
-                  and Database Analysis.
+                  {t('instanceHeader.logicalDatabasesDescription')}
                 </WordBreakWrapper>
               </Text>
             </Col>
@@ -93,7 +98,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
           </Row>
           <Row align="center" grow={false}>
             <RiIcon type="UserIcon" size="S" />
-            <span>{user || 'Default'}</span>
+            <span>{user || t('instanceHeader.defaultUser')}</span>
           </Row>
         </Row>
       </Col>
@@ -101,7 +106,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
         <>
           <SeparatorLine />
           <Text color="primary" size="L" component="div" variant="semiBold">
-            Database modules
+            {t('instanceHeader.databaseModules')}
           </Text>
           <Col gap="s">
             {modules?.map(

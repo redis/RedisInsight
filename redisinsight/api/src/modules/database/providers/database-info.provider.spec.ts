@@ -370,7 +370,7 @@ describe('DatabaseInfoProvider', () => {
       );
       expect(result).toEqual([{ name: AdditionalRedisModuleName.RediSearch }]);
     });
-    it('should return empty array if MODULE LIST and COMMAND command not allowed', async () => {
+    it('should return empty array if MODULE LIST, COMMAND INFO, and HELLO find no modules', async () => {
       when(standaloneClient.call)
         .calledWith(['module', 'list'], expect.anything())
         .mockRejectedValue(mockUnknownCommandModule);
@@ -380,10 +380,57 @@ describe('DatabaseInfoProvider', () => {
           expect.anything(),
         )
         .mockRejectedValue(mockUnknownCommandModule);
+      when(standaloneClient.call)
+        .calledWith(['hello'], expect.anything())
+        .mockRejectedValue(mockUnknownCommandModule);
 
       const result = await service.determineDatabaseModules(standaloneClient);
 
       expect(result).toEqual([]);
+    });
+    it('should detect modules from HELLO when MODULE LIST and COMMAND INFO are not allowed', async () => {
+      when(standaloneClient.call)
+        .calledWith(['module', 'list'], expect.anything())
+        .mockRejectedValue(mockUnknownCommandModule);
+      when(standaloneClient.call)
+        .calledWith(
+          expect.arrayContaining(['command', 'info']),
+          expect.anything(),
+        )
+        .mockRejectedValue(mockUnknownCommandModule);
+      when(standaloneClient.call)
+        .calledWith(['hello'], expect.anything())
+        .mockResolvedValue([
+          'server',
+          'redis',
+          'version',
+          '7.4.0',
+          'modules',
+          [
+            ['name', 'timeseries', 'ver', 11000],
+            ['name', 'search', 'ver', 21000],
+          ],
+        ]);
+
+      const result = await service.determineDatabaseModules(standaloneClient);
+
+      expect(standaloneClient.call).toHaveBeenCalledWith(
+        ['hello'],
+        expect.anything(),
+      );
+      expect(standaloneClient.getInfo).not.toHaveBeenCalled();
+      expect(result).toEqual([
+        {
+          name: AdditionalRedisModuleName.RedisTimeSeries,
+          version: 11000,
+          semanticVersion: '1.10.0',
+        },
+        {
+          name: AdditionalRedisModuleName.RediSearch,
+          version: 21000,
+          semanticVersion: '2.10.0',
+        },
+      ]);
     });
   });
 

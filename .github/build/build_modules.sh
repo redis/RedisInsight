@@ -27,10 +27,11 @@ npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install --production
+npm ci --prefix ./redisinsight/api --omit=dev
 
-cp redisinsight/api/.yarnclean.prod redisinsight/api/.yarnclean
-yarn --cwd ./redisinsight/api autoclean --force
+# NOTE: `yarn autoclean` has no npm equivalent, so pruning docs/tests/etc. from
+# node_modules was dropped in the yarn->npm migration. This makes release
+# artifacts larger; revisit with node-prune or a find-based clean if size regresses.
 
 rm -rf redisinsight/build.zip
 
@@ -53,8 +54,8 @@ npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install
-yarn --cwd ./redisinsight/api minify:prod
+npm ci --prefix ./redisinsight/api
+npm run minify:prod --prefix ./redisinsight/api
 
 
 PACKAGE_JSON_PATH="./redisinsight/api/package.json"
@@ -78,8 +79,7 @@ npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install --production
-yarn --cwd ./redisinsight/api autoclean --force
+npm install --prefix ./redisinsight/api --omit=dev
 
 # Compress minified build
 cd redisinsight && tar -czf build-mini.tar.gz \
@@ -93,6 +93,6 @@ LICENSE \
 mkdir -p release/web-mini
 cp redisinsight/build-mini.tar.gz release/web-mini/"$FILENAME"
 
-# Restore the original package.json and yarn.lock
-git restore redisinsight/api/yarn.lock redisinsight/api/package.json
+# Restore the original package.json and package-lock.json
+git restore redisinsight/api/package-lock.json redisinsight/api/package.json
 

@@ -16,6 +16,7 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { ManualFormTab } from '../constants'
@@ -32,6 +33,7 @@ export interface Props {
 }
 
 const EditSentinelConnection = (props: Props) => {
+  const { t } = useTranslation()
   const {
     activeTab,
     isCloneMode,
@@ -48,7 +50,7 @@ const EditSentinelConnection = (props: Props) => {
       <PrimaryGroupSentinel formik={formik} />
       <Divider />
       <Title color="primary" size="M">
-        Database
+        {t('home.form.manual.editSentinel.title.database')}
       </Title>
       <SentinelMasterDatabase
         formik={formik}
@@ -57,7 +59,7 @@ const EditSentinelConnection = (props: Props) => {
       />
       <Divider />
       <Title color="primary" size="M">
-        Sentinel
+        {t('home.form.manual.editSentinel.title.sentinel')}
       </Title>
       <DatabaseForm
         formik={formik}
@@ -73,12 +75,17 @@ const EditSentinelConnection = (props: Props) => {
     <Col gap="l">
       <Row gap="m">
         <FlexItem grow>
-          <FormField label="Database Alias" required>
+          <FormField
+            label={t('home.form.manual.editSentinel.field.databaseAlias')}
+            required
+          >
             <TextInput
               name="name"
               id="name"
               data-testid="name"
-              placeholder="Enter Database Alias"
+              placeholder={t(
+                'home.form.manual.editSentinel.placeholder.databaseAlias',
+              )}
               onFocus={selectOnFocus}
               value={formik.values.name ?? ''}
               maxLength={500}
@@ -89,7 +96,7 @@ const EditSentinelConnection = (props: Props) => {
       </Row>
       <Divider />
       <Title color="primary" size="M">
-        Database
+        {t('home.form.manual.editSentinel.title.database')}
       </Title>
       <SentinelMasterDatabase
         formik={formik}
@@ -98,7 +105,7 @@ const EditSentinelConnection = (props: Props) => {
       />
       <Divider />
       <Title color="primary" size="M">
-        Sentinel
+        {t('home.form.manual.editSentinel.title.sentinel')}
       </Title>
       <DatabaseForm
         formik={formik}

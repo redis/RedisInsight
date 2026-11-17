@@ -19,7 +19,7 @@ if (process.env.SKIP_API_CLIENT_GEN === '1') {
 }
 
 const apiDir = path.resolve(__dirname, '..', 'redisinsight', 'api');
-const result = spawnSync('yarn', ['--cwd', apiDir, 'generate:api-client'], {
+const result = spawnSync('npm', ['run', 'generate:api-client', '--prefix', apiDir], {
   stdio: 'inherit',
   shell: process.platform === 'win32',
 });

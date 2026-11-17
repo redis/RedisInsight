@@ -19,6 +19,8 @@ export class KeyList {
   readonly listViewButton: Locator;
   readonly treeViewButton: Locator;
   readonly columnsButton: Locator;
+  readonly showKeySizeToggle: Locator;
+  readonly showTtlToggle: Locator;
   /** Keys browser panel refresh (distinct from instance header refresh) */
   readonly refreshButton: Locator;
   readonly keysAutoRefreshConfigButton: Locator;
@@ -67,6 +69,8 @@ export class KeyList {
     this.listViewButton = page.getByTestId('view-type-browser-btn');
     this.treeViewButton = page.getByTestId('view-type-list-btn');
     this.columnsButton = page.getByTestId('btn-columns-actions');
+    this.showKeySizeToggle = page.getByTestId('show-key-size');
+    this.showTtlToggle = page.getByTestId('show-ttl');
     this.refreshButton = page.getByTestId('keys-refresh-btn');
     this.keysAutoRefreshConfigButton = page.getByTestId('keys-auto-refresh-config-btn');
     this.keysAutoRefreshSwitch = page.getByTestId('keys-auto-refresh-switch');
@@ -108,10 +112,37 @@ export class KeyList {
    */
   async searchKeys(pattern: string): Promise<void> {
     await this.searchInput.fill(pattern);
+    // A fill that races a re-render silently leaves the previous pattern behind,
+    // and the waits below cannot detect it: the reset button only proves some
+    // filter is applied, and "Results:" is already on screen in the default tree
+    // view, so both pass against the results of the previous search.
+    await expect(this.searchInput).toHaveValue(pattern);
+
+    // Settle on the scan for this pattern rather than on text that is already
+    // rendered. Matched on the request body so a concurrent scan - an auto-refresh
+    // or the initial load still in flight - cannot satisfy the wait. Clicking with
+    // an unchanged pattern issues no request, so a miss here is not a failure;
+    // keep the wait short so it cannot eat the test's budget either way.
+    const scan = this.page
+      .waitForResponse(
+        (response) => {
+          if (!/\/api\/databases\/[^/]+\/keys/.test(response.url())) return false;
+          const request = response.request();
+          if (request.method() !== 'POST') return false;
+          try {
+            return request.postDataJSON()?.match === pattern;
+          } catch {
+            return false;
+          }
+        },
+        { timeout: 5000 },
+      )
+      .catch(() => undefined);
+
     await this.searchButton.click();
-    // Search can end with either "Results:" or an empty-state message; reset button confirms filter applied.
+    await scan;
+
     await expect(this.resetFilterButton).toBeVisible();
-    await expect(this.resultsCount.or(this.emptyDatabasePanel).first()).toBeVisible();
   }
 
   /**
@@ -173,12 +204,33 @@ export class KeyList {
   }
 
   /**
+   * Tree node of a key (only rendered in tree view)
+   */
+  getTreeNode(keyName: string): Locator {
+    return this.page.getByTestId(/^node-item_/).filter({ hasText: keyName });
+  }
+
+  /**
+   * Size cell of a key row, loaded or still loading (only rendered while the Key size column is shown)
+   */
+  getKeySizeCell(keyName: string): Locator {
+    const escaped = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.page.getByTestId(new RegExp(`^size(-|-loading_)${escaped}$`));
+  }
+
+  /**
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
     const keyEl = this.getKeyRow(keyName);
-    const isListRowVisible = await keyEl.isVisible();
-    if (isListRowVisible) {
+    // isVisible() does not auto-wait, so a row still rendering reads as absent
+    // and gets mis-routed to the tree path. Wait for it first; a genuine miss
+    // (tree view with a collapsed folder) falls through to selectKeyInTree.
+    const isRowVisible = await keyEl
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (isRowVisible) {
       await keyEl.click();
       return;
     }

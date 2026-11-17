@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DurationUnits } from 'uiSrc/constants'
 import { slowLogSelector } from 'uiSrc/slices/analytics/slowlog'
@@ -36,6 +37,7 @@ const Actions = (props: Props) => {
     onClear = () => {},
     onRefresh,
   } = props
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
   const { name = '' } = useAppSelector(connectedInstanceSelector)
   const { loading, lastRefreshTime } = useAppSelector(slowLogSelector)
@@ -114,11 +116,11 @@ const Actions = (props: Props) => {
             <PrimaryButton
               size="small"
               icon={SettingsIcon}
-              aria-label="Configure"
+              aria-label={t('analytics.slowLog.actions.configure')}
               onClick={() => showConfigPopover()}
               data-testid="configure-btn"
             >
-              Configure
+              {t('analytics.slowLog.actions.configure')}
             </PrimaryButton>
           }
         >
@@ -133,7 +135,7 @@ const Actions = (props: Props) => {
         <>
           <IconButton
             icon={EraserIcon}
-            aria-label="Clear Slow Log"
+            aria-label={t('analytics.slowLog.actions.clear')}
             onClick={() => showClearModal()}
             data-testid="clear-btn"
           />
@@ -149,18 +151,26 @@ const Actions = (props: Props) => {
 
       <FlexItem>
         <RiTooltip
-          title="Slow Log"
+          title={t('analytics.slowLog.actions.tooltip.title')}
           position="bottom"
           content={
             <span data-testid="slowlog-tooltip-text">
-              Slow Log is a list of slow operations for your Redis instance.
-              These can be used to troubleshoot performance issues.
-              <Spacer size="xs" />
-              Each entry in the list displays the command, duration and
-              timestamp. Any transaction that exceeds{' '}
-              <b>slowlog-log-slower-than</b> {durationUnit} are recorded up to a
-              maximum of <b>slowlog-max-len</b> after which older entries are
-              discarded.
+              <Trans
+                i18nKey="analytics.slowLog.actions.tooltip.body"
+                values={{
+                  unit: durationUnit
+                    ? t(
+                        durationUnit === DurationUnits.milliSeconds
+                          ? 'analytics.units.milliseconds'
+                          : 'analytics.units.microseconds',
+                      )
+                    : '',
+                }}
+                components={{
+                  spacer: <Spacer size="xs" />,
+                  bold: <b />,
+                }}
+              />
             </span>
           }
         >

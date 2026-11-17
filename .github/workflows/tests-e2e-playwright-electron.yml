@@ -29,8 +29,10 @@ jobs:
       E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
       E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
       E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
-      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
-      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      # Not a secret: dependabot[bot] runs cannot read Actions secrets, and this
+      # only encrypts credentials for this job's throwaway Redis containers.
+      E2E_RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
+      RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
       # Environment variables needed for Electron/AppImage on Linux (from repository variables)
       DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS || 'unix:path=/dev/null' }}
@@ -39,8 +41,11 @@ jobs:
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
+    outputs:
+      digest: ${{ steps.summarize.outputs.digest }}
+
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Enable SSH Debug
         if: ${{ inputs.debug }}
@@ -114,10 +119,13 @@ jobs:
           mkdir -p tests/e2e/remote
           mkdir -p tests/e2e/rdi
 
-      - name: Ensure host.docker.internal resolves on the host
+      - name: Ensure cluster addresses resolve on the host
         run: |
           if ! grep -q host.docker.internal /etc/hosts; then
             echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+          if ! grep -q master-hostname-7-1 /etc/hosts; then
+            echo "127.0.0.1 master-hostname-7-1 master-hostname-7-2 master-hostname-7-3" | sudo tee -a /etc/hosts
           fi
 
       - name: Start Redis test environment
@@ -147,10 +155,32 @@ jobs:
           # Electron uses HTTPS (with TLS certificates)
           RI_ELECTRON_API_URL: 'https://localhost:5530'
           RI_SOCKETS_CORS: 'true'
-          RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+          RI_ENCRYPTION_KEY: 'e2e-tests-encryption-key'
           RI_ENCRYPTION_KEYTAR: 'false'
           # Disable TLS certificate validation for self-signed certs (like old tests do)
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Summarize Playwright results
+        id: summarize
+        if: always()
+        working-directory: ${{ env.E2E_DIR }}
+        run: |
+          node scripts/summarize-results.mjs \
+            --json test-results/agent-digest.json \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'digest<<E2E_DIGEST_EOF'
+            cat test-results/agent-digest.json
+            echo 'E2E_DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload agent digest
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-digest-electron-linux
+          path: ${{ env.E2E_DIR }}/test-results/agent-digest.json
+          retention-days: 14
 
       - name: Upload test results
         if: always()

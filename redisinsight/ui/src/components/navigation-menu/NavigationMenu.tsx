@@ -3,6 +3,7 @@ import React from 'react'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { FeatureFlagComponent } from 'uiSrc/components'
 
@@ -26,6 +27,7 @@ import HighlightedFeature from '../hightlighted-feature/HighlightedFeature'
 import styles from './styles.module.scss'
 
 const NavigationMenu = () => {
+  const { t } = useTranslation()
   const { isRdiWorkspace, publicRoutes, highlightedPages } = useNavigation()
 
   const renderPublicNavItem = (nav: INavigations) => {
@@ -67,7 +69,7 @@ const NavigationMenu = () => {
   return (
     <SideBar
       isExpanded={false}
-      aria-label="Main navigation"
+      aria-label={t('navigation.ariaLabel')}
       data-testid="main-navigation-sidebar"
       className={styles.mainNavbar}
     >
@@ -95,7 +97,7 @@ const NavigationMenu = () => {
             <SideBarItem
               className={styles.githubNavItem}
               tooltipProps={{
-                text: 'Star us on GitHub',
+                text: t('navigation.github.tooltip'),
                 placement: 'right',
               }}
             >

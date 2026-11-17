@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
@@ -22,6 +23,7 @@ const PopoverRunAnalyze = (props: Props) => {
     onApproveClick,
     children,
   } = props
+  const { t } = useTranslation()
 
   return (
     <RiPopover
@@ -39,19 +41,19 @@ const PopoverRunAnalyze = (props: Props) => {
         data-testid="insights-db-analysis-popover"
       >
         <Text className={styles.popoverTitle} size="m">
-          Run database analysis
+          {t('tips.runAnalysis.popoverTitle')}
         </Text>
         <Spacer size="s" />
         <Text className={styles.popoverContent}>{popoverContent}</Text>
         <Spacer size="m" />
         <PrimaryButton
-          aria-label="Analyze"
+          aria-label={t('tips.runAnalysis.approveButton')}
           data-testid="approve-insights-db-analysis-btn"
           onClick={onApproveClick}
           size="s"
           className={styles.popoverApproveBtn}
         >
-          Analyze
+          {t('tips.runAnalysis.approveButton')}
         </PrimaryButton>
       </div>
     </RiPopover>

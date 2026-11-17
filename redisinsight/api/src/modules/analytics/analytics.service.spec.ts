@@ -323,10 +323,6 @@ describe('AnalyticsService', () => {
         event: TelemetryEvents.ApplicationStarted,
         eventData: {},
         nonTracking: false,
-        traits: {
-          telemetry: 'will be overwritten',
-          custom: 'trait',
-        },
       });
 
       expect(mockAnalyticsPage).toHaveBeenCalledWith({
@@ -336,7 +332,6 @@ describe('AnalyticsService', () => {
         context: {
           traits: {
             telemetry: Telemetry.Enabled,
-            custom: 'trait',
           },
         },
         properties: {

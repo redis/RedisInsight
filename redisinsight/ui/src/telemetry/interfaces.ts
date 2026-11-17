@@ -16,7 +16,6 @@ export interface ITelemetrySendEvent {
   event: TelemetryEvent
   eventData?: EventData
   nonTracking?: boolean
-  traits?: Object
 }
 
 export interface ITelemetrySendPageView {
@@ -52,7 +51,9 @@ export interface IModuleSummary {
 }
 
 export type RedisModulesKeyType = keyof typeof RedisModules
-export interface IRedisModulesSummary
-  extends Record<keyof typeof RedisModules, IModuleSummary> {
+export interface IRedisModulesSummary extends Record<
+  keyof typeof RedisModules,
+  IModuleSummary
+> {
   customModules: AdditionalRedisModule[]
 }

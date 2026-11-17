@@ -21,7 +21,7 @@ For an official upstream PR, maintainers may still require the default tile prov
 ## Development
 
 ```sh
-yarn --cwd redisinsight/ui/src/packages/geodata
-yarn --cwd redisinsight/ui/src/packages/geodata test
-yarn --cwd redisinsight/ui/src/packages build
+npm install --prefix redisinsight/ui/src/packages/geodata
+npm test --prefix redisinsight/ui/src/packages/geodata
+npm run build --prefix redisinsight/ui/src/packages
 ```

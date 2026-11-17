@@ -1,20 +1,21 @@
 import { ToastVariant } from 'uiSrc/components/base/display/toast/RiToast'
+import i18n from 'uiSrc/i18n'
 
 export const loadSampleDatasetFailedNotification = () => ({
-  title: 'Failed to create array',
-  message: 'Please try again.',
+  title: i18n.t('notification.error.createArray.title'),
+  message: i18n.t('notification.error.createArray.message'),
   variant: 'danger' as ToastVariant,
 })
 
 export const sampleDatasetLoadedNotification = (keyName: string) => ({
-  title: 'Sample array added',
-  message: `The '${keyName}' sample array has been successfully added.`,
+  title: i18n.t('notification.success.sampleArrayAdded.title'),
+  message: i18n.t('notification.success.sampleArrayAdded.message', { keyName }),
   showCloseButton: false,
 })
 
 export const sampleDatasetTtlFailedNotification = (keyName: string) => ({
-  title: 'Sample array added without TTL',
-  message: `The '${keyName}' sample array was created, but the TTL could not be applied.`,
+  title: i18n.t('notification.warning.sampleArrayNoTtl.title'),
+  message: i18n.t('notification.warning.sampleArrayNoTtl.message', { keyName }),
   variant: 'notice' as ToastVariant,
   showCloseButton: false,
 })
@@ -22,8 +23,8 @@ export const sampleDatasetTtlFailedNotification = (keyName: string) => ({
 // Copy stays generic on purpose: we can verify only that the key exists, not
 // that it holds the bundled sample.
 export const keyAlreadyExistsNotification = (keyName: string) => ({
-  title: 'Key already exists',
-  message: `A key named '${keyName}' already exists in this database.`,
+  title: i18n.t('notification.warning.keyExists.title'),
+  message: i18n.t('notification.warning.keyExists.message', { keyName }),
   variant: 'notice' as ToastVariant,
   showCloseButton: false,
 })

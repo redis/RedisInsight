@@ -244,6 +244,19 @@ const importDatabaseFormat3 = {
     : undefined,
 };
 
+// Non-desktop builds no longer resolve certificate/key paths, so importing a
+// database that references certs by path is rejected with these errors.
+const invalidCaCertBodyError = {
+  message: 'Invalid CA body',
+  statusCode: 400,
+  error: 'Invalid Ca Certificate Body',
+};
+const invalidClientCertBodyError = {
+  message: 'Invalid certificate body',
+  statusCode: 400,
+  error: 'Invalid Client Certificate Body',
+};
+
 const mainCheckFn = getMainCheckFn(endpoint);
 
 const checkConnection = async (databaseId: string, statusCode = 200) => {
@@ -1148,20 +1161,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'STANDALONE', 'STANDALONE');
+        await validatePartialImportedDatabase(name, 'STANDALONE', 'STANDALONE');
       });
       it('Import standalone with CA tls partial with no ca file (format 1)', async () => {
         await validateApiCall({
@@ -1222,20 +1236,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA tls (format 3)', async () => {
         await validateApiCall({
@@ -1254,20 +1273,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
     });
     describe('TLS AUTH', function () {
@@ -1425,20 +1449,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'STANDALONE', 'STANDALONE');
+        await validatePartialImportedDatabase(name, 'STANDALONE', 'STANDALONE');
       });
       it('Import standalone with CA + CLIENT tls partial with wrong key (format 1)', async () => {
         await validateApiCall({
@@ -1502,20 +1527,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls (format 3)', async () => {
         await validateApiCall({
@@ -1534,20 +1564,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
     });
   });
@@ -1672,20 +1707,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'STANDALONE', 'STANDALONE');
+        await validatePartialImportedDatabase(name, 'STANDALONE', 'STANDALONE');
       });
       it('Import standalone with CA + CLIENT tls + ssh PK (format 1)', async () => {
         await validateApiCall({
@@ -1705,20 +1741,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'STANDALONE', 'STANDALONE');
+        await validatePartialImportedDatabase(name, 'STANDALONE', 'STANDALONE');
       });
       it('Import standalone with CA + CLIENT tls + ssh PKP (format 1)', async () => {
         await validateApiCall({
@@ -1738,20 +1775,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'STANDALONE', 'STANDALONE');
+        await validatePartialImportedDatabase(name, 'STANDALONE', 'STANDALONE');
       });
       it('Import standalone with CA + CLIENT tls + ssh basic (format 2)', async () => {
         await validateApiCall({
@@ -1773,20 +1811,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls + ssh PK (format 2)', async () => {
         await validateApiCall({
@@ -1808,20 +1851,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls + ssh PKP (format 2)', async () => {
         await validateApiCall({
@@ -1843,20 +1891,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls + ssh basic (format 3)', async () => {
         await validateApiCall({
@@ -1876,20 +1929,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls + ssh PK (format 3)', async () => {
         await validateApiCall({
@@ -1909,20 +1967,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
       it('Import standalone with CA + CLIENT tls + ssh PKP (format 3)', async () => {
         await validateApiCall({
@@ -1942,20 +2005,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'STANDALONE');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
     });
   });
@@ -2185,20 +2253,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'CLUSTER', 'CLUSTER');
+        await validatePartialImportedDatabase(name, 'CLUSTER', 'CLUSTER');
       });
       it('Import cluster with CA tls (format 2)', async () => {
         await validateApiCall({
@@ -2220,20 +2289,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'CLUSTER', 'CLUSTER');
+        await validatePartialImportedDatabase(name, 'CLUSTER', 'CLUSTER');
       });
       it('Import cluster with CA tls (format 3)', async () => {
         await validateApiCall({
@@ -2252,20 +2322,25 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'NOT CONNECTED', 'CLUSTER');
+        await validatePartialImportedDatabase(
+          name,
+          'NOT CONNECTED',
+          'NOT CONNECTED',
+        );
       });
     });
   });
@@ -2467,20 +2542,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat1.host,
                 port: importDatabaseFormat1.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'SENTINEL', 'SENTINEL');
+        await validatePartialImportedDatabase(name, 'SENTINEL', 'SENTINEL');
       });
       it('Import sentinel with CA + CLIENT tls (format 2)', async () => {
         await validateApiCall({
@@ -2501,20 +2577,21 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat2.host,
                 port: parseInt(importDatabaseFormat2.port, 10),
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        await validateImportedDatabase(name, 'SENTINEL', 'SENTINEL');
+        await validatePartialImportedDatabase(name, 'SENTINEL', 'SENTINEL');
       });
       it('Import sentinel with CA + CLIENT tls (format 3)', async () => {
         await validateApiCall({
@@ -2533,25 +2610,24 @@ describe('POST /databases/import', () => {
           ],
           responseBody: {
             total: 1,
-            success: [
+            success: [],
+            partial: [
               {
                 index: 0,
-                status: 'success',
+                status: 'partial',
                 host: importDatabaseFormat3.host,
                 port: importDatabaseFormat3.port,
+                errors: [invalidCaCertBodyError, invalidClientCertBodyError],
               },
             ],
-            partial: [],
             fail: [],
           },
         });
 
-        // should determine connection type as standalone since we don't have sentinel auto discovery
-        await validateImportedDatabase(
+        await validatePartialImportedDatabase(
           name,
           'NOT CONNECTED',
-          'STANDALONE',
-          false,
+          'NOT CONNECTED',
         );
       });
     });

@@ -1,5 +1,4 @@
 import { renderHook } from 'uiSrc/utils/test-utils'
-import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceSelector,
@@ -7,11 +6,6 @@ import {
 import { Environment } from 'apiClient'
 
 import { useDatabaseEnvironment } from './useDatabaseEnvironment'
-
-jest.mock('uiSrc/slices/app/features', () => ({
-  ...jest.requireActual('uiSrc/slices/app/features'),
-  appFeatureFlagProdModeSelector: jest.fn().mockReturnValue(false),
-}))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
@@ -21,17 +15,14 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceDangerousCommandsSelector: jest.fn().mockReturnValue([]),
 }))
 
-const mockedFlag = appFeatureFlagProdModeSelector as jest.Mock
 const mockedInstance = connectedInstanceSelector as jest.Mock
 const mockedDangerousCommands =
   connectedInstanceDangerousCommandsSelector as jest.Mock
 
 const setMocks = (input: {
-  flag: boolean
   environment: Environment
   dangerousCommands?: string[]
 }) => {
-  mockedFlag.mockReturnValue(input.flag)
   mockedDangerousCommands.mockReturnValue(input.dangerousCommands ?? [])
   mockedInstance.mockReturnValue({
     id: 'db-1',
@@ -41,26 +32,20 @@ const setMocks = (input: {
 
 describe('useDatabaseEnvironment', () => {
   describe('truth table', () => {
-    it('falls back to unmarked when flag is off', () => {
-      setMocks({ flag: false, environment: Environment.Production })
-      const { result } = renderHook(useDatabaseEnvironment)
-      expect(result.current.environment).toBe(Environment.Unspecified)
-    })
-
-    it('returns production when flag on and connection is marked production', () => {
-      setMocks({ flag: true, environment: Environment.Production })
+    it('returns production when connection is marked production', () => {
+      setMocks({ environment: Environment.Production })
       const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe(Environment.Production)
     })
 
-    it('returns fast when flag on and connection is marked fast', () => {
-      setMocks({ flag: true, environment: Environment.Development })
+    it('returns fast when connection is marked fast', () => {
+      setMocks({ environment: Environment.Development })
       const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe(Environment.Development)
     })
 
-    it('returns unmarked when flag on and connection is unmarked', () => {
-      setMocks({ flag: true, environment: Environment.Unspecified })
+    it('returns unmarked when connection is unmarked', () => {
+      setMocks({ environment: Environment.Unspecified })
       const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe(Environment.Unspecified)
     })
@@ -69,7 +54,6 @@ describe('useDatabaseEnvironment', () => {
   describe('isDangerousCommand', () => {
     it('returns false outside production', () => {
       setMocks({
-        flag: true,
         environment: Environment.Unspecified,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
@@ -79,7 +63,6 @@ describe('useDatabaseEnvironment', () => {
 
     it('returns false in fast mode even for known dangerous commands', () => {
       setMocks({
-        flag: true,
         environment: Environment.Development,
         dangerousCommands: ['FLUSHDB'],
       })
@@ -89,7 +72,6 @@ describe('useDatabaseEnvironment', () => {
 
     it('matches case-insensitively inside production', () => {
       setMocks({
-        flag: true,
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
@@ -101,7 +83,6 @@ describe('useDatabaseEnvironment', () => {
 
     it('returns false for unknown commands inside production', () => {
       setMocks({
-        flag: true,
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB'],
       })
@@ -111,7 +92,6 @@ describe('useDatabaseEnvironment', () => {
 
     it('handles empty / falsy command string', () => {
       setMocks({
-        flag: true,
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB'],
       })
@@ -121,7 +101,6 @@ describe('useDatabaseEnvironment', () => {
 
     it('handles a lowercase dangerousCommands list defensively', () => {
       setMocks({
-        flag: true,
         environment: Environment.Production,
         dangerousCommands: ['flushdb'],
       })

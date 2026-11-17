@@ -6,8 +6,9 @@ import cx from 'classnames'
 
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Nullable } from 'uiSrc/utils'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { getValidationErrors } from 'uiSrc/constants/validationErrors'
 import { RiFilePicker, RiTooltip, OnboardingTour } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -40,6 +41,8 @@ export interface Props {
  */
 const UploadTutorialForm = (props: Props) => {
   const { onSubmit, onCancel, isPageOpened } = props
+  const { t } = useTranslation()
+  const validationErrors = getValidationErrors(t)
   const [errors, setErrors] = useState<FormikErrors<FormValues>>({})
 
   const initialValues: FormValues = {

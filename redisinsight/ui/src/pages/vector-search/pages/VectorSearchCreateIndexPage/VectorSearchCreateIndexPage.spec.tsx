@@ -15,6 +15,11 @@ jest.mock('../../hooks/useHasExistingKeys', () => ({
   useHasExistingKeys: jest.fn(),
 }))
 
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  isVectorSearchEnhancementsEnabledSelector: jest.fn(() => true),
+}))
+
 jest.mock('../../components/index-details', () => {
   const MockReact = require('react')
   return {

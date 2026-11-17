@@ -1,11 +1,9 @@
 import React from 'react'
 
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
-import {
-  ImportTableResultColumn,
-  TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP,
-} from 'uiSrc/constants'
+import { ImportTableResultColumn } from 'uiSrc/constants'
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface DataImportResult {
   index: number
@@ -20,6 +18,7 @@ export interface Props {
 }
 
 const TableResult = (props: Props) => {
+  const { t } = useTranslation()
   const { data } = props
 
   const ErrorResult = ({ errors }: { errors: string[] }) => (
@@ -32,9 +31,7 @@ const TableResult = (props: Props) => {
 
   const columns: ColumnDef<DataImportResult>[] = [
     {
-      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
-        ImportTableResultColumn.Index,
-      ),
+      header: '#',
       id: ImportTableResultColumn.Index,
       accessorKey: ImportTableResultColumn.Index,
       cell: ({
@@ -45,9 +42,7 @@ const TableResult = (props: Props) => {
       size: 50,
     },
     {
-      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
-        ImportTableResultColumn.Host,
-      ),
+      header: t('home.importDatabase.result.column.host'),
       id: ImportTableResultColumn.Host,
       accessorKey: ImportTableResultColumn.Host,
       cell: ({
@@ -61,9 +56,7 @@ const TableResult = (props: Props) => {
       ),
     },
     {
-      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
-        ImportTableResultColumn.Errors,
-      ),
+      header: t('home.importDatabase.result.column.result'),
       id: ImportTableResultColumn.Errors,
       accessorKey: 'errors',
       cell: ({
@@ -75,7 +68,7 @@ const TableResult = (props: Props) => {
           {errors ? (
             <ErrorResult errors={errors.map((e) => e.message)} />
           ) : (
-            'Successful'
+            t('home.importDatabase.table.successful')
           )}
         </div>
       ),

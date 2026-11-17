@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
+import { useTranslation } from 'uiSrc/i18n'
 import cx from 'classnames'
 import { orderBy } from 'lodash'
 
@@ -29,8 +30,9 @@ const ConsumersView = (props: Props) => {
     columns = [],
     onClosePopover,
     onSelectConsumer,
-    noItemsMessageString = 'Your Consumer Group has no Consumers available.',
+    noItemsMessageString,
   } = props
+  const { t } = useTranslation()
 
   const { loading } = useAppSelector(streamGroupsSelector)
   const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {}
@@ -79,7 +81,9 @@ const ConsumersView = (props: Props) => {
           items={consumers}
           onWheel={onClosePopover}
           onChangeSorting={onChangeSorting}
-          noItemsMessage={noItemsMessageString}
+          noItemsMessage={
+            noItemsMessageString ?? t('browser.stream.consumers.empty')
+          }
           sortedColumn={
             consumers?.length
               ? {

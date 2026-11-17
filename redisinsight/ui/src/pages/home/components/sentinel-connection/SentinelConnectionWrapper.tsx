@@ -25,6 +25,7 @@ import { ADD_NEW, NO_CA_CERT } from 'uiSrc/pages/home/constants'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { useTranslation } from 'uiSrc/i18n'
 import SentinelConnectionForm from './sentinel-connection-form'
 
 export interface Props {
@@ -46,6 +47,7 @@ const INITIAL_VALUES = {
 }
 
 const SentinelConnectionWrapper = (props: Props) => {
+  const { t } = useTranslation()
   const { onClose } = props
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES)
 
@@ -61,12 +63,17 @@ const SentinelConnectionWrapper = (props: Props) => {
     dispatch(fetchCaCerts())
     dispatch(fetchClientCerts())
 
-    setModalHeader(<Title size="M">Redis Sentinel</Title>, true)
-
     return () => {
       setModalHeader(null)
     }
   }, [])
+
+  useEffect(() => {
+    setModalHeader(
+      <Title size="M">{t('home.form.sentinel.modalTitle')}</Title>,
+      true,
+    )
+  }, [t])
 
   const onMastersSentinelFetched = () => {
     history.push(Pages.sentinelDatabases)

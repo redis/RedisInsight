@@ -1,5 +1,14 @@
 import { parse } from 'path';
 import { readFileSync } from 'fs';
+import config, { Config } from 'src/utils/config';
+import { BuildType } from 'src/modules/server/models/server';
+
+const SERVER_CONFIG = config.get('server') as Config['server'];
+
+// Only the desktop app resolves a path; other builds take inline PEM only,
+// so an import can't read files off the host.
+export const isImportFromFileAllowed = (): boolean =>
+  SERVER_CONFIG.buildType === BuildType.Electron;
 
 export const isValidPemCertificate = (cert: string): boolean =>
   cert.startsWith('-----BEGIN CERTIFICATE-----');

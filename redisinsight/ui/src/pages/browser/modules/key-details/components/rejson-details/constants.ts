@@ -1,6 +1,11 @@
-export const JSONErrors = {
-  keyCorrectSyntax: 'Key should have correct syntax.',
-  valueJSONFormat: 'Value should have JSON format.',
+import { ParseKeys } from 'i18next'
+
+export const JSONErrors: Record<
+  'keyCorrectSyntax' | 'valueJSONFormat',
+  ParseKeys
+> = {
+  keyCorrectSyntax: 'browser.rejson.error.keyCorrectSyntax',
+  valueJSONFormat: 'browser.rejson.error.valueJSONFormat',
 }
 
 export const MIN_LEFT_PADDING_NESTING = 1

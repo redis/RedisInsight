@@ -1,10 +1,7 @@
-import {
-  KeyValueFormat,
-  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
-  TEXT_UNPRINTABLE_CHARACTERS,
-} from 'uiSrc/constants'
+import { KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { getConfig } from 'uiSrc/config'
+import i18n from 'uiSrc/i18n'
 import {
   RedisResponseBuffer,
   RedisResponseBufferType,
@@ -22,6 +19,7 @@ describe('getArrayElementEditState', () => {
       buffer('hello'),
       null,
       KeyValueFormat.Unicode,
+      i18n.t,
     )
 
     expect(state.isEditable).toBe(true)
@@ -35,12 +33,13 @@ describe('getArrayElementEditState', () => {
       buffer(`${truncatedStringPrefix} big value`),
       null,
       KeyValueFormat.Unicode,
+      i18n.t,
     )
 
     expect(state.isTruncated).toBe(true)
     expect(state.isEditable).toBe(false)
     expect(state.editDisabledReason).toBe(
-      TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+      i18n.t('browser.keyDetails.truncatedActionDisabled'),
     )
   })
 
@@ -55,10 +54,13 @@ describe('getArrayElementEditState', () => {
       unprintable,
       null,
       KeyValueFormat.Unicode,
+      i18n.t,
     )
 
     expect(state.isUnprintable).toBe(true)
     expect(state.isEditable).toBe(false)
-    expect(state.editDisabledReason).toBe(TEXT_UNPRINTABLE_CHARACTERS.content)
+    expect(state.editDisabledReason).toBe(
+      i18n.t('browser.keyDetails.unprintable.content'),
+    )
   })
 })

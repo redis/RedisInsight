@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 import {
   ArrayCombinator,
   ArrayGrepCriteria,
@@ -282,6 +283,6 @@ describe('ArraySearchForm', () => {
   it('renders the options panel by its label', () => {
     renderComponent()
 
-    expect(screen.getByText(OPTIONS_LABEL)).toBeInTheDocument()
+    expect(screen.getByText(i18n.t(OPTIONS_LABEL))).toBeInTheDocument()
   })
 })

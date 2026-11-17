@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation } from 'react-router-dom'
 
@@ -19,18 +19,13 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  bufferToString,
-  formatLongName,
-  isRedisearchAvailable,
-} from 'uiSrc/utils'
+import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
 import { localStorageService } from 'uiSrc/services'
-import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { BrowserStorageItem } from 'uiSrc/constants'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon, ResetIcon } from 'uiSrc/components/base/icons'
@@ -41,8 +36,13 @@ import {
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import * as S from './RediSearchIndexesList.styles'
+import {
+  getIndexOptionLabel,
+  getIndexOptionsWidth,
+  matchesIndexSearch,
+} from './RediSearchIndexesList.utils'
 
 export const CREATE = JSON.stringify('create')
 
@@ -51,6 +51,7 @@ export interface Props {
 }
 
 const RediSearchIndexesList = (props: Props) => {
+  const { t } = useTranslation()
   const { onCreateIndex } = props
 
   const { viewType, searchMode } = useAppSelector(keysSelector)
@@ -63,9 +64,6 @@ const RediSearchIndexesList = (props: Props) => {
   } = useAppSelector(connectedInstanceSelector)
 
   const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
-  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isVectorSearch =
-    featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
   const dispatch = useAppDispatch()
   const location = useLocation()
@@ -131,13 +129,14 @@ const RediSearchIndexesList = (props: Props) => {
     [],
   )
 
+  const contentWidth = useMemo(
+    () => getIndexOptionsWidth(list.map((item) => bufferToString(item))),
+    [list],
+  )
+
   const options = list.map((item) => {
     const stringValue = bufferToString(item)
-    const displayValue = formatLongName(
-      getIndexDisplayName(stringValue),
-      100,
-      10,
-    )
+    const displayValue = getIndexOptionLabel(stringValue)
 
     return {
       value: stringValue,
@@ -157,25 +156,23 @@ const RediSearchIndexesList = (props: Props) => {
     }
   })
 
-  if (isVectorSearch) {
-    options.push({
-      value: CREATE,
-      inputDisplay: <span>CREATE</span>,
-      dropdownDisplay: (
-        <Row align="center" justify="start" gap="xs">
-          <PlusIcon size="M" />
-          <Text
-            size="M"
-            variant="semiBold"
-            color="primary"
-            data-testid="create-index-btn"
-          >
-            Create Index
-          </Text>
-        </Row>
-      ),
-    })
-  }
+  options.push({
+    value: CREATE,
+    inputDisplay: <span>CREATE</span>,
+    dropdownDisplay: (
+      <Row align="center" justify="start" gap="xs">
+        <PlusIcon size="M" />
+        <Text
+          size="M"
+          variant="semiBold"
+          color="primary"
+          data-testid="create-index-btn"
+        >
+          {t('browser.redisearch.createIndex')}
+        </Text>
+      </Row>
+    ),
+  })
 
   const onChangeIndex = (value: string) => {
     if (value === CREATE) {
@@ -226,30 +223,37 @@ const RediSearchIndexesList = (props: Props) => {
         options={options}
         value={selectedValue}
         onChange={onChangeIndex}
+        customCompare={(option, search) =>
+          option.value === CREATE || matchesIndexSearch(option.value, search)
+        }
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">
           <RiSelect.Trigger.Value
-            placeholder="Select Index"
+            placeholder={t('browser.redisearch.selectIndex')}
             data-testid="select-index-placeholder"
             valueRender={selectValueRender}
           />
           <RiSelect.Trigger.LoadingIndicator loading={loading} />
           <RiSelect.Trigger.Arrow data-testid="select-index-arrow" />
           <div style={{ zIndex: 6 }}>
-            <RiTooltip content="Refresh Indexes">
+            <RiTooltip content={t('browser.redisearch.refreshTooltip')}>
               <IconButton
                 size="M"
                 icon={ResetIcon}
                 disabled={loading}
                 onClick={handleRefresh}
-                aria-label="refresh indexes list"
+                aria-label={t('browser.redisearch.refreshAria')}
                 data-testid="refresh-indexes-btn"
                 onPointerDown={(e) => e.stopPropagation()}
               />
             </RiTooltip>
           </div>
         </RiSelect.Trigger.Compose>
-        <RiSelect.Content optionValueRender={selectValueRender} />
+        <RiSelect.Content
+          searchable
+          contentWidth={contentWidth}
+          optionValueRender={selectValueRender}
+        />
       </RiSelect.Compose>
     </S.Container>
   )

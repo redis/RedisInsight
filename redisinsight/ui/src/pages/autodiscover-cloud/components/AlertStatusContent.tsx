@@ -4,24 +4,29 @@ import {
   AlertStatusList,
   AlertStatusListItem,
 } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
+import { useTranslation } from 'uiSrc/i18n'
 
-export const AlertStatusContent = () => (
-  <AlertStatusList gap="none" flush>
-    <AlertStatusListItem
-      size="s"
-      label="Subscription status is not Active"
-      icon={<AlertStatusDot />}
-    />
-    <AlertStatusListItem
-      size="s"
-      wrapText
-      label="Subscription does not have any databases"
-      icon={<AlertStatusDot />}
-    />
-    <AlertStatusListItem
-      size="s"
-      label="Error fetching subscription details"
-      icon={<AlertStatusDot />}
-    />
-  </AlertStatusList>
-)
+export const AlertStatusContent = () => {
+  const { t } = useTranslation()
+
+  return (
+    <AlertStatusList gap="none" flush>
+      <AlertStatusListItem
+        size="s"
+        label={t('autodiscover.cloud.alert.statusNotActive')}
+        icon={<AlertStatusDot />}
+      />
+      <AlertStatusListItem
+        size="s"
+        wrapText
+        label={t('autodiscover.cloud.alert.noDatabases')}
+        icon={<AlertStatusDot />}
+      />
+      <AlertStatusListItem
+        size="s"
+        label={t('autodiscover.cloud.alert.errorFetching')}
+        icon={<AlertStatusDot />}
+      />
+    </AlertStatusList>
+  )
+}

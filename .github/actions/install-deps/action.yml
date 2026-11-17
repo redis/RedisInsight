@@ -22,12 +22,13 @@ runs:
       working-directory: ${{ inputs.dir-path }}
       shell: bash
 
-      # env:
-      #   SKIP_POSTINSTALL: ${{ inputs.skip-postinstall }}
-      # run: yarn install
       run: |
         # todo: uncomment after build our binaries
         # export npm_config_keytar_binary_host_mirror=${{ inputs.keytar-host-mirror }}
         # export npm_config_node_sqlite3_binary_host_mirror=${{ inputs.sqlite3-host-mirror }}
 
-        yarn install --frozen-lockfile --network-timeout 1000000
+        if [ "${{ inputs.skip-postinstall }}" = "1" ]; then
+          npm ci --ignore-scripts
+        else
+          npm ci
+        fi

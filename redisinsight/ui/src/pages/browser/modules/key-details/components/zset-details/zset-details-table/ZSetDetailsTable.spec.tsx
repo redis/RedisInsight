@@ -19,7 +19,7 @@ import {
 } from 'uiSrc/utils/tests/decompressors'
 import { setSelectedKeyRefreshDisabled } from 'uiSrc/slices/browser/keys'
 import { MOCK_TRUNCATED_BUFFER_VALUE } from 'uiSrc/mocks/data/bigString'
-import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
+
 import { ZSetDetailsTable, Props } from './ZSetDetailsTable'
 
 const mockedProps = mock<Props>()
@@ -189,7 +189,7 @@ describe('ZSetDetailsTable', () => {
       await waitForRiTooltipVisible()
 
       expect(screen.getByTestId(/zset_edit-tooltip-/)).toHaveTextContent(
-        TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
       )
     })
 
@@ -206,7 +206,9 @@ describe('ZSetDetailsTable', () => {
 
       expect(
         screen.getByTestId(/zset-remove-button-.+-tooltip$/),
-      ).toHaveTextContent(TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA)
+      ).toHaveTextContent(
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
+      )
     })
   })
 })

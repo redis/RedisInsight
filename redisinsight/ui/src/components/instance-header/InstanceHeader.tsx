@@ -31,16 +31,16 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
+import { RedisToolsTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import ShortInstanceInfo from 'uiSrc/components/instance-header/components/ShortInstanceInfo'
 
 import { resetKeyInfo } from 'uiSrc/slices/browser/keys'
 
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { getConfig } from 'uiSrc/config'
 import { appReturnUrlSelector } from 'uiSrc/slices/app/url-handling'
 import UserProfile from 'uiSrc/components/instance-header/components/user-profile/UserProfile'
+import { useTranslation } from 'uiSrc/i18n'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { EditIcon } from 'uiSrc/components/base/icons'
@@ -63,6 +63,7 @@ export interface Props {
 }
 
 const InstanceHeader = ({ onChangeDbIndex }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const {
     name = '',
@@ -81,14 +82,10 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   const { databases = 0 } = useAppSelector(connectedInstanceInfoSelector)
   const returnUrl = useAppSelector(appReturnUrlSelector)
   const {
-    [FeatureFlags.databaseChat]: databaseChatFeature,
-    [FeatureFlags.documentationChat]: documentationChatFeature,
+    [FeatureFlags.redisTools]: redisToolsFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
   } = useAppSelector(appFeatureFlagsFeaturesSelector)
-  const isAnyChatAvailable = isAnyFeatureEnabled([
-    databaseChatFeature,
-    documentationChatFeature,
-  ])
+  const isRedisToolsAvailable = !!redisToolsFeature?.flag
   const { environment } = useDatabaseEnvironment()
   const isProductionEnv = environment === Environment.Production
 
@@ -168,8 +165,8 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                   position="bottom"
                   content={
                     server?.buildType === BuildType.RedisStack
-                      ? 'Edit database'
-                      : 'Redis Databases'
+                      ? t('instanceHeader.editDatabase')
+                      : t('instanceHeader.redisDatabases')
                   }
                 >
                   <Link
@@ -178,13 +175,13 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     variant="inline"
                     aria-label={
                       server?.buildType === BuildType.RedisStack
-                        ? 'Edit database'
-                        : 'Redis Databases'
+                        ? t('instanceHeader.editDatabase')
+                        : t('instanceHeader.redisDatabases')
                     }
                     data-testid="my-redis-db-btn"
                     onClick={goHome}
                   >
-                    Databases
+                    {t('instanceHeader.databases')}
                   </Link>
                 </RiTooltip>
               </FeatureFlagComponent>
@@ -258,7 +255,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                                   setDbIndex(value ? value.toString() : '')
                                 }
                                 value={Number(dbIndex)}
-                                placeholder="Database Index"
+                                placeholder={t('instanceHeader.databaseIndex')}
                                 className={styles.dbIndexInput}
                                 data-testid="change-index-input"
                               />
@@ -328,9 +325,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
 
         <FlexItem>
           <Row align="center" justify="end">
-            {isAnyChatAvailable && (
+            {isRedisToolsAvailable && (
               <FlexItem style={{ marginLeft: 12 }}>
-                <CopilotTrigger />
+                <RedisToolsTrigger />
               </FlexItem>
             )}
 

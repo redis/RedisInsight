@@ -346,6 +346,25 @@ describe('CloudAuthService', () => {
       ).rejects.toThrow(CloudOauthUnknownAuthorizationRequestException);
     });
   });
+  describe('logout', () => {
+    it('should delete the local session before revoking the refresh token', async () => {
+      mockedAxios.post.mockResolvedValueOnce({ data: undefined });
+
+      await service.logout(mockSessionMetadata);
+
+      expect(sessionService.deleteSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+      );
+      expect(mockedAxios.post).toHaveBeenCalled();
+      // a slow remote revocation must not race a concurrent sign-in, so the
+      // local session is cleared before the revoke call
+      const deleteOrder =
+        sessionService.deleteSessionData.mock.invocationCallOrder[0];
+      const revokeOrder = mockedAxios.post.mock.invocationCallOrder[0];
+      expect(deleteOrder).toBeLessThan(revokeOrder);
+    });
+  });
+
   describe('revokeRefreshToken', () => {
     let spy;
 

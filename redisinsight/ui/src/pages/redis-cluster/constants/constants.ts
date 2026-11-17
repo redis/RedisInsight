@@ -6,12 +6,3 @@ export enum RedisClusterIds {
   Result = 'messageAdded',
   Status = 'status',
 }
-
-export enum RedisClusterTitles {
-  Capabilities = 'Capabilities',
-  Database = 'Database',
-  Endpoint = 'Endpoint',
-  Options = 'Options',
-  Result = 'Result',
-  Status = 'Status',
-}

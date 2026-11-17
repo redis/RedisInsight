@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: ESLint
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Install dependencies
         uses: ./.github/actions/install-all-build-libs
@@ -28,4 +28,4 @@ jobs:
             eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-
 
       - name: Run ESLint
-        run: yarn lint
+        run: npm run lint

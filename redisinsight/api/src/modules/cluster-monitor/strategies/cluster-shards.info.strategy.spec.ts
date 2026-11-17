@@ -26,7 +26,7 @@ describe('ClusterShardsInfoStrategy', () => {
   });
 
   describe('getClusterNodesFromRedis', () => {
-    it('should return cluster info with ip when hostname is empty', async () => {
+    it('should use the ip when it is the preferred endpoint (cluster-preferred-endpoint-type ip, the default)', async () => {
       const node1 = clusterShardNodeRawFactory.build();
       const node2 = clusterShardNodeRawFactory.build();
       const shard1 = clusterShardRawFactory.build(
@@ -51,18 +51,21 @@ describe('ClusterShardsInfoStrategy', () => {
       expect(info[1].slots).toEqual([formatSlotRange(5001, 16383)]);
     });
 
-    it('should use hostname when cluster-announce-hostname is configured', async () => {
+    it('should use the endpoint when the preferred endpoint type is hostname', async () => {
       const hostname1 = 'redis-node-1.example.com';
       const hostname2 = 'redis-node-2.example.com';
       const master1 = clusterShardNodeRawFactory.build({
         hostname: hostname1,
+        endpoint: hostname1,
       });
       const replica1 = clusterShardNodeRawFactory.build({
         hostname: hostname1,
+        endpoint: hostname1,
         role: 'slave',
       });
       const master2 = clusterShardNodeRawFactory.build({
         hostname: hostname2,
+        endpoint: hostname2,
       });
 
       const shard1 = clusterShardRawFactory.build(
@@ -89,10 +92,31 @@ describe('ClusterShardsInfoStrategy', () => {
       expect(info[1].host).toBe(hostname2);
     });
 
+    it('should use the ip, not an announced hostname, when the preferred endpoint type is ip', async () => {
+      // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3546234089:
+      // a node may announce a hostname purely as metadata while
+      // cluster-preferred-endpoint-type still resolves to ip.
+      const node = clusterShardNodeRawFactory.build({
+        hostname: 'redis-node-1.example.com',
+      });
+      const shard = clusterShardRawFactory.build(
+        {},
+        { transient: { slotStart: 0, slotEnd: 16383, nodes: [node] } },
+      );
+      const reply = [shard].map(toClusterShardsReplyEntry);
+      when(clusterClient.sendCommand).mockResolvedValue(reply);
+
+      const info = await service.getClusterNodesFromRedis(clusterClient);
+
+      expect(info).toHaveLength(1);
+      expect(info[0].host).toBe(node.ip);
+    });
+
     it('should use tls-port when regular port is not available', async () => {
       const tlsPort = 6380;
       const node = clusterShardNodeRawFactory.build({
         hostname: 'redis-tls.example.com',
+        endpoint: 'redis-tls.example.com',
         port: undefined,
         'tls-port': tlsPort,
       });
@@ -114,7 +138,7 @@ describe('ClusterShardsInfoStrategy', () => {
   describe('processShardNodes', () => {
     const slots = ['0-5000'];
 
-    it('should use ip as host when hostname is empty string', () => {
+    it('should use ip as host when it is the preferred endpoint (default)', () => {
       const raw = clusterShardNodeRawFactory.build();
 
       const result = ClusterShardsInfoStrategy.processShardNodes(
@@ -125,9 +149,12 @@ describe('ClusterShardsInfoStrategy', () => {
       expect(result[0]).toHaveProperty('ip', raw.ip);
     });
 
-    it('should prefer hostname over ip when hostname is set', () => {
+    it('should use the endpoint when the preferred endpoint type is hostname', () => {
       const hostname = 'redis.example.com';
-      const raw = clusterShardNodeRawFactory.build({ hostname });
+      const raw = clusterShardNodeRawFactory.build({
+        hostname,
+        endpoint: hostname,
+      });
 
       const result = ClusterShardsInfoStrategy.processShardNodes(
         [toNodeReplyArray(raw)],
@@ -137,7 +164,19 @@ describe('ClusterShardsInfoStrategy', () => {
       expect(result[0]).toHaveProperty('ip', raw.ip);
     });
 
-    it('should fall back to ip when hostname is not present in reply', () => {
+    it('should use ip, not an announced hostname, when the preferred endpoint type is ip', () => {
+      // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3546234089
+      const hostname = 'redis.example.com';
+      const raw = clusterShardNodeRawFactory.build({ hostname });
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        [toNodeReplyArray(raw)],
+        slots,
+      );
+      expect(result[0].host).toBe(raw.ip);
+    });
+
+    it('should fall back to ip when endpoint is not present in reply', () => {
       const ip = '10.0.0.99';
       const shardNodes = [
         [
@@ -160,6 +199,83 @@ describe('ClusterShardsInfoStrategy', () => {
       );
       expect(result[0].host).toBe(ip);
       expect(result[0]).toHaveProperty('ip', ip);
+    });
+
+    it('should fall back to ip when endpoint is an empty string', () => {
+      const raw = clusterShardNodeRawFactory.build({ endpoint: '' });
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        [toNodeReplyArray(raw)],
+        slots,
+      );
+      expect(result[0].host).toBe(raw.ip);
+    });
+
+    it('should use fallbackHost when endpoint is null (unknown endpoint) and no ip is present', () => {
+      const shardNodes = [
+        [
+          'id',
+          'n1',
+          'port',
+          6379,
+          'endpoint',
+          null,
+          'role',
+          'master',
+          'health',
+          'online',
+        ],
+      ];
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        shardNodes,
+        slots,
+        '203.0.113.10',
+      );
+      expect(result[0].host).toBe('203.0.113.10');
+    });
+
+    it('should prefer the node ip over fallbackHost when endpoint is null (unknown endpoint)', () => {
+      // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3632382937:
+      // getClusterNodesFromRedis always passes the connection host as
+      // fallbackHost, so every node with a null/empty endpoint must still be
+      // labeled with its own ip - falling straight to fallbackHost would
+      // mislabel every such node with the same shared connection host.
+      const ip = '10.0.0.42';
+      const shardNodes = [
+        [
+          'id',
+          'n1',
+          'port',
+          6379,
+          'ip',
+          ip,
+          'endpoint',
+          null,
+          'role',
+          'master',
+          'health',
+          'online',
+        ],
+      ];
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        shardNodes,
+        slots,
+        '203.0.113.10',
+      );
+      expect(result[0].host).toBe(ip);
+    });
+
+    it('should fall back to ip when endpoint is the "?" misconfigured marker', () => {
+      const raw = clusterShardNodeRawFactory.build({ endpoint: '?' });
+
+      const result = ClusterShardsInfoStrategy.processShardNodes(
+        [toNodeReplyArray(raw)],
+        slots,
+        '203.0.113.10', // must be ignored - '?' is not necessarily this node
+      );
+      expect(result[0].host).toBe(raw.ip);
     });
 
     it('should use tls-port when port is missing', () => {
@@ -230,11 +346,13 @@ describe('ClusterShardsInfoStrategy', () => {
       const tlsPort = 6390;
       const primary = clusterShardNodeRawFactory.build({
         hostname,
+        endpoint: hostname,
         port: undefined,
         'tls-port': tlsPort,
       });
       const replica = clusterShardNodeRawFactory.build({
         hostname,
+        endpoint: hostname,
         port: undefined,
         'tls-port': tlsPort + 1,
         role: 'slave',

@@ -17,7 +17,7 @@ DEST="${RI_PLUGINS_DIR:-$HOME/.redis-insight/plugins}/$PLUGIN_NAME"
 echo "deploy: plugin=$PLUGIN_NAME dest=$DEST"
 
 # 1. Build
-yarn build
+npm run build
 
 # 2. Verify
 bash "$PLUGIN_ROOT/templates/verify-plugin.sh" \

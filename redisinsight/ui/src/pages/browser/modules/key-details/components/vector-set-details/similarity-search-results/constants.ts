@@ -1,16 +1,20 @@
+import { ParseKeys } from 'i18next'
 import { SimilarityResultsColumn } from './SimilaritySearchResultsTable.types'
 
+// Header values are i18n keys resolved with t() at render; Actions has no title.
 export const SIMILARITY_RESULTS_COLUMN_HEADERS: Record<
   SimilarityResultsColumn,
   string
 > = {
-  [SimilarityResultsColumn.Name]: 'Element',
-  [SimilarityResultsColumn.Rank]: 'Rank',
-  [SimilarityResultsColumn.Similarity]: 'Similarity',
+  [SimilarityResultsColumn.Name]: 'browser.vectorSet.results.elementColumn',
+  [SimilarityResultsColumn.Rank]: 'browser.vectorSet.results.rankColumn',
+  [SimilarityResultsColumn.Similarity]:
+    'browser.vectorSet.results.similarityColumn',
   [SimilarityResultsColumn.Actions]: '',
 }
 
-export const SIMILARITY_RESULTS_EMPTY_MESSAGE = 'No matching elements found.'
+export const SIMILARITY_RESULTS_EMPTY_MESSAGE: ParseKeys =
+  'browser.vectorSet.results.empty'
 
 /**
  * Scores at or above this threshold are treated as a "high" match and

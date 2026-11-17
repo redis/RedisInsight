@@ -83,7 +83,7 @@ test.describe('Browser > Key Tree View', () => {
     const tooltip = await browserPage.keyList.namespaceTooltip(treeFolder);
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText(`${treeFolder}:*`);
-    await expect(tooltip).toContainText(/key\(s\)/);
+    await expect(tooltip).toContainText(/\d+ keys? \([\d.]+%\)/);
 
     // Verify expand reveals the nested child folder
     await browserPage.keyList.expandFolder(treeFolder, usersFolder);

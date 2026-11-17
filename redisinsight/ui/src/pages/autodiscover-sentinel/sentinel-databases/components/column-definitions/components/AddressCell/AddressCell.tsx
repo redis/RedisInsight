@@ -4,10 +4,13 @@ import {
   CopyPublicEndpointText,
   CopyBtnWrapper,
 } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 
 import type { AddressCellProps } from './AddressCell.types'
 
 export const AddressCell = ({ host, port }: AddressCellProps) => {
+  const { t } = useTranslation()
+
   if (!host || !port) {
     return null
   }
@@ -18,7 +21,7 @@ export const AddressCell = ({ host, port }: AddressCellProps) => {
       <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
       <CopyBtnWrapper
         copy={text}
-        aria-label="Copy public endpoint"
+        aria-label={t('autodiscover.sentinel.cell.copyPublicEndpointAria')}
         successLabel=""
       />
     </CopyTextContainer>

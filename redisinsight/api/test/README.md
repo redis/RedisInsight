@@ -19,7 +19,7 @@
    From the root directory of the repository, run the following command:
 
    ```bash
-   yarn test:api:integration
+   npm run test:api:integration
    ```
 
 #### Example
@@ -52,7 +52,7 @@ Let’s walk through an example where you need to run tests related to `string`.
    Finally, execute the tests from the root directory:
 
    ```bash
-   yarn test:api:integration
+   npm run test:api:integration
    ```
 
 ---

@@ -8,6 +8,7 @@ import {
   RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
 import { DatabaseListColumn } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   SELECT_COL_ID,
@@ -16,6 +17,7 @@ import {
 } from '../DatabasesList.config'
 
 const useDatabaseListData = () => {
+  const { t } = useTranslation()
   const {
     data: instances,
     loading,
@@ -53,13 +55,13 @@ const useDatabaseListData = () => {
 
   const emptyMessage = useMemo(() => {
     if (loading) {
-      return 'Loading...'
+      return t('home.databaseList.loading')
     }
     if (!instances.length) {
-      return 'No added instances'
+      return t('home.databaseList.empty.noInstances')
     }
-    return 'No results found'
-  }, [loading, instances.length])
+    return t('home.databaseList.empty.noResults')
+  }, [loading, instances.length, t])
 
   return {
     loading,

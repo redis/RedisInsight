@@ -75,7 +75,7 @@ describe('BulkDeleteSummary', () => {
 
     render(<BulkDeleteSummary />)
     const summaryEl = screen.queryByTestId('bulk-delete-summary')
-    const expectedText = 'Scanned 10% (10/100) and found 1 keys'
+    const expectedText = 'Scanned 10% (10/100) and found 1 key'
 
     expect(summaryEl).toHaveTextContent(expectedText)
   })
@@ -149,6 +149,39 @@ describe('BulkDeleteSummary', () => {
     render(<BulkDeleteSummary />)
     // Expected amount should be ~50 (keyCount * total / scanned = 25 * 100 / 50)
     expect(screen.getByText('Expected amount: ~50 keys')).toBeInTheDocument()
+  })
+
+  it('should use the singular noun when the expected amount is exactly 1', () => {
+    const state: any = store.getState()
+
+    ;(useAppSelector as jest.Mock).mockImplementation(
+      (callback: (arg0: RootState) => RootState) =>
+        callback({
+          ...state,
+          browser: {
+            ...state.browser,
+            keys: {
+              ...state.browser.keys,
+              data: {
+                ...state.browser.keys.data,
+                scanned: 100,
+                total: 100,
+                keys: [],
+              },
+            },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                keyCount: 1,
+              },
+            },
+          },
+        }),
+    )
+
+    render(<BulkDeleteSummary />)
+    expect(screen.getByText('Expected amount: 1 key')).toBeInTheDocument()
   })
 
   it('should show N/A when scanned is 0 (avoid division by zero)', () => {

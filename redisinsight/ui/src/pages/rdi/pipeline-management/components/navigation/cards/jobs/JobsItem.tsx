@@ -13,6 +13,7 @@ import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components
 import { Indicator } from 'uiSrc/components/base/text/text.styles'
 import { ToastNotificationIcon } from '@redis-ui/icons'
 import { truncateText } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 
 type JobItemProps = {
   name: string
@@ -34,102 +35,105 @@ const JobItem = ({
   onSelect,
   onEdit,
   onDelete,
-}: JobItemProps) => (
-  <Row align="center" gap="s">
-    <FlexItem>
-      {!hasChanges && <Indicator $color="transparent" />}
+}: JobItemProps) => {
+  const { t } = useTranslation()
 
-      {hasChanges && (
-        <RiTooltip
-          content="This file contains undeployed changes."
-          position="top"
-        >
-          <Indicator
-            $color="informative"
-            data-testid={`updated-file-${name}-highlight`}
-          />
-        </RiTooltip>
-      )}
-    </FlexItem>
+  return (
+    <Row align="center" gap="s">
+      <FlexItem>
+        {!hasChanges && <Indicator $color="transparent" />}
 
-    <FlexItem
-      onClick={() => onSelect(name)}
-      data-testid={`rdi-nav-job-${name}`}
-      grow
-    >
-      <Row align="center" gap="m">
-        <RiTooltip content={truncateText(name, 200)}>
-          <Text
-            style={{ textDecoration: isActive ? 'underline' : 'none' }}
-            color={isActive ? 'primary' : 'secondary'}
-          >
-            {truncateText(name, 20)}
-          </Text>
-        </RiTooltip>
-
-        {!isValid && (
+        {hasChanges && (
           <RiTooltip
-            position="right"
-            content={
-              <ValidationErrorsList validationErrors={validationErrors} />
-            }
+            content={t('rdi.pipeline.nav.undeployedChanges')}
+            position="top"
           >
-            <Icon
-              icon={ToastNotificationIcon}
-              color="danger500"
-              size="M"
-              data-testid={`rdi-pipeline-nav__error-${name}`}
+            <Indicator
+              $color="informative"
+              data-testid={`updated-file-${name}-highlight`}
             />
           </RiTooltip>
         )}
-      </Row>
-    </FlexItem>
+      </FlexItem>
 
-    <FlexItem>
-      <Row data-testid={`rdi-nav-job-actions-${name}`} align="center">
-        <RiTooltip content="Edit job file name" position="top">
-          <IconButton
-            icon={EditIcon}
-            onClick={() => onEdit(name)}
-            aria-label="edit job file name"
-            data-testid={`edit-job-name-${name}`}
-          />
-        </RiTooltip>
+      <FlexItem
+        onClick={() => onSelect(name)}
+        data-testid={`rdi-nav-job-${name}`}
+        grow
+      >
+        <Row align="center" gap="m">
+          <RiTooltip content={truncateText(name, 200)}>
+            <Text
+              style={{ textDecoration: isActive ? 'underline' : 'none' }}
+              color={isActive ? 'primary' : 'secondary'}
+            >
+              {truncateText(name, 20)}
+            </Text>
+          </RiTooltip>
 
-        <RiTooltip
-          content="Delete job"
-          position="top"
-          anchorClassName="flex-row"
-        >
-          <ConfirmationPopover
-            title={`Delete ${name}`}
-            body={
-              <Text size="s">
-                Changes will not be applied until the pipeline is deployed.
-              </Text>
-            }
-            submitBtn={
-              <DestructiveButton
-                size="s"
-                color="secondary"
-                data-testid="delete-confirm-btn"
-              >
-                Delete
-              </DestructiveButton>
-            }
-            onConfirm={() => onDelete(name)}
-            button={
-              <IconButton
-                icon={DeleteIcon}
-                aria-label="delete job"
-                data-testid={`delete-job-${name}`}
+          {!isValid && (
+            <RiTooltip
+              position="right"
+              content={
+                <ValidationErrorsList validationErrors={validationErrors} />
+              }
+            >
+              <Icon
+                icon={ToastNotificationIcon}
+                color="danger500"
+                size="M"
+                data-testid={`rdi-pipeline-nav__error-${name}`}
               />
-            }
-          />
-        </RiTooltip>
-      </Row>
-    </FlexItem>
-  </Row>
-)
+            </RiTooltip>
+          )}
+        </Row>
+      </FlexItem>
+
+      <FlexItem>
+        <Row data-testid={`rdi-nav-job-actions-${name}`} align="center">
+          <RiTooltip
+            content={t('rdi.pipeline.nav.editJobTooltip')}
+            position="top"
+          >
+            <IconButton
+              icon={EditIcon}
+              onClick={() => onEdit(name)}
+              aria-label={t('rdi.pipeline.nav.editJobAria')}
+              data-testid={`edit-job-name-${name}`}
+            />
+          </RiTooltip>
+
+          <RiTooltip
+            content={t('rdi.pipeline.nav.deleteJobTooltip')}
+            position="top"
+            anchorClassName="flex-row"
+          >
+            <ConfirmationPopover
+              title={t('rdi.pipeline.nav.deleteJobTitle', { name })}
+              body={<Text size="s">{t('rdi.pipeline.nav.deleteJobBody')}</Text>}
+              submitBtn={
+                <DestructiveButton
+                  size="s"
+                  color="secondary"
+                  data-testid="delete-confirm-btn"
+                >
+                  {t('rdi.pipeline.nav.deleteConfirm')}
+                </DestructiveButton>
+              }
+              onConfirm={() => onDelete(name)}
+              button={
+                <IconButton
+                  icon={DeleteIcon}
+                  aria-label={t('rdi.pipeline.nav.deleteJobAria')}
+                  data-testid={`delete-job-${name}`}
+                />
+              }
+            />
+          </RiTooltip>
+        </Row>
+      </FlexItem>
+    </Row>
+  )
+}
 
 export default JobItem

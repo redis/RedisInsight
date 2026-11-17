@@ -2,12 +2,15 @@ import React from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { isKeySizeAvailableSelector } from 'uiSrc/slices/app/context'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { AutoRefresh } from 'uiSrc/components'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import { ViewSwitch, ColumnsMenu } from 'uiSrc/components/browser'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { KeyTreeSettings } from '../../key-tree'
 import { useKeysBrowserPanel } from '../contexts/Context'
@@ -15,6 +18,8 @@ import { useKeysBrowserPanel } from '../contexts/Context'
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
 const Header = () => {
+  const { t } = useTranslation()
+  const isKeySizeAvailable = useAppSelector(isKeySizeAvailableSelector)
   const {
     viewType,
     searchMode,
@@ -34,7 +39,7 @@ const Header = () => {
 
   return (
     <AutoSizer disableHeight>
-      {({ width }) => (
+      {({ width }: { width: number }) => (
         <Row align="center" justify="between" style={{ width }}>
           <Row gap="m" align="center" grow={false}>
             <FlexItem>
@@ -42,7 +47,9 @@ const Header = () => {
                 disabled={
                   searchMode === SearchMode.Redisearch && !selectedIndex
                 }
-                disabledRefreshButtonMessage="Select an index to refresh keys."
+                disabledRefreshButtonMessage={t(
+                  'browser.keysBrowser.refreshDisabledMessage',
+                )}
                 iconSize="S"
                 postfix="keys"
                 loading={loading}
@@ -57,6 +64,7 @@ const Header = () => {
             <FlexItem>
               <ColumnsMenu
                 shownColumns={shownColumns}
+                isKeySizeAvailable={isKeySizeAvailable}
                 onToggleColumn={handleToggleColumn}
               />
             </FlexItem>
@@ -71,7 +79,7 @@ const Header = () => {
               <ActionIconButton
                 icon={PlusIcon}
                 variant="secondary"
-                aria-label="Add key"
+                aria-label={t('browser.keysBrowser.addKeyAria')}
                 onClick={openAddKeyPanel}
                 data-testid="btn-add-key"
               />

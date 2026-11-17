@@ -18,6 +18,13 @@ import {
   ICommandArgGenerated,
 } from 'uiSrc/constants'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
+import i18n from 'uiSrc/i18n'
+
+const ARG_TYPE_KEYS = {
+  multiple: 'common.command.argType.multiple',
+  optional: 'common.command.argType.optional',
+  required: 'common.command.argType.required',
+} as const
 
 enum ArgumentType {
   INTEGER = 'integer',
@@ -307,20 +314,21 @@ export const getCommandMarkdown = (
   command: ICommand,
   docUrl: string = '',
 ): string => {
-  const linkMore = !docUrl ? '' : ` [Read more](${docUrl})`
+  const linkMore = !docUrl
+    ? ''
+    : ` [${i18n.t('common.command.readMore')}](${docUrl})`
   const lines: string[] = [command?.summary + linkMore]
   if (command?.arguments?.length) {
-    // TODO: use i18n file for texts
-    lines.push('### Arguments:')
+    lines.push(`### ${i18n.t('common.command.argumentsHeading')}`)
     generateArgs(command?.provider, command.arguments).forEach(
       (arg: ICommandArgGenerated): void => {
         const { multiple, optional } = arg
-        const type: string = multiple
-          ? 'multiple'
+        const typeKey = multiple
+          ? ARG_TYPE_KEYS.multiple
           : optional
-            ? 'optional'
-            : 'required'
-        const argDescription: string = `_${type}_ \`${arg.generatedName}\``
+            ? ARG_TYPE_KEYS.optional
+            : ARG_TYPE_KEYS.required
+        const argDescription: string = `_${i18n.t(typeKey)}_ \`${arg.generatedName}\``
         lines.push(argDescription)
       },
     )

@@ -22,6 +22,10 @@ describe('AutoRefresh', () => {
     jest.clearAllMocks()
     jest.spyOn(localStorageService, 'get').mockImplementation(() => null)
   })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
   it('should render', () => {
     expect(render(<AutoRefresh {...instance(mockedProps)} />)).toBeTruthy()
   })
@@ -157,12 +161,14 @@ describe('AutoRefresh', () => {
     })
 
     it('should call onRefresh after enable auto-refresh and set 1 sec', async () => {
+      jest.useFakeTimers()
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
       const onRefresh = jest.fn()
       render(<AutoRefresh {...instance(mockedProps)} onRefresh={onRefresh} />)
 
-      await userEvent.click(screen.getByTestId('auto-refresh-config-btn'))
+      await user.click(screen.getByTestId('auto-refresh-config-btn'))
       await waitForRiPopoverVisible()
-      await userEvent.click(screen.getByTestId('auto-refresh-switch'))
+      await user.click(screen.getByTestId('auto-refresh-switch'))
       fireEvent.click(screen.getByTestId('refresh-rate'))
 
       fireEvent.change(screen.getByTestId(INLINE_ITEM_EDITOR), {
@@ -170,21 +176,20 @@ describe('AutoRefresh', () => {
       })
       expect(screen.getByTestId(INLINE_ITEM_EDITOR)).toHaveValue('1')
 
-      await userEvent.click(screen.getByTestId(/apply-btn/))
-      // screen.getByTestId(/apply-btn/).click()
+      await user.click(screen.getByTestId(/apply-btn/))
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(1)
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(2)
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(3)
     })
@@ -263,14 +268,16 @@ describe('AutoRefresh', () => {
   })
 
   it('should NOT call onRefresh with disabled state', async () => {
+    jest.useFakeTimers()
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
     const onRefresh = jest.fn()
     const { rerender } = render(
       <AutoRefresh {...instance(mockedProps)} onRefresh={onRefresh} />,
     )
 
-    await userEvent.click(screen.getByTestId('auto-refresh-config-btn'))
+    await user.click(screen.getByTestId('auto-refresh-config-btn'))
     await waitForRiPopoverVisible()
-    await userEvent.click(screen.getByTestId('auto-refresh-switch'))
+    await user.click(screen.getByTestId('auto-refresh-switch'))
     fireEvent.click(screen.getByTestId('refresh-rate'))
     fireEvent.change(screen.getByTestId(INLINE_ITEM_EDITOR), {
       target: { value: '1' },
@@ -278,9 +285,11 @@ describe('AutoRefresh', () => {
 
     expect(screen.getByTestId(INLINE_ITEM_EDITOR)).toHaveValue('1')
 
-    screen.getByTestId(/apply-btn/).click()
+    act(() => {
+      screen.getByTestId(/apply-btn/).click()
+    })
 
-    await act(async () => {
+    act(() => {
       rerender(
         <AutoRefresh
           {...instance(mockedProps)}
@@ -290,17 +299,17 @@ describe('AutoRefresh', () => {
       )
     })
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(0)
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(0)
 
-    await act(async () => {
+    act(() => {
       rerender(
         <AutoRefresh
           {...instance(mockedProps)}
@@ -310,8 +319,8 @@ describe('AutoRefresh', () => {
       )
     })
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(1)
   })

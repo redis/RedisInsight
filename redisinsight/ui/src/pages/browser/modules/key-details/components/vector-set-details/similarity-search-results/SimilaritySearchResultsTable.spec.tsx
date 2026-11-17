@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { render, screen } from 'uiSrc/utils/test-utils'
+import i18n from 'uiSrc/i18n'
 import { stringToBuffer } from 'uiSrc/utils'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
@@ -18,7 +19,7 @@ import {
 
 const defaultProps: SimilaritySearchResultsTableProps = {
   matches: [],
-  columns: buildSimilarityResultsColumns([]),
+  columns: buildSimilarityResultsColumns([], i18n.t),
   columnVisibility: {},
   parsedAttributesCache: new WeakMap(),
 }
@@ -50,7 +51,7 @@ const renderTable = (
 ) => {
   const parsedAttributesCache = buildParsedAttributesCache(matches)
   const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
-  const columns = buildSimilarityResultsColumns(attributeKeys)
+  const columns = buildSimilarityResultsColumns(attributeKeys, i18n.t)
   return renderComponent({
     matches,
     columns,
@@ -230,7 +231,7 @@ describe('SimilaritySearchResultsTable', () => {
     it('renders attribute values from the parsed-attributes cache', () => {
       const match = buildMatch('a', 0.9, '{"city":"RAW"}')
       const attributeKeys = collectAttributeKeys([match])
-      const columns = buildSimilarityResultsColumns(attributeKeys)
+      const columns = buildSimilarityResultsColumns(attributeKeys, i18n.t)
       const parsedAttributesCache: ParsedAttributesCache = new WeakMap()
       parsedAttributesCache.set(match, { city: 'FROM_CACHE' })
 

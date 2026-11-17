@@ -29,7 +29,7 @@ fi
 
 MAIN_ABS="$PLUGIN_ROOT/${MAIN_PATH#./}"
 if [[ ! -f "$MAIN_ABS" ]]; then
-  echo "verify: built bundle not found at $MAIN_ABS (run yarn build first)" >&2
+  echo "verify: built bundle not found at $MAIN_ABS (run npm run build first)" >&2
   exit 1
 fi
 

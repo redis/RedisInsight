@@ -1,6 +1,6 @@
 import { defineConfig } from 'i18next-cli'
 
-// Config for `yarn i18n:extract` — scans t() usages in the UI and syncs keys
+// Config for `npm run i18n:extract` — scans t() usages in the UI and syncs keys
 // into the locale files. en is the source of truth; bg gets the same keys with
 // empty values to translate.
 export default defineConfig({

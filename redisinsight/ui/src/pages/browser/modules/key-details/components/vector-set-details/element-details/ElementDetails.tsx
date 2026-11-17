@@ -27,6 +27,7 @@ import { AttributeEditor } from '../attribute-editor'
 import { useElementAttributeEditor } from '../hooks'
 import { formatVector } from './utils'
 import { VECTOR_DESCRIPTION, ATTRIBUTES_DESCRIPTION } from './constants'
+import { useTranslation } from 'uiSrc/i18n'
 import { ElementDetailsProps } from './ElementDetails.types'
 import * as S from './ElementDetails.styles'
 
@@ -36,6 +37,7 @@ const ElementDetails = ({
   onClose,
   onDrawerDidClose,
 }: ElementDetailsProps) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {}
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
@@ -121,16 +123,25 @@ const ElementDetails = ({
         <DrawerBody>
           <S.Body>
             <Col gap="l">
-              <Text color="secondary">{VECTOR_DESCRIPTION}</Text>
+              <Text color="secondary">{t(VECTOR_DESCRIPTION)}</Text>
               <Col gap="s">
-                <Text color="primary">Vector</Text>
+                <Text color="primary">
+                  {t('browser.vectorSet.elementDetails.vectorLabel')}
+                </Text>
                 <S.VectorWrapper>
                   <S.VectorActions gap="m" align="end">
                     {isTruncatedVector ? (
-                      <RiTooltip content="Download" position="left">
+                      <RiTooltip
+                        content={t(
+                          'browser.vectorSet.elementDetails.downloadTooltip',
+                        )}
+                        position="left"
+                      >
                         <IconButton
                           icon={DownloadIcon}
-                          aria-label="Download vector"
+                          aria-label={t(
+                            'browser.vectorSet.elementDetails.downloadVectorAria',
+                          )}
                           onClick={handleDownloadVector}
                           data-testid="vector-set-download-vector-btn"
                         />
@@ -138,7 +149,9 @@ const ElementDetails = ({
                     ) : (
                       <CopyButton
                         copy={vectorText}
-                        aria-label="Copy vector"
+                        aria-label={t(
+                          'browser.vectorSet.elementDetails.copyVectorAria',
+                        )}
                         onCopy={handleCopyVector}
                         data-testid="vector-set-copy-vector-btn"
                       />
@@ -155,14 +168,18 @@ const ElementDetails = ({
             </Col>
 
             <Col gap="l">
-              <Text color="secondary">{ATTRIBUTES_DESCRIPTION}</Text>
+              <Text color="secondary">{t(ATTRIBUTES_DESCRIPTION)}</Text>
               <Col gap="s">
-                <Text color="primary">Attributes</Text>
+                <Text color="primary">
+                  {t('browser.vectorSet.elementDetails.attributesLabel')}
+                </Text>
                 <S.EditorWrapper data-testid="vector-set-attributes-json-editor">
                   {!isEditing && (
                     <S.EditButton
                       icon={EditIcon}
-                      aria-label="Edit attributes"
+                      aria-label={t(
+                        'browser.vectorSet.elementDetails.editAttributesAria',
+                      )}
                       onClick={startEditing}
                       data-testid="vector-set-edit-attributes-btn"
                     />

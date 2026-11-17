@@ -152,6 +152,11 @@ export const AUTODISCOVERY_MAX_CONCURRENT_REQUESTS = 20;
 export const AZURE_SUBSCRIPTION_ID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// MSAL reports the realm that issued a token as a GUID, so only a tenant given
+// in this form can be compared against it.
+export const AZURE_TENANT_GUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 // A tenant id is either a GUID or a domain (e.g. your-tenant.onmicrosoft.com).
 // MSAL accepts both as the authority path segment.
 export const AZURE_TENANT_ID_REGEX =

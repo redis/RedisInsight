@@ -10,6 +10,7 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   COLUMNS_BUTTON_TEST_ID,
@@ -30,8 +31,10 @@ const SimilarityColumnsPopover = ({
   columnsMap,
   shownColumns,
   onShownColumnsChange,
-  title = DEFAULT_TITLE,
+  title,
 }: Props) => {
+  const { t } = useTranslation()
+  const resolvedTitle = title ?? t(DEFAULT_TITLE)
   const [isOpen, setIsOpen] = useState(false)
   const showLabel = width > MIDDLE_SCREEN_RESOLUTION
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
@@ -63,21 +66,21 @@ const SimilarityColumnsPopover = ({
       icon={ColumnsIcon}
       onClick={toggle}
       data-testid={COLUMNS_BUTTON_TEST_ID}
-      aria-label={title}
+      aria-label={resolvedTitle}
     >
-      {title}
+      {resolvedTitle}
     </EmptyButton>
   ) : (
     <IconButton
       icon={ColumnsIcon}
       onClick={toggle}
       data-testid={COLUMNS_BUTTON_TEST_ID}
-      aria-label={title}
+      aria-label={resolvedTitle}
     />
   )
 
   return (
-    <RiTooltip content={showLabel ? '' : title} position="left">
+    <RiTooltip content={showLabel ? '' : resolvedTitle} position="left">
       <RiPopover
         ownFocus={false}
         anchorPosition="downLeft"

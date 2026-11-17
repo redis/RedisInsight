@@ -5,6 +5,7 @@ import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import { SentinelMaster } from 'apiClient'
 import { CopyButton } from 'uiSrc/components/copy-button'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { DbInfoGroup } from '../DbInfo.styles'
 import { ListGroupItemLabelValue } from '../DbInfo'
@@ -20,33 +21,37 @@ export interface Props {
 }
 
 const DbInfoSentinel = (props: Props) => {
+  const { t } = useTranslation()
   const { connectionType, nameFromProvider, sentinelMaster, host, port } = props
 
   const dbInfo: DbInfoLabelValue[] = [
     {
-      label: 'Connection Type:',
+      label: t('home.form.dbInfo.field.connectionType'),
       value: capitalize(connectionType),
       dataTestId: 'connection-type',
     },
     {
-      label: 'Primary Group Name:',
+      label: t('home.form.dbInfoSentinel.field.primaryGroupName'),
       value: sentinelMaster?.name,
       dataTestId: 'primary-group-name',
       hide: !sentinelMaster?.name,
     },
     {
-      label: 'Database Name from Provider:',
+      label: t('home.form.dbInfo.field.nameFromProvider'),
       value: nameFromProvider,
       dataTestId: 'db-name-from-provider',
       hide: !nameFromProvider,
     },
     {
-      label: 'Sentinel Host & Port:',
+      label: t('home.form.dbInfoSentinel.field.hostAndPort'),
       value: `${host}:${port}`,
       dataTestId: 'host-and-port',
       additionalContent: (
         <StyledCopyContainer>
-          <CopyButton copy={`${host}:${port}`} aria-label="Copy host:port" />
+          <CopyButton
+            copy={`${host}:${port}`}
+            aria-label={t('home.form.dbInfoSentinel.ariaLabel.copyHostPort')}
+          />
         </StyledCopyContainer>
       ),
       hide: !host || !port,
@@ -59,7 +64,7 @@ const DbInfoSentinel = (props: Props) => {
         .filter((item) => !item.hide)
         .map((item) => (
           <ListGroupItemLabelValue
-            key={item.label}
+            key={item.dataTestId}
             label={item.label}
             value={item.value}
             dataTestId={item.dataTestId}

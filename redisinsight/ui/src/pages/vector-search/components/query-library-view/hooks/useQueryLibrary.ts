@@ -1,15 +1,36 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { TFunction } from 'i18next'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
-import { debounce } from 'lodash'
 
 import { useTranslation } from 'uiSrc/i18n'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
-import { QueryLibraryItem } from 'uiSrc/services/query-library/types'
+import {
+  QueryLibraryItem,
+  QueryLibraryType,
+} from 'uiSrc/services/query-library/types'
 import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
-const SEARCH_DEBOUNCE_MS = 300
+// Sample items are seeded with i18n keys as their name/description (so they
+// follow runtime language changes); resolve those keys here for display and
+// search. User-saved items are returned untouched.
+const translateSampleItem = (
+  item: QueryLibraryItem,
+  t: TFunction,
+): QueryLibraryItem => {
+  if (item.type !== QueryLibraryType.Sample) {
+    return item
+  }
+
+  return {
+    ...item,
+    name: t(item.name as never),
+    description: item.description
+      ? t(item.description as never)
+      : item.description,
+  }
+}
 
 export const useQueryLibrary = () => {
   const { t } = useTranslation()
@@ -21,11 +42,7 @@ export const useQueryLibrary = () => {
 
   const indexName = rawIndexName ? decodeURIComponent(rawIndexName) : ''
 
-  const [items, setItems] = useState<QueryLibraryItem[]>([])
-  // Whether the library contains any items at all, ignoring the active search filter.
-  // Updated only on unfiltered fetches and deletions, so it stays stable
-  // during debounced search transitions and avoids UI flicker.
-  const [hasItemsBeforeSearch, setHasItems] = useState(false)
+  const [allItems, setAllItems] = useState<QueryLibraryItem[]>([])
   const [loading, setLoading] = useState<boolean>()
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -33,55 +50,54 @@ export const useQueryLibrary = () => {
 
   const serviceRef = useRef(new QueryLibraryService())
 
-  const fetchItems = useCallback(
-    async (searchTerm?: string) => {
-      if (!databaseId || !indexName) return
+  const fetchItems = useCallback(async () => {
+    if (!databaseId || !indexName) return
 
-      setLoading(true)
-      setError(null)
+    setLoading(true)
+    setError(null)
 
-      try {
-        const data = await serviceRef.current.getList(databaseId, {
-          indexName,
-          search: searchTerm || undefined,
-        })
-        setItems(data)
-        if (!searchTerm) {
-          setHasItems(data.length > 0)
-        }
-      } catch {
-        setItems([])
-        setError(t('vectorSearch.queryLibrary.error.load'))
-      } finally {
-        setLoading(false)
-      }
-    },
-    [databaseId, indexName, t],
-  )
-
-  const debouncedFetch = useMemo(
-    () => debounce((term: string) => fetchItems(term), SEARCH_DEBOUNCE_MS),
-    [fetchItems],
-  )
-
-  useEffect(
-    () => () => {
-      debouncedFetch.cancel()
-    },
-    [debouncedFetch],
-  )
+    try {
+      const data = await serviceRef.current.getList(databaseId, { indexName })
+      setAllItems(data)
+    } catch {
+      setAllItems([])
+      setError(t('vectorSearch.queryLibrary.error.load'))
+    } finally {
+      setLoading(false)
+    }
+  }, [databaseId, indexName, t])
 
   useEffect(() => {
     fetchItems()
   }, [fetchItems])
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearch(value)
-      debouncedFetch(value)
-    },
-    [debouncedFetch],
+  // Resolve sample-item keys to the active language; recomputed on language
+  // change via the `t` dependency so displayed/seeded items stay in sync.
+  const translatedItems = useMemo(
+    () => allItems.map((item) => translateSampleItem(item, t)),
+    [allItems, t],
   )
+
+  // Search client-side over the translated text so matches reflect what the
+  // user actually sees (the DB stores i18n keys for sample items).
+  const items = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    if (!term) return translatedItems
+
+    return translatedItems.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(term) ||
+        item.description?.toLowerCase().includes(term) ||
+        item.query?.toLowerCase().includes(term),
+    )
+  }, [translatedItems, search])
+
+  // Reflects whether the library has any items at all, independent of search.
+  const hasItemsBeforeSearch = translatedItems.length > 0
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+  }, [])
 
   const deleteItem = useCallback(
     async (id: string): Promise<boolean> => {
@@ -91,13 +107,7 @@ export const useQueryLibrary = () => {
 
       try {
         await serviceRef.current.delete(databaseId, id)
-        setItems((prev) => {
-          const remaining = prev.filter((item) => item.id !== id)
-          if (remaining.length === 0 && !search) {
-            setHasItems(false)
-          }
-          return remaining
-        })
+        setAllItems((prev) => prev.filter((item) => item.id !== id))
         setOpenItemId((prev) => (prev === id ? null : prev))
         dispatch(
           addMessageNotification(queryLibraryNotifications.queryDeleted()),
@@ -107,7 +117,7 @@ export const useQueryLibrary = () => {
         return false
       }
     },
-    [databaseId, dispatch, search],
+    [databaseId, dispatch],
   )
 
   const toggleItemOpen = useCallback((id: string) => {
@@ -115,8 +125,8 @@ export const useQueryLibrary = () => {
   }, [])
 
   const getItemById = useCallback(
-    (id: string) => items.find((item) => item.id === id),
-    [items],
+    (id: string) => translatedItems.find((item) => item.id === id),
+    [translatedItems],
   )
 
   return {

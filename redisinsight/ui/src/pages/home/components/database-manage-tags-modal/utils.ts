@@ -1,3 +1,4 @@
+import i18n from 'uiSrc/i18n'
 import {
   MAX_KEY_LENGTH,
   MAX_VALUE_LENGTH,
@@ -20,19 +21,23 @@ export function getInvalidTagErrors(
 
   if (tag?.key) {
     if (tag.key.length > MAX_KEY_LENGTH) {
-      keyError = INVALID_FIELD_MAX_KEY_LENGTH_MESSAGE
+      keyError = i18n.t(INVALID_FIELD_MAX_KEY_LENGTH_MESSAGE, {
+        max: MAX_KEY_LENGTH,
+      })
     } else if (!VALID_TAG_KEY_REGEX.test(tag.key)) {
-      keyError = INVALID_FIELD_MESSAGE
+      keyError = i18n.t(INVALID_FIELD_MESSAGE)
     } else if (tags.some((t, i) => i !== index && t.key === tag.key)) {
-      keyError = INVALID_FIELD_UNIQUE_KEY_MESSAGE
+      keyError = i18n.t(INVALID_FIELD_UNIQUE_KEY_MESSAGE)
     }
   }
 
   if (tag?.value) {
     if (tag.value.length > MAX_VALUE_LENGTH) {
-      valueError = INVALID_FIELD_MAX_VALUE_LENGTH_MESSAGE
+      valueError = i18n.t(INVALID_FIELD_MAX_VALUE_LENGTH_MESSAGE, {
+        max: MAX_VALUE_LENGTH,
+      })
     } else if (!VALID_TAG_VALUE_REGEX.test(tag.value)) {
-      valueError = INVALID_FIELD_MESSAGE
+      valueError = i18n.t(INVALID_FIELD_MESSAGE)
     }
   }
 

@@ -3,6 +3,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   id?: string
@@ -10,6 +11,7 @@ export interface Props {
 }
 
 const CloneConnection = (props: Props) => {
+  const { t } = useTranslation()
   const { id, setIsCloneMode } = props
 
   const handleClickClone = () => {
@@ -27,11 +29,11 @@ const CloneConnection = (props: Props) => {
       <Row gap="m" justify="end" style={{ flexGrow: 0 }}>
         <FlexItem>
           <SecondaryButton
-            aria-label="Clone database"
+            aria-label={t('home.form.manual.ariaLabel.cloneDatabase')}
             data-testid="clone-db-btn"
             onClick={handleClickClone}
           >
-            Clone Connection
+            {t('home.form.manual.button.cloneConnection')}
           </SecondaryButton>
         </FlexItem>
       </Row>

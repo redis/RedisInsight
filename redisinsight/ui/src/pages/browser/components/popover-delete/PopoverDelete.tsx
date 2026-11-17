@@ -4,7 +4,6 @@ import { RiTooltip } from 'uiSrc/components/base'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { isTruncatedString } from 'uiSrc/utils'
-import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
 import {
   DestructiveButton,
   EmptyButton,
@@ -12,6 +11,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   header?: JSX.Element | string
@@ -51,6 +51,7 @@ const PopoverDelete = (props: Props) => {
     persistent,
     customOutsideDetector,
   } = props
+  const { t } = useTranslation()
 
   const isDisabled = isTruncatedString(item)
 
@@ -69,7 +70,7 @@ const PopoverDelete = (props: Props) => {
   const deleteButton = buttonLabel ? (
     <EmptyButton
       icon={DeleteIcon}
-      aria-label="Remove field"
+      aria-label={t('browser.popoverDelete.removeAria')}
       disabled={isDisabled || updateLoading}
       onClick={isDisabled ? () => {} : onButtonClick}
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}
@@ -80,7 +81,7 @@ const PopoverDelete = (props: Props) => {
     <IconButton
       size="M"
       icon={DeleteIcon}
-      aria-label="Remove field"
+      aria-label={t('browser.popoverDelete.removeAria')}
       disabled={isDisabled || updateLoading}
       onClick={isDisabled ? () => {} : onButtonClick}
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}
@@ -89,7 +90,7 @@ const PopoverDelete = (props: Props) => {
 
   const deleteButtonWithTooltip = (
     <RiTooltip
-      content={TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA}
+      content={t('browser.keyDetails.truncatedActionDisabled')}
       anchorClassName={styles.editBtnAnchor}
       data-testid={testid ? `${testid}-tooltip` : 'remove-tooltip'}
     >
@@ -119,7 +120,7 @@ const PopoverDelete = (props: Props) => {
           onClick={() => handleDeleteItem(itemRaw || item)}
           data-testid={testid || 'remove'}
         >
-          Remove
+          {t('browser.popoverDelete.button')}
         </DestructiveButton>
       }
       customOutsideDetector={customOutsideDetector}

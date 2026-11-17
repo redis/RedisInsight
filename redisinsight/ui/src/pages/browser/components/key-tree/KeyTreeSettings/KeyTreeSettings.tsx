@@ -14,9 +14,12 @@ import {
   appContextDbConfig,
   resetBrowserTree,
   setBrowserTreeDelimiter,
+  setBrowserTreePrefixLength,
   setBrowserTreeSort,
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
+import { NumericInput } from 'uiSrc/components/base/inputs'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -33,6 +36,8 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 
+const MAX_PREFIX_LENGTH = 512
+
 const StyledCol = styled(Col)`
   width: 300px;
 `
@@ -47,25 +52,30 @@ const TreeViewSettingsButton = styled(IconButton)<{
 export interface Props {
   loading: boolean
 }
-const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
-  value,
-  inputDisplay: (
-    <span data-testid={`tree-view-sorting-item-${value}`}>
-      Key name {value}
-    </span>
-  ),
-}))
 
 const KeyTreeSettings = ({ loading }: Props) => {
+  const { t } = useTranslation()
+  const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
+    value,
+    inputDisplay: (
+      <span data-testid={`tree-view-sorting-item-${value}`}>
+        {t('browser.tree.settings.sortOption', { order: value })}
+      </span>
+    ),
+  }))
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const {
     treeViewDelimiter = [DEFAULT_DELIMITER],
     treeViewSort = DEFAULT_TREE_SORTING,
+    treeViewDelimiterPrefixLength = 0,
   } = useAppSelector(appContextDbConfig)
   const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
   const [pendingInput, setPendingInput] = useState('')
+  const [prefixLength, setPrefixLength] = useState<number>(
+    treeViewDelimiterPrefixLength,
+  )
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -78,6 +88,10 @@ const KeyTreeSettings = ({ loading }: Props) => {
   useEffect(() => {
     setDelimiters(treeViewDelimiter)
   }, [treeViewDelimiter])
+
+  useEffect(() => {
+    setPrefixLength(treeViewDelimiterPrefixLength)
+  }, [treeViewDelimiterPrefixLength])
 
   const onButtonClick = () =>
     setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
@@ -92,7 +106,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setSorting(treeViewSort)
     setDelimiters(treeViewDelimiter)
     setPendingInput('')
-  }, [treeViewSort, treeViewDelimiter])
+    setPrefixLength(treeViewDelimiterPrefixLength)
+  }, [treeViewSort, treeViewDelimiter, treeViewDelimiterPrefixLength])
 
   const button = (
     <TreeViewSettingsButton
@@ -100,7 +115,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
-      aria-label="open tree view settings"
+      aria-label={t('browser.tree.settings.aria')}
       data-testid="tree-view-settings-btn"
     />
   )
@@ -144,6 +159,11 @@ const KeyTreeSettings = ({ loading }: Props) => {
       dispatch(resetBrowserTree())
     }
 
+    if (prefixLength !== treeViewDelimiterPrefixLength) {
+      dispatch(setBrowserTreePrefixLength(prefixLength))
+      dispatch(resetBrowserTree())
+    }
+
     setIsPopoverOpen(false)
   }
 
@@ -162,7 +182,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
         <FlexItem>
           <AutoTag
             layout="horizontal"
-            label="Delimiter"
+            label={t('browser.tree.settings.delimiter')}
             placeholder=":"
             delimiter=" "
             selectedOptions={delimiters}
@@ -175,7 +195,40 @@ const KeyTreeSettings = ({ loading }: Props) => {
           />
         </FlexItem>
         <FlexItem>
-          <FormField layout="horizontal" label="Sort by">
+          <FormField
+            layout="horizontal"
+            label={t(
+              'browser.tree.settings.prefixLength',
+              'Ignore separator in first N chars',
+            )}
+            infoIconProps={{
+              content: t(
+                'browser.tree.settings.prefixLengthHint',
+                'Characters before position N are treated as a prefix — separators within that prefix are ignored. Set to 0 to disable. Large values flatten the tree.',
+              ),
+            }}
+          >
+            <NumericInput
+              min={0}
+              max={MAX_PREFIX_LENGTH}
+              value={prefixLength}
+              onChange={(next) =>
+                setPrefixLength(
+                  Math.min(
+                    MAX_PREFIX_LENGTH,
+                    Math.max(0, Math.round(Number(next ?? 0))),
+                  ),
+                )
+              }
+              data-testid="prefix-length-input"
+            />
+          </FormField>
+        </FlexItem>
+        <FlexItem>
+          <FormField
+            layout="horizontal"
+            label={t('browser.tree.settings.sortBy')}
+          >
             <RiSelect
               options={sortOptions}
               valueRender={({ option }) => option.inputDisplay ?? option.value}
@@ -192,13 +245,13 @@ const KeyTreeSettings = ({ loading }: Props) => {
               data-testid="tree-view-cancel-btn"
               onClick={closePopover}
             >
-              Cancel
+              {t('browser.tree.settings.button.cancel')}
             </SecondaryButton>
             <PrimaryButton
               data-testid="tree-view-apply-btn"
               onClick={handleApply}
             >
-              Apply
+              {t('browser.tree.settings.button.apply')}
             </PrimaryButton>
           </Row>
         </FlexItem>

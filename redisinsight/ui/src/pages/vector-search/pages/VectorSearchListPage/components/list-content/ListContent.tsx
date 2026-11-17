@@ -11,12 +11,14 @@ import { IndexInfoSidePanel } from 'uiSrc/pages/vector-search/components/index-i
 import { useListContent } from 'uiSrc/pages/vector-search/hooks/useListContent'
 
 import * as S from './ListContent.styles'
+import { ListContentProps } from './ListContent.types'
 import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
 
-export const ListContent = () => {
+export const ListContent = ({ search }: ListContentProps) => {
   const {
     data,
     loading,
+    isFiltered,
     actions,
     onQueryClick,
     viewingIndexName,
@@ -24,7 +26,7 @@ export const ListContent = () => {
     pendingDeleteIndex,
     onConfirmDelete,
     onCloseDelete,
-  } = useListContent()
+  } = useListContent(search)
 
   return (
     <S.ContentArea>
@@ -40,6 +42,7 @@ export const ListContent = () => {
               <IndexList
                 data={data}
                 loading={loading}
+                isFiltered={isFiltered}
                 onQueryClick={onQueryClick}
                 actions={actions}
                 dataTestId="vector-search--list--table"

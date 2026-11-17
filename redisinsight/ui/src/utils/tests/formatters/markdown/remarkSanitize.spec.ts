@@ -1,5 +1,10 @@
-import { visit } from 'unist-util-visit'
+import type { Root } from 'mdast'
 import { remarkSanitize } from 'uiSrc/utils/formatters/markdown'
+
+const buildTree = (value: string): Root => ({
+  type: 'root',
+  children: [{ type: 'html', value }],
+})
 
 const testCases = [
   { input: '', output: '' },
@@ -24,24 +29,31 @@ const testCases = [
 
 describe('remarkSanitize', () => {
   testCases.forEach((tc) => {
-    it('should return proper sanitized value', () => {
-      const node = {
-        value: tc.input,
-      }
+    it(`should sanitize "${tc.input}" to "${tc.output}"`, () => {
+      const tree = buildTree(tc.input)
 
-      // mock implementation
-      ;(visit as jest.Mock).mockImplementation(
-        (_tree: any, _name: string, callback: (node: any) => void) => {
-          callback(node)
-        },
-      )
+      remarkSanitize()(tree)
 
-      const remark = remarkSanitize()
-      remark({} as Node)
-      expect(node).toEqual({
-        ...node,
-        value: tc.output,
-      })
+      expect(tree.children[0]).toEqual({ type: 'html', value: tc.output })
     })
+  })
+
+  it('should leave non-html nodes untouched', () => {
+    const tree: Root = {
+      type: 'root',
+      children: [{ type: 'text', value: 'plain text' }],
+    }
+
+    remarkSanitize()(tree)
+
+    expect(tree.children[0]).toEqual({ type: 'text', value: 'plain text' })
+  })
+
+  it('should not treat closing tags as sanitizable opening tags', () => {
+    const tree = buildTree('</div>')
+
+    remarkSanitize()(tree)
+
+    expect(tree.children[0]).toEqual({ type: 'html', value: '</div>' })
   })
 })

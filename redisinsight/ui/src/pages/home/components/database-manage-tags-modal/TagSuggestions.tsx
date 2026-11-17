@@ -3,6 +3,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import { uniqBy } from 'lodash'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
 import { Text, Title } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import { presetTagSuggestions } from './constants'
 import { SuggestionsListWrapper } from './TagSuggestions.styles'
 
@@ -24,6 +25,7 @@ export const TagSuggestions = ({
   currentTagKeys,
   onChange,
 }: TagSuggestionsProps) => {
+  const { t } = useTranslation()
   const { data: allTags } = useAppSelector(tagsSelector)
   const tagsSuggestions: SelectOption[] = useMemo(() => {
     const options = uniqBy(presetTagSuggestions.concat(allTags), (tag) =>
@@ -48,13 +50,19 @@ export const TagSuggestions = ({
 
     if (isNewTag) {
       options.push({
-        label: `${searchTerm} (new ${targetKey ? 'value' : 'tag'})`,
+        label: targetKey
+          ? t('home.databaseList.manageTags.suggestions.newValue', {
+              term: searchTerm,
+            })
+          : t('home.databaseList.manageTags.suggestions.newTag', {
+              term: searchTerm,
+            }),
         value: searchTerm,
       })
     }
 
     return options
-  }, [allTags, targetKey, searchTerm, currentTagKeys])
+  }, [allTags, targetKey, searchTerm, currentTagKeys, t])
 
   if (tagsSuggestions.length === 0) {
     return null
@@ -63,7 +71,7 @@ export const TagSuggestions = ({
   return (
     <SuggestionsListWrapper data-testid="tag-suggestions">
       <Title size="XS" color="primary">
-        Suggestions
+        {t('home.databaseList.manageTags.suggestions.title')}
       </Title>
       <ul role="list">
         {tagsSuggestions.map((option) => (

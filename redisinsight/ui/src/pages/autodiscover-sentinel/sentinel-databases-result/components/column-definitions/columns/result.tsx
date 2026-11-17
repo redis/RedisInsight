@@ -2,10 +2,8 @@ import React from 'react'
 
 import type { ColumnDef } from 'uiSrc/components/base/layout/table'
 import type { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import {
-  SentinelDatabaseIds,
-  SentinelDatabaseTitles,
-} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
+import i18n from 'uiSrc/i18n'
+import { SentinelDatabaseIds } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 import { ResultCell } from '../components'
 
 export const resultColumn = (
@@ -13,7 +11,7 @@ export const resultColumn = (
   onAddInstance?: (name: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: SentinelDatabaseTitles.Result,
+    header: i18n.t('autodiscover.sentinel.column.result'),
     id: SentinelDatabaseIds.Message,
     accessorKey: SentinelDatabaseIds.Message,
     enableSorting: true,

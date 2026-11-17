@@ -1,32 +1,14 @@
-import { cloneDeep, set } from 'lodash'
 import React from 'react'
 
 import { Environment } from 'apiClient'
 import { Instance } from 'uiSrc/slices/interfaces'
-import { FeatureFlags } from 'uiSrc/constants'
-import {
-  initialStateDefault,
-  mockStore,
-  render,
-  screen,
-} from 'uiSrc/utils/test-utils'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 import DatabasesListCellName from './DatabasesListCellName'
 
-const renderCell = (
-  instance: Partial<Instance>,
-  { prodMode = true }: { prodMode?: boolean } = {},
-) => {
-  const state = set(
-    cloneDeep(initialStateDefault),
-    `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
-    { flag: prodMode },
-  )
-
+const renderCell = (instance: Partial<Instance>) => {
   const cellProps = { row: { original: instance as Instance } } as any
-  return render(<DatabasesListCellName {...cellProps} />, {
-    store: mockStore(state),
-  })
+  return render(<DatabasesListCellName {...cellProps} />)
 }
 
 describe('DatabasesListCellName', () => {
@@ -61,17 +43,6 @@ describe('DatabasesListCellName', () => {
       ).not.toBeInTheDocument()
       expect(screen.queryByText('PROD')).not.toBeInTheDocument()
       expect(screen.queryByText('DEV')).not.toBeInTheDocument()
-    })
-
-    it('does not render the badge when the prodMode flag is off', () => {
-      renderCell(
-        { ...baseInstance, environment: Environment.Production },
-        { prodMode: false },
-      )
-
-      expect(
-        screen.queryByTestId('environment-badge-db-1'),
-      ).not.toBeInTheDocument()
     })
   })
 

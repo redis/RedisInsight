@@ -62,15 +62,6 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.cloudAds]: {
         flag: riConfig.features.cloudAds.defaultFlag,
       },
-      [FeatureFlags.whatsNew]: {
-        flag: false,
-      },
-      [FeatureFlags.vectorSearchV2]: {
-        flag: false,
-      },
-      [FeatureFlags.vectorSet]: {
-        flag: false,
-      },
       [FeatureFlags.array]: {
         flag: false,
       },
@@ -80,13 +71,22 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devBrowser]: {
         flag: false,
       },
-      [FeatureFlags.prodMode]: {
-        flag: false,
-      },
       [FeatureFlags.devLanguage]: {
         flag: false,
       },
+      [FeatureFlags.devRdiUi]: {
+        flag: false,
+      },
+      [FeatureFlags.vectorSearchEnhancements]: {
+        flag: false,
+      },
       [FeatureFlags.valueDecoder]: {
+        flag: false,
+      },
+      [FeatureFlags.appUpdateStrategySettings]: {
+        flag: false,
+      },
+      [FeatureFlags.redisTools]: {
         flag: false,
       },
     },
@@ -222,8 +222,6 @@ export const appFeatureFlagsSelector = (state: RootState) =>
   state.app.features.featureFlags
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
-export const appFeatureFlagProdModeSelector = (state: RootState): boolean =>
-  state.app.features.featureFlags.features[FeatureFlags.prodMode]?.flag ?? false
 
 export const isValueDecoderEnabledSelector = (state: RootState): boolean =>
   state.app.features.featureFlags.features[FeatureFlags.valueDecoder]?.flag ??
@@ -243,15 +241,6 @@ export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
   return azureEntraIdEnabled && envDependentEnabled
 }
 
-export const isVectorSetEnabledSelector = (state: RootState): boolean => {
-  if (isDevelopment) {
-    return true
-  }
-
-  const features = state.app.features.featureFlags.features
-  return features[FeatureFlags.vectorSet]?.flag ?? false
-}
-
 export const isArrayEnabledSelector = (state: RootState): boolean => {
   if (isDevelopment) {
     return true
@@ -268,6 +257,26 @@ export const isDevLanguageEnabledSelector = (state: RootState): boolean => {
 
   const features = state.app.features.featureFlags.features
   return features[FeatureFlags.devLanguage]?.flag ?? false
+}
+
+export const isDevRdiUiEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.devRdiUi]?.flag ?? false
+}
+
+export const isVectorSearchEnhancementsEnabledSelector = (
+  state: RootState,
+): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.vectorSearchEnhancements]?.flag ?? false
 }
 
 export default appFeaturesSlice.reducer

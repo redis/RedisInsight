@@ -8,6 +8,7 @@ import {
 } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { useTranslation } from 'uiSrc/i18n'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -27,6 +28,7 @@ const EditItemFieldAction = ({
   onClickEditEntireItem,
   'data-testid': testId = 'edit-json-field',
 }: Props) => {
+  const { t } = useTranslation()
   const [deleting, setDeleting] = useState<string>('')
 
   return (
@@ -35,7 +37,7 @@ const EditItemFieldAction = ({
         icon={EditIcon}
         className={styles.jsonButtonStyle}
         onClick={onClickEditEntireItem}
-        aria-label="Edit field"
+        aria-label={t('browser.rejson.editFieldAria')}
         size="S"
         data-testid={testId}
       />

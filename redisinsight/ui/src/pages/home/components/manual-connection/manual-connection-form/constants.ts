@@ -7,11 +7,19 @@ export enum ManualFormTab {
 }
 
 export const MANUAL_FORM_TABS: TabInfo[] = [
-  { value: ManualFormTab.General, label: 'General', content: null },
-  { value: ManualFormTab.Security, label: 'Security', content: null },
+  {
+    value: ManualFormTab.General,
+    label: 'home.form.manual.tab.general',
+    content: null,
+  },
+  {
+    value: ManualFormTab.Security,
+    label: 'home.form.manual.tab.security',
+    content: null,
+  },
   {
     value: ManualFormTab.Decompression,
-    label: 'Decompression & Formatters',
+    label: 'home.form.manual.tab.decompression',
     content: null,
   },
 ]

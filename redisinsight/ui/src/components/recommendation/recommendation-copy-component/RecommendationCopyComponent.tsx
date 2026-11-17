@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { bufferToString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
@@ -51,6 +52,7 @@ const RecommendationCopyComponent = ({
   telemetryEvent,
   provider,
 }: IProps) => {
+  const { t } = useTranslation()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const formattedName = bufferToString(keyName)
@@ -70,7 +72,7 @@ const RecommendationCopyComponent = ({
 
   return (
     <StyledWrapper>
-      <StyledText>Example of a key that may be relevant:</StyledText>
+      <StyledText>{t('tips.copyKey.label')}</StyledText>
       <StyledKeyNameWrapper align="center" $isDbAnalysis={!live}>
         <StyledKeyName
           className="truncateText"
@@ -84,7 +86,7 @@ const RecommendationCopyComponent = ({
           onCopy={handleCopy}
           withTooltip={false}
           data-testid="copy-key-name"
-          aria-label="copy key name"
+          aria-label={t('tips.copyKey.copyAria')}
         />
         <HorizontalSpacer size="xs" />
       </StyledKeyNameWrapper>

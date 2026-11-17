@@ -56,12 +56,19 @@ export class LocalNotificationRepository extends NotificationRepository {
       query.timestamp = timestamp;
     }
 
-    await this.repository
+    const queryBuilder = this.repository
       .createQueryBuilder('n')
       .update()
-      .where(query)
-      .set({ read: true })
-      .execute();
+      .set({ read: true });
+
+    // An empty criteria intentionally marks all notifications as read.
+    // Since TypeORM 0.3.31 an empty `.where({})` throws on update/delete,
+    // so only apply the WHERE clause when there is something to filter by.
+    if (Object.keys(query).length) {
+      queryBuilder.where(query);
+    }
+
+    await queryBuilder.execute();
 
     return [];
   }

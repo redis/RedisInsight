@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash'
 import {
   cleanup,
   mockedStore,
+  mockStore,
   render,
   screen,
   fireEvent,
@@ -13,7 +14,7 @@ import {
 import { stringDataSelector, stringSelector } from 'uiSrc/slices/browser/string'
 import { setSelectedKeyRefreshDisabled } from 'uiSrc/slices/browser/keys'
 import { MOCK_TRUNCATED_BUFFER_VALUE } from 'uiSrc/mocks/data/bigString'
-import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
+import { KeyValueFormat } from 'uiSrc/constants'
 import { handleCopy } from 'uiSrc/utils'
 import { Props, StringDetails } from './StringDetails'
 
@@ -116,6 +117,20 @@ describe('StringDetails', () => {
     expect(queryByTestId('edit-key-value-btn')).toBeInTheDocument()
   })
 
+  it('warns before editing when a non-Unicode format is selected', () => {
+    const state = cloneDeep(mockedStore.getState())
+    state.browser.keys.selectedKey.viewFormat = KeyValueFormat.JSON
+    const jsonStore = mockStore(state)
+
+    render(<StringDetails {...mockedProps} />, { store: jsonStore })
+
+    fireEvent.click(screen.getByTestId(EDIT_VALUE_BTN_TEST_ID))
+
+    expect(
+      screen.getByTestId('non-unicode-edit-to-unicode'),
+    ).toBeInTheDocument()
+  })
+
   it('should disable refresh when editing', async () => {
     render(<StringDetails {...mockedProps} />)
     const afterRenderActions = [...store.getActions()]
@@ -208,7 +223,7 @@ describe('StringDetails', () => {
       await waitForRiTooltipVisible()
 
       expect(screen.getByTestId('edit-key-value-tooltip')).toHaveTextContent(
-        TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
+        'This action is disabled because the key or value is too large to process within Redis Insight.',
       )
     })
   })

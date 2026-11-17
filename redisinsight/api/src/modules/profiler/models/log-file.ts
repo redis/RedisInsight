@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { BadRequestException } from '@nestjs/common';
 import * as fs from 'fs-extra';
 import { ReadStream, WriteStream } from 'fs';
 import config from 'src/utils/config';
@@ -6,9 +7,13 @@ import { FileLogsEmitter } from 'src/modules/profiler/emitters/file.logs-emitter
 import { TelemetryEvents } from 'src/constants';
 import { SessionMetadata } from 'src/common/models';
 import { Database } from 'src/modules/database/models/database';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 
 const DIR_PATH = config.get('dir_path');
 const PROFILER = config.get('profiler');
+
+// The id becomes a file name inside the temp dir, so it must not carry path parts.
+export const LOG_FILE_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 
 export class LogFile {
   private readonly filePath: string;
@@ -42,6 +47,8 @@ export class LogFile {
     sessionMetadata?: SessionMetadata,
     database?: Database,
   ) {
+    LogFile.assertValidId(id);
+
     this.instanceId = instanceId;
     this.id = id;
     this.alias = id;
@@ -50,6 +57,14 @@ export class LogFile {
     this.analyticsEvents = analyticsEvents || new Map();
     this.sessionMetadata = sessionMetadata;
     this.database = database;
+  }
+
+  static assertValidId(id: unknown): void {
+    if (typeof id !== 'string' || !LOG_FILE_ID_PATTERN.test(id)) {
+      throw new BadRequestException(
+        ERROR_MESSAGES.PROFILER_INVALID_LOG_FILE_ID,
+      );
+    }
   }
 
   /**

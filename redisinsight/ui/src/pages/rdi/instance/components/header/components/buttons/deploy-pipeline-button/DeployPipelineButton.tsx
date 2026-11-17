@@ -21,6 +21,7 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiTooltip } from 'uiSrc/components/base'
 import { Modal } from 'uiSrc/components/base/display/modal'
 import { UploadWarningBanner } from 'uiSrc/components/upload-warning/styles'
+import { useTranslation } from 'uiSrc/i18n'
 
 export interface Props {
   loading?: boolean
@@ -29,6 +30,7 @@ export interface Props {
 }
 
 const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
+  const { t } = useTranslation()
   const [resetPipeline, setResetPipeline] = useState(false)
 
   const { config, jobs, resetChecked, isPipelineValid } =
@@ -89,45 +91,39 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   return (
     <Modal
       id="deploy-pipeline-modal"
-      title="Are you sure you want to deploy the pipeline?"
+      title={t('rdi.instance.deploy.confirmTitle')}
       content={
         <Col gap="l">
           {!isPipelineValid && (
             <UploadWarningBanner
-              message="Your RDI pipeline contains errors. Are you sure you want to continue?"
+              message={t('rdi.instance.deploy.errorsWarning')}
               show
               showIcon
               variant="attention"
             />
           )}
           <FlexItem>
-            <Text>
-              When deployed, this local configuration will overwrite any
-              existing pipeline.
-            </Text>
-            <Text>
-              After deployment, consider flushing the target Redis database and
-              resetting the pipeline to ensure that all data is reprocessed.
-            </Text>
+            <Text>{t('rdi.instance.deploy.overwriteText')}</Text>
+            <Text>{t('rdi.instance.deploy.flushText')}</Text>
           </FlexItem>
           <Row align="center">
             <Checkbox
               id="resetPipeline"
               name="resetPipeline"
-              label="Reset"
+              label={t('rdi.instance.deploy.resetLabel')}
               labelSize="M"
               checked={resetPipeline}
               onChange={(e) => handleSelectReset(e.target.checked)}
               data-testid="reset-pipeline-checkbox"
             />
 
-            <RiTooltip content="The pipeline will take a new snapshot of the data and process it, then continue tracking changes.">
+            <RiTooltip content={t('rdi.instance.deploy.resetInfo')}>
               <Icon icon={InfoIcon} data-testid="reset-checkbox-info-icon" />
             </RiTooltip>
           </Row>
         </Col>
       }
-      primaryButtonText="Deploy"
+      primaryButtonText={t('rdi.instance.deploy.button')}
       onPrimaryButtonClick={handleDeployPipeline}
     >
       <PrimaryButton
@@ -136,7 +132,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         loading={loading}
         data-testid="deploy-rdi-pipeline"
       >
-        Deploy
+        {t('rdi.instance.deploy.button')}
       </PrimaryButton>
     </Modal>
   )

@@ -5,6 +5,7 @@ import { isNull } from 'lodash'
 import cx from 'classnames'
 import styled from 'styled-components'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   FeatureFlagComponent,
@@ -23,7 +24,10 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import { sortRecommendations } from 'uiSrc/utils/recommendation'
+import {
+  getTranslatedTipTitle,
+  sortRecommendations,
+} from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -43,6 +47,7 @@ const RecommendationContent = styled(Card)`
 `
 
 const Recommendations = () => {
+  const { t } = useTranslation()
   const { data, loading } = useAppSelector(dbAnalysisSelector)
   const { provider } = useAppSelector(connectedInstanceSelector)
   const { content: recommendationsContent } = useAppSelector(
@@ -107,7 +112,9 @@ const Recommendations = () => {
             data-testid={`${id}-redis-stack-link`}
           >
             <RiTooltip
-              content="Redis Stack"
+              content={t(
+                'analytics.databaseAnalysis.recommendations.redisStackTooltip',
+              )}
               position="top"
               anchorClassName="flex-row"
             >
@@ -147,10 +154,16 @@ const Recommendations = () => {
           className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
-        <Text size="m">No Tips at the moment,</Text>
+        <Text className={styles.bigText}>
+          {t('analytics.databaseAnalysis.recommendations.empty.title')}
+        </Text>
+        <Text size="m">
+          {t('analytics.databaseAnalysis.recommendations.empty.line1')}
+        </Text>
         <br />
-        <Text size="m">keep up the good work!</Text>
+        <Text size="m">
+          {t('analytics.databaseAnalysis.recommendations.empty.line2')}
+        </Text>
       </div>
     )
   }
@@ -184,7 +197,11 @@ const Recommendations = () => {
                 <RiAccordion
                   id={name}
                   key={`${name}-accordion`}
-                  label={renderLabel(redisStack, title, id)}
+                  label={renderLabel(
+                    redisStack,
+                    getTranslatedTipTitle(name, title),
+                    id,
+                  )}
                   actions={renderButtonContent(badges, id)}
                   className={styles.accordion}
                   defaultOpen
@@ -218,7 +235,7 @@ const Recommendations = () => {
                       onClick={() => goToTutorial(tutorialId, id)}
                       data-testid={`${id}-to-tutorial-btn`}
                     >
-                      Tutorial
+                      {t('analytics.databaseAnalysis.recommendations.tutorial')}
                     </PrimaryButton>
                   )}
                 </div>

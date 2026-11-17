@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 
 import { RiTooltip } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
@@ -49,6 +50,7 @@ const EditableInput = (props: Props) => {
   } = props
 
   const [isHovering, setIsHovering] = useState(false)
+  const { t } = useTranslation()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   if (!isEditing) {
@@ -74,7 +76,7 @@ const EditableInput = (props: Props) => {
           >
             <IconButton
               icon={EditIcon}
-              aria-label="Edit field"
+              aria-label={t('browser.keyDetails.editable.editAria')}
               className={cx('editFieldBtn', styles.editBtn)}
               disabled={isEditDisabled}
               onClick={(e: React.MouseEvent) => {
@@ -107,10 +109,11 @@ const EditableInput = (props: Props) => {
           }}
           onApply={(value) => {
             requestConfirmation({
-              title: 'Edit value on production database?',
-              actionDescription:
-                'You are about to modify a value on a production database.',
-              confirmButtonText: 'Save',
+              title: t('browser.keyDetails.editable.confirmTitle'),
+              actionDescription: t(
+                'browser.keyDetails.editable.confirmMessage',
+              ),
+              confirmButtonText: t('browser.keyDetails.editable.confirmButton'),
               commandId: BrowserConfirmationCommandId.EditValue,
               disableConfirmationInput: true,
               onConfirm: () => {

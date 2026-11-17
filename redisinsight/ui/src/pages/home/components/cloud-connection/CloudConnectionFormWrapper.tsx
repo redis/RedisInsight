@@ -13,6 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { useTranslation } from 'uiSrc/i18n'
 import CloudConnectionForm from './cloud-connection-form'
 
 export interface Props {
@@ -25,6 +26,7 @@ export interface ICloudConnectionSubmit {
 }
 
 const CloudConnectionFormWrapper = ({ onClose }: Props) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const history = useHistory()
@@ -32,14 +34,20 @@ const CloudConnectionFormWrapper = ({ onClose }: Props) => {
 
   const { setModalHeader } = useModalHeader()
 
-  useEffect(() => {
-    setModalHeader(<Title size="M">Discover Cloud databases</Title>, true)
-
-    return () => {
+  useEffect(
+    () => () => {
       setModalHeader(null)
       dispatch(resetErrors())
-    }
-  }, [])
+    },
+    [],
+  )
+
+  useEffect(() => {
+    setModalHeader(
+      <Title size="M">{t('home.form.cloud.modalTitle')}</Title>,
+      true,
+    )
+  }, [t])
 
   const formSubmit = (credentials: ICloudConnectionSubmit) => {
     sendEventTelemetry({

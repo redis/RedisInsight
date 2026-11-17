@@ -1,4 +1,5 @@
 import React from 'react'
+import { TFunction } from 'i18next'
 
 import { Text } from 'uiSrc/components/base/text'
 import { StyledUrlItem, StyledUrlList } from './HostInfoTooltipContent.styles'
@@ -11,16 +12,16 @@ const supportedUrls = [
 
 export const HostInfoTooltipContent = ({
   includeAutofillInfo,
+  t,
 }: {
   includeAutofillInfo: boolean
+  t: TFunction
 }) => (
   <>
     {includeAutofillInfo && (
-      <Text variant="semiBold">
-        Pasting a connection URL auto fills the database details.
-      </Text>
+      <Text variant="semiBold">{t('common.connectionInfo.autofill')}</Text>
     )}
-    <Text variant="semiBold">The following connection URLs are supported:</Text>
+    <Text variant="semiBold">{t('common.connectionInfo.supportedUrls')}</Text>
     <StyledUrlList>
       {supportedUrls.map((url) => (
         <StyledUrlItem key={url}>{url}</StyledUrlItem>

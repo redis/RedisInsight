@@ -12,7 +12,8 @@ services:
         '-t',
         '120',
         '--',
-        'yarn',
+        'npm',
+        'run',
         'test:api:ci:cov',
       ]
   redis:

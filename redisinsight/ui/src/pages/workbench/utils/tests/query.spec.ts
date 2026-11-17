@@ -57,6 +57,21 @@ describe('findSuggestionsByQueryArgs', () => {
   })
 })
 
+describe('findSuggestionsByQueryArgs — command without an argument spec (RI-8347)', () => {
+  it('returns null instead of throwing when the matched command has no arguments', () => {
+    // A token-only command definition (no `arguments`): findStopArgument
+    // returns null for it, which previously crashed the destructure in
+    // findStopArgumentWithSuggestions ("Cannot destructure property 'isBlocked'
+    // of null").
+    const commands = [
+      { token: 'PING', type: ICommandTokenType.Block },
+    ] as unknown as IRedisCommand[]
+
+    expect(() => findSuggestionsByQueryArgs(commands, ['PING'])).not.toThrow()
+    expect(findSuggestionsByQueryArgs(commands, ['PING'])).toBeNull()
+  })
+})
+
 const generateDetailTests: Array<{ input: Maybe<IRedisCommand>; result: any }> =
   [
     {

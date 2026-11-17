@@ -15,9 +15,11 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const OnboardingStartPopover = () => {
+  const { t } = useTranslation()
   const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
@@ -54,13 +56,13 @@ const OnboardingStartPopover = () => {
       anchorPosition="downRight"
       data-testid="onboarding-start-popover"
     >
-      <Title size="S">Take a quick tour of Redis Insight?</Title>
+      <Title size="S">{t('browser.onboarding.title')}</Title>
       <Spacer size="s" />
       <Text data-testid="onboarding-start-content">
-        Hi! Redis Insight has many tools that can help you to optimize the
-        development process.
-        <br />
-        Would you like us to show them to you?
+        <Trans
+          i18nKey="browser.onboarding.content"
+          components={{ lineBreak: <br /> }}
+        />
       </Text>
       <Spacer />
       <Row justify="between">
@@ -69,7 +71,7 @@ const OnboardingStartPopover = () => {
           size="small"
           data-testid="skip-tour-btn"
         >
-          Skip tour
+          {t('browser.onboarding.button.skip')}
         </EmptyButton>
         <PrimaryButton
           onClick={handleStart}
@@ -77,7 +79,7 @@ const OnboardingStartPopover = () => {
           size="s"
           data-testid="start-tour-btn"
         >
-          Show me around
+          {t('browser.onboarding.button.start')}
         </PrimaryButton>
       </Row>
     </RiPopover>

@@ -20,7 +20,7 @@ Add `myKey` to `locales/en.json` first; `t()` rejects unknown keys at compile ti
 
 ## Extraction
 
-`yarn i18n:extract` (from repo root) scans `t()` usages and updates `locales/en.json` / `locales/bg.json` via `i18next-cli` (config: `i18next.config.mjs`).
+`npm run i18n:extract` (from repo root) scans `t()` usages and updates `locales/en.json` / `locales/bg.json` via `i18next-cli` (config: `i18next.config.mjs`).
 
 ## Tests
 

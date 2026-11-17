@@ -168,6 +168,7 @@ export const cleanupTestEnvs = () => {
   delete process.env.RI_REDIS_ALIAS;
   delete process.env.RI_REDIS_USENAME;
   delete process.env.RI_REDIS_PASSWORD;
+  delete process.env.RI_REDIS_TLS;
 
   delete process.env.RI_REDIS_HOST_1;
   delete process.env.RI_REDIS_PORT_1;

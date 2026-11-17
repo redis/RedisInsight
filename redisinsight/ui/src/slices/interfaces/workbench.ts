@@ -44,8 +44,7 @@ export interface StateWorkbenchEnablementArea {
   error: string
   items: IEnablementAreaItem[]
 }
-export interface StateWorkbenchCustomTutorials
-  extends StateWorkbenchEnablementArea {
+export interface StateWorkbenchCustomTutorials extends StateWorkbenchEnablementArea {
   bulkUpload: {
     pathsInProgress: string[]
   }

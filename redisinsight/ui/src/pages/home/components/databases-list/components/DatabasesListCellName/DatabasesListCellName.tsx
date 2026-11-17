@@ -6,10 +6,12 @@ import { replaceSpaces, formatLongName, getDbIndex } from 'uiSrc/utils'
 import DbStatus from 'uiSrc/pages/home/components/db-status'
 import { Text } from 'uiSrc/components/base/text'
 import { EnvironmentBadge } from 'uiSrc/components/environment-badge'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { StyledCellNameWrapper } from './DatabasesListCellName.styles'
 
 const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
+  const { t } = useTranslation()
   const instance = row.original
   const {
     id,
@@ -41,7 +43,7 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
 
       <RiTooltip
         position="bottom"
-        title="Database Alias"
+        title={t('home.databaseList.cellName.tooltip.databaseAlias')}
         content={`${formatLongName(name)} ${getDbIndex(db)}`}
       >
         <Text

@@ -25,6 +25,7 @@ import {
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
+import { useTranslation } from 'uiSrc/i18n'
 import { canSelectRow } from '../utils/canSelectRow'
 import { Account, CancelButton, SubmitButton, SummaryText } from '../components'
 
@@ -45,10 +46,6 @@ export interface Props {
   onSelectionChange: (state: RowSelectionState) => void
 }
 
-const loadingMsg = 'loading...'
-const notFoundMsg = 'Not found'
-const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
-
 const RedisCloudSubscriptions = ({
   subscriptions,
   selection,
@@ -60,7 +57,11 @@ const RedisCloudSubscriptions = ({
   onSubmit,
   onSelectionChange,
 }: Props) => {
-  // const subscriptions = [];
+  const { t } = useTranslation()
+  const loadingMsg = t('autodiscover.cloud.loading')
+  const notFoundMsg = t('autodiscover.cloud.notFound')
+  const noResultsMessage = t('autodiscover.cloud.subscriptions.noResults')
+
   const [items, setItems] = useState(subscriptions || [])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -119,7 +120,7 @@ const RedisCloudSubscriptions = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Redis Cloud Subscriptions"
+          title={t('autodiscover.cloud.subscriptions.title')}
           onBack={onBack}
           onQueryChange={onQueryChange}
         />

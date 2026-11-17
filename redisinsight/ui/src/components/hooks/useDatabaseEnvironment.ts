@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { Environment } from 'apiClient'
-import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceSelector,
@@ -13,15 +12,12 @@ export interface UseDatabaseEnvironmentResult {
 }
 
 export const useDatabaseEnvironment = (): UseDatabaseEnvironmentResult => {
-  const flagEnabled = useAppSelector(appFeatureFlagProdModeSelector)
   const dangerousCommands = useAppSelector(
     connectedInstanceDangerousCommandsSelector,
   )
   const connectedInstance = useAppSelector(connectedInstanceSelector)
 
-  const environment: Environment = flagEnabled
-    ? connectedInstance.environment
-    : Environment.Unspecified
+  const environment: Environment = connectedInstance.environment
 
   const isDangerousCommand = useMemo(() => {
     const upper = new Set(dangerousCommands.map((c) => c.toUpperCase()))

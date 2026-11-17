@@ -6,7 +6,7 @@
 # the best way to minimize the number of node_module restores and build steps
 # while still keeping the final image small.
 
-FROM node:24.16.0-alpine AS build
+FROM node:24.22.2-alpine AS build
 
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
@@ -21,31 +21,35 @@ RUN apk update && apk add --no-cache --virtual .gyp \
 WORKDIR /usr/src/app
 
 # restore node_modules for front-end
-COPY package.json yarn.lock ./
+# .npmrc carries legacy-peer-deps=true, required for `npm ci` to resolve
+# the project's legacy peer dependencies.
+COPY package.json package-lock.json .npmrc ./
 COPY patches ./patches
 COPY redisinsight/ui/vite.config.mjs ./redisinsight/ui/
 COPY redisinsight/ui/src/config ./redisinsight/ui/src/config
-RUN SKIP_POSTINSTALL=1 yarn install
+# --ignore-scripts skips the postinstall's `vite optimize` (the UI is built
+# later via build:ui); patch-package is still needed for the UI deps, so run it.
+RUN npm ci --ignore-scripts && npx patch-package
 
 # prepare backend by copying scripts/configs and installing node modules
 # this is required to build the static assets
 COPY configs ./configs
 COPY scripts ./scripts
 COPY redisinsight ./redisinsight
-RUN yarn --cwd redisinsight/api install
+RUN npm ci --prefix redisinsight/api
 
 # build the frontend, static assets, and backend api
-RUN yarn build:ui
-RUN yarn build:statics
-RUN yarn build:api
+RUN npm run build:ui
+RUN npm run build:statics
+RUN npm run build:api
 
-# install backend _again_ to build native modules and remove dev dependencies,
-# then run autoclean to remove additional unnecessary files
-RUN yarn --cwd ./redisinsight/api install --production
-COPY ./redisinsight/api/.yarnclean.prod ./redisinsight/api/.yarnclean
-RUN yarn --cwd ./redisinsight/api autoclean --force
+# install backend _again_ to build native modules and drop dev dependencies.
+# NOTE: `yarn autoclean` (pruning docs/tests from node_modules) has no npm
+# equivalent and was dropped in the yarn->npm migration; the image is slightly
+# larger as a result. Revisit with node-prune if image size regresses.
+RUN npm ci --prefix redisinsight/api --omit=dev
 
-FROM node:24.16.0-alpine
+FROM node:24.22.2-alpine
 
 # runtime args and environment variables
 ARG NODE_ENV=production

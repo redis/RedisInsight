@@ -145,8 +145,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: npm ci
+      - run: npm run build
       - run: bash scripts/verify-plugin.sh
       - uses: actions/upload-artifact@v4
         with:

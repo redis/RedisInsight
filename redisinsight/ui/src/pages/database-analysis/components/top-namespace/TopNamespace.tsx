@@ -2,6 +2,7 @@ import { isNull } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { Pages } from 'uiSrc/constants'
 import {
   DEFAULT_EXTRAPOLATION,
@@ -39,6 +40,7 @@ export interface Props {
 
 const TopNamespace = (props: Props) => {
   const { data, loading, extrapolation, onSwitchExtrapolation } = props
+  const { t } = useTranslation()
   const [tableView, setTableView] = useState<TableView>(TableView.MEMORY)
   const [isExtrapolated, setIsExtrapolated] = useState<boolean>(true)
 
@@ -74,20 +76,27 @@ const TopNamespace = (props: Props) => {
     return (
       <Section data-testid="top-namespaces-empty">
         <SectionTitleWrapper>
-          <SectionTitle size="M">TOP NAMESPACES</SectionTitle>
+          <SectionTitle size="M">
+            {t('analytics.databaseAnalysis.topNamespaces.title')}
+          </SectionTitle>
         </SectionTitleWrapper>
         <SectionContent data-testid="top-namespaces-message">
           <NoNamespaceMsg>
-            <Title size="L">No namespaces to display</Title>
+            <Title size="L">
+              {t('analytics.databaseAnalysis.topNamespaces.empty.title')}
+            </Title>
             <NoNamespaceText>
-              {'Configure the delimiter in '}
-              <NoNamespaceBtn
-                data-testid="tree-view-page-link"
-                onClick={handleTreeViewClick}
-              >
-                Tree View
-              </NoNamespaceBtn>
-              {' to customize the namespaces displayed.'}
+              <Trans
+                i18nKey="analytics.databaseAnalysis.topNamespaces.empty.text"
+                components={{
+                  treeViewLink: (
+                    <NoNamespaceBtn
+                      data-testid="tree-view-page-link"
+                      onClick={handleTreeViewClick}
+                    />
+                  ),
+                }}
+              />
             </NoNamespaceText>
           </NoNamespaceMsg>
         </SectionContent>
@@ -98,7 +107,9 @@ const TopNamespace = (props: Props) => {
   return (
     <Section data-testid="top-namespaces">
       <SectionTitleWrapper gap="m">
-        <SectionTitle size="M">TOP NAMESPACES</SectionTitle>
+        <SectionTitle size="M">
+          {t('analytics.databaseAnalysis.topNamespaces.title')}
+        </SectionTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
           size="small"
@@ -106,7 +117,7 @@ const TopNamespace = (props: Props) => {
           disabled={tableView === TableView.MEMORY}
           data-testid="btn-change-table-memory"
         >
-          by Memory
+          {t('analytics.databaseAnalysis.topNamespaces.byMemory')}
         </TextBtn>
         <TextBtn
           $active={tableView === TableView.KEYS}
@@ -115,13 +126,13 @@ const TopNamespace = (props: Props) => {
           disabled={tableView === TableView.KEYS}
           data-testid="btn-change-table-keys"
         >
-          by Number of Keys
+          {t('analytics.databaseAnalysis.topNamespaces.byNumberOfKeys')}
         </TextBtn>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <SwitchInput
             color="subdued"
             className="switch-extrapolate-results"
-            title="Extrapolate results"
+            title={t('analytics.databaseAnalysis.extrapolateResults')}
             checked={isExtrapolated}
             onCheckedChange={(checked) => {
               setIsExtrapolated(checked)

@@ -16,6 +16,7 @@ import { ContractsIcon, UploadIcon } from 'uiSrc/components/base/icons'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { Modal } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { ButtonWrapper } from './SourcePipelineModal.styles'
 
@@ -30,6 +31,7 @@ export enum PipelineSourceOptions {
 }
 
 const SourcePipelineDialog = () => {
+  const { t } = useTranslation()
   const [isShowDownloadDialog, setIsShowDownloadDialog] = useState(false)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
@@ -102,10 +104,10 @@ const SourcePipelineDialog = () => {
           <Col gap="xxl">
             <Col align="center" justify="center">
               <Title size="L" color="primary">
-                Select an option
+                {t('rdi.pipeline.source.title')}
               </Title>
               <Title size="L" color="primary">
-                to start with your pipeline
+                {t('rdi.pipeline.source.subtitle')}
               </Title>
             </Col>
             <Row gap="xxl">
@@ -119,7 +121,7 @@ const SourcePipelineDialog = () => {
               >
                 <UploadIcon size="XL" />
                 <Text color="primary" size="S" textAlign="center">
-                  Import pipeline from ZIP file
+                  {t('rdi.pipeline.source.importZip')}
                 </Text>
               </ButtonWrapper>
               <ButtonWrapper
@@ -132,7 +134,7 @@ const SourcePipelineDialog = () => {
               >
                 <ContractsIcon size="XL" />
                 <Text color="primary" size="S" textAlign="center">
-                  Create new pipeline
+                  {t('rdi.pipeline.source.createNew')}
                 </Text>
               </ButtonWrapper>
             </Row>

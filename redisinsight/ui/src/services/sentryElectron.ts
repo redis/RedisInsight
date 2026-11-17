@@ -2,8 +2,11 @@ import * as Sentry from '@sentry/electron/renderer'
 import { init as reactInit } from '@sentry/react'
 
 import { getConfig } from 'uiSrc/config'
-import { checkIsAnalyticsGranted } from 'uiSrc/telemetry/checkAnalytics'
-import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
+import {
+  checkIsAnalyticsGranted,
+  getInstallationId,
+} from 'uiSrc/telemetry/checkAnalytics'
+import { finalizeSentryEvent } from 'uiSrc/services/sentry'
 
 const riConfig = getConfig()
 
@@ -37,8 +40,11 @@ export const initSentry = (): void => {
         beforeBreadcrumb: (breadcrumb) =>
           checkIsAnalyticsGranted() ? breadcrumb : null,
         beforeSend(event) {
-          const scrubbed = scrubEvent(event)
-          return checkIsAnalyticsGranted() ? scrubbed : minimizeEvent(scrubbed)
+          return finalizeSentryEvent(
+            event,
+            checkIsAnalyticsGranted(),
+            getInstallationId(),
+          )
         },
       },
       reactInit,

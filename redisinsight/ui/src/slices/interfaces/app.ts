@@ -89,6 +89,7 @@ export interface StateAppContext {
     slowLogDurationUnit: DurationUnits
     showHiddenRecommendations: boolean
     shownColumns: BrowserColumns[]
+    treeViewDelimiterPrefixLength: number
   }
   dbIndex: {
     disabled: boolean

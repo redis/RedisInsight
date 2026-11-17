@@ -15,19 +15,3 @@ export enum AutoDiscoverCloudIds {
   SubscriptionType = 'subscriptionType',
   Type = 'type',
 }
-
-export enum AutoDiscoverCloudTitles {
-  Id = 'Id',
-  Database = 'Database',
-  Endpoint = 'Endpoint',
-  Result = 'Result',
-  Capabilities = 'Capabilities',
-  NumberOfDatabases = '# databases',
-  Options = 'Options',
-  Provider = 'Cloud provider',
-  Region = 'Region',
-  Status = 'Status',
-  Subscription = 'Subscription',
-  SubscriptionId = 'Subscription id',
-  Type = 'Type',
-}

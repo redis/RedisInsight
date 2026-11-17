@@ -110,19 +110,12 @@ describe('HelpMenu', () => {
   })
 
   it("should open What's new and send telemetry on click", () => {
-    const initialStoreState = set(
-      cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.whatsNew}`,
-      { flag: true },
-    )
-    const localStore = mockStore(initialStoreState)
-
-    render(sideBarWithHelpMenu, { store: localStore })
+    render(sideBarWithHelpMenu)
 
     fireEvent.click(screen.getByTestId('help-menu-button'))
     fireEvent.click(screen.getByTestId('whats-new-btn'))
 
-    expect(localStore.getActions()).toEqual([openWhatsNew()])
+    expect(store.getActions()).toEqual([openWhatsNew()])
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.WHATS_NEW_OPENED,
       eventData: {
@@ -130,21 +123,6 @@ describe('HelpMenu', () => {
         version: getLatestWhatsNewVersion()?.version,
       },
     })
-  })
-
-  it("should hide What's new item when its feature flag is off", () => {
-    const initialStoreState = set(
-      cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.whatsNew}`,
-      { flag: false },
-    )
-
-    render(sideBarWithHelpMenu, {
-      store: mockStore(initialStoreState),
-    })
-    fireEvent.click(screen.getByTestId('help-menu-button'))
-
-    expect(screen.queryByTestId('whats-new-btn')).not.toBeInTheDocument()
   })
 
   it('should show feature dependent items when feature flag is on', async () => {

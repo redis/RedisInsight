@@ -11,8 +11,6 @@ const TEST_SELECT_KEY = `${TEST_INDEX_PREFIX}:selkey`;
 const TEST_CREATE_KEY = `${TEST_INDEX_PREFIX}:crtkey`;
 const seedIndex = IndexConfigFactory.build();
 
-test.use({ featureFlags: { vectorSearchV2: true } });
-
 /**
  * Vector Search > Select Key Onboarding
  *

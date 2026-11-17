@@ -1,6 +1,6 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { fireEvent, render } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import {
   isShowCapabilityTutorialPopover,
@@ -79,23 +79,50 @@ describe('InternalPage', () => {
 
     expect(onClose).toBeCalled()
   })
-  it('should parse and render JSX string', () => {
-    const content = '<h1 data-testid="header">Header</h1>'
-    const { queryByTestId } = render(
-      <InternalPage {...instance(mockedProps)} content={content} />,
+  it('should render a redis code fence and a relative link as markdown', () => {
+    const content = '```redis Run me\nGET k\n```\n\n[Doc](./doc.md)'
+    render(
+      <InternalPage
+        {...instance(mockedProps)}
+        content={content}
+        path="/tutorials/x/page.md"
+      />,
     )
 
-    expect(queryByTestId('header')).toBeInTheDocument()
+    expect(screen.getByTestId('code-button-block-label')).toHaveTextContent(
+      'Run me',
+    )
+    expect(screen.getByRole('link', { name: 'Doc' })).toBeInTheDocument()
   })
-  it('should strip lowercase <link> tags from content', () => {
-    const content =
-      '<link rel="stylesheet" href="https://evil.com/exfil.css" /><p data-testid="safe">safe</p>'
-    const { queryByTestId, container } = render(
-      <InternalPage {...instance(mockedProps)} content={content} />,
-    )
+  it('should render a non-redis fence as plain code with no Run button, alongside a redis fence with one', () => {
+    const content = '```redis Run me\nGET k\n```\n\n```bash\nls -la\n```'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
 
-    expect(queryByTestId('safe')).toBeInTheDocument()
-    expect(container.querySelector('link')).not.toBeInTheDocument()
+    expect(screen.getByTestId('run-btn-Run me')).toBeInTheDocument()
+    expect(screen.getByText('ls -la')).toBeInTheDocument()
+    // Only the redis fence above is interactive; the bash fence must not
+    // render a second copy/run block.
+    expect(screen.getAllByTestId('code-button-block-content')).toHaveLength(1)
+  })
+
+  it('should render an external link with inline/small styling props', () => {
+    const content = '[Redis Docs](https://redis.io/docs)'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
+
+    const link = screen.getByRole('link', { name: /Redis Docs/ })
+    expect(link).toHaveAttribute('href', 'https://redis.io/docs')
+    // The base Link already adds target/rel for any href; this only checks
+    // the visual props (external/inline/small) applied by InternalPage's
+    // ExternalLink leaf, matching the old remarkLink styling.
+    expect(link).toHaveAttribute('target', '_blank')
+  })
+
+  it('should render raw HTML in content as literal text and inject no script', () => {
+    const content = '<p>{alert(1)}</p>'
+    render(<InternalPage {...instance(mockedProps)} content={content} />)
+
+    expect(screen.getByText(content, { exact: false })).toBeInTheDocument()
+    expect(document.querySelector('script')).toBeNull()
   })
 
   describe('capability', () => {

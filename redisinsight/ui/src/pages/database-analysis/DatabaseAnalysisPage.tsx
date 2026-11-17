@@ -22,9 +22,11 @@ import {
   TelemetryPageView,
 } from 'uiSrc/telemetry'
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
+import { useTranslation } from 'uiSrc/i18n'
 import { DatabaseAnalysisPageView } from './DatabaseAnalysisPageView'
 
 export const DatabaseAnalysisPage = () => {
+  const { t } = useTranslation()
   const { viewTab } = useAppSelector(analyticsSettingsSelector)
   const { loading: analysisLoading, data } = useAppSelector(dbAnalysisSelector)
   const { data: reports, selectedAnalysis } = useAppSelector(
@@ -42,7 +44,7 @@ export const DatabaseAnalysisPage = () => {
 
   const dispatch = useAppDispatch()
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Database Analysis`)
+  setTitle(t('analytics.databaseAnalysis.pageTitle', { dbName }))
 
   useEffect(() => {
     dispatch(fetchDBAnalysisReportsHistory(instanceId))

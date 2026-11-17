@@ -7,7 +7,11 @@ import {
   MenuItemConstructorOptions,
 } from 'electron'
 import path from 'path'
-import { getWindows } from 'desktopSrc/lib'
+import {
+  getWindows,
+  shouldShowManualUpdateCheck,
+  triggerManualUpdateCheck,
+} from 'desktopSrc/lib'
 import { showOrCreateWindow } from 'desktopSrc/utils'
 // eslint-disable-next-line import/no-cycle
 import { setToQuiting } from './trayManager'
@@ -82,6 +86,16 @@ export class TrayBuilder {
           )
         },
       },
+      ...(shouldShowManualUpdateCheck()
+        ? [
+            {
+              label: 'Check for Updates…',
+              click: () => {
+                triggerManualUpdateCheck()
+              },
+            },
+          ]
+        : []),
       { type: 'separator' },
       {
         label: 'Quit',

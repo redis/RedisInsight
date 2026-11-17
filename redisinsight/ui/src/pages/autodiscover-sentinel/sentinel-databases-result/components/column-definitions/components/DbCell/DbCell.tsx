@@ -3,6 +3,7 @@ import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { ApiStatusCode } from 'uiSrc/constants'
 import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import { useTranslation } from 'uiSrc/i18n'
 
 import type { DbCellProps } from './DbCell.types'
 
@@ -14,8 +15,14 @@ export const DbCell = ({
   error,
   handleChangedInput,
 }: DbCellProps) => {
+  const { t } = useTranslation()
+
   if (status === AddRedisDatabaseStatus.Success) {
-    return db !== undefined ? <span>{db}</span> : <i>not assigned</i>
+    return db !== undefined ? (
+      <span>{db}</span>
+    ) : (
+      <i>{t('autodiscover.sentinel.cell.notAssigned')}</i>
+    )
   }
   const isDBInvalid =
     typeof error === 'object' &&
@@ -30,7 +37,7 @@ export const DbCell = ({
         value={`${db}` || '0'}
         name={`db-${id}`}
         isInvalid={isDBInvalid}
-        placeholder="Enter Index"
+        placeholder={t('autodiscover.sentinel.cell.indexPlaceholder')}
         inputType={SentinelInputFieldType.Number}
         onChangedInput={handleChangedInput}
       />

@@ -38,6 +38,8 @@ import {
   RdiClientMetadata,
   Rdi,
   RdiPipelineStatus,
+  RdiProxyRequest,
+  RdiProxyResponse,
 } from 'src/modules/rdi/models';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
@@ -45,6 +47,7 @@ import {
   convertApiDataToRdiPipeline,
   convertRdiPipelineToApiPayload,
 } from 'src/modules/rdi/utils/pipeline.util';
+import { resolveRdiUpstreamUrl } from 'src/modules/rdi/utils/rdi-proxy.util';
 import {
   GetStatisticsResponse,
   GetStatusResponse,
@@ -91,7 +94,10 @@ export class ApiRdiClient extends RdiClient {
       return response.data.access_token;
     } catch (e) {
       // If /login endpoint is not found we assume that RDI is in dev mode
-      if (e.status === HttpStatus.NOT_FOUND) {
+      if (
+        axios.isAxiosError(e) &&
+        e.response?.status === HttpStatus.NOT_FOUND
+      ) {
         return this.loginDev();
       }
 
@@ -247,11 +253,10 @@ export class ApiRdiClient extends RdiClient {
             { ...config.sources[source] },
           );
           sources[source] = response.data;
-        } catch (error: any) {
+        } catch (error: unknown) {
           // Older versions of RDI (below 1.6.0) don't support testing sources connections
           // RDI returns 405 Method Not Allowed for non existing endpoints
-          const status = error?.status;
-          if (status === 405) {
+          if (axios.isAxiosError(error) && error.response?.status === 405) {
             sources[source] = {
               connected: false,
               error:
@@ -346,6 +351,65 @@ export class ApiRdiClient extends RdiClient {
 
     if (expiresIn < TOKEN_THRESHOLD) {
       await this.connect();
+    }
+  }
+
+  /**
+   * Forwards a request to the RDI instance's native API, reusing this client's
+   * base URL and bearer token.
+   *
+   * Needed by the @rdi-ui/pipeline UI, which speaks the native RDI API directly
+   * instead of RedisInsight's curated /rdi endpoints.
+   */
+  async proxyRequest({
+    method,
+    path,
+    query,
+    body,
+    headers,
+  }: RdiProxyRequest): Promise<RdiProxyResponse> {
+    const url = resolveRdiUpstreamUrl(this.rdi.url, path, query);
+
+    const response = await this.requestUpstream({
+      method,
+      // already absolute and validated, so `allowAbsoluteUrls` must stay at its
+      // default - turning it off would make axios prepend baseURL to this
+      url: url.href,
+      data: body,
+      headers,
+      // Non-2xx responses are part of the RDI API contract that the UI's SDK
+      // handles itself, so pass them through instead of throwing.
+      validateStatus: null,
+      // Following a redirect would make *our* backend issue the follow-up
+      // request, with the RDI bearer token attached and TLS verification off.
+      // RdiProxyService refuses 3xx outright rather than following it.
+      maxRedirects: 0,
+      // Keep axios from parsing and re-serializing the payload: that turns a
+      // top-level JSON `null` into an empty body, strips the quotes off a JSON
+      // string, and mangles anything that is not JSON at all.
+      responseType: 'arraybuffer',
+    });
+
+    return {
+      status: response.status,
+      headers: response.headers as Record<string, string>,
+      body: response.data,
+    };
+  }
+
+  /**
+   * `validateStatus` is disabled for proxied requests, so axios only rejects on
+   * transport-level failures here - connection refused, DNS, TLS, timeout.
+   * Those are mapped the same way as in every other RdiClient method, rather
+   * than surfacing a raw AxiosError through the global exception filter.
+   */
+  private async requestUpstream(
+    config: Parameters<AxiosInstance['request']>[0],
+  ) {
+    try {
+      return await this.client.request(config);
+    } catch (e) {
+      throw wrapRdiPipelineError(e);
     }
   }
 
