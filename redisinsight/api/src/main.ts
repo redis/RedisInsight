@@ -17,6 +17,7 @@ import { migrateHomeFolder, removeOldFolders } from 'src/init-helper';
 import { LogFileProvider } from 'src/modules/profiler/providers/log-file.provider';
 import { WindowsAuthAdapter } from 'src/modules/auth/window-auth/adapters/window-auth.adapter';
 import { AppLogger } from 'src/common/logger/app-logger';
+import { getCorsOptions } from 'src/common/utils/cors.util';
 import { BuildType } from './modules/server/models/server';
 import { CloudAuthModule } from 'src/modules/cloud/auth/cloud-auth.module';
 import { CloudAuthService } from 'src/modules/cloud/auth/cloud-auth.service';
@@ -70,7 +71,8 @@ export default async function bootstrap(apiPort?: number): Promise<IApp> {
     }),
   );
   app.use(bodyParserMiddleware);
-  app.enableCors();
+  // Config defaults the build type to Docker, so read the env var.
+  app.enableCors(getCorsOptions(serverConfig.cors, process.env.RI_BUILD_TYPE));
 
   if (
     process.env.RI_BUILD_TYPE !== BuildType.Electron ||

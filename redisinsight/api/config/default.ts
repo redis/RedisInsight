@@ -142,7 +142,7 @@ export default {
     customTutorials: process.env.RI_CUSTOM_TUTORIALS_ENABLED === 'true',
     maxPayloadSize: process.env.RI_MAX_PAYLOAD_SIZE || '512MB',
     cors: {
-      origin: process.env.RI_CORS_ORIGIN ? process.env.RI_CORS_ORIGIN : '*',
+      origin: process.env.RI_CORS_ORIGIN,
       credentials: process.env.RI_CORS_CREDENTIALS === 'true',
     },
   },

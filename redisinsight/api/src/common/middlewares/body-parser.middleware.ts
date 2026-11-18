@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { PayloadTooLargeException, HttpStatus } from '@nestjs/common';
+import { getCorsOptions } from 'src/common/utils/cors.util';
 import { stampErrorCode } from 'src/exceptions/error-code.util';
 import { Config, get } from 'src/utils';
 
@@ -20,14 +21,20 @@ export default (
       `The request is too large. Maximum allowed size is ${serverConfig.maxPayloadSize}`,
     );
 
-    return res
-      .status(HttpStatus.PAYLOAD_TOO_LARGE)
-      .set('Access-Control-Allow-Origin', serverConfig.cors.origin)
-      .set(
-        'Access-Control-Allow-Credentials',
-        `${serverConfig.cors.credentials}`,
-      )
-      .json(stampErrorCode(exception));
+    const { origin, credentials } = getCorsOptions(
+      serverConfig.cors,
+      process.env.RI_BUILD_TYPE,
+    );
+
+    res.status(HttpStatus.PAYLOAD_TOO_LARGE);
+
+    if (typeof origin === 'string') {
+      res
+        .set('Access-Control-Allow-Origin', origin)
+        .set('Access-Control-Allow-Credentials', `${credentials}`);
+    }
+
+    return res.json(stampErrorCode(exception));
   }
 
   next(err);
