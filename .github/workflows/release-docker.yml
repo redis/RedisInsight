@@ -57,12 +57,12 @@ jobs:
           appVersion=$(jq -r '.version' redisinsight/package.json)
 
           # A version tag is never overwritten: users who pinned it must get the same image.
-          # Only a confirmed missing manifest passes. Any other lookup error stops the release.
-          assertTagIsFree() {
+          # A repository that already has the version is skipped, so a rerun can finish a partial release.
+          # Only a confirmed missing manifest counts as free. Any other lookup error stops the release.
+          isTagFree() {
             local output
             if output=$(docker manifest inspect "$1:$appVersion" 2>&1); then
-              echo "$1:$appVersion already exists. Bump the version before releasing."
-              exit 1
+              return 1
             fi
             if [[ "$output" != *"no such manifest"* ]]; then
               echo "Could not check $1:$appVersion: $output"
@@ -70,24 +70,40 @@ jobs:
             fi
           }
 
+          publish() {
+            echo "$3" | docker login -u "$2" --password-stdin
+
+            ./.github/build/release-docker.sh \
+            -d redisinsight \
+            -r "$1" \
+            -v $appVersion
+          }
+
           echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-          assertTagIsFree "$DOCKER_REPO"
+          if isTagFree "$DOCKER_REPO"; then
+            publishDesktop=true
+          else
+            echo "$DOCKER_REPO:$appVersion already exists, skipping."
+          fi
 
           echo "$DOCKER_V1_PASS" | docker login -u "$DOCKER_V1_USER" --password-stdin
-          assertTagIsFree "$DOCKER_V1_REPO"
+          if isTagFree "$DOCKER_V1_REPO"; then
+            publishCloud=true
+          else
+            echo "$DOCKER_V1_REPO:$appVersion already exists, skipping."
+          fi
+
+          if [ -z "$publishDesktop" ] && [ -z "$publishCloud" ]; then
+            echo "$appVersion is already published. Bump the version before releasing."
+            exit 1
+          fi
 
           # Publish desktop image
-          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
-          ./.github/build/release-docker.sh \
-          -d redisinsight \
-          -r $DOCKER_REPO \
-          -v $appVersion
+          if [ -n "$publishDesktop" ]; then
+            publish "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS"
+          fi
 
           # Publish cloud image
-          echo "$DOCKER_V1_PASS" | docker login -u "$DOCKER_V1_USER" --password-stdin
-
-          ./.github/build/release-docker.sh \
-          -d redisinsight \
-          -r $DOCKER_V1_REPO \
-          -v $appVersion
+          if [ -n "$publishCloud" ]; then
+            publish "$DOCKER_V1_REPO" "$DOCKER_V1_USER" "$DOCKER_V1_PASS"
+          fi
