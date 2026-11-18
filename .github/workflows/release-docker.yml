@@ -57,10 +57,24 @@ jobs:
           appVersion=$(jq -r '.version' redisinsight/package.json)
 
           # A version tag is never overwritten: users who pinned it must get the same image.
-          if docker manifest inspect "$DOCKER_REPO:$appVersion" > /dev/null 2>&1; then
-            echo "$DOCKER_REPO:$appVersion already exists. Bump the version before releasing."
-            exit 1
-          fi
+          # Only a confirmed missing manifest passes. Any other lookup error stops the release.
+          assertTagIsFree() {
+            local output
+            if output=$(docker manifest inspect "$1:$appVersion" 2>&1); then
+              echo "$1:$appVersion already exists. Bump the version before releasing."
+              exit 1
+            fi
+            if [[ "$output" != *"no such manifest"* ]]; then
+              echo "Could not check $1:$appVersion: $output"
+              exit 1
+            fi
+          }
+
+          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          assertTagIsFree "$DOCKER_REPO"
+
+          echo "$DOCKER_V1_PASS" | docker login -u "$DOCKER_V1_USER" --password-stdin
+          assertTagIsFree "$DOCKER_V1_REPO"
 
           # Publish desktop image
           echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
