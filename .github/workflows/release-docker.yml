@@ -1,0 +1,79 @@
+name: 🐳 Release (Docker only)
+
+on:
+  # Run from the branch or tag to release. The image version comes from redisinsight/package.json.
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Push the image to Docker Hub. Leave off for a dry run that only builds it.
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-docker
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Docker image
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      environment: 'production'
+      target: 'docker'
+
+  publish:
+    name: Publish to Docker Hub
+    needs: build
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    environment: production-approve
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Download Docker images
+        uses: actions/download-artifact@v8
+        with:
+          name: docker-builds
+          path: ./artifact
+
+      - name: Collect image archives
+        run: |
+          mkdir release
+          find artifact -name 'docker-linux-alpine.*.tar' -exec cp {} release/ \;
+          ls -la release
+          test -f release/docker-linux-alpine.amd64.tar
+          test -f release/docker-linux-alpine.arm64.tar
+
+      - name: Publish docker
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+          DOCKER_V1_USER: ${{ secrets.DOCKER_V1_USER }}
+          DOCKER_V1_PASS: ${{ secrets.DOCKER_V1_PASS }}
+          DOCKER_V1_REPO: ${{ secrets.DOCKER_V1_REPO }}
+        run: |
+          appVersion=$(jq -r '.version' redisinsight/package.json)
+
+          # A version tag is never overwritten: users who pinned it must get the same image.
+          if docker manifest inspect "$DOCKER_REPO:$appVersion" > /dev/null 2>&1; then
+            echo "$DOCKER_REPO:$appVersion already exists. Bump the version before releasing."
+            exit 1
+          fi
+
+          # Publish desktop image
+          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+          ./.github/build/release-docker.sh \
+          -d redisinsight \
+          -r $DOCKER_REPO \
+          -v $appVersion
+
+          # Publish cloud image
+          echo "$DOCKER_V1_PASS" | docker login -u "$DOCKER_V1_USER" --password-stdin
+
+          ./.github/build/release-docker.sh \
+          -d redisinsight \
+          -r $DOCKER_V1_REPO \
+          -v $appVersion
