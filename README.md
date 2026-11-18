@@ -69,6 +69,8 @@ If you have any issues occurring in Redis Insight, you can follow the steps belo
 
 If you are running Redis Insight from [Docker](https://hub.docker.com/r/redis/redisinsight), you can access the API from `http://localhost:5540/api/docs`.
 
+The Docker image has no built-in authentication. See [Securing the Docker image](docs/docker-security.md) before you expose the port.
+
 ## Azure Managed Redis (formerly Azure Cache for Redis)
 
 Redis Insight supports Azure Managed Redis and Azure Cache for Redis with Microsoft Entra ID authentication. If your organization requires admin consent for third-party applications, see our setup guide.
