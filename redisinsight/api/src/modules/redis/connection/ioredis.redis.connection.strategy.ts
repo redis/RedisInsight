@@ -113,6 +113,9 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
         ? this.retryStrategy.bind(this)
         : this.dummyFn.bind(this),
       slotsRefreshTimeout: REDIS_CLIENTS_CONFIG.slotsRefreshTimeout,
+      // Keep hostnames as they are. By default the startup nodes are resolved
+      // to IPs, which TLS then compares against the certificate names.
+      dnsLookup: (address, callback) => callback(null, address),
       redisOptions,
       maxRedirections: REDIS_CLIENTS_CONFIG.maxRedirections,
     };
