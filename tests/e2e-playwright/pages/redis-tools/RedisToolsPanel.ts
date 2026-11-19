@@ -10,8 +10,6 @@ export class RedisToolsPanel {
   readonly panel: Locator;
 
   // Cards
-  readonly redvisorCard: Locator;
-  readonly redvisorIcon: Locator;
   readonly radarCard: Locator;
   readonly radarIcon: Locator;
 
@@ -24,8 +22,6 @@ export class RedisToolsPanel {
     this.trigger = page.getByTestId('redis-tools-trigger');
     this.panel = page.getByTestId('redis-tools-panel');
 
-    this.redvisorCard = page.getByTestId('redis-tools-redvisor-card');
-    this.redvisorIcon = page.getByTestId('redis-tools-redvisor-icon');
     this.radarCard = page.getByTestId('redis-tools-radar-card');
     this.radarIcon = page.getByTestId('redis-tools-radar-icon');
 

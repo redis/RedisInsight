@@ -297,12 +297,4 @@ describe('RedisTools', () => {
     )
     openSpy.mockRestore()
   })
-
-  it('should mark Redvisor as coming soon', () => {
-    renderComponent()
-
-    expect(screen.getByTestId('redis-tools-redvisor-badge')).toHaveTextContent(
-      'Coming soon',
-    )
-  })
 })

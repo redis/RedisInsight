@@ -7,14 +7,12 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { exportInstances } from 'uiSrc/services/database/instancesService'
 import { CopyButton } from 'uiSrc/components/copy-button'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import {
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import {
-  AnalysisIcon,
   ArrowDiagonalIcon,
   HideIcon,
   MetricsIcon,
@@ -190,32 +188,6 @@ export const RedisTools = () => {
       </S.StepsBox>
 
       <Row gap="m" wrap grow={false}>
-        <S.Card gap="m" data-testid="redis-tools-redvisor-card">
-          <S.CardEyebrow align="center" justify="between" gap="s" grow={false}>
-            <Text size="S" color="secondary">
-              {t('redisTools.redvisor.eyebrow')}
-            </Text>
-            <RiBadge
-              variant="light"
-              label={t('redisTools.redvisor.badge')}
-              data-testid="redis-tools-redvisor-badge"
-            />
-          </S.CardEyebrow>
-          <Row align="center" gap="m" grow={false}>
-            <S.FixedIcon
-              icon={AnalysisIcon}
-              size="M"
-              data-testid="redis-tools-redvisor-icon"
-            />
-            <S.CardTitle size="S" component="h3">
-              {t('redisTools.redvisor.title')}
-            </S.CardTitle>
-          </Row>
-          <Text size="S" color="secondary">
-            {t('redisTools.redvisor.description')}
-          </Text>
-        </S.Card>
-
         <S.Card gap="m" data-testid="redis-tools-radar-card">
           <S.CardEyebrow align="center" gap="s" grow={false}>
             <Text size="S" color="secondary">
