@@ -828,6 +828,7 @@
   "browser.keyList.size.tooltipTitle": "Key Size",
   "browser.keyList.ttl.noLimit": "No limit",
   "browser.keyList.ttl.tooltipTitle": "Time to Live",
+  "browser.keyTabs.closeAria": "Close tab {{name}}",
   "browser.keysBrowser.addKeyAria": "Add key",
   "browser.keysBrowser.refreshDisabledMessage": "Select an index to refresh keys.",
   "browser.keysBrowser.results": "Results: ",

@@ -827,7 +827,7 @@
   "src/slices/tests/browser/keys.spec.ts": {
     "TS2322": 4,
     "TS2339": 4,
-    "TS2345": 21
+    "TS2345": 20
   },
   "src/slices/tests/browser/list.spec.ts": {
     "TS2322": 3,

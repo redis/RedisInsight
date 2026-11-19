@@ -40,6 +40,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { IFetchKeyArgs, IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
   appContextShownColumnsSelector,
+  closeBrowserKeyTab,
   resetBrowserTree,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
@@ -909,6 +910,8 @@ export function fetchKeyInfo(
       const status = get(error, ['response', 'status'])
       if (status && isStatusNotFoundError(status)) {
         dispatch(resetKeyInfo())
+        // the key is gone: drop its tab and leave no key selected
+        dispatch(closeBrowserKeyTab(key))
         dispatch(setBrowserSelectedKey(null))
       }
     }
@@ -946,6 +949,7 @@ export function refreshKeyInfoAction(key: RedisResponseBuffer) {
       if (status && isStatusNotFoundError(status)) {
         dispatch(resetKeyInfo())
         dispatch(deleteKeyFromList(key))
+        dispatch(closeBrowserKeyTab(key))
         dispatch(setBrowserSelectedKey(null))
       }
     }

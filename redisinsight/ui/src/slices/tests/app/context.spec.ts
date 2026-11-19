@@ -7,6 +7,7 @@ import {
   SortOrder,
 } from 'uiSrc/constants'
 import { localStorageService } from 'uiSrc/services'
+import { faker } from '@faker-js/faker'
 import { stringToBuffer } from 'uiSrc/utils'
 import { RootState } from 'uiSrc/slices/store'
 
@@ -55,6 +56,11 @@ import reducer, {
   setLastPipelineManagementPage,
   resetPipelineManagement,
   appContextPipelineManagement,
+  openBrowserKeyTab,
+  closeBrowserKeyTab,
+  renameBrowserKeyTab,
+  clearBrowserKeyTabs,
+  appContextBrowserKeyTabs,
 } from '../../app/context'
 
 jest.mock('uiSrc/services', () => ({
@@ -264,6 +270,83 @@ describe('slices', () => {
       })
 
       expect(appContextBrowser(rootState)).toEqual(state)
+    })
+  })
+
+  describe('browser key tabs', () => {
+    const getKeyTabs = (nextState: typeof initialState) =>
+      appContextBrowserKeyTabs(
+        Object.assign(initialStateDefault, { app: { context: nextState } }),
+      )
+    const stateWithTabs = (keyTabs: ReturnType<typeof stringToBuffer>[]) => ({
+      ...initialState,
+      browser: { ...initialState.browser, keyTabs },
+    })
+
+    const keyNames = faker.helpers.uniqueArray(
+      () => faker.string.alphanumeric(10),
+      3,
+    )
+    const [keyA, keyB, keyC] = keyNames.map((name) => stringToBuffer(name))
+
+    it('should append a new tab', () => {
+      const nextState = reducer(stateWithTabs([keyA]), openBrowserKeyTab(keyB))
+
+      expect(getKeyTabs(nextState)).toEqual([keyA, keyB])
+    })
+
+    it('should not duplicate an already opened tab', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB]),
+        openBrowserKeyTab(stringToBuffer(keyNames[0])),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([keyA, keyB])
+    })
+
+    it('should close a tab', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB, keyC]),
+        closeBrowserKeyTab(keyB),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([keyA, keyC])
+    })
+
+    it('should rename a tab in place', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB]),
+        renameBrowserKeyTab({ key: keyA, newKey: keyC }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([keyC, keyB])
+    })
+
+    it('should drop a duplicate tab when renamed to an opened key', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB, keyC]),
+        renameBrowserKeyTab({ key: keyA, newKey: keyC }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([keyC, keyB])
+    })
+
+    it('should clear all tabs', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB]),
+        clearBrowserKeyTabs(),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([])
+    })
+
+    it('should reset tabs with the initial context state', () => {
+      const nextState = reducer(
+        stateWithTabs([keyA, keyB]),
+        setAppContextInitialState(),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([])
     })
   })
 

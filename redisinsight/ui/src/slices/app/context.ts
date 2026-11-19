@@ -6,7 +6,7 @@ import {
   CapabilityStorageItem,
   ConfigDBStorageItem,
 } from 'uiSrc/constants/storage'
-import { Maybe, Nullable } from 'uiSrc/utils'
+import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 import {
   BrowserStorageItem,
   DEFAULT_DELIMITER,
@@ -84,6 +84,7 @@ export const initialState: StateAppContext = {
       isNotRendered: true,
       selectedKey: null,
     },
+    keyTabs: [],
     panelSizes: [],
     tree: {
       openNodes: {},
@@ -246,6 +247,49 @@ const appContextSlice = createSlice({
     ) => {
       state.browser.keyList.selectedKey = payload
     },
+    openBrowserKeyTab: (
+      state,
+      { payload }: PayloadAction<RedisResponseBuffer>,
+    ) => {
+      const isOpened = state.browser.keyTabs.some((tab) =>
+        isEqualBuffers(tab, payload),
+      )
+      if (!isOpened) {
+        state.browser.keyTabs.push(payload)
+      }
+    },
+    closeBrowserKeyTab: (
+      state,
+      { payload }: PayloadAction<RedisResponseBuffer>,
+    ) => {
+      state.browser.keyTabs = state.browser.keyTabs.filter(
+        (tab) => !isEqualBuffers(tab, payload),
+      )
+    },
+    renameBrowserKeyTab: (
+      state,
+      {
+        payload: { key, newKey },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        newKey: RedisResponseBuffer
+      }>,
+    ) => {
+      // drop a tab already opened for the new name to avoid duplicates
+      const tabs = state.browser.keyTabs.filter(
+        (tab) => !isEqualBuffers(tab, newKey),
+      )
+      const index = tabs.findIndex((tab) => isEqualBuffers(tab, key))
+      if (index === -1) {
+        tabs.push(newKey)
+      } else {
+        tabs[index] = newKey
+      }
+      state.browser.keyTabs = tabs
+    },
+    clearBrowserKeyTabs: (state) => {
+      state.browser.keyTabs = []
+    },
     setBrowserPatternKeyListDataLoaded: (
       state,
       { payload }: { payload: boolean },
@@ -380,6 +424,10 @@ export const {
   setBrowserPatternKeyListDataLoaded,
   setBrowserRedisearchKeyListDataLoaded,
   setBrowserSelectedKey,
+  openBrowserKeyTab,
+  closeBrowserKeyTab,
+  renameBrowserKeyTab,
+  clearBrowserKeyTabs,
   setBrowserPatternScrollPosition,
   setBrowserRedisearchScrollPosition,
   setBrowserIsNotRendered,
@@ -439,6 +487,8 @@ export const appContextSearchAndQuery = (state: RootState) =>
   state.app.context.searchAndQuery
 export const appContextSelectedKey = (state: RootState) =>
   state.app.context.browser.keyList.selectedKey
+export const appContextBrowserKeyTabs = (state: RootState) =>
+  state.app.context.browser.keyTabs
 export const appContextPubSub = (state: RootState) => state.app.context.pubsub
 export const appContextAnalytics = (state: RootState) =>
   state.app.context.analytics
