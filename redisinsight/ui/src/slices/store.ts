@@ -60,6 +60,7 @@ import rdiStatisticsReducer from './rdi/statistics'
 import aiAssistantReducer from './panels/aiAssistant'
 import appDbSettingsReducer from './app/db-settings'
 import tagsReducer from './instances/tags'
+import commandLogReducer from './browser/commandLog'
 
 const riConfig = getConfig()
 
@@ -102,6 +103,7 @@ export const rootReducer = combineReducers({
     array: arrayReducer,
     bulkActions: bulkActionsReducer,
     redisearch: redisearchReducer,
+    commandLog: commandLogReducer,
   }),
   cli: combineReducers({
     settings: cliSettingsReducer,
