@@ -1,3 +1,5 @@
+import { waitFor } from 'uiSrc/utils/test-utils'
+
 const BROTLI_INIT_ERROR = 'brotli wasm init failed'
 
 const mockInit = jest.fn()
@@ -7,8 +9,6 @@ jest.mock('brotli-dec-wasm/pkg/brotli_dec_wasm', () => ({
   default: (...args: unknown[]) => mockInit(...args),
   decompress: jest.fn(),
 }))
-
-const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 describe('decompressors brotli init', () => {
   const unhandledRejections: unknown[] = []
@@ -35,7 +35,13 @@ describe('decompressors brotli init', () => {
     await jest.isolateModulesAsync(async () => {
       await import('uiSrc/utils/decompressors/decompressors')
     })
-    await flushPromises()
+
+    await waitFor(() =>
+      expect(console.warn).toHaveBeenCalledWith(
+        'Failed to initialize brotli decompressor',
+        expect.objectContaining({ message: BROTLI_INIT_ERROR }),
+      ),
+    )
 
     expect(mockInit).toHaveBeenCalledTimes(1)
     expect(unhandledRejections).toEqual([])
@@ -47,7 +53,8 @@ describe('decompressors brotli init', () => {
     await jest.isolateModulesAsync(async () => {
       await import('uiSrc/utils/decompressors/decompressors')
     })
-    await flushPromises()
+
+    await waitFor(() => expect(mockInit).toHaveBeenCalledTimes(1))
 
     expect(unhandledRejections).toEqual([])
     expect(console.warn).not.toHaveBeenCalled()
