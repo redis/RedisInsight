@@ -1,4 +1,5 @@
 import React from 'react'
+import { faker } from '@faker-js/faker'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { act, render, screen, waitFor } from 'uiSrc/utils/test-utils'
 import appContextReducer, {
@@ -11,8 +12,19 @@ import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
 import KeyTree from './KeyTree'
 
-const selectedKey = 'a:b:c:key'
-const folders = ['a', 'a:b', 'a:b:c']
+const [firstFolder, secondFolder, thirdFolder, leaf] = Array.from(
+  { length: 4 },
+  () => faker.string.alpha({ length: 8 }),
+)
+const folders = [
+  firstFolder,
+  `${firstFolder}:${secondFolder}`,
+  `${firstFolder}:${secondFolder}:${thirdFolder}`,
+]
+const selectedKey = `${folders[2]}:${leaf}`
+const expectedOpenNodes = Object.fromEntries(
+  folders.map((folder) => [folder, true]),
+)
 
 // Runs the real tree construction synchronously instead of in a web worker.
 jest.mock('uiSrc/services', () => {
@@ -129,7 +141,7 @@ describe('KeyTree open nodes', () => {
     })
 
     expect(store.getState().app.context.browser.tree.openNodes).toEqual(
-      expect.objectContaining({ a: true, 'a:b': true, 'a:b:c': true }),
+      expect.objectContaining(expectedOpenNodes),
     )
   })
 
@@ -151,7 +163,7 @@ describe('KeyTree open nodes', () => {
 
     expect(renderPhaseUpdates).toHaveLength(0)
     expect(store.getState().app.context.browser.tree.openNodes).toEqual(
-      expect.objectContaining({ a: true, 'a:b': true, 'a:b:c': true }),
+      expect.objectContaining(expectedOpenNodes),
     )
     // One update for the selected key parents, one for the single-child leaf.
     expect(openActions).toHaveLength(2)
