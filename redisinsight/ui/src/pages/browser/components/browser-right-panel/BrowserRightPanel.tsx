@@ -39,7 +39,6 @@ export interface Props {
   keyTabs?: RedisResponseBuffer[]
   onSelectTab?: (keyName: RedisResponseBuffer) => void
   onCloseTab?: (keyName: RedisResponseBuffer) => void
-  onRemoveKey?: () => void
 }
 
 const noop = () => {}
@@ -57,7 +56,6 @@ const BrowserRightPanel = (props: Props) => {
     keyTabs = [],
     onSelectTab = noop,
     onCloseTab = noop,
-    onRemoveKey,
   } = props
 
   const { isBrowserFullScreen, viewType } = useAppSelector(keysSelector)
@@ -111,8 +109,6 @@ const BrowserRightPanel = (props: Props) => {
     [],
   )
 
-  const onSelectKey = useCallback(() => setSelectedKey(null), [])
-
   return (
     <S.Container>
       <KeyTabs
@@ -132,7 +128,9 @@ const BrowserRightPanel = (props: Props) => {
             keyProp={selectedKey}
             onCloseKey={closePanel}
             onEditKey={onEditKey}
-            onRemoveKey={onRemoveKey ?? onSelectKey}
+            // a deleted key's tab is closed by deleteKeyFromList, then
+            // Browser opens the neighbour tab
+            onRemoveKey={noop}
             totalKeys={total}
             keysLastRefreshTime={keysLastRefreshTime}
           />

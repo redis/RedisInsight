@@ -26,8 +26,12 @@ declare module 'redux-mock-store' {
     clearActions(): void
   }
 
+  // `state` can also be a function of the dispatched actions: it is called on
+  // every `getState()`, so a spec can change the state between renders
   export interface MockStoreCreator<S = unknown, DispatchExts = {}> {
-    (state?: S): MockStoreEnhanced<S, DispatchExts>
+    (
+      state?: S | ((actions: UnknownAction[]) => S),
+    ): MockStoreEnhanced<S, DispatchExts>
   }
 
   function configureMockStore<S = unknown, DispatchExts = {}>(

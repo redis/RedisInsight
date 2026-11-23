@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
-  bufferToString,
   formatLongName,
   isEqualBuffers,
   Nullable,
@@ -14,6 +13,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
 import { useTranslation } from 'uiSrc/i18n'
 
+import { useKeyFormat } from '../use-key-format'
 import * as S from './KeyTabs.styles'
 
 const MIDDLE_MOUSE_BUTTON = 1
@@ -32,6 +32,8 @@ export const KeyTabs = ({
   onCloseTab,
 }: KeyTabsProps) => {
   const { t } = useTranslation()
+  // same as the key list: HEX keeps binary key names distinguishable
+  const { handler: formatKeyName } = useKeyFormat()
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export const KeyTabs = ({
   return (
     <S.TabsContainer ref={containerRef} role="tablist" data-testid="key-tabs">
       {tabs.map((tab, index) => {
-        const name = bufferToString(tab)
+        const name = formatKeyName(tab)
         const isActive = isEqualBuffers(tab, activeKey)
 
         const handleClose = (e: React.MouseEvent) => {

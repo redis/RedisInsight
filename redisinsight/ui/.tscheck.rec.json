@@ -822,12 +822,12 @@
     "TS2740": 2
   },
   "src/slices/tests/browser/hash.spec.ts": {
-    "TS2345": 12
+    "TS2345": 11
   },
   "src/slices/tests/browser/keys.spec.ts": {
     "TS2322": 4,
     "TS2339": 4,
-    "TS2345": 20
+    "TS2345": 19
   },
   "src/slices/tests/browser/list.spec.ts": {
     "TS2322": 3,
@@ -845,7 +845,7 @@
     "TS2554": 2
   },
   "src/slices/tests/browser/set.spec.ts": {
-    "TS2345": 13
+    "TS2345": 12
   },
   "src/slices/tests/browser/stream.spec.ts": {
     "TS2322": 11,
@@ -856,11 +856,11 @@
     "TS2554": 1
   },
   "src/slices/tests/browser/vectorSet.spec.ts": {
-    "TS2345": 4
+    "TS2345": 3
   },
   "src/slices/tests/browser/zset.spec.ts": {
     "TS2322": 2,
-    "TS2345": 20,
+    "TS2345": 19,
     "TS2554": 2
   },
   "src/slices/tests/cli/cli-output.spec.ts": {

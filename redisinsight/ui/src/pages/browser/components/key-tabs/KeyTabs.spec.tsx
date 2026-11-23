@@ -1,8 +1,16 @@
 import React from 'react'
+import { cloneDeep, set } from 'lodash'
 import { faker } from '@faker-js/faker'
 
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import { stringToBuffer } from 'uiSrc/utils'
+import {
+  fireEvent,
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
+import { anyToBuffer, stringToBuffer } from 'uiSrc/utils'
+import { KeyValueFormat } from 'uiSrc/constants'
 
 import { KeyTabs, KeyTabsProps } from './KeyTabs'
 
@@ -101,5 +109,24 @@ describe('KeyTabs', () => {
     })
 
     expect(defaultProps.onCloseTab).toHaveBeenCalledWith(keys[2])
+  })
+
+  it('should format tab names with the HEX key name format', () => {
+    const state = cloneDeep(initialStateDefault)
+    set(
+      state,
+      'connections.instances.connectedInstance.keyNameFormat',
+      KeyValueFormat.HEX,
+    )
+    // binary keys that both decode to the replacement character as UTF-8
+    const binaryKeys = [anyToBuffer([0x80]), anyToBuffer([0x81])]
+
+    render(
+      <KeyTabs {...defaultProps} tabs={binaryKeys} activeKey={binaryKeys[0]} />,
+      { store: mockStore(state) },
+    )
+
+    expect(screen.getByTestId('key-tab-80')).toHaveTextContent('80')
+    expect(screen.getByTestId('key-tab-81')).toHaveTextContent('81')
   })
 })

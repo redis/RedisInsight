@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
-import { isNumber } from 'lodash'
+import { isNumber, noop } from 'lodash'
 
 import {
   formatLongName,
@@ -175,8 +175,39 @@ const BrowserPage = () => {
     }
   }, [selectedKey])
 
+  // a tab is removed when the user closes it or when its key is gone (deleted,
+  // TTL set to 0, last element removed, not found): when it is the shown key's
+  // tab, open its neighbour like a browser does
   useEffect(() => {
+    const prevTabs = keyTabsRef.current
     keyTabsRef.current = keyTabs
+
+    const shownKey = selectedKeyRef.current
+    const index = prevTabs.findIndex((tab) => isEqualBuffers(tab, shownKey))
+    const isShownTabClosed =
+      index !== -1 && !keyTabs.some((tab) => isEqualBuffers(tab, shownKey))
+
+    if (isShownTabClosed) {
+      // the right neighbour has moved to the closed tab's index
+      const nextTab = keyTabs[index] ?? keyTabs[index - 1]
+      if (nextTab) {
+        handleSelectTab(nextTab)
+        return
+      }
+
+      dispatch(setBrowserSelectedKey(null))
+      closePanel()
+      return
+    }
+
+    // no key is shown: closing the last tab closes the panel too,
+    // unless Add Key or Bulk Actions is open in it
+    const isLastTabClosed = prevTabs.length > 0 && keyTabs.length === 0
+    const isOtherPanelOpen =
+      isAddKeyPanelOpenRef.current || isBulkActionsPanelOpenRef.current
+    if (!shownKey && isLastTabClosed && !isOtherPanelOpen) {
+      closePanel()
+    }
   }, [keyTabs])
 
   useEffect(() => {
@@ -312,43 +343,9 @@ const BrowserPage = () => {
     closeRightPanels()
   }, [])
 
+  // the neighbour tab is opened by the effect on keyTabs
   const handleCloseTab = useCallback((keyName: RedisResponseBuffer) => {
-    const tabs = keyTabsRef.current
-    const index = tabs.findIndex((tab) => isEqualBuffers(tab, keyName))
-
     dispatch(closeBrowserKeyTab(keyName))
-
-    if (isEqualBuffers(keyName, selectedKeyRef.current)) {
-      // like a browser: activate the right neighbour, otherwise the left one
-      const nextTab = tabs[index + 1] ?? tabs[index - 1]
-      if (nextTab) {
-        handleSelectTab(nextTab)
-        return
-      }
-
-      dispatch(setBrowserSelectedKey(null))
-      closePanel()
-      return
-    }
-
-    // no key is shown (e.g. the active one was deleted): closing the last tab
-    // closes the panel too, unless Add Key or Bulk Actions is open in it
-    const isLastTab = tabs.length === 1
-    const isOtherPanelOpen =
-      isAddKeyPanelOpenRef.current || isBulkActionsPanelOpenRef.current
-    if (isLastTab && !isOtherPanelOpen) {
-      closePanel()
-    }
-  }, [])
-
-  // the selected key was deleted in the UI: its tab goes away as if closed,
-  // opening the neighbour tab (keys deleted elsewhere keep their tab)
-  const handleRemoveSelectedKey = useCallback(() => {
-    const deletedKey = selectedKeyRef.current
-    if (!deletedKey) return
-
-    dispatch(resetKeyInfo())
-    handleCloseTab(deletedKey)
   }, [])
 
   const isRightPanelOpen =
@@ -394,7 +391,9 @@ const BrowserPage = () => {
               <BrowserLeftPanel
                 selectedKey={selectedKey}
                 selectKey={selectKey}
-                removeSelectedKey={handleRemoveSelectedKey}
+                // a deleted key's tab is closed by deleteKeyFromList, then the
+                // effect on keyTabs opens the neighbour tab
+                removeSelectedKey={noop}
                 handleAddKeyPanel={handleAddKeyPanel}
                 handleBulkActionsPanel={handleBulkActionsPanel}
               />
@@ -426,7 +425,6 @@ const BrowserPage = () => {
                 keyTabs={keyTabs}
                 onSelectTab={handleSelectTab}
                 onCloseTab={handleCloseTab}
-                onRemoveKey={handleRemoveSelectedKey}
               />
             </S.BorderedResizablePanel>
           </S.StyledResizableContainer>

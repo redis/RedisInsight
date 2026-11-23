@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios'
+import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
@@ -817,8 +818,9 @@ describe('list slice', () => {
     })
 
     describe('deleteListElementsAction', () => {
+      const keyName = stringToBuffer('keyName')
       const data = {
-        keyName: 'keyName',
+        keyName,
         destination: 'TAIL',
         count: 2,
       } as DeleteListElementsDto
@@ -896,6 +898,7 @@ describe('list slice', () => {
           deleteListElements(),
           deleteListElementsSuccess(),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(keyName),
           deleteRedisearchKeyFromList(data.keyName),
           addMessageNotification(successMessages.DELETED_KEY(data.keyName)),
         ]

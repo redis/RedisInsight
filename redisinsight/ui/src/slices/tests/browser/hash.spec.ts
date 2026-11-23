@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
@@ -645,7 +646,7 @@ describe('hash slice', () => {
       it('succeed to delete all fields from hast', async () => {
         // Arrange
 
-        const key = 'key'
+        const key = stringToBuffer('key')
         const fields = ['hash field', 'hash field 2']
         const responsePayload = { status: 200, data: { affected: 2 } }
         const nextState = {
@@ -674,6 +675,7 @@ describe('hash slice', () => {
           removeHashFieldsSuccess(),
           removeFieldsFromList(fields),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deleteRedisearchKeyFromList(key),
           addMessageNotification(successMessages.DELETED_KEY(key)),
         ]

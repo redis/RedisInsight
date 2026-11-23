@@ -910,7 +910,7 @@ export function fetchKeyInfo(
       const status = get(error, ['response', 'status'])
       if (status && isStatusNotFoundError(status)) {
         dispatch(resetKeyInfo())
-        // the key is gone: drop its tab and leave no key selected
+        // the key is gone: drop its tab, Browser then opens the neighbour one
         dispatch(closeBrowserKeyTab(key))
         dispatch(setBrowserSelectedKey(null))
       }
@@ -949,7 +949,6 @@ export function refreshKeyInfoAction(key: RedisResponseBuffer) {
       if (status && isStatusNotFoundError(status)) {
         dispatch(resetKeyInfo())
         dispatch(deleteKeyFromList(key))
-        dispatch(closeBrowserKeyTab(key))
         dispatch(setBrowserSelectedKey(null))
       }
     }
@@ -1492,9 +1491,13 @@ export function resetKeysData(searchMode: SearchMode) {
     : resetRedisearchKeysData()
 }
 
+// called on every path where the key no longer exists (deleted, TTL set to 0,
+// last element removed, not found), so its tab is closed here as well
 export function deleteKeyFromList(key: RedisResponseBuffer) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     const state = stateInit()
+
+    dispatch(closeBrowserKeyTab(key))
 
     return state.browser.keys?.searchMode === SearchMode.Pattern
       ? dispatch(deletePatternKeyFromList(key))

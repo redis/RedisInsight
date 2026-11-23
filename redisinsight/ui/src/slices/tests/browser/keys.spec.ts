@@ -1674,8 +1674,8 @@ describe('keys slice', () => {
           refreshKeyInfoFail(),
           addErrorNotification(responsePayload as AxiosError),
           resetKeyInfo(),
-          deletePatternKeyFromList(keyName),
           closeBrowserKeyTab(keyName),
+          deletePatternKeyFromList(keyName),
           setBrowserSelectedKey(null),
         ]
         expect(store.getActions()).toEqual(expectedActions)
@@ -1932,6 +1932,7 @@ describe('keys slice', () => {
         const expectedActions = [
           deleteSelectedKey(),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(data.name),
           deletePatternKeyFromList(data.name),
           addMessageNotification(successMessages.DELETED_KEY(data.name)),
         ]
@@ -1959,6 +1960,7 @@ describe('keys slice', () => {
         const expectedActions = [
           deleteKey(),
           deleteKeySuccess(),
+          closeBrowserKeyTab(data.name),
           deletePatternKeyFromList(data.name),
           addMessageNotification(successMessages.DELETED_KEY(data.name)),
         ]
@@ -2018,7 +2020,7 @@ describe('keys slice', () => {
 
       it('success editKeyTTL with ttl = 0', async () => {
         // Arrange
-        const key = 'string'
+        const key = stringToBuffer('string')
         const ttl = 0
         const responsePayload = { status: 200 }
 
@@ -2031,6 +2033,7 @@ describe('keys slice', () => {
         const expectedActions = [
           defaultSelectedKeyAction(),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deletePatternKeyFromList(key),
           defaultSelectedKeyActionSuccess(),
         ]

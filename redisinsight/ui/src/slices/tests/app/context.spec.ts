@@ -331,6 +331,15 @@ describe('slices', () => {
       expect(getKeyTabs(nextState)).toEqual([keyC, keyB])
     })
 
+    it('should ignore a rename when the source tab is not opened', () => {
+      const nextState = reducer(
+        stateWithTabs([keyB]),
+        renameBrowserKeyTab({ key: keyA, newKey: keyC }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([keyB])
+    })
+
     it('should clear all tabs', () => {
       const nextState = reducer(
         stateWithTabs([keyA, keyB]),

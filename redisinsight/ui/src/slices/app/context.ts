@@ -275,17 +275,17 @@ const appContextSlice = createSlice({
         newKey: RedisResponseBuffer
       }>,
     ) => {
-      // drop a tab already opened for the new name to avoid duplicates
-      const tabs = state.browser.keyTabs.filter(
-        (tab) => !isEqualBuffers(tab, newKey),
+      const index = state.browser.keyTabs.findIndex((tab) =>
+        isEqualBuffers(tab, key),
       )
-      const index = tabs.findIndex((tab) => isEqualBuffers(tab, key))
-      if (index === -1) {
-        tabs.push(newKey)
-      } else {
-        tabs[index] = newKey
-      }
-      state.browser.keyTabs = tabs
+      // the source tab is gone, e.g. the tabs were reset by a database change
+      // while the rename was in flight: the new name belongs to another database
+      if (index === -1) return
+
+      // rename in place and drop a tab already opened for the new name
+      state.browser.keyTabs = state.browser.keyTabs
+        .map((tab, i) => (i === index ? newKey : tab))
+        .filter((tab, i) => i === index || !isEqualBuffers(tab, newKey))
     },
     clearBrowserKeyTabs: (state) => {
       state.browser.keyTabs = []
