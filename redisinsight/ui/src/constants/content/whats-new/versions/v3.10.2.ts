@@ -1,8 +1,8 @@
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { WhatsNewVersion, WhatsNewVersionType } from '../types'
 
-export const version3100: WhatsNewVersion = {
-  version: '3.10.0',
+export const version3102: WhatsNewVersion = {
+  version: '3.10.2',
   releaseDate: '2026-11-17',
   type: WhatsNewVersionType.Minor,
   cards: [
