@@ -22,7 +22,11 @@ import {
 import init, * as brotli from '../../../../../node_modules/brotli-dec-wasm/pkg/brotli_dec_wasm'
 import brotliWasmUrl from '../../../../../node_modules/brotli-dec-wasm/pkg/brotli_dec_wasm_bg.wasm?url'
 
-init(brotliWasmUrl).then(() => brotli)
+init(brotliWasmUrl)
+  .then(() => brotli)
+  .catch((error) => {
+    console.warn('Failed to initialize brotli decompressor', error)
+  })
 
 const decompressingBuffer = (
   reply: RedisResponseBuffer,
