@@ -1,4 +1,5 @@
 import { BrowserWindow, app, shell, ipcMain } from 'electron'
+import log from 'electron-log'
 import {
   MenuBuilder,
   getDisplayAppInTrayValue,
@@ -15,6 +16,11 @@ import {
   ElectronStorageItem,
   IpcOnEvent,
 } from 'uiSrc/electron/constants'
+
+// openExternal rejects when the OS has no handler for the url
+const openExternalSafely = (url: string) => {
+  shell.openExternal(url).catch((e) => log.error(e))
+}
 
 export const initWindowHandlers = (
   newWindow: BrowserWindow,
@@ -94,11 +100,11 @@ export const initWindowHandlers = (
   // Open urls in the user's browser
   newWindow.webContents.on('new-window', (event, url) => {
     event.preventDefault()
-    shell.openExternal(url)
+    openExternalSafely(url)
   })
 
   newWindow.webContents.setWindowOpenHandler((edata: any) => {
-    shell.openExternal(edata.url)
+    openExternalSafely(edata.url)
     return { action: 'deny' }
   })
 }
