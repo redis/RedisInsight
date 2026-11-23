@@ -186,10 +186,6 @@
   "../ui/src/utils/streamUtils.ts": {
     "TS2345": 2
   },
-  "src/lib/azure/azure-oauth-errors.spec.ts": {
-    "TS2304": 10,
-    "TS2593": 14
-  },
   "src/lib/window/browserWindow.ts": {
     "TS2459": 1
   },
