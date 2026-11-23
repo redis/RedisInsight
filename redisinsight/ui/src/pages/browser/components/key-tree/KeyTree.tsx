@@ -184,6 +184,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
   // select default leaf "Keys" after each change delimiter, filter or search
   const updateSelectedKeys = () => {
+    setStatusOpen({})
     dispatch(resetBrowserTree())
     openSelectedKey(selectedKeyName)
   }

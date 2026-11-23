@@ -32,6 +32,8 @@ jest.mock('uiSrc/services', () => {
   }
 })
 
+jest.mock('uiSrc/pages/browser/components/no-keys-message', () => () => null)
+
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   selectedKeyDataSelector: jest.fn(),
@@ -88,6 +90,18 @@ const createStore = (openActions: unknown[]) =>
       ),
   })
 
+const renderComponent = (
+  store: ReturnType<typeof createStore>,
+  propsOverride: Partial<typeof props> = {},
+) => render(<KeyTree {...props} {...propsOverride} />, { store })
+
+const expectFoldersExpanded = () =>
+  waitFor(() =>
+    folders.forEach((folder) =>
+      expect(screen.getByTestId(`node-item_${folder}--expanded`)).toBeVisible(),
+    ),
+  )
+
 describe('KeyTree open nodes', () => {
   beforeEach(() => {
     ;(selectedKeyDataSelector as jest.Mock).mockReturnValue({
@@ -96,22 +110,39 @@ describe('KeyTree open nodes', () => {
     })
   })
 
+  it('should keep the selected key parents open after the keys are emptied', async () => {
+    const store = createStore([])
+    let utils: ReturnType<typeof renderComponent> | undefined
+
+    await act(async () => {
+      utils = renderComponent(store)
+    })
+    await expectFoldersExpanded()
+
+    await act(async () => {
+      utils?.rerender(
+        <KeyTree
+          {...props}
+          keysState={{ ...keysState, keys: [], total: 0, scanned: 0 }}
+        />,
+      )
+    })
+
+    expect(store.getState().app.context.browser.tree.openNodes).toEqual(
+      expect.objectContaining({ a: true, 'a:b': true, 'a:b:c': true }),
+    )
+  })
+
   it('should open the selected key parents without dispatching while rendering', async () => {
     const consoleError = jest.spyOn(console, 'error').mockImplementation()
     const openActions: unknown[] = []
     const store = createStore(openActions)
 
     await act(async () => {
-      render(<KeyTree {...props} />, { store })
+      renderComponent(store)
     })
 
-    await waitFor(() =>
-      folders.forEach((folder) =>
-        expect(
-          screen.getByTestId(`node-item_${folder}--expanded`),
-        ).toBeVisible(),
-      ),
-    )
+    await expectFoldersExpanded()
 
     const renderPhaseUpdates = consoleError.mock.calls.filter(([message]) =>
       String(message).includes('while rendering a different component'),
