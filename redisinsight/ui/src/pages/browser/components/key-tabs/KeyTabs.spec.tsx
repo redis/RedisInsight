@@ -11,6 +11,11 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { anyToBuffer, stringToBuffer } from 'uiSrc/utils'
 import { KeyValueFormat } from 'uiSrc/constants'
+import {
+  KeyTab,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 
 import { KeyTabs, KeyTabsProps } from './KeyTabs'
 
@@ -21,10 +26,14 @@ const keyNames = faker.helpers.uniqueArray(
   3,
 )
 const keys = keyNames.map((name) => stringToBuffer(name))
+const toTab = (
+  key: RedisResponseBuffer,
+  removedReason: KeyTab['removedReason'] = null,
+): KeyTab => ({ key, expiresAt: null, removedReason })
 
 describe('KeyTabs', () => {
   const defaultProps: KeyTabsProps = {
-    tabs: keys,
+    tabs: keys.map((key) => toTab(key)),
     activeKey: keys[1],
     onSelectTab: jest.fn(),
     onCloseTab: jest.fn(),
@@ -122,11 +131,47 @@ describe('KeyTabs', () => {
     const binaryKeys = [anyToBuffer([0x80]), anyToBuffer([0x81])]
 
     render(
-      <KeyTabs {...defaultProps} tabs={binaryKeys} activeKey={binaryKeys[0]} />,
+      <KeyTabs
+        {...defaultProps}
+        tabs={binaryKeys.map((key) => toTab(key))}
+        activeKey={binaryKeys[0]}
+      />,
       { store: mockStore(state) },
     )
 
     expect(screen.getByTestId('key-tab-80')).toHaveTextContent('80')
     expect(screen.getByTestId('key-tab-81')).toHaveTextContent('81')
+  })
+
+  it('should label tabs of removed keys as deleted or expired', () => {
+    renderComponent({
+      tabs: [
+        toTab(keys[0], KeyTabRemovedReason.Deleted),
+        toTab(keys[1], KeyTabRemovedReason.Expired),
+        toTab(keys[2]),
+      ],
+    })
+
+    expect(
+      screen.getByTestId(`key-tab-deleted-${keyNames[0]}`),
+    ).toHaveTextContent('Deleted')
+    expect(
+      screen.getByTestId(`key-tab-expired-${keyNames[1]}`),
+    ).toHaveTextContent('Expired')
+    expect(screen.getByTestId(`key-tab-${keyNames[2]}`)).not.toHaveTextContent(
+      /Deleted|Expired/,
+    )
+  })
+
+  it('should keep a removed key tab selectable and closable', () => {
+    renderComponent({
+      tabs: [toTab(keys[0], KeyTabRemovedReason.Deleted)],
+    })
+
+    fireEvent.click(screen.getByTestId(`key-tab-${keyNames[0]}`))
+    fireEvent.click(screen.getByTestId(`close-key-tab-${keyNames[0]}`))
+
+    expect(defaultProps.onSelectTab).toHaveBeenCalledWith(keys[0])
+    expect(defaultProps.onCloseTab).toHaveBeenCalledWith(keys[0])
   })
 })

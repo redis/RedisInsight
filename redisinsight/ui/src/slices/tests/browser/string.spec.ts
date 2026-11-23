@@ -8,6 +8,8 @@ import {
   mockedStore,
 } from 'uiSrc/utils/test-utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { markBrowserKeyTabFound } from 'uiSrc/slices/app/context'
+import { stringToBuffer } from 'uiSrc/utils'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   refreshKeyInfo,
@@ -483,7 +485,7 @@ describe('string slice', () => {
       it('succeed to fetch update string value', async () => {
         // Arrange
         const data = {
-          keyName: 'stringKey',
+          keyName: stringToBuffer('stringKey'),
           value: 'string value',
         }
         const responsePayload = { status: 200 }
@@ -503,6 +505,7 @@ describe('string slice', () => {
           refreshKeyInfo(),
           refreshKeyInfoSuccess(),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          markBrowserKeyTabFound({ key: data.keyName, expiresAt: null }),
         ]
 
         expect(store.getActions()).toEqual(expectedActions)

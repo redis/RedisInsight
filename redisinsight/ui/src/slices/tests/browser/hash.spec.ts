@@ -1,5 +1,8 @@
 import { cloneDeep } from 'lodash'
-import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
+import {
+  closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+} from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
@@ -637,6 +640,7 @@ describe('hash slice', () => {
             ),
             refreshKeyInfoSuccess({ affected: 2 }),
             updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+            markBrowserKeyTabFound({ key, expiresAt: null }),
           ]
 
           expect(mockedStore.getActions()).toEqual(expectedActions)
@@ -707,6 +711,11 @@ describe('hash slice', () => {
           defaultSelectedKeyAction(),
           loadKeyInfoSuccess({ affected: 2 }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          // the key name is a plain string in this DTO
+          {
+            type: markBrowserKeyTabFound.type,
+            payload: { key: keyName, expiresAt: null },
+          },
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
@@ -758,6 +767,11 @@ describe('hash slice', () => {
           refreshKeyInfo(),
           refreshKeyInfoSuccess({ affected: 2 }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          // the key name is a plain string in this DTO
+          {
+            type: markBrowserKeyTabFound.type,
+            payload: { key: keyName, expiresAt: null },
+          },
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)

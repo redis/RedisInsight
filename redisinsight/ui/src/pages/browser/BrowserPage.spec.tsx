@@ -13,7 +13,11 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { Nullable, stringToBuffer } from 'uiSrc/utils'
 import { setConnectedInstanceId } from 'uiSrc/slices/instances/instances'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import {
+  KeyTab,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 import { loadKeys, toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
@@ -195,6 +199,8 @@ describe('BrowserPage', () => {
       3,
     )
     const [keyA, keyB, keyC] = keyNames.map((name) => stringToBuffer(name))
+    const toTabs = (keys: RedisResponseBuffer[]): KeyTab[] =>
+      keys.map((key) => ({ key, expiresAt: null, removedReason: null }))
 
     const renderWithTabs = ({
       tabs,
@@ -207,7 +213,7 @@ describe('BrowserPage', () => {
     }) => {
       let state = cloneDeep(initialStateDefault)
       set(state, 'app.context.contextInstanceId', 'instanceId')
-      set(state, 'app.context.browser.keyTabs', tabs)
+      set(state, 'app.context.browser.keyTabs', toTabs(tabs))
       set(state, 'app.context.browser.keyList.selectedKey', selectedKey)
       set(state, 'app.context.browser.bulkActions.opened', isBulkActionsOpen)
 
@@ -216,7 +222,7 @@ describe('BrowserPage', () => {
       const afterRenderActions = [...tabStore.getActions()]
 
       // the mocked store has no reducers: apply the tabs change by hand
-      const setTabs = (nextTabs: RedisResponseBuffer[]) => {
+      const setTabs = (nextTabs: KeyTab[]) => {
         const { context } = state.app
         state = {
           ...state,
@@ -241,7 +247,7 @@ describe('BrowserPage', () => {
       })
 
       fireEvent.click(screen.getByTestId(`close-key-tab-${keyNames[1]}`))
-      setTabs([keyA, keyC])
+      setTabs(toTabs([keyA, keyC]))
 
       expect(tabStore.getActions()).toEqual([
         ...afterRenderActions,
@@ -257,8 +263,8 @@ describe('BrowserPage', () => {
         selectedKey: keyB,
       })
 
-      // e.g. the key was deleted, its TTL was set to 0 or it was not found
-      setTabs([keyA])
+      // e.g. the key was deleted, its TTL was set to 0 or its last element removed
+      setTabs(toTabs([keyA]))
 
       expect(tabStore.getActions()).toEqual([
         ...afterRenderActions,
@@ -289,9 +295,31 @@ describe('BrowserPage', () => {
       })
 
       // e.g. a key deleted while another tab was opened
-      setTabs([keyA])
+      setTabs(toTabs([keyA]))
 
       expect(tabStore.getActions()).toEqual(afterRenderActions)
+    })
+
+    it('should keep the shown key when its tab is marked as removed', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA, keyB],
+        selectedKey: keyB,
+      })
+
+      // the key expired or was deleted outside Browser
+      setTabs([
+        ...toTabs([keyA]),
+        {
+          key: keyB,
+          expiresAt: null,
+          removedReason: KeyTabRemovedReason.Expired,
+        },
+      ])
+
+      expect(tabStore.getActions()).toEqual(afterRenderActions)
+      expect(
+        screen.getByTestId(`key-tab-expired-${keyNames[1]}`),
+      ).toBeInTheDocument()
     })
 
     it('should close the panel when the last tab is closed without a shown key', () => {

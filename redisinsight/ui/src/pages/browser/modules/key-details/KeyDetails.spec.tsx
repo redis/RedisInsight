@@ -1,9 +1,12 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
+import { faker } from '@faker-js/faker'
 import {
   cleanup,
+  initialStateDefault,
   mockedStore,
+  mockStore,
   render,
   screen,
   act,
@@ -20,6 +23,7 @@ import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandle
 import { MOCK_TRUNCATED_BUFFER_VALUE } from 'uiSrc/mocks/data/bigString'
 import KeyDetails, { Props as KeyDetailsProps } from './KeyDetails'
 import { KeyValueFormat } from 'uiSrc/constants'
+import { KeyTabRemovedReason } from 'uiSrc/slices/interfaces'
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
@@ -96,6 +100,39 @@ describe('KeyDetails', () => {
 
     expect(screen.getByTestId('select-key-message')).toBeInTheDocument()
   })
+
+  it.each([
+    [KeyTabRemovedReason.Expired, 'This key has expired.'],
+    [KeyTabRemovedReason.Deleted, 'This key was deleted.'],
+  ])(
+    'should tell why the key is gone when its tab is marked as %s',
+    async (removedReason, message) => {
+      const keyName = stringToBuffer(faker.string.alphanumeric(10))
+      const state = cloneDeep(initialStateDefault)
+      set(state, 'app.context.browser.keyTabs', [
+        { key: keyName, expiresAt: null, removedReason },
+      ])
+      apiService.post = jest
+        .fn()
+        .mockRejectedValueOnce({ response: { status: 404, data: {} } })
+
+      await act(async () => {
+        render(
+          <KeyDetails
+            {...instance(mockedProps)}
+            keyProp={keyName}
+            totalKeys={10}
+            keysLastRefreshTime={1}
+          />,
+          { store: mockStore(state) },
+        )
+      })
+
+      expect(screen.getByTestId('no-keys-selected-text')).toHaveTextContent(
+        message,
+      )
+    },
+  )
 
   it('should call proper telemetry after open key details', async () => {
     const sendEventTelemetryMock = jest.fn()

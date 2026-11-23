@@ -13,14 +13,19 @@ import {
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
+import { appContextBrowserKeyTabs } from 'uiSrc/slices/app/context'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { isTruncatedString, Nullable } from 'uiSrc/utils'
+import {
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
+import { isEqualBuffers, isTruncatedString, Nullable } from 'uiSrc/utils'
 import { NoKeySelected } from './components/no-key-selected'
 import { DynamicTypeDetails } from './components/dynamic-type-details'
 
@@ -53,6 +58,9 @@ const KeyDetails = (props: Props) => {
   const { type: keyType } = useAppSelector(selectedKeyDataSelector) ?? {
     type: KeyTypes.String,
   }
+  const keyTabs = useAppSelector(appContextBrowserKeyTabs)
+
+  const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
 
@@ -115,6 +123,14 @@ const KeyDetails = (props: Props) => {
     })
   }
 
+  // the key was removed outside Browser: tell why instead of the generic message
+  const { removedReason = null } =
+    keyTabs.find((tab) => isEqualBuffers(tab.key, keyProp)) ?? {}
+  const removedMessage =
+    removedReason === KeyTabRemovedReason.Expired
+      ? t('browser.keyTabs.expiredMessage')
+      : t('browser.keyTabs.deletedMessage')
+
   return (
     <div className={styles.container}>
       <div
@@ -127,7 +143,7 @@ const KeyDetails = (props: Props) => {
             keyProp={keyProp}
             totalKeys={totalKeys}
             keysLastRefreshTime={keysLastRefreshTime}
-            error={error}
+            error={error || (removedReason ? removedMessage : '')}
             onClosePanel={onCloseKey}
           />
         ) : (

@@ -20,7 +20,7 @@ export const TabsContainer = styled.div<
     theme.semantic.color.background.neutral200};
 `
 
-export const Tab = styled(Row)<{ $isActive: boolean }>`
+export const Tab = styled(Row)<{ $isActive: boolean; $isRemoved: boolean }>`
   flex: none;
   max-width: 24ch;
   padding: ${({ theme }) => theme.core.space.space050};
@@ -50,5 +50,11 @@ export const Tab = styled(Row)<{ $isActive: boolean }>`
       &:focus-visible {
         background-color: ${theme.semantic.color.background.neutral100};
       }
+    `}
+
+  ${({ $isRemoved, theme }) =>
+    $isRemoved &&
+    css`
+      color: ${theme.semantic.color.text.danger500};
     `}
 `

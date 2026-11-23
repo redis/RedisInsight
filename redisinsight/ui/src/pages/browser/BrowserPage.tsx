@@ -31,7 +31,7 @@ import {
   closeBrowserKeyTab,
 } from 'uiSrc/slices/app/context'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { KeyTab, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   connectedInstanceOverviewSelector,
   connectedInstanceSelector,
@@ -120,7 +120,7 @@ const BrowserPage = () => {
   const isBulkActionsPanelOpenRef = useRef<boolean>(isBulkActionsPanelOpen)
   const isAddKeyPanelOpenRef = useRef<boolean>(isAddKeyPanelOpen)
   const isSidePanelOpenRef = useRef<boolean>(!!openedSidePanel)
-  const keyTabsRef = useRef<RedisResponseBuffer[]>(keyTabs)
+  const keyTabsRef = useRef<KeyTab[]>(keyTabs)
 
   const history = useHistory()
   const dispatch = useAppDispatch()
@@ -175,23 +175,24 @@ const BrowserPage = () => {
     }
   }, [selectedKey])
 
-  // a tab is removed when the user closes it or when its key is gone (deleted,
-  // TTL set to 0, last element removed, not found): when it is the shown key's
-  // tab, open its neighbour like a browser does
+  // a tab is removed when the user closes it or when Browser deletes its key
+  // (delete button, TTL set to 0, last element removed): when it is the shown
+  // key's tab, open its neighbour like a browser does. Keys removed elsewhere
+  // keep their tab, marked as expired or deleted
   useEffect(() => {
     const prevTabs = keyTabsRef.current
     keyTabsRef.current = keyTabs
 
     const shownKey = selectedKeyRef.current
-    const index = prevTabs.findIndex((tab) => isEqualBuffers(tab, shownKey))
+    const index = prevTabs.findIndex((tab) => isEqualBuffers(tab.key, shownKey))
     const isShownTabClosed =
-      index !== -1 && !keyTabs.some((tab) => isEqualBuffers(tab, shownKey))
+      index !== -1 && !keyTabs.some((tab) => isEqualBuffers(tab.key, shownKey))
 
     if (isShownTabClosed) {
       // the right neighbour has moved to the closed tab's index
       const nextTab = keyTabs[index] ?? keyTabs[index - 1]
       if (nextTab) {
-        handleSelectTab(nextTab)
+        handleSelectTab(nextTab.key)
         return
       }
 

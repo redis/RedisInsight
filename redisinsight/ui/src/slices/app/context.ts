@@ -51,6 +51,7 @@ import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { SearchMode } from '../interfaces/keys'
 import {
   AppWorkspace,
+  KeyTabRemovedReason,
   RedisResponseBuffer,
   StateAppContext,
 } from '../interfaces'
@@ -252,10 +253,14 @@ const appContextSlice = createSlice({
       { payload }: PayloadAction<RedisResponseBuffer>,
     ) => {
       const isOpened = state.browser.keyTabs.some((tab) =>
-        isEqualBuffers(tab, payload),
+        isEqualBuffers(tab.key, payload),
       )
       if (!isOpened) {
-        state.browser.keyTabs.push(payload)
+        state.browser.keyTabs.push({
+          key: payload,
+          expiresAt: null,
+          removedReason: null,
+        })
       }
     },
     closeBrowserKeyTab: (
@@ -263,8 +268,42 @@ const appContextSlice = createSlice({
       { payload }: PayloadAction<RedisResponseBuffer>,
     ) => {
       state.browser.keyTabs = state.browser.keyTabs.filter(
-        (tab) => !isEqualBuffers(tab, payload),
+        (tab) => !isEqualBuffers(tab.key, payload),
       )
+    },
+    // the key loaded: it exists again if its tab was marked as removed
+    markBrowserKeyTabFound: (
+      state,
+      {
+        payload: { key, expiresAt },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        expiresAt: Nullable<number>
+      }>,
+    ) => {
+      const tab = state.browser.keyTabs.find((tab) =>
+        isEqualBuffers(tab.key, key),
+      )
+      if (!tab) return
+
+      tab.expiresAt = expiresAt
+      tab.removedReason = null
+    },
+    markBrowserKeyTabRemoved: (
+      state,
+      {
+        payload: { key, reason },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        reason: KeyTabRemovedReason
+      }>,
+    ) => {
+      const tab = state.browser.keyTabs.find((tab) =>
+        isEqualBuffers(tab.key, key),
+      )
+      if (!tab) return
+
+      tab.removedReason = reason
     },
     renameBrowserKeyTab: (
       state,
@@ -276,16 +315,19 @@ const appContextSlice = createSlice({
       }>,
     ) => {
       const index = state.browser.keyTabs.findIndex((tab) =>
-        isEqualBuffers(tab, key),
+        isEqualBuffers(tab.key, key),
       )
       // the source tab is gone, e.g. the tabs were reset by a database change
       // while the rename was in flight: the new name belongs to another database
       if (index === -1) return
 
-      // rename in place and drop a tab already opened for the new name
+      // rename in place and drop a tab already opened for the new name;
+      // a rename keeps the TTL and proves the key exists
       state.browser.keyTabs = state.browser.keyTabs
-        .map((tab, i) => (i === index ? newKey : tab))
-        .filter((tab, i) => i === index || !isEqualBuffers(tab, newKey))
+        .map((tab, i) =>
+          i === index ? { ...tab, key: newKey, removedReason: null } : tab,
+        )
+        .filter((tab, i) => i === index || !isEqualBuffers(tab.key, newKey))
     },
     clearBrowserKeyTabs: (state) => {
       state.browser.keyTabs = []
@@ -426,6 +468,8 @@ export const {
   setBrowserSelectedKey,
   openBrowserKeyTab,
   closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+  markBrowserKeyTabRemoved,
   renameBrowserKeyTab,
   clearBrowserKeyTabs,
   setBrowserPatternScrollPosition,

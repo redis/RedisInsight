@@ -79,7 +79,7 @@ describe('BrowserRightPanel', () => {
         isBulkActionsPanelOpen={false}
         handleBulkActionsPanel={jest.fn()}
         closeRightPanels={jest.fn()}
-        keyTabs={[keyBuffer]}
+        keyTabs={[{ key: keyBuffer, expiresAt: null, removedReason: null }]}
         onSelectTab={onSelectTab}
         onCloseTab={onCloseTab}
       />,

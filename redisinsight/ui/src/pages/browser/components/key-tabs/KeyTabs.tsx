@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import {
+  KeyTab,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 import {
   formatLongName,
   isEqualBuffers,
@@ -11,6 +15,7 @@ import { KeyboardKeys } from 'uiSrc/constants/keys'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
+import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { useTranslation } from 'uiSrc/i18n'
 
 import { useKeyFormat } from '../use-key-format'
@@ -19,7 +24,7 @@ import * as S from './KeyTabs.styles'
 const MIDDLE_MOUSE_BUTTON = 1
 
 export interface KeyTabsProps {
-  tabs: RedisResponseBuffer[]
+  tabs: KeyTab[]
   activeKey: Nullable<RedisResponseBuffer>
   onSelectTab: (key: RedisResponseBuffer) => void
   onCloseTab: (key: RedisResponseBuffer) => void
@@ -46,19 +51,21 @@ export const KeyTabs = ({
 
   return (
     <S.TabsContainer ref={containerRef} role="tablist" data-testid="key-tabs">
-      {tabs.map((tab, index) => {
-        const name = formatKeyName(tab)
-        const isActive = isEqualBuffers(tab, activeKey)
+      {tabs.map(({ key, removedReason }, index) => {
+        const name = formatKeyName(key)
+        const isActive = isEqualBuffers(key, activeKey)
+        const isRemoved = removedReason !== null
+        const isExpired = removedReason === KeyTabRemovedReason.Expired
 
         const handleClose = (e: React.MouseEvent) => {
           e.stopPropagation()
-          onCloseTab(tab)
+          onCloseTab(key)
         }
 
         const handleMouseUp = (e: React.MouseEvent) => {
           if (e.button === MIDDLE_MOUSE_BUTTON) {
             e.preventDefault()
-            onCloseTab(tab)
+            onCloseTab(key)
           }
         }
 
@@ -68,9 +75,13 @@ export const KeyTabs = ({
             (e.key === KeyboardKeys.ENTER || e.key === KeyboardKeys.SPACE)
           ) {
             e.preventDefault()
-            onSelectTab(tab)
+            onSelectTab(key)
           }
         }
+
+        const removedMessage = isExpired
+          ? t('browser.keyTabs.expiredMessage')
+          : t('browser.keyTabs.deletedMessage')
 
         return (
           <S.Tab
@@ -81,18 +92,31 @@ export const KeyTabs = ({
             align="center"
             gap="s"
             $isActive={isActive}
-            onClick={() => onSelectTab(tab)}
+            $isRemoved={isRemoved}
+            onClick={() => onSelectTab(key)}
             onMouseUp={handleMouseUp}
             onKeyDown={handleKeyDown}
             data-testid={`key-tab-${name}`}
           >
             <RiTooltip
+              title={isRemoved ? removedMessage : undefined}
               content={formatLongName(name)}
               position="bottom"
               anchorClassName="truncateText"
             >
               <span>{replaceSpaces(name)}</span>
             </RiTooltip>
+            {isRemoved && (
+              <RiBadge
+                variant={isExpired ? 'notice' : 'danger'}
+                label={
+                  isExpired
+                    ? t('browser.keyTabs.expired')
+                    : t('browser.keyTabs.deleted')
+                }
+                data-testid={`key-tab-${removedReason}-${name}`}
+              />
+            )}
             <IconButton
               icon={CancelSlimIcon}
               aria-label={t('browser.keyTabs.closeAria', { name })}

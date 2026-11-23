@@ -39,8 +39,11 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { IFetchKeyArgs, IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
+  appContextBrowserKeyTabs,
   appContextShownColumnsSelector,
   closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+  markBrowserKeyTabRemoved,
   resetBrowserTree,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
@@ -96,7 +99,12 @@ import {
 } from '../interfaces/keys'
 import { AppDispatch, RootState } from '../store'
 import { StreamViewType } from '../interfaces/stream'
-import { EditorType, RedisResponseBuffer, RedisString } from '../interfaces'
+import {
+  EditorType,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+  RedisString,
+} from '../interfaces'
 import {
   CreateListWithExpireDto,
   SetStringWithExpireDto,
@@ -111,6 +119,13 @@ import {
 } from 'apiClient'
 
 const riConfig = getConfig()
+
+const MS_IN_SECOND = 1000
+// Redis reports TTL in whole seconds
+const KEY_TTL_PRECISION_MS = MS_IN_SECOND
+
+const getKeyExpiresAt = (ttl: Maybe<number>): Nullable<number> =>
+  ttl && ttl > 0 ? Date.now() + ttl * MS_IN_SECOND : null
 
 export const defaultViewFormat = KeyValueFormat.Unicode
 
@@ -841,6 +856,12 @@ export function fetchKeyInfo(
       if (isStatusSuccessful(status)) {
         dispatch(loadKeyInfoSuccess(data))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+        dispatch(
+          markBrowserKeyTabFound({
+            key,
+            expiresAt: getKeyExpiresAt(data?.ttl),
+          }),
+        )
         onSuccess?.(data)
       }
 
@@ -909,10 +930,7 @@ export function fetchKeyInfo(
       dispatch(defaultSelectedKeyActionFailure(errorMessage))
       const status = get(error, ['response', 'status'])
       if (status && isStatusNotFoundError(status)) {
-        dispatch(resetKeyInfo())
-        // the key is gone: drop its tab, Browser then opens the neighbour one
-        dispatch(closeBrowserKeyTab(key))
-        dispatch(setBrowserSelectedKey(null))
+        dispatch(handleKeyNotFound(key))
       }
     }
   }
@@ -940,6 +958,12 @@ export function refreshKeyInfoAction(key: RedisResponseBuffer) {
       if (isStatusSuccessful(status)) {
         dispatch(refreshKeyInfoSuccess(data))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+        dispatch(
+          markBrowserKeyTabFound({
+            key,
+            expiresAt: getKeyExpiresAt(data?.ttl),
+          }),
+        )
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -947,9 +971,8 @@ export function refreshKeyInfoAction(key: RedisResponseBuffer) {
       dispatch(addErrorNotification(error))
       const status = get(error, ['response', 'status'])
       if (status && isStatusNotFoundError(status)) {
-        dispatch(resetKeyInfo())
-        dispatch(deleteKeyFromList(key))
-        dispatch(setBrowserSelectedKey(null))
+        dispatch(handleKeyNotFound(key))
+        dispatch(removeKeyFromList(key))
       }
     }
   }
@@ -1491,17 +1514,53 @@ export function resetKeysData(searchMode: SearchMode) {
     : resetRedisearchKeysData()
 }
 
-// called on every path where the key no longer exists (deleted, TTL set to 0,
-// last element removed, not found), so its tab is closed here as well
-export function deleteKeyFromList(key: RedisResponseBuffer) {
+function removeKeyFromList(key: RedisResponseBuffer) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     const state = stateInit()
-
-    dispatch(closeBrowserKeyTab(key))
 
     return state.browser.keys?.searchMode === SearchMode.Pattern
       ? dispatch(deletePatternKeyFromList(key))
       : dispatch(deleteRedisearchKeyFromList(key))
+  }
+}
+
+// called on every path where Browser deleted the key (delete button, TTL set
+// to 0, last element removed): the user did it, so its tab is closed as well
+export function deleteKeyFromList(key: RedisResponseBuffer) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(closeBrowserKeyTab(key))
+
+    return dispatch(removeKeyFromList(key))
+  }
+}
+
+// the key is not found, so it was removed outside Browser (expired, deleted by
+// another client): keep its tab and mark it, telling an expired key from a
+// deleted one by the TTL it had when it last loaded
+function handleKeyNotFound(key: RedisResponseBuffer) {
+  return (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(resetKeyInfo())
+
+    const tab = appContextBrowserKeyTabs(stateInit()).find((tab) =>
+      isEqualBuffers(tab.key, key),
+    )
+    // without a tab there is nothing left to show
+    if (!tab) {
+      dispatch(setBrowserSelectedKey(null))
+      return
+    }
+
+    const isExpired =
+      tab.expiresAt !== null &&
+      Date.now() >= tab.expiresAt - KEY_TTL_PRECISION_MS
+    dispatch(
+      markBrowserKeyTabRemoved({
+        key,
+        reason: isExpired
+          ? KeyTabRemovedReason.Expired
+          : KeyTabRemovedReason.Deleted,
+      }),
+    )
   }
 }
 

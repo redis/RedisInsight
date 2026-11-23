@@ -10,6 +10,11 @@ import { localStorageService } from 'uiSrc/services'
 import { faker } from '@faker-js/faker'
 import { stringToBuffer } from 'uiSrc/utils'
 import { RootState } from 'uiSrc/slices/store'
+import {
+  KeyTab,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 
 import {
   cleanup,
@@ -60,6 +65,8 @@ import reducer, {
   closeBrowserKeyTab,
   renameBrowserKeyTab,
   clearBrowserKeyTabs,
+  markBrowserKeyTabFound,
+  markBrowserKeyTabRemoved,
   appContextBrowserKeyTabs,
 } from '../../app/context'
 
@@ -278,7 +285,13 @@ describe('slices', () => {
       appContextBrowserKeyTabs(
         Object.assign(initialStateDefault, { app: { context: nextState } }),
       )
-    const stateWithTabs = (keyTabs: ReturnType<typeof stringToBuffer>[]) => ({
+    const getTabKeys = (nextState: typeof initialState) =>
+      getKeyTabs(nextState).map((tab) => tab.key)
+    const toTab = (
+      key: RedisResponseBuffer,
+      overrides: Partial<KeyTab> = {},
+    ): KeyTab => ({ key, expiresAt: null, removedReason: null, ...overrides })
+    const stateWithTabs = (keyTabs: KeyTab[]) => ({
       ...initialState,
       browser: { ...initialState.browser, keyTabs },
     })
@@ -288,61 +301,123 @@ describe('slices', () => {
       3,
     )
     const [keyA, keyB, keyC] = keyNames.map((name) => stringToBuffer(name))
+    const expiresAt = faker.date.future().getTime()
 
     it('should append a new tab', () => {
-      const nextState = reducer(stateWithTabs([keyA]), openBrowserKeyTab(keyB))
+      const nextState = reducer(
+        stateWithTabs([toTab(keyA)]),
+        openBrowserKeyTab(keyB),
+      )
 
-      expect(getKeyTabs(nextState)).toEqual([keyA, keyB])
+      expect(getKeyTabs(nextState)).toEqual([toTab(keyA), toTab(keyB)])
     })
 
     it('should not duplicate an already opened tab', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB]),
+        stateWithTabs([toTab(keyA), toTab(keyB)]),
         openBrowserKeyTab(stringToBuffer(keyNames[0])),
       )
 
-      expect(getKeyTabs(nextState)).toEqual([keyA, keyB])
+      expect(getTabKeys(nextState)).toEqual([keyA, keyB])
     })
 
     it('should close a tab', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB, keyC]),
+        stateWithTabs([toTab(keyA), toTab(keyB), toTab(keyC)]),
         closeBrowserKeyTab(keyB),
       )
 
-      expect(getKeyTabs(nextState)).toEqual([keyA, keyC])
+      expect(getTabKeys(nextState)).toEqual([keyA, keyC])
     })
 
     it('should rename a tab in place', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB]),
+        stateWithTabs([toTab(keyA), toTab(keyB)]),
         renameBrowserKeyTab({ key: keyA, newKey: keyC }),
       )
 
-      expect(getKeyTabs(nextState)).toEqual([keyC, keyB])
+      expect(getTabKeys(nextState)).toEqual([keyC, keyB])
+    })
+
+    it('should keep the expiry and clear the removed mark of a renamed tab', () => {
+      const nextState = reducer(
+        stateWithTabs([
+          toTab(keyA, {
+            expiresAt,
+            removedReason: KeyTabRemovedReason.Deleted,
+          }),
+        ]),
+        renameBrowserKeyTab({ key: keyA, newKey: keyC }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([toTab(keyC, { expiresAt })])
     })
 
     it('should drop a duplicate tab when renamed to an opened key', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB, keyC]),
+        stateWithTabs([toTab(keyA), toTab(keyB), toTab(keyC)]),
         renameBrowserKeyTab({ key: keyA, newKey: keyC }),
       )
 
-      expect(getKeyTabs(nextState)).toEqual([keyC, keyB])
+      expect(getTabKeys(nextState)).toEqual([keyC, keyB])
     })
 
     it('should ignore a rename when the source tab is not opened', () => {
       const nextState = reducer(
-        stateWithTabs([keyB]),
+        stateWithTabs([toTab(keyB)]),
         renameBrowserKeyTab({ key: keyA, newKey: keyC }),
       )
 
-      expect(getKeyTabs(nextState)).toEqual([keyB])
+      expect(getTabKeys(nextState)).toEqual([keyB])
+    })
+
+    it('should mark a tab as removed', () => {
+      const nextState = reducer(
+        stateWithTabs([toTab(keyA), toTab(keyB)]),
+        markBrowserKeyTabRemoved({
+          key: keyB,
+          reason: KeyTabRemovedReason.Expired,
+        }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([
+        toTab(keyA),
+        toTab(keyB, { removedReason: KeyTabRemovedReason.Expired }),
+      ])
+    })
+
+    it('should record the expiry and clear the removed mark of a found tab', () => {
+      const nextState = reducer(
+        stateWithTabs([
+          toTab(keyA, { removedReason: KeyTabRemovedReason.Deleted }),
+        ]),
+        markBrowserKeyTabFound({ key: keyA, expiresAt }),
+      )
+
+      expect(getKeyTabs(nextState)).toEqual([toTab(keyA, { expiresAt })])
+    })
+
+    it('should ignore marks for a key without a tab', () => {
+      const tabs = [toTab(keyA)]
+      const removedState = reducer(
+        stateWithTabs(tabs),
+        markBrowserKeyTabRemoved({
+          key: keyB,
+          reason: KeyTabRemovedReason.Deleted,
+        }),
+      )
+      const foundState = reducer(
+        stateWithTabs(tabs),
+        markBrowserKeyTabFound({ key: keyB, expiresAt }),
+      )
+
+      expect(getKeyTabs(removedState)).toEqual(tabs)
+      expect(getKeyTabs(foundState)).toEqual(tabs)
     })
 
     it('should clear all tabs', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB]),
+        stateWithTabs([toTab(keyA), toTab(keyB)]),
         clearBrowserKeyTabs(),
       )
 
@@ -351,7 +426,7 @@ describe('slices', () => {
 
     it('should reset tabs with the initial context state', () => {
       const nextState = reducer(
-        stateWithTabs([keyA, keyB]),
+        stateWithTabs([toTab(keyA), toTab(keyB)]),
         setAppContextInitialState(),
       )
 

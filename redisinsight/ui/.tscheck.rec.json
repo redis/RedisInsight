@@ -825,9 +825,9 @@
     "TS2345": 11
   },
   "src/slices/tests/browser/keys.spec.ts": {
-    "TS2322": 4,
+    "TS2322": 3,
     "TS2339": 4,
-    "TS2345": 19
+    "TS2345": 18
   },
   "src/slices/tests/browser/list.spec.ts": {
     "TS2322": 3,

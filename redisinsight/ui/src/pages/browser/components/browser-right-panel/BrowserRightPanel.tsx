@@ -13,7 +13,7 @@ import {
   selectedKeyDataSelector,
   toggleBrowserFullScreen,
 } from 'uiSrc/slices/browser/keys'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { KeyTab, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
@@ -36,7 +36,7 @@ export interface Props {
   isBulkActionsPanelOpen: boolean
   handleBulkActionsPanel: (value: boolean) => void
   closeRightPanels: () => void
-  keyTabs?: RedisResponseBuffer[]
+  keyTabs?: KeyTab[]
   onSelectTab?: (keyName: RedisResponseBuffer) => void
   onCloseTab?: (keyName: RedisResponseBuffer) => void
 }
