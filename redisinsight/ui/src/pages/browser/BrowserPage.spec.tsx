@@ -263,7 +263,7 @@ describe('BrowserPage', () => {
         selectedKey: keyB,
       })
 
-      // e.g. the key was deleted, its TTL was set to 0 or its last element removed
+      // e.g. the key was deleted or its last element was removed
       setTabs(toTabs([keyA]))
 
       expect(tabStore.getActions()).toEqual([
@@ -306,19 +306,19 @@ describe('BrowserPage', () => {
         selectedKey: keyB,
       })
 
-      // the key expired or was deleted outside Browser
+      // the key disappeared outside Browser
       setTabs([
         ...toTabs([keyA]),
         {
           key: keyB,
           expiresAt: null,
-          removedReason: KeyTabRemovedReason.Expired,
+          removedReason: KeyTabRemovedReason.NotFound,
         },
       ])
 
       expect(tabStore.getActions()).toEqual(afterRenderActions)
       expect(
-        screen.getByTestId(`key-tab-expired-${keyNames[1]}`),
+        screen.getByTestId(`key-tab-not-found-${keyNames[1]}`),
       ).toBeInTheDocument()
     })
 

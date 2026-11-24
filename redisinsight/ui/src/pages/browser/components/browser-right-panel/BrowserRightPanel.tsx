@@ -19,7 +19,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Nullable } from 'uiSrc/utils'
+import { isEqualBuffers, Nullable } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 import { renameBrowserKeyTab } from 'uiSrc/slices/app/context'
@@ -99,15 +99,17 @@ const BrowserRightPanel = (props: Props) => {
     key: RedisResponseBuffer,
     newKey: RedisResponseBuffer,
   ) => {
+    if (!keyTabs.some((tab) => isEqualBuffers(tab.key, key))) return
+
     dispatch(renameBrowserKeyTab({ key, newKey }))
     setSelectedKey(newKey)
   }
 
-  const onEditKey = useCallback(
-    (key: RedisResponseBuffer, newKey: RedisResponseBuffer) =>
-      handleEditKey(key, newKey),
-    [],
-  )
+  const onEditKey = useCallback(handleEditKey, [
+    dispatch,
+    keyTabs,
+    setSelectedKey,
+  ])
 
   return (
     <S.Container>
@@ -128,7 +130,7 @@ const BrowserRightPanel = (props: Props) => {
             keyProp={selectedKey}
             onCloseKey={closePanel}
             onEditKey={onEditKey}
-            // a deleted key's tab is closed by deleteKeyFromList, then
+            // a missing key's tab is closed by deleteKeyFromList, then
             // Browser opens the neighbour tab
             onRemoveKey={noop}
             totalKeys={total}

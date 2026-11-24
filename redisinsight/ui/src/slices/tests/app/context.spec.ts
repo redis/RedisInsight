@@ -344,7 +344,7 @@ describe('slices', () => {
         stateWithTabs([
           toTab(keyA, {
             expiresAt,
-            removedReason: KeyTabRemovedReason.Deleted,
+            removedReason: KeyTabRemovedReason.NotFound,
           }),
         ]),
         renameBrowserKeyTab({ key: keyA, newKey: keyC }),
@@ -376,20 +376,20 @@ describe('slices', () => {
         stateWithTabs([toTab(keyA), toTab(keyB)]),
         markBrowserKeyTabRemoved({
           key: keyB,
-          reason: KeyTabRemovedReason.Expired,
+          reason: KeyTabRemovedReason.NotFound,
         }),
       )
 
       expect(getKeyTabs(nextState)).toEqual([
         toTab(keyA),
-        toTab(keyB, { removedReason: KeyTabRemovedReason.Expired }),
+        toTab(keyB, { removedReason: KeyTabRemovedReason.NotFound }),
       ])
     })
 
     it('should record the expiry and clear the removed mark of a found tab', () => {
       const nextState = reducer(
         stateWithTabs([
-          toTab(keyA, { removedReason: KeyTabRemovedReason.Deleted }),
+          toTab(keyA, { removedReason: KeyTabRemovedReason.NotFound }),
         ]),
         markBrowserKeyTabFound({ key: keyA, expiresAt }),
       )
@@ -403,7 +403,7 @@ describe('slices', () => {
         stateWithTabs(tabs),
         markBrowserKeyTabRemoved({
           key: keyB,
-          reason: KeyTabRemovedReason.Deleted,
+          reason: KeyTabRemovedReason.NotFound,
         }),
       )
       const foundState = reducer(

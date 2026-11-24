@@ -41,6 +41,7 @@ import { IFetchKeyArgs, IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
   appContextBrowserKeyTabs,
   appContextShownColumnsSelector,
+  appContextSelectedKey,
   closeBrowserKeyTab,
   markBrowserKeyTabFound,
   markBrowserKeyTabRemoved,
@@ -121,11 +122,11 @@ import {
 const riConfig = getConfig()
 
 const MS_IN_SECOND = 1000
-// Redis reports TTL in whole seconds
-const KEY_TTL_PRECISION_MS = MS_IN_SECOND
 
 const getKeyExpiresAt = (ttl: Maybe<number>): Nullable<number> =>
-  ttl && ttl > 0 ? Date.now() + ttl * MS_IN_SECOND : null
+  ttl !== null && ttl !== undefined && ttl >= 0
+    ? Date.now() + ttl * MS_IN_SECOND
+    : null
 
 export const defaultViewFormat = KeyValueFormat.Unicode
 
@@ -1534,32 +1535,29 @@ export function deleteKeyFromList(key: RedisResponseBuffer) {
   }
 }
 
-// the key is not found, so it was removed outside Browser (expired, deleted by
-// another client): keep its tab and mark it, telling an expired key from a
-// deleted one by the TTL it had when it last loaded
+// the key is not found, so it was removed outside Browser: keep its tab and
+// mark it as unavailable for a possible retry
 function handleKeyNotFound(key: RedisResponseBuffer) {
   return (dispatch: AppDispatch, stateInit: () => RootState) => {
-    dispatch(resetKeyInfo())
-
-    const tab = appContextBrowserKeyTabs(stateInit()).find((tab) =>
+    const state = stateInit()
+    const selectedKey = appContextSelectedKey(state)
+    const isSelectedKey =
+      selectedKey !== null && isEqualBuffers(selectedKey, key)
+    const tab = appContextBrowserKeyTabs(state).find((tab) =>
       isEqualBuffers(tab.key, key),
     )
     // without a tab there is nothing left to show
     if (!tab) {
-      dispatch(setBrowserSelectedKey(null))
+      if (selectedKey === null || isSelectedKey) {
+        dispatch(resetKeyInfo())
+        dispatch(setBrowserSelectedKey(null))
+      }
       return
     }
 
-    const isExpired =
-      tab.expiresAt !== null &&
-      Date.now() >= tab.expiresAt - KEY_TTL_PRECISION_MS
+    if (selectedKey === null || isSelectedKey) dispatch(resetKeyInfo())
     dispatch(
-      markBrowserKeyTabRemoved({
-        key,
-        reason: isExpired
-          ? KeyTabRemovedReason.Expired
-          : KeyTabRemovedReason.Deleted,
-      }),
+      markBrowserKeyTabRemoved({ key, reason: KeyTabRemovedReason.NotFound }),
     )
   }
 }

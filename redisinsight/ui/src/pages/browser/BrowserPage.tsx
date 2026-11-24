@@ -13,6 +13,7 @@ import {
 import { sendPageViewTelemetry, TelemetryPageView } from 'uiSrc/telemetry'
 import {
   fetchKeys,
+  fetchKeyInfo,
   keysSelector,
   resetKeyInfo,
   selectedKeyDataSelector,
@@ -107,6 +108,9 @@ const BrowserPage = () => {
   const [isBulkActionsPanelOpen, setIsBulkActionsPanelOpen] = useState(
     bulkActionOpenContext,
   )
+  const [isKeyTabsPanelOpen, setIsKeyTabsPanelOpen] = useState(
+    keyTabs.length > 0 && !isBrowserFullScreen,
+  )
 
   const [selectedKey, setSelectedKey] = useStateWithContext<
     Nullable<RedisResponseBuffer>
@@ -171,14 +175,14 @@ const BrowserPage = () => {
     selectedKeyRef.current = selectedKey
 
     if (selectedKey) {
+      setIsKeyTabsPanelOpen(true)
       dispatch(openBrowserKeyTab(selectedKey))
     }
   }, [selectedKey])
 
-  // a tab is removed when the user closes it or when Browser deletes its key
-  // (delete button, TTL set to 0, last element removed): when it is the shown
-  // key's tab, open its neighbour like a browser does. Keys removed elsewhere
-  // keep their tab, marked as expired or deleted
+  // a tab is removed when the user closes it or when Browser deletes its key;
+  // when it is the shown key's tab, open its neighbour like a browser does.
+  // Keys removed elsewhere keep their tab for a possible retry.
   useEffect(() => {
     const prevTabs = keyTabsRef.current
     keyTabsRef.current = keyTabs
@@ -259,6 +263,7 @@ const BrowserPage = () => {
     }
 
     dispatch(toggleBrowserFullScreen(false))
+    if (value && keyTabsRef.current.length > 0) setIsKeyTabsPanelOpen(true)
     setSelectedKey(keyName ?? null)
     closeRightPanels()
   }
@@ -329,17 +334,30 @@ const BrowserPage = () => {
   }, [])
 
   const closePanel = useCallback(() => {
-    dispatch(toggleBrowserFullScreen(true))
+    const keepTabsVisible =
+      keyTabsRef.current.length > 0 &&
+      (isAddKeyPanelOpenRef.current || isBulkActionsPanelOpenRef.current)
+
+    dispatch(toggleBrowserFullScreen(!keepTabsVisible))
 
     setSelectedKey(null)
     closeRightPanels()
+    if (!keepTabsVisible) setIsKeyTabsPanelOpen(false)
   }, [])
 
   const handleSelectTab = useCallback((keyName: RedisResponseBuffer) => {
+    setIsKeyTabsPanelOpen(true)
     if (!isEqualBuffers(keyName, selectedKeyRef.current)) {
       dispatch(setInitialStateByType(prevSelectedType.current))
       setSelectedKey(keyName)
       dispatch(setBrowserSelectedKey(keyName))
+    } else if (
+      keyTabsRef.current.some(
+        (tab) => isEqualBuffers(tab.key, keyName) && tab.removedReason,
+      )
+    ) {
+      dispatch(resetKeyInfo())
+      dispatch<any>(fetchKeyInfo(keyName))
     }
     closeRightPanels()
   }, [])
@@ -350,7 +368,10 @@ const BrowserPage = () => {
   }, [])
 
   const isRightPanelOpen =
-    selectedKey !== null || isAddKeyPanelOpen || isBulkActionsPanelOpen
+    selectedKey !== null ||
+    isAddKeyPanelOpen ||
+    isBulkActionsPanelOpen ||
+    (isKeyTabsPanelOpen && keyTabs.length > 0)
   const isRightPanelFullScreen =
     (isBrowserFullScreen && isRightPanelOpen) ||
     (arePanelsCollapsed && isRightPanelOpen)
@@ -392,7 +413,7 @@ const BrowserPage = () => {
               <BrowserLeftPanel
                 selectedKey={selectedKey}
                 selectKey={selectKey}
-                // a deleted key's tab is closed by deleteKeyFromList, then the
+                // a missing key's tab is closed by deleteKeyFromList, then the
                 // effect on keyTabs opens the neighbour tab
                 removeSelectedKey={noop}
                 handleAddKeyPanel={handleAddKeyPanel}

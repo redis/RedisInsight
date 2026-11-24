@@ -1562,7 +1562,7 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('should mark the tab as deleted and keep the selection when a key without TTL is not found', async () => {
+      it('should mark the tab as not found and keep the selection when a key is not found', async () => {
         // Arrange
         const keyName = stringToBuffer('keyName')
         const errorMessage = 'resource not found error'
@@ -1591,13 +1591,13 @@ describe('keys slice', () => {
           resetKeyInfo(),
           markBrowserKeyTabRemoved({
             key: keyName,
-            reason: KeyTabRemovedReason.Deleted,
+            reason: KeyTabRemovedReason.NotFound,
           }),
         ]
         expect(localStore.getActions()).toEqual(expectedActions)
       })
 
-      it('should mark the tab as deleted when the key is not found before its TTL runs out', async () => {
+      it('should mark the tab as not found when the key is not found', async () => {
         // Arrange
         const keyName = stringToBuffer('keyName')
         const localStore = storeWithKeyTab({
@@ -1619,7 +1619,7 @@ describe('keys slice', () => {
         expect(localStore.getActions()).toContainEqual(
           markBrowserKeyTabRemoved({
             key: keyName,
-            reason: KeyTabRemovedReason.Deleted,
+            reason: KeyTabRemovedReason.NotFound,
           }),
         )
       })
@@ -1794,9 +1794,9 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('should mark the tab as expired and keep it when the key is not found after its TTL ran out (404)', async () => {
+      it('should mark the tab as not found and keep it when the key is not found (404)', async () => {
         // Arrange
-        const keyName = stringToBuffer('expiredKey')
+        const keyName = stringToBuffer('missingKey')
         const errorMessage = 'Key with this name does not exist.'
         const responsePayload = {
           response: {
@@ -1825,7 +1825,7 @@ describe('keys slice', () => {
           resetKeyInfo(),
           markBrowserKeyTabRemoved({
             key: keyName,
-            reason: KeyTabRemovedReason.Expired,
+            reason: KeyTabRemovedReason.NotFound,
           }),
           deletePatternKeyFromList(keyName),
         ]

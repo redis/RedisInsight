@@ -101,38 +101,34 @@ describe('KeyDetails', () => {
     expect(screen.getByTestId('select-key-message')).toBeInTheDocument()
   })
 
-  it.each([
-    [KeyTabRemovedReason.Expired, 'This key has expired.'],
-    [KeyTabRemovedReason.Deleted, 'This key was deleted.'],
-  ])(
-    'should tell why the key is gone when its tab is marked as %s',
-    async (removedReason, message) => {
-      const keyName = stringToBuffer(faker.string.alphanumeric(10))
-      const state = cloneDeep(initialStateDefault)
-      set(state, 'app.context.browser.keyTabs', [
-        { key: keyName, expiresAt: null, removedReason },
-      ])
-      apiService.post = jest
-        .fn()
-        .mockRejectedValueOnce({ response: { status: 404, data: {} } })
+  it('should show a not-found message when the key tab is marked as removed', async () => {
+    const removedReason = KeyTabRemovedReason.NotFound
+    const message = 'This key no longer exists.'
+    const keyName = stringToBuffer(faker.string.alphanumeric(10))
+    const state = cloneDeep(initialStateDefault)
+    set(state, 'app.context.browser.keyTabs', [
+      { key: keyName, expiresAt: null, removedReason },
+    ])
+    apiService.post = jest
+      .fn()
+      .mockRejectedValueOnce({ response: { status: 404, data: {} } })
 
-      await act(async () => {
-        render(
-          <KeyDetails
-            {...instance(mockedProps)}
-            keyProp={keyName}
-            totalKeys={10}
-            keysLastRefreshTime={1}
-          />,
-          { store: mockStore(state) },
-        )
-      })
-
-      expect(screen.getByTestId('no-keys-selected-text')).toHaveTextContent(
-        message,
+    await act(async () => {
+      render(
+        <KeyDetails
+          {...instance(mockedProps)}
+          keyProp={keyName}
+          totalKeys={10}
+          keysLastRefreshTime={1}
+        />,
+        { store: mockStore(state) },
       )
-    },
-  )
+    })
+
+    expect(screen.getByTestId('no-keys-selected-text')).toHaveTextContent(
+      message,
+    )
+  })
 
   it('should call proper telemetry after open key details', async () => {
     const sendEventTelemetryMock = jest.fn()

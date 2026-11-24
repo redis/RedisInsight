@@ -1,10 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-import {
-  KeyTab,
-  KeyTabRemovedReason,
-  RedisResponseBuffer,
-} from 'uiSrc/slices/interfaces'
+import { KeyTab, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   formatLongName,
   isEqualBuffers,
@@ -55,7 +51,6 @@ export const KeyTabs = ({
         const name = formatKeyName(key)
         const isActive = isEqualBuffers(key, activeKey)
         const isRemoved = removedReason !== null
-        const isExpired = removedReason === KeyTabRemovedReason.Expired
 
         const handleClose = (e: React.MouseEvent) => {
           e.stopPropagation()
@@ -77,17 +72,43 @@ export const KeyTabs = ({
             e.preventDefault()
             onSelectTab(key)
           }
+
+          if (
+            e.target !== e.currentTarget ||
+            ![
+              KeyboardKeys.ARROW_LEFT,
+              KeyboardKeys.ARROW_RIGHT,
+              KeyboardKeys.HOME,
+              KeyboardKeys.END,
+            ].includes(e.key as KeyboardKeys)
+          ) {
+            return
+          }
+
+          e.preventDefault()
+          const tabElements =
+            containerRef.current?.querySelectorAll<HTMLElement>('[role="tab"]')
+          if (!tabElements?.length) return
+
+          const nextIndex =
+            e.key === KeyboardKeys.HOME
+              ? 0
+              : e.key === KeyboardKeys.END
+                ? tabElements.length - 1
+                : (index +
+                    (e.key === KeyboardKeys.ARROW_RIGHT ? 1 : -1) +
+                    tabElements.length) %
+                  tabElements.length
+          tabElements[nextIndex]?.focus()
         }
 
-        const removedMessage = isExpired
-          ? t('browser.keyTabs.expiredMessage')
-          : t('browser.keyTabs.deletedMessage')
+        const removedMessage = t('browser.keyTabs.notFoundMessage')
 
         return (
           <S.Tab
             key={`${name}-${index}`}
             role="tab"
-            tabIndex={0}
+            tabIndex={isActive || (!activeKey && index === 0) ? 0 : -1}
             aria-selected={isActive}
             align="center"
             gap="s"
@@ -108,13 +129,9 @@ export const KeyTabs = ({
             </RiTooltip>
             {isRemoved && (
               <RiBadge
-                variant={isExpired ? 'notice' : 'danger'}
-                label={
-                  isExpired
-                    ? t('browser.keyTabs.expired')
-                    : t('browser.keyTabs.deleted')
-                }
-                data-testid={`key-tab-${removedReason}-${name}`}
+                variant="danger"
+                label={t('browser.keyTabs.notFound')}
+                data-testid={`key-tab-not-found-${name}`}
               />
             )}
             <IconButton

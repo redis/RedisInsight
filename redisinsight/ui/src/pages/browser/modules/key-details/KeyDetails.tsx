@@ -21,10 +21,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import {
-  KeyTabRemovedReason,
-  RedisResponseBuffer,
-} from 'uiSrc/slices/interfaces'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { isEqualBuffers, isTruncatedString, Nullable } from 'uiSrc/utils'
 import { NoKeySelected } from './components/no-key-selected'
 import { DynamicTypeDetails } from './components/dynamic-type-details'
@@ -123,13 +120,10 @@ const KeyDetails = (props: Props) => {
     })
   }
 
-  // the key was removed outside Browser: tell why instead of the generic message
+  // The key disappeared outside Browser and its tab remains available.
   const { removedReason = null } =
     keyTabs.find((tab) => isEqualBuffers(tab.key, keyProp)) ?? {}
-  const removedMessage =
-    removedReason === KeyTabRemovedReason.Expired
-      ? t('browser.keyTabs.expiredMessage')
-      : t('browser.keyTabs.deletedMessage')
+  const removedMessage = t('browser.keyTabs.notFoundMessage')
 
   return (
     <div className={styles.container}>

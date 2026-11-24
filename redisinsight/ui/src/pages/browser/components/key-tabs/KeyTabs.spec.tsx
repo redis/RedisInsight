@@ -101,6 +101,18 @@ describe('KeyTabs', () => {
     expect(defaultProps.onSelectTab).toHaveBeenCalledWith(keys[0])
   })
 
+  it('should move focus through the tablist with keyboard navigation', () => {
+    renderComponent()
+    const tabs = screen.getAllByRole('tab')
+
+    tabs[0].focus()
+    fireEvent.keyDown(tabs[0], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(tabs[1])
+
+    fireEvent.keyDown(tabs[1], { key: 'End' })
+    expect(document.activeElement).toBe(tabs[2])
+  })
+
   it('should call only onCloseTab when the close button is clicked', () => {
     renderComponent()
 
@@ -143,21 +155,21 @@ describe('KeyTabs', () => {
     expect(screen.getByTestId('key-tab-81')).toHaveTextContent('81')
   })
 
-  it('should label tabs of removed keys as deleted or expired', () => {
+  it('should label tabs of keys that are no longer found', () => {
     renderComponent({
       tabs: [
-        toTab(keys[0], KeyTabRemovedReason.Deleted),
-        toTab(keys[1], KeyTabRemovedReason.Expired),
+        toTab(keys[0], KeyTabRemovedReason.NotFound),
+        toTab(keys[1], KeyTabRemovedReason.NotFound),
         toTab(keys[2]),
       ],
     })
 
     expect(
-      screen.getByTestId(`key-tab-deleted-${keyNames[0]}`),
-    ).toHaveTextContent('Deleted')
+      screen.getByTestId(`key-tab-not-found-${keyNames[0]}`),
+    ).toHaveTextContent('Not found')
     expect(
-      screen.getByTestId(`key-tab-expired-${keyNames[1]}`),
-    ).toHaveTextContent('Expired')
+      screen.getByTestId(`key-tab-not-found-${keyNames[1]}`),
+    ).toHaveTextContent('Not found')
     expect(screen.getByTestId(`key-tab-${keyNames[2]}`)).not.toHaveTextContent(
       /Deleted|Expired/,
     )
@@ -165,7 +177,7 @@ describe('KeyTabs', () => {
 
   it('should keep a removed key tab selectable and closable', () => {
     renderComponent({
-      tabs: [toTab(keys[0], KeyTabRemovedReason.Deleted)],
+      tabs: [toTab(keys[0], KeyTabRemovedReason.NotFound)],
     })
 
     fireEvent.click(screen.getByTestId(`key-tab-${keyNames[0]}`))
