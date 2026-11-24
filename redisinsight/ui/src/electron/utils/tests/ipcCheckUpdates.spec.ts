@@ -44,7 +44,7 @@ describe('ipcCheckUpdates', () => {
   })
 
   it('should open Whats New when the version is eligible', async () => {
-    const version = whatsNewFeed[0].version
+    const version = '3.10.0'
     invokeMock
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false)
@@ -53,6 +53,18 @@ describe('ipcCheckUpdates', () => {
     await ipcCheckUpdates(serverInfoMock(version), store.dispatch)
 
     expect(store.getActions()).toContainEqual(openWhatsNew(version))
+  })
+
+  it('should open the latest non-patch entry when updating to a patch version', async () => {
+    const version = whatsNewFeed[0].version
+    invokeMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(version)
+
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch)
+
+    expect(store.getActions()).toContainEqual(openWhatsNew('3.10.0'))
   })
 
   it('should fall back to the update toast for an ineligible version', async () => {

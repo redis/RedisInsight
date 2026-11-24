@@ -132,7 +132,7 @@ export default {
       : true,
     buildType: process.env.RI_BUILD_TYPE || 'DOCKER_ON_PREMISE',
     appType: process.env.RI_APP_TYPE,
-    appVersion: process.env.RI_APP_VERSION || '3.10.1',
+    appVersion: process.env.RI_APP_VERSION || '3.10.2',
     buildCommitSha: resolveBuildCommitSha(),
     requestTimeout: parseInt(process.env.RI_REQUEST_TIMEOUT, 10) || 25000,
     excludeRoutes: [],

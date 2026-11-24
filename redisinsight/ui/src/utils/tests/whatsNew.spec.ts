@@ -1,5 +1,6 @@
 import { FeatureFlags } from 'uiSrc/constants'
 import {
+  getWhatsNewAutoOpenVersion,
   isWhatsNewCardActive,
   isWhatsNewEligible,
   whatsNewFeed,
@@ -19,6 +20,26 @@ describe('isWhatsNewEligible', () => {
 
   it('should not be eligible for an unknown version', () => {
     expect(isWhatsNewEligible('99.0.0', null)).toEqual(false)
+  })
+})
+
+describe('getWhatsNewAutoOpenVersion', () => {
+  it('should resolve a patch release to the latest non-patch entry', () => {
+    expect(getWhatsNewAutoOpenVersion('3.10.2', null)).toEqual('3.10.0')
+    expect(getWhatsNewAutoOpenVersion('3.10.2', '3.8.0')).toEqual('3.10.0')
+  })
+
+  it('should return the version itself for a non-patch release', () => {
+    expect(getWhatsNewAutoOpenVersion('3.10.0', '3.8.0')).toEqual('3.10.0')
+  })
+
+  it('should return null when the resolved entry was already seen', () => {
+    expect(getWhatsNewAutoOpenVersion('3.10.2', '3.10.0')).toBeNull()
+    expect(getWhatsNewAutoOpenVersion('3.10.2', '3.10.2')).toBeNull()
+  })
+
+  it('should return null for an unknown version', () => {
+    expect(getWhatsNewAutoOpenVersion('99.0.0', null)).toBeNull()
   })
 })
 
