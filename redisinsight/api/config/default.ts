@@ -132,7 +132,7 @@ export default {
       : true,
     buildType: process.env.RI_BUILD_TYPE || 'DOCKER_ON_PREMISE',
     appType: process.env.RI_APP_TYPE,
-    appVersion: process.env.RI_APP_VERSION || '3.10.0',
+    appVersion: process.env.RI_APP_VERSION || '3.10.2',
     buildCommitSha: resolveBuildCommitSha(),
     requestTimeout: parseInt(process.env.RI_REQUEST_TIMEOUT, 10) || 25000,
     excludeRoutes: [],
@@ -142,7 +142,7 @@ export default {
     customTutorials: process.env.RI_CUSTOM_TUTORIALS_ENABLED === 'true',
     maxPayloadSize: process.env.RI_MAX_PAYLOAD_SIZE || '512MB',
     cors: {
-      origin: process.env.RI_CORS_ORIGIN ? process.env.RI_CORS_ORIGIN : '*',
+      origin: process.env.RI_CORS_ORIGIN,
       credentials: process.env.RI_CORS_CREDENTIALS === 'true',
     },
   },
