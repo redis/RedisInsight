@@ -2,12 +2,13 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
-import { escapeRegExp } from 'lodash'
+import { escapeRegExp, isEqual } from 'lodash'
 
 import {
   appContextBrowserTree,
@@ -76,7 +77,9 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   const { nameString: selectedKeyName = null } =
     useAppSelector(selectedKeyDataSelector) ?? {}
 
-  const [statusOpen, setStatusOpen] = useState(openNodes)
+  const [statusOpen, setStatusOpenState] = useState(openNodes)
+  // Latest open nodes, so consecutive updates in one tick build on each other.
+  const statusOpenRef = useRef(statusOpen)
   const [constructingTree, setConstructingTree] = useState(false)
   const [firstDataLoaded, setFirstDataLoaded] = useState<boolean>(
     !!keysState.keys.length,
@@ -101,7 +104,25 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
     openSelectedKey(selectedKeyName)
   }, [])
 
+  const setStatusOpen = (nextStatusOpen: typeof openNodes) => {
+    statusOpenRef.current = nextStatusOpen
+    setStatusOpenState(nextStatusOpen)
+  }
+
+  // Updates local and stored open nodes, skipping updates that change nothing.
+  const updateOpenNodes = (nextStatusOpen: typeof openNodes) => {
+    if (isEqual(nextStatusOpen, statusOpenRef.current)) return
+
+    setStatusOpen(nextStatusOpen)
+    dispatch(setBrowserTreeNodesOpen(nextStatusOpen))
+  }
+
+  // Mirrors the stored open nodes, ignoring the initial value (already in state).
+  const mirroredOpenNodesRef = useRef(openNodes)
   useEffect(() => {
+    if (mirroredOpenNodesRef.current === openNodes) return
+
+    mirroredOpenNodesRef.current = openNodes
     setStatusOpen(openNodes)
   }, [openNodes])
 
@@ -125,14 +146,11 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
       if (parents.length === 0) return
 
-      setStatusOpen((prevState) => {
-        const newOpenNodes = { ...prevState }
-        parents.forEach((parent) => {
-          newOpenNodes[parent] = true
-        })
-        dispatch(setBrowserTreeNodesOpen(newOpenNodes))
-        return newOpenNodes
+      const newOpenNodes = { ...statusOpenRef.current }
+      parents.forEach((parent) => {
+        newOpenNodes[parent] = true
       })
+      updateOpenNodes(newOpenNodes)
     }
   }
 
@@ -166,23 +184,21 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
 
   // select default leaf "Keys" after each change delimiter, filter or search
   const updateSelectedKeys = () => {
+    setStatusOpen({})
     dispatch(resetBrowserTree())
     openSelectedKey(selectedKeyName)
   }
 
   const handleStatusOpen = (name: string, value: boolean) => {
-    setStatusOpen((prevState) => {
-      const newState = { ...prevState }
-      // add or remove opened node
-      if (!value) {
-        delete newState[name]
-      } else {
-        newState[name] = value
-      }
+    const newState = { ...statusOpenRef.current }
+    // add or remove opened node
+    if (!value) {
+      delete newState[name]
+    } else {
+      newState[name] = value
+    }
 
-      dispatch(setBrowserTreeNodesOpen(newState))
-      return newState
-    })
+    updateOpenNodes(newState)
   }
 
   const handleStatusSelected = (name: RedisString) => {
