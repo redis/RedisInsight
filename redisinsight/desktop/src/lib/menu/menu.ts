@@ -55,6 +55,12 @@ export class MenuBuilder {
     return zoomFactor
   }
 
+  closeWindow(): void {
+    if (!this.mainWindow.isDestroyed()) {
+      this.mainWindow.close()
+    }
+  }
+
   setZoomFactor(zoomFactor: number): void {
     electronStore?.set(ElectronStorageItem.zoomFactor, zoomFactor)
     this.mainWindow.webContents.setZoomFactor(zoomFactor)
@@ -187,7 +193,7 @@ export class MenuBuilder {
           label: 'Close',
           accelerator: 'Command+W',
           click: () => {
-            this.mainWindow.close()
+            this.closeWindow()
           },
         },
         {
@@ -254,7 +260,7 @@ export class MenuBuilder {
             label: '&Close',
             accelerator: 'Ctrl+W',
             click: () => {
-              this.mainWindow.close()
+              this.closeWindow()
             },
           },
           // type separator cannot be invisible
