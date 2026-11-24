@@ -2,7 +2,7 @@ import { WhatsNewVersion, WhatsNewVersionType } from '../types'
 
 export const version3102: WhatsNewVersion = {
   version: '3.10.2',
-  releaseDate: '2026-11-17',
+  releaseDate: '2026-11-24',
   type: WhatsNewVersionType.Patch,
   cards: [
     {
