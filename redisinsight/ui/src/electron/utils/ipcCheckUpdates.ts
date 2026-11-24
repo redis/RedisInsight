@@ -5,7 +5,7 @@ import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
-import { isWhatsNewEligible } from 'uiSrc/utils'
+import { getWhatsNewAutoOpenVersion } from 'uiSrc/utils'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -17,15 +17,15 @@ import {
 } from '../constants'
 
 /**
- * Whether the What's New modal should replace the update toast for the just
- * installed version. Flag-gated cards render as "Coming soon", so no card
- * visibility check is needed.
+ * The What's New entry that should replace the update toast for the just
+ * installed version, or null. Flag-gated cards render as "Coming soon", so no
+ * card visibility check is needed.
  */
-const shouldOpenWhatsNew = (version: string): boolean => {
+const getWhatsNewVersionToOpen = (version: string): string | null => {
   const lastVersionSeen =
     localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ?? null
 
-  return isWhatsNewEligible(version, lastVersionSeen)
+  return getWhatsNewAutoOpenVersion(version, lastVersionSeen)
 }
 
 export const ipcCheckUpdates = async (
@@ -46,16 +46,18 @@ export const ipcCheckUpdates = async (
   )
 
   if (isUpdateDownloaded && !isUpdateAvailable) {
-    if (
-      serverInfo.appVersion === updateDownloadedVersion &&
-      shouldOpenWhatsNew(updateDownloadedVersion)
-    ) {
-      dispatch(openWhatsNew(updateDownloadedVersion))
+    const whatsNewVersion =
+      serverInfo.appVersion === updateDownloadedVersion
+        ? getWhatsNewVersionToOpen(updateDownloadedVersion)
+        : null
+
+    if (whatsNewVersion) {
+      dispatch(openWhatsNew(whatsNewVersion))
       sendEventTelemetry({
         event: TelemetryEvent.WHATS_NEW_OPENED,
         eventData: {
           source: WhatsNewSource.autoUpdate,
-          version: updateDownloadedVersion,
+          version: whatsNewVersion,
         },
       })
     } else if (serverInfo.appVersion === updateDownloadedVersion) {
