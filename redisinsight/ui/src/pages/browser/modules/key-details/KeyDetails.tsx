@@ -13,6 +13,8 @@ import {
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
+import { appContextBrowserKeyTabs } from 'uiSrc/slices/app/context'
+import { useTranslation } from 'uiSrc/i18n'
 
 import {
   getBasedOnViewTypeEvent,
@@ -20,7 +22,7 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { isTruncatedString, Nullable } from 'uiSrc/utils'
+import { isEqualBuffers, isTruncatedString, Nullable } from 'uiSrc/utils'
 import { NoKeySelected } from './components/no-key-selected'
 import { DynamicTypeDetails } from './components/dynamic-type-details'
 
@@ -53,6 +55,9 @@ const KeyDetails = (props: Props) => {
   const { type: keyType } = useAppSelector(selectedKeyDataSelector) ?? {
     type: KeyTypes.String,
   }
+  const keyTabs = useAppSelector(appContextBrowserKeyTabs)
+
+  const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
 
@@ -115,6 +120,11 @@ const KeyDetails = (props: Props) => {
     })
   }
 
+  // The key disappeared outside Browser and its tab remains available.
+  const { removedReason = null } =
+    keyTabs.find((tab) => isEqualBuffers(tab.key, keyProp)) ?? {}
+  const removedMessage = t('browser.keyTabs.notFoundMessage')
+
   return (
     <div className={styles.container}>
       <div
@@ -127,7 +137,7 @@ const KeyDetails = (props: Props) => {
             keyProp={keyProp}
             totalKeys={totalKeys}
             keysLastRefreshTime={keysLastRefreshTime}
-            error={error}
+            error={error || (removedReason ? removedMessage : '')}
             onClosePanel={onCloseKey}
           />
         ) : (

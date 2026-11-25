@@ -60,6 +60,18 @@ export enum AppWorkspace {
   RDI = 'redisDataIntegration',
 }
 
+export enum KeyTabRemovedReason {
+  NotFound = 'notFound',
+}
+
+export interface KeyTab {
+  key: RedisResponseBuffer
+  // when the key's TTL runs out, as of its last load; null without a TTL
+  expiresAt: Nullable<number>
+  // set when the key is not found; keys deleted in Browser have their tab closed
+  removedReason: Nullable<KeyTabRemovedReason>
+}
+
 export interface StateAppInfo {
   loading: boolean
   error: string
@@ -103,6 +115,7 @@ export interface StateAppContext {
       isNotRendered: boolean
       selectedKey: Nullable<RedisResponseBuffer>
     }
+    keyTabs: KeyTab[]
     panelSizes: number[]
     tree: {
       openNodes: {

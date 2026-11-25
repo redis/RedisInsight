@@ -6,7 +6,7 @@ import {
   CapabilityStorageItem,
   ConfigDBStorageItem,
 } from 'uiSrc/constants/storage'
-import { Maybe, Nullable } from 'uiSrc/utils'
+import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 import {
   BrowserStorageItem,
   DEFAULT_DELIMITER,
@@ -51,6 +51,7 @@ import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { SearchMode } from '../interfaces/keys'
 import {
   AppWorkspace,
+  KeyTabRemovedReason,
   RedisResponseBuffer,
   StateAppContext,
 } from '../interfaces'
@@ -84,6 +85,7 @@ export const initialState: StateAppContext = {
       isNotRendered: true,
       selectedKey: null,
     },
+    keyTabs: [],
     panelSizes: [],
     tree: {
       openNodes: {},
@@ -246,6 +248,90 @@ const appContextSlice = createSlice({
     ) => {
       state.browser.keyList.selectedKey = payload
     },
+    openBrowserKeyTab: (
+      state,
+      { payload }: PayloadAction<RedisResponseBuffer>,
+    ) => {
+      const isOpened = state.browser.keyTabs.some((tab) =>
+        isEqualBuffers(tab.key, payload),
+      )
+      if (!isOpened) {
+        state.browser.keyTabs.push({
+          key: payload,
+          expiresAt: null,
+          removedReason: null,
+        })
+      }
+    },
+    closeBrowserKeyTab: (
+      state,
+      { payload }: PayloadAction<RedisResponseBuffer>,
+    ) => {
+      state.browser.keyTabs = state.browser.keyTabs.filter(
+        (tab) => !isEqualBuffers(tab.key, payload),
+      )
+    },
+    // the key loaded: it exists again if its tab was marked as removed
+    markBrowserKeyTabFound: (
+      state,
+      {
+        payload: { key, expiresAt },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        expiresAt: Nullable<number>
+      }>,
+    ) => {
+      const tab = state.browser.keyTabs.find((tab) =>
+        isEqualBuffers(tab.key, key),
+      )
+      if (!tab) return
+
+      tab.expiresAt = expiresAt
+      tab.removedReason = null
+    },
+    markBrowserKeyTabRemoved: (
+      state,
+      {
+        payload: { key, reason },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        reason: KeyTabRemovedReason
+      }>,
+    ) => {
+      const tab = state.browser.keyTabs.find((tab) =>
+        isEqualBuffers(tab.key, key),
+      )
+      if (!tab) return
+
+      tab.removedReason = reason
+    },
+    renameBrowserKeyTab: (
+      state,
+      {
+        payload: { key, newKey },
+      }: PayloadAction<{
+        key: RedisResponseBuffer
+        newKey: RedisResponseBuffer
+      }>,
+    ) => {
+      const index = state.browser.keyTabs.findIndex((tab) =>
+        isEqualBuffers(tab.key, key),
+      )
+      // the source tab is gone, e.g. the tabs were reset by a database change
+      // while the rename was in flight: the new name belongs to another database
+      if (index === -1) return
+
+      // rename in place and drop a tab already opened for the new name;
+      // a rename keeps the TTL and proves the key exists
+      state.browser.keyTabs = state.browser.keyTabs
+        .map((tab, i) =>
+          i === index ? { ...tab, key: newKey, removedReason: null } : tab,
+        )
+        .filter((tab, i) => i === index || !isEqualBuffers(tab.key, newKey))
+    },
+    clearBrowserKeyTabs: (state) => {
+      state.browser.keyTabs = []
+    },
     setBrowserPatternKeyListDataLoaded: (
       state,
       { payload }: { payload: boolean },
@@ -380,6 +466,12 @@ export const {
   setBrowserPatternKeyListDataLoaded,
   setBrowserRedisearchKeyListDataLoaded,
   setBrowserSelectedKey,
+  openBrowserKeyTab,
+  closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+  markBrowserKeyTabRemoved,
+  renameBrowserKeyTab,
+  clearBrowserKeyTabs,
   setBrowserPatternScrollPosition,
   setBrowserRedisearchScrollPosition,
   setBrowserIsNotRendered,
@@ -439,6 +531,8 @@ export const appContextSearchAndQuery = (state: RootState) =>
   state.app.context.searchAndQuery
 export const appContextSelectedKey = (state: RootState) =>
   state.app.context.browser.keyList.selectedKey
+export const appContextBrowserKeyTabs = (state: RootState) =>
+  state.app.context.browser.keyTabs
 export const appContextPubSub = (state: RootState) => state.app.context.pubsub
 export const appContextAnalytics = (state: RootState) =>
   state.app.context.analytics

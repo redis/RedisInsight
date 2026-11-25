@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { SortOrder } from 'uiSrc/constants'
@@ -1003,7 +1004,7 @@ describe('zset slice', () => {
 
       it('succeed to fetch delete all zset members', async () => {
         // Arrange
-        const key = 'zset key'
+        const key = stringToBuffer('zset key')
         const members = ['member#1', 'member#2']
         const responsePayload = { status: 200, data: { affected: 2 } }
 
@@ -1032,6 +1033,7 @@ describe('zset slice', () => {
           removeZsetMembersSuccess(),
           removeMembersFromList(members),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deleteRedisearchKeyFromList(key),
           addMessageNotification(successMessages.DELETED_KEY(key)),
         ]

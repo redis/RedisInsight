@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker'
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
+import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
+import { stringToBuffer } from 'uiSrc/utils'
 import { apiService } from 'uiSrc/services'
 import {
   cleanup,
@@ -677,7 +679,7 @@ describe('vectorSet slice', () => {
     })
 
     describe('deleteVectorSetElements', () => {
-      const key = 'key'
+      const key = stringToBuffer('key')
       const elements = ['elem1', 'elem2']
 
       it('should dispatch success actions when delete is successful', async () => {
@@ -752,6 +754,7 @@ describe('vectorSet slice', () => {
           removeVectorSetElementsSuccess(),
           removeElementsFromList(elements),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deletePatternKeyFromList(key),
           addMessageNotification(successMessages.DELETED_KEY(key)),
         ]

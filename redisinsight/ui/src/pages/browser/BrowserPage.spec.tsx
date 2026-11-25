@@ -1,18 +1,29 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
+import { faker } from '@faker-js/faker'
 import {
   render,
   screen,
   fireEvent,
   mockedStore,
+  mockStore,
+  initialStateDefault,
   cleanup,
 } from 'uiSrc/utils/test-utils'
+import { Nullable, stringToBuffer } from 'uiSrc/utils'
 import { setConnectedInstanceId } from 'uiSrc/slices/instances/instances'
+import {
+  KeyTab,
+  KeyTabRemovedReason,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 import { loadKeys, toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import {
+  closeBrowserKeyTab,
+  openBrowserKeyTab,
   setBrowserBulkActionOpen,
   setBrowserKeyListDataLoaded,
   setBrowserPanelSizes,
@@ -180,5 +191,165 @@ describe('BrowserPage', () => {
       ...afterRenderActions,
       ...unmountActions,
     ])
+  })
+
+  describe('key tabs', () => {
+    const keyNames = faker.helpers.uniqueArray(
+      () => faker.string.alphanumeric(10),
+      3,
+    )
+    const [keyA, keyB, keyC] = keyNames.map((name) => stringToBuffer(name))
+    const toTabs = (keys: RedisResponseBuffer[]): KeyTab[] =>
+      keys.map((key) => ({ key, expiresAt: null, removedReason: null }))
+
+    const renderWithTabs = ({
+      tabs,
+      selectedKey = null,
+      isBulkActionsOpen = false,
+    }: {
+      tabs: RedisResponseBuffer[]
+      selectedKey?: Nullable<RedisResponseBuffer>
+      isBulkActionsOpen?: boolean
+    }) => {
+      let state = cloneDeep(initialStateDefault)
+      set(state, 'app.context.contextInstanceId', 'instanceId')
+      set(state, 'app.context.browser.keyTabs', toTabs(tabs))
+      set(state, 'app.context.browser.keyList.selectedKey', selectedKey)
+      set(state, 'app.context.browser.bulkActions.opened', isBulkActionsOpen)
+
+      const tabStore = mockStore(() => state)
+      const { rerender } = render(<BrowserPage />, { store: tabStore })
+      const afterRenderActions = [...tabStore.getActions()]
+
+      // the mocked store has no reducers: apply the tabs change by hand
+      const setTabs = (nextTabs: KeyTab[]) => {
+        const { context } = state.app
+        state = {
+          ...state,
+          app: {
+            ...state.app,
+            context: {
+              ...context,
+              browser: { ...context.browser, keyTabs: nextTabs },
+            },
+          },
+        }
+        rerender(<BrowserPage />)
+      }
+
+      return { tabStore, afterRenderActions, setTabs }
+    }
+
+    it('should open the right neighbour when the shown key tab is closed', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA, keyB, keyC],
+        selectedKey: keyB,
+      })
+
+      fireEvent.click(screen.getByTestId(`close-key-tab-${keyNames[1]}`))
+      setTabs(toTabs([keyA, keyC]))
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        closeBrowserKeyTab(keyB),
+        setBrowserSelectedKey(keyC),
+        openBrowserKeyTab(keyC),
+      ])
+    })
+
+    it('should open the left neighbour when the shown key is gone from the last tab', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA, keyB],
+        selectedKey: keyB,
+      })
+
+      // e.g. the key was deleted or its last element was removed
+      setTabs(toTabs([keyA]))
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        setBrowserSelectedKey(keyA),
+        openBrowserKeyTab(keyA),
+      ])
+    })
+
+    it('should close the panel when the shown key was the only tab', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA],
+        selectedKey: keyA,
+      })
+
+      setTabs([])
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        setBrowserSelectedKey(null),
+        toggleBrowserFullScreen(true),
+      ])
+    })
+
+    it('should keep the shown key when another tab is removed', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA, keyB],
+        selectedKey: keyA,
+      })
+
+      // e.g. a key deleted while another tab was opened
+      setTabs(toTabs([keyA]))
+
+      expect(tabStore.getActions()).toEqual(afterRenderActions)
+    })
+
+    it('should keep the shown key when its tab is marked as removed', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA, keyB],
+        selectedKey: keyB,
+      })
+
+      // the key disappeared outside Browser
+      setTabs([
+        ...toTabs([keyA]),
+        {
+          key: keyB,
+          expiresAt: null,
+          removedReason: KeyTabRemovedReason.NotFound,
+        },
+      ])
+
+      expect(tabStore.getActions()).toEqual(afterRenderActions)
+      expect(
+        screen.getByTestId(`key-tab-not-found-${keyNames[1]}`),
+      ).toBeInTheDocument()
+    })
+
+    it('should close the panel when the last tab is closed without a shown key', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA],
+      })
+
+      fireEvent.click(screen.getByTestId(`close-key-tab-${keyNames[0]}`))
+      setTabs([])
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        closeBrowserKeyTab(keyA),
+        toggleBrowserFullScreen(true),
+      ])
+    })
+
+    it('should keep the Bulk Actions panel open when the last tab is closed', () => {
+      const { tabStore, afterRenderActions, setTabs } = renderWithTabs({
+        tabs: [keyA],
+        isBulkActionsOpen: true,
+      })
+
+      fireEvent.click(screen.getByTestId(`close-key-tab-${keyNames[0]}`))
+      setTabs([])
+
+      expect(tabStore.getActions()).toEqual([
+        ...afterRenderActions,
+        closeBrowserKeyTab(keyA),
+      ])
+    })
   })
 })

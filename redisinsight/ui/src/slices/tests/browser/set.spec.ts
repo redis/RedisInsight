@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { closeBrowserKeyTab } from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
@@ -628,7 +629,7 @@ describe('set slice', () => {
   })
 
   describe('deleteSetMembers', () => {
-    const key = 'key'
+    const key = stringToBuffer('key')
     const members = ['123', '123', '1']
     it('call removeSetMembers, removeSetMembersSuccess, and removeMembersFromList when fetch is successed', async () => {
       // Arrange
@@ -699,6 +700,7 @@ describe('set slice', () => {
         removeSetMembersSuccess(),
         removeMembersFromList(members),
         deleteSelectedKeySuccess(),
+        closeBrowserKeyTab(key),
         deleteRedisearchKeyFromList(key),
         addMessageNotification(successMessages.DELETED_KEY(key)),
       ]

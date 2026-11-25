@@ -30,6 +30,7 @@ import {
   clearStoreActions,
   initialStateDefault,
   mockedStore,
+  mockStore,
 } from 'uiSrc/utils/test-utils'
 import {
   addErrorNotification,
@@ -37,13 +38,22 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { SearchHistoryItem, SearchMode } from 'uiSrc/slices/interfaces/keys'
-import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
+import {
+  closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+  markBrowserKeyTabRemoved,
+  setBrowserSelectedKey,
+} from 'uiSrc/slices/app/context'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   setEditorType,
   setIsWithinThreshold,
 } from 'uiSrc/slices/browser/rejson'
-import { EditorType } from 'uiSrc/slices/interfaces'
+import {
+  EditorType,
+  KeyTab,
+  KeyTabRemovedReason,
+} from 'uiSrc/slices/interfaces'
 
 import { rootReducer } from '../../store'
 import { loadVectorSetElements } from '../../browser/vectorSet'
@@ -130,6 +140,23 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
 })
+
+const MS_IN_SECOND = 1000
+
+const storeWithKeyTab = (tab: KeyTab) =>
+  mockStore({
+    ...initialStateDefault,
+    app: {
+      ...initialStateDefault.app,
+      context: {
+        ...initialStateDefault.app.context,
+        browser: {
+          ...initialStateDefault.app.context.browser,
+          keyTabs: [tab],
+        },
+      },
+    },
+  })
 
 describe('keys slice', () => {
   beforeAll(() => {
@@ -1452,6 +1479,7 @@ describe('keys slice', () => {
           defaultSelectedKeyAction(),
           loadKeyInfoSuccess(responsePayload.data),
           updateSelectedKeyRefreshTime(Date.now()),
+          markBrowserKeyTabFound({ key: data.name, expiresAt: null }),
           // fetch keyInfo
           getString(),
           getStringSuccess(data),
@@ -1483,8 +1511,33 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('key info is reset when key not found', async () => {
+      it('should record when the key expires on its tab', async () => {
         // Arrange
+        const ttl = faker.number.int({ min: 1, max: 1000 })
+        const data = {
+          name: stringToBuffer('string'),
+          type: KeyTypes.String,
+          ttl,
+          size: 10,
+        }
+
+        apiService.post = jest.fn().mockResolvedValue({ data, status: 200 })
+
+        // Act
+        await store.dispatch<any>(fetchKeyInfo(data.name))
+
+        // Assert
+        expect(store.getActions()).toContainEqual(
+          markBrowserKeyTabFound({
+            key: data.name,
+            expiresAt: MOCK_TIMESTAMP + ttl * MS_IN_SECOND,
+          }),
+        )
+      })
+
+      it('key info is reset and the selection cleared when a key without a tab is not found', async () => {
+        // Arrange
+        const keyName = stringToBuffer('keyName')
         const errorMessage = 'resource not found error'
         const responsePayload = {
           response: {
@@ -1496,7 +1549,7 @@ describe('keys slice', () => {
         apiService.post = jest.fn().mockRejectedValue(responsePayload)
 
         // Act
-        await store.dispatch<any>(fetchKeyInfo('keyName'))
+        await store.dispatch<any>(fetchKeyInfo(keyName))
 
         // Assert
         const expectedActions = [
@@ -1507,6 +1560,68 @@ describe('keys slice', () => {
           setBrowserSelectedKey(null),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should mark the tab as not found and keep the selection when a key is not found', async () => {
+        // Arrange
+        const keyName = stringToBuffer('keyName')
+        const errorMessage = 'resource not found error'
+        const responsePayload = {
+          response: {
+            status: 404,
+            data: { message: errorMessage },
+          },
+        }
+        const localStore = storeWithKeyTab({
+          key: keyName,
+          expiresAt: null,
+          removedReason: null,
+        })
+
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        // Act
+        await localStore.dispatch<any>(fetchKeyInfo(keyName))
+
+        // Assert
+        const expectedActions = [
+          defaultSelectedKeyAction(),
+          addErrorNotification(responsePayload as AxiosError),
+          defaultSelectedKeyActionFailure(errorMessage),
+          resetKeyInfo(),
+          markBrowserKeyTabRemoved({
+            key: keyName,
+            reason: KeyTabRemovedReason.NotFound,
+          }),
+        ]
+        expect(localStore.getActions()).toEqual(expectedActions)
+      })
+
+      it('should mark the tab as not found when the key is not found', async () => {
+        // Arrange
+        const keyName = stringToBuffer('keyName')
+        const localStore = storeWithKeyTab({
+          key: keyName,
+          expiresAt:
+            MOCK_TIMESTAMP +
+            faker.number.int({ min: 2, max: 1000 }) * MS_IN_SECOND,
+          removedReason: null,
+        })
+
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue({ response: { status: 404, data: {} } })
+
+        // Act
+        await localStore.dispatch<any>(fetchKeyInfo(keyName))
+
+        // Assert
+        expect(localStore.getActions()).toContainEqual(
+          markBrowserKeyTabRemoved({
+            key: keyName,
+            reason: KeyTabRemovedReason.NotFound,
+          }),
+        )
       })
 
       it('should set default JSON editor', async () => {
@@ -1619,6 +1734,10 @@ describe('keys slice', () => {
           refreshKeyInfo(),
           refreshKeyInfoSuccess(responsePayload.data),
           updateSelectedKeyRefreshTime(Date.now()),
+          markBrowserKeyTabFound({
+            key: stringToBuffer('keyName'),
+            expiresAt: null,
+          }),
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
@@ -1647,7 +1766,7 @@ describe('keys slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
       })
 
-      it('should reset key info and clear selected key when key not found (404)', async () => {
+      it('should reset key info, clear selected key and remove the key from the list when a key without a tab is not found (404)', async () => {
         // Arrange
         const keyName = stringToBuffer('deletedKey')
         const errorMessage = 'Key with this name does not exist.'
@@ -1669,10 +1788,48 @@ describe('keys slice', () => {
           refreshKeyInfoFail(),
           addErrorNotification(responsePayload as AxiosError),
           resetKeyInfo(),
-          deletePatternKeyFromList(keyName),
           setBrowserSelectedKey(null),
+          deletePatternKeyFromList(keyName),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should mark the tab as not found and keep it when the key is not found (404)', async () => {
+        // Arrange
+        const keyName = stringToBuffer('missingKey')
+        const errorMessage = 'Key with this name does not exist.'
+        const responsePayload = {
+          response: {
+            status: 404,
+            data: { message: errorMessage },
+          },
+        }
+        const localStore = storeWithKeyTab({
+          key: keyName,
+          expiresAt:
+            MOCK_TIMESTAMP -
+            faker.number.int({ min: 0, max: 1000 }) * MS_IN_SECOND,
+          removedReason: null,
+        })
+
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        // Act
+        await localStore.dispatch<any>(refreshKeyInfoAction(keyName))
+
+        // Assert
+        const expectedActions = [
+          refreshKeyInfo(),
+          refreshKeyInfoFail(),
+          addErrorNotification(responsePayload as AxiosError),
+          resetKeyInfo(),
+          markBrowserKeyTabRemoved({
+            key: keyName,
+            reason: KeyTabRemovedReason.NotFound,
+          }),
+          deletePatternKeyFromList(keyName),
+        ]
+        expect(localStore.getActions()).toEqual(expectedActions)
       })
     })
 
@@ -1926,6 +2083,7 @@ describe('keys slice', () => {
         const expectedActions = [
           deleteSelectedKey(),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(data.name),
           deletePatternKeyFromList(data.name),
           addMessageNotification(successMessages.DELETED_KEY(data.name)),
         ]
@@ -1953,6 +2111,7 @@ describe('keys slice', () => {
         const expectedActions = [
           deleteKey(),
           deleteKeySuccess(),
+          closeBrowserKeyTab(data.name),
           deletePatternKeyFromList(data.name),
           addMessageNotification(successMessages.DELETED_KEY(data.name)),
         ]
@@ -1984,7 +2143,7 @@ describe('keys slice', () => {
     describe('editKeyTTL', () => {
       it('success editKeyTTL with positive ttl', async () => {
         // Arrange
-        const key = 'string'
+        const key = stringToBuffer('string')
         const ttl = 1200
         const responsePayload = { status: 200 }
 
@@ -2006,13 +2165,14 @@ describe('keys slice', () => {
           defaultSelectedKeyActionSuccess(),
           loadKeyInfoSuccess({ data: '{}', keyName: 'keyName' }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          markBrowserKeyTabFound({ key, expiresAt: null }),
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
 
       it('success editKeyTTL with ttl = 0', async () => {
         // Arrange
-        const key = 'string'
+        const key = stringToBuffer('string')
         const ttl = 0
         const responsePayload = { status: 200 }
 
@@ -2025,6 +2185,7 @@ describe('keys slice', () => {
         const expectedActions = [
           defaultSelectedKeyAction(),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deletePatternKeyFromList(key),
           defaultSelectedKeyActionSuccess(),
         ]

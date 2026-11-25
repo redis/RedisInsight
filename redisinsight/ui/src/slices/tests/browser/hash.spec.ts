@@ -1,4 +1,8 @@
 import { cloneDeep } from 'lodash'
+import {
+  closeBrowserKeyTab,
+  markBrowserKeyTabFound,
+} from 'uiSrc/slices/app/context'
 import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
@@ -636,6 +640,7 @@ describe('hash slice', () => {
             ),
             refreshKeyInfoSuccess({ affected: 2 }),
             updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+            markBrowserKeyTabFound({ key, expiresAt: null }),
           ]
 
           expect(mockedStore.getActions()).toEqual(expectedActions)
@@ -645,7 +650,7 @@ describe('hash slice', () => {
       it('succeed to delete all fields from hast', async () => {
         // Arrange
 
-        const key = 'key'
+        const key = stringToBuffer('key')
         const fields = ['hash field', 'hash field 2']
         const responsePayload = { status: 200, data: { affected: 2 } }
         const nextState = {
@@ -674,6 +679,7 @@ describe('hash slice', () => {
           removeHashFieldsSuccess(),
           removeFieldsFromList(fields),
           deleteSelectedKeySuccess(),
+          closeBrowserKeyTab(key),
           deleteRedisearchKeyFromList(key),
           addMessageNotification(successMessages.DELETED_KEY(key)),
         ]
@@ -705,6 +711,11 @@ describe('hash slice', () => {
           defaultSelectedKeyAction(),
           loadKeyInfoSuccess({ affected: 2 }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          // the key name is a plain string in this DTO
+          {
+            type: markBrowserKeyTabFound.type,
+            payload: { key: keyName, expiresAt: null },
+          },
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
@@ -756,6 +767,11 @@ describe('hash slice', () => {
           refreshKeyInfo(),
           refreshKeyInfoSuccess({ affected: 2 }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          // the key name is a plain string in this DTO
+          {
+            type: markBrowserKeyTabFound.type,
+            payload: { key: keyName, expiresAt: null },
+          },
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)

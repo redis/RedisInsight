@@ -13,15 +13,19 @@ import {
   selectedKeyDataSelector,
   toggleBrowserFullScreen,
 } from 'uiSrc/slices/browser/keys'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { KeyTab, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Nullable } from 'uiSrc/utils'
+import { isEqualBuffers, Nullable } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
+import { renameBrowserKeyTab } from 'uiSrc/slices/app/context'
+import { KeyTabs } from 'uiSrc/pages/browser/components/key-tabs'
+
+import * as S from './BrowserRightPanel.styles'
 
 export interface Props {
   selectedKey: Nullable<RedisResponseBuffer>
@@ -32,7 +36,12 @@ export interface Props {
   isBulkActionsPanelOpen: boolean
   handleBulkActionsPanel: (value: boolean) => void
   closeRightPanels: () => void
+  keyTabs?: KeyTab[]
+  onSelectTab?: (keyName: RedisResponseBuffer) => void
+  onCloseTab?: (keyName: RedisResponseBuffer) => void
 }
+
+const noop = () => {}
 
 const BrowserRightPanel = (props: Props) => {
   const {
@@ -44,6 +53,9 @@ const BrowserRightPanel = (props: Props) => {
     isBulkActionsPanelOpen,
     handleBulkActionsPanel,
     closeRightPanels,
+    keyTabs = [],
+    onSelectTab = noop,
+    onCloseTab = noop,
   } = props
 
   const { isBrowserFullScreen, viewType } = useAppSelector(keysSelector)
@@ -84,54 +96,67 @@ const BrowserRightPanel = (props: Props) => {
   }
 
   const handleEditKey = (
-    _key: RedisResponseBuffer,
+    key: RedisResponseBuffer,
     newKey: RedisResponseBuffer,
   ) => {
+    if (!keyTabs.some((tab) => isEqualBuffers(tab.key, key))) return
+
+    dispatch(renameBrowserKeyTab({ key, newKey }))
     setSelectedKey(newKey)
   }
 
-  const onEditKey = useCallback(
-    (key: RedisResponseBuffer, newKey: RedisResponseBuffer) =>
-      handleEditKey(key, newKey),
-    [],
-  )
-
-  const onSelectKey = useCallback(() => setSelectedKey(null), [])
+  const onEditKey = useCallback(handleEditKey, [
+    dispatch,
+    keyTabs,
+    setSelectedKey,
+  ])
 
   return (
-    <>
-      {every([!isAddKeyPanelOpen, !isBulkActionsPanelOpen], Boolean) && (
-        <KeyDetails
-          isFullScreen={isBrowserFullScreen}
-          arePanelsCollapsed={arePanelsCollapsed}
-          onToggleFullScreen={handleToggleFullScreen}
-          keyProp={selectedKey}
-          onCloseKey={closePanel}
-          onEditKey={onEditKey}
-          onRemoveKey={onSelectKey}
-          totalKeys={total}
-          keysLastRefreshTime={keysLastRefreshTime}
-        />
-      )}
-      {isAddKeyPanelOpen && !isBulkActionsPanelOpen && (
-        <AddKey
-          onAddKeyPanel={handleAddKeyPanel}
-          onClosePanel={closePanel}
-          arePanelsCollapsed={arePanelsCollapsed}
-        />
-      )}
-      {isBulkActionsPanelOpen && !isAddKeyPanelOpen && (
-        <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <BulkActions
+    <S.Container>
+      <KeyTabs
+        tabs={keyTabs}
+        activeKey={
+          isAddKeyPanelOpen || isBulkActionsPanelOpen ? null : selectedKey
+        }
+        onSelectTab={onSelectTab}
+        onCloseTab={onCloseTab}
+      />
+      <S.Content>
+        {every([!isAddKeyPanelOpen, !isBulkActionsPanelOpen], Boolean) && (
+          <KeyDetails
             isFullScreen={isBrowserFullScreen}
             arePanelsCollapsed={arePanelsCollapsed}
-            onClosePanel={closePanel}
-            onBulkActionsPanel={handleBulkActionsPanel}
             onToggleFullScreen={handleToggleFullScreen}
+            keyProp={selectedKey}
+            onCloseKey={closePanel}
+            onEditKey={onEditKey}
+            // a missing key's tab is closed by deleteKeyFromList, then
+            // Browser opens the neighbour tab
+            onRemoveKey={noop}
+            totalKeys={total}
+            keysLastRefreshTime={keysLastRefreshTime}
           />
-        </FeatureFlagComponent>
-      )}
-    </>
+        )}
+        {isAddKeyPanelOpen && !isBulkActionsPanelOpen && (
+          <AddKey
+            onAddKeyPanel={handleAddKeyPanel}
+            onClosePanel={closePanel}
+            arePanelsCollapsed={arePanelsCollapsed}
+          />
+        )}
+        {isBulkActionsPanelOpen && !isAddKeyPanelOpen && (
+          <FeatureFlagComponent name={FeatureFlags.envDependent}>
+            <BulkActions
+              isFullScreen={isBrowserFullScreen}
+              arePanelsCollapsed={arePanelsCollapsed}
+              onClosePanel={closePanel}
+              onBulkActionsPanel={handleBulkActionsPanel}
+              onToggleFullScreen={handleToggleFullScreen}
+            />
+          </FeatureFlagComponent>
+        )}
+      </S.Content>
+    </S.Container>
   )
 }
 
