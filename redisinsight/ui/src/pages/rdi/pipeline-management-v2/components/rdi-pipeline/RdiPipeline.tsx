@@ -1,62 +1,70 @@
 import React, { useMemo } from 'react'
-import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { themes as rdiUiThemes } from '@redis-ui/styles-rdi'
-import { PipelineManagement } from '@rdi-ui/pipeline'
+import {
+  NavigationService,
+  RdiPipelines,
+  RdiPipelinesNavigationGuard,
+  createDirectConfigTranslate,
+} from '@rdi-ui/pipeline'
 import { Pages } from 'uiSrc/constants'
 import { Theme } from 'uiSrc/constants/themes'
 import { CustomHeaders } from 'uiSrc/constants/api'
 import { getBaseUrl } from 'uiSrc/services/apiService'
 import { useThemeContext } from 'uiSrc/contexts/themeContext'
-import { useRdiPipelineNavigation } from '../../hooks/useRdiPipelineNavigation'
 
 export interface Props {
   rdiInstanceId: string
+  // RdiPipelines titles the pipeline list and its breadcrumb with this
+  rdiInstanceAlias: string
+  // Shared with the page header, which renders the breadcrumb in place of
+  // rdi-ui's own, so its links reach the open pipeline's unsaved-changes check
+  navigation: NavigationService
+  navigationGuard: RdiPipelinesNavigationGuard
 }
 
 // Stable across renders - no dependency on props/state - so identity never
-// changes and can't retrigger PipelineManagement's own mount-effects, unlike
+// changes and can't retrigger RdiPipelines' own mount-effects, unlike
 // an inline object literal recreated on every render (this component
-// re-renders on every wizard-step navigation, since useRdiPipelineNavigation
-// subscribes to location).
+// re-renders on every wizard-step navigation, since the page's breadcrumb
+// hook subscribes to location).
 const TARGET_DATABASE = { strategy: 'manual' as const }
 const SOURCE_SECRETS = { strategy: 'credentials' as const }
-const MULTI_SOURCE = {}
-// secret mounting isn't wired up yet - stub only satisfies the required
-// shape so the component renders
-const PIPELINE_SECRETS = { mountSecrets: async () => {} }
-const CONFIG_TRANSLATE = {
-  // native-config <-> draft translation isn't wired up yet - these stubs
-  // only satisfy the required shape so the component renders
-  translateDraftToNativeConfig: async () => ({ jobs: [] }),
-  translateNativeConfigToDraft: async () => ({}),
-}
+const MULTI_SOURCE = { enabled: true }
+// rdi-ui mounts credentials as RDI per-database pipeline secrets itself,
+// matching the `${<DB>_DB_<KEY>}` references createDirectConfigTranslate writes
+const PIPELINE_SECRETS = { strategy: 'rdi' as const }
 
-const RdiPipeline = ({ rdiInstanceId }: Props) => {
-  const navigation = useRdiPipelineNavigation()
+const RdiPipeline = ({
+  rdiInstanceId,
+  rdiInstanceAlias,
+  navigation,
+  navigationGuard,
+}: Props) => {
   const { theme } = useThemeContext()
 
   const queryClient = useMemo(() => new QueryClient(), [rdiInstanceId])
 
-  /**
-   * @rdi-ui/pipeline bundles its own @redis-ui/components but reads the theme
-   * from the host's styled-components context, so the two have to agree on
-   * the theme's shape. RedisInsight is on @redis-ui/styles 15, whose
-   * `components.layouts` is `{ flexGroup, flexDivider }`, while the bundled
-   * components expect the styles 21+ shape (`{ gap, padding, margin, ... }`)
-   * and crash reading `layouts.gap.S`.
-   *
-   * Until RedisInsight upgrades @redis-ui/* wholesale, override the theme for
-   * this subtree only, using an aliased styles 21 install
-   * (@redis-ui/styles-rdi). The rest of the app keeps the version 15 theme.
-   */
-  const rdiUiTheme = useMemo(
-    () => (theme === Theme.Dark ? rdiUiThemes.dark : rdiUiThemes.light),
-    [theme],
+  // Translates between the RDI pipeline config and rdi-ui's UI draft. It
+  // remembers the last config it read so the next save builds on it, so it's
+  // created once per RDI instance rather than shared across instances.
+  const configTranslate = useMemo(
+    () => createDirectConfigTranslate(),
+    [rdiInstanceId],
   )
 
-  // Memoized for the same reason as the constants above - only this one
-  // actually depends on a prop, so it can't be hoisted alongside them.
+  // rdi-ui renders with its own bundled @redis-ui/styles theme and never
+  // picks up a host ThemeProvider, so RedisInsight's theme reaches it only
+  // through `appearance`. The theme context already resolves System to
+  // Light or Dark.
+  const appearance = theme === Theme.Dark ? 'dark' : 'light'
+
+  // Memoized for the same reason as the constants above - these depend on
+  // props, so they can't be hoisted alongside them.
+  const rdiInstance = useMemo(
+    () => ({ alias: rdiInstanceAlias }),
+    [rdiInstanceAlias],
+  )
+
   const rdiClient = useMemo(
     () => ({
       baseUrl: `${getBaseUrl()}rdi/${rdiInstanceId}/proxy`,
@@ -83,18 +91,21 @@ const RdiPipeline = ({ rdiInstanceId }: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StyledThemeProvider theme={rdiUiTheme}>
-        <PipelineManagement
-          basePath={Pages.rdiPipelineManagementV2(rdiInstanceId)}
-          navigation={navigation}
-          rdiClient={rdiClient}
-          targetDatabase={TARGET_DATABASE}
-          sourceSecrets={SOURCE_SECRETS}
-          multiSource={MULTI_SOURCE}
-          pipelineSecrets={PIPELINE_SECRETS}
-          configTranslate={CONFIG_TRANSLATE}
-        />
-      </StyledThemeProvider>
+      <RdiPipelines
+        basePath={Pages.rdiPipelineManagementV2(rdiInstanceId)}
+        rdiInstance={rdiInstance}
+        navigation={navigation}
+        navigationGuard={navigationGuard}
+        hideBreadcrumb
+        rdiClient={rdiClient}
+        targetDatabase={TARGET_DATABASE}
+        sourceSecrets={SOURCE_SECRETS}
+        multiSource={MULTI_SOURCE}
+        pipelineSecrets={PIPELINE_SECRETS}
+        configTranslate={configTranslate}
+        appearance={appearance}
+        polling={{ pipelineStatus: 2_000 }}
+      />
     </QueryClientProvider>
   )
 }

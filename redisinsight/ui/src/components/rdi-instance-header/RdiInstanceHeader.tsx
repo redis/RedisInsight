@@ -19,7 +19,23 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from '../instance-header/components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
-const RdiInstanceHeader = () => {
+/**
+ * The trail of the open v2 pipeline page. It matches `RdiPipelinesBreadcrumbState`
+ * from @rdi-ui/pipeline, whose links run through the open pipeline's
+ * unsaved-changes check.
+ */
+export interface RdiPipelineBreadcrumb {
+  /** The open pipeline, or `undefined` while the pipeline list shows. */
+  pipelineName?: string
+  exit: () => void
+  showList: () => void
+}
+
+export interface Props {
+  pipelineBreadcrumb?: RdiPipelineBreadcrumb
+}
+
+const RdiInstanceHeader = ({ pipelineBreadcrumb }: Props) => {
   const { t } = useTranslation()
   const { name = '' } = useAppSelector(connectedInstanceSelector)
   const { [FeatureFlags.redisTools]: redisToolsFeature } = useAppSelector(
@@ -29,8 +45,14 @@ const RdiInstanceHeader = () => {
   const history = useHistory()
 
   const goHome = () => {
+    if (pipelineBreadcrumb) {
+      pipelineBreadcrumb.exit()
+      return
+    }
     history.push(Pages.rdi)
   }
+
+  const pipelineName = pipelineBreadcrumb?.pipelineName
 
   return (
     <Row className={styles.container} align="center">
@@ -62,9 +84,30 @@ const RdiInstanceHeader = () => {
                 <FlexItem>
                   <Text className={styles.divider}>/</Text>
                 </FlexItem>
-                <FlexItem grow style={{ overflow: 'hidden' }}>
-                  <InstancesNavigationPopover name={name} />
+                <FlexItem grow={!pipelineName} style={{ overflow: 'hidden' }}>
+                  <InstancesNavigationPopover
+                    name={name}
+                    onNameClick={
+                      pipelineName ? pipelineBreadcrumb?.showList : undefined
+                    }
+                  />
                 </FlexItem>
+                {pipelineName && (
+                  <>
+                    <FlexItem>
+                      <Text className={styles.divider}>/</Text>
+                    </FlexItem>
+                    <FlexItem grow style={{ overflow: 'hidden' }}>
+                      <Text
+                        color="primary"
+                        className={styles.rdiName}
+                        data-testid="rdi-pipeline-name"
+                      >
+                        {pipelineName}
+                      </Text>
+                    </FlexItem>
+                  </>
+                )}
               </Row>
             </div>
           </div>

@@ -1400,6 +1400,7 @@
   "instanceHeader.logicalDatabases": "Logical databases",
   "instanceHeader.logicalDatabasesDescription": "Select logical databases to work with in Browser, Workbench, and Database Analysis.",
   "instanceHeader.redisDatabases": "Redis Databases",
+  "instanceHeader.switchInstance": "Switch instance",
   "itemList.actionBar.cancelAriaLabel": "Cancel selecting",
   "itemList.actionBar.selectionCount_one": "You selected: {{count}} item",
   "itemList.actionBar.selectionCount_other": "You selected: {{count}} items",
