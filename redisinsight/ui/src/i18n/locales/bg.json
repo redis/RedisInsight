@@ -1400,6 +1400,7 @@
   "instanceHeader.logicalDatabases": "Логически бази данни",
   "instanceHeader.logicalDatabasesDescription": "Изберете логически бази данни за работа в Браузър, Работно място и Анализ на базата данни.",
   "instanceHeader.redisDatabases": "Бази данни Redis",
+  "instanceHeader.switchInstance": "Смяна на инстанция",
   "itemList.actionBar.cancelAriaLabel": "Отмяна на избора",
   "itemList.actionBar.selectionCount_one": "Избрахте: {{count}} елемент",
   "itemList.actionBar.selectionCount_other": "Избрахте: {{count}} елемента",

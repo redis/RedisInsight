@@ -1,20 +1,45 @@
 import React from 'react'
 import reactRouterDom, { BrowserRouter, Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
+import { faker } from '@faker-js/faker'
 
-import { render, screen, cleanup, mockedStore } from 'uiSrc/utils/test-utils'
+import {
+  render,
+  screen,
+  cleanup,
+  fireEvent,
+  mockedStore,
+} from 'uiSrc/utils/test-utils'
 import { FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import PipelineManagementV2Page from './PipelineManagementV2Page'
 
 const MOCK_RDI_ID = 'rdiInstanceId'
 const SUPPORTED_VERSION = '1.19.0'
+const MOCK_RDI_NAME = faker.word.noun()
+
+type RdiPipelineMockProps = {
+  rdiInstanceId: string
+  rdiInstanceAlias: string
+  navigation: unknown
+  navigationGuard: unknown
+}
 
 const mockRdiPipeline = jest.fn()
+const mockNavigationGuard = { requestNavigation: jest.fn() }
+const mockBreadcrumbExit = jest.fn()
+const mockBreadcrumbShowList = jest.fn()
+const mockUseRdiPipelinesBreadcrumb = jest.fn()
+
+jest.mock('@rdi-ui/pipeline', () => ({
+  createRdiPipelinesNavigationGuard: () => mockNavigationGuard,
+  useRdiPipelinesBreadcrumb: (params: unknown) =>
+    mockUseRdiPipelinesBreadcrumb(params),
+}))
 
 jest.mock('./components/rdi-pipeline', () => ({
   __esModule: true,
-  default: (props: { rdiInstanceId: string }) => mockRdiPipeline(props),
+  default: (props: RdiPipelineMockProps) => mockRdiPipeline(props),
 }))
 
 let store: typeof mockedStore
@@ -23,6 +48,7 @@ beforeEach(() => {
   store = mockedStore
   store.getState().app.context.contextRdiInstanceId = MOCK_RDI_ID
   store.getState().rdi.instances.connectedInstance.id = MOCK_RDI_ID
+  store.getState().rdi.instances.connectedInstance.name = MOCK_RDI_NAME
   store.getState().rdi.instances.connectedInstance.version = SUPPORTED_VERSION
   store.getState().rdi.instances.connectedInstance.loading = false
   store.getState().rdi.instances.connectedInstance.error = ''
@@ -33,8 +59,13 @@ beforeEach(() => {
   reactRouterDom.useParams = jest
     .fn()
     .mockReturnValue({ rdiInstanceId: MOCK_RDI_ID })
+  mockUseRdiPipelinesBreadcrumb.mockReturnValue({
+    pipelineName: undefined,
+    exit: mockBreadcrumbExit,
+    showList: mockBreadcrumbShowList,
+  })
   mockRdiPipeline.mockImplementation(
-    ({ rdiInstanceId }: { rdiInstanceId: string }) => (
+    ({ rdiInstanceId }: RdiPipelineMockProps) => (
       <div data-testid="rdi-pipeline-mock">{rdiInstanceId}</div>
     ),
   )
@@ -60,12 +91,67 @@ describe('PipelineManagementV2Page', () => {
     )
   })
 
+  it('should pass the connected instance name as the rdi instance alias', () => {
+    renderPage()
+
+    expect(mockRdiPipeline).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        rdiInstanceId: MOCK_RDI_ID,
+        rdiInstanceAlias: MOCK_RDI_NAME,
+      }),
+    )
+  })
+
   it('should render the instance breadcrumb, but not the v1 shell (tabs/status bar)', () => {
     renderPage()
 
     expect(screen.getByTestId('breadcrumbs-container')).toBeInTheDocument()
     expect(screen.queryByTestId('pipeline-management-page-btn')).toBeNull()
     expect(screen.queryByTestId('pipeline-status-page-btn')).toBeNull()
+  })
+
+  it('should share one navigation service and guard between the header breadcrumb and the pipeline', () => {
+    renderPage()
+
+    const { navigation, navigationGuard } = mockRdiPipeline.mock.lastCall[0]
+    expect(navigationGuard).toBe(mockNavigationGuard)
+    expect(mockUseRdiPipelinesBreadcrumb).toHaveBeenLastCalledWith({
+      navigation,
+      navigationGuard: mockNavigationGuard,
+      basePath: Pages.rdiPipelineManagementV2(MOCK_RDI_ID),
+    })
+  })
+
+  it('should show only the instance in the header breadcrumb while the pipeline list shows', () => {
+    renderPage()
+
+    expect(screen.queryByTestId('rdi-pipeline-name')).toBeNull()
+    expect(screen.queryByTestId('nav-instance-name-link')).toBeNull()
+  })
+
+  it('should add the open pipeline to the header breadcrumb and link the instance back to the list', () => {
+    const pipelineName = faker.word.noun()
+    mockUseRdiPipelinesBreadcrumb.mockReturnValue({
+      pipelineName,
+      exit: mockBreadcrumbExit,
+      showList: mockBreadcrumbShowList,
+    })
+
+    renderPage()
+
+    expect(screen.getByTestId('rdi-pipeline-name')).toHaveTextContent(
+      pipelineName,
+    )
+    fireEvent.click(screen.getByTestId('nav-instance-name-link'))
+    expect(mockBreadcrumbShowList).toHaveBeenCalledTimes(1)
+  })
+
+  it('should leave through the guarded breadcrumb exit from "Data integration"', () => {
+    renderPage()
+
+    fireEvent.click(screen.getByTestId('my-rdi-instances-btn'))
+
+    expect(mockBreadcrumbExit).toHaveBeenCalledTimes(1)
   })
 
   it('should record itself as the last visited rdi section on unmount', () => {
