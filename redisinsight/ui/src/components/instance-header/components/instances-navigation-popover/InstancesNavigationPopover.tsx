@@ -13,8 +13,12 @@ import { localStorageService } from 'uiSrc/services'
 import { filterAndSort } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { RiPopover } from 'uiSrc/components/base'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { Link } from 'uiSrc/components/base/link/Link'
+import { useTranslation } from 'uiSrc/i18n'
 import InstancesList from './components/instances-list'
 import { ChevronDownIcon } from 'uiSrc/components/base/icons'
 import { ButtonWrapper } from './InstancesNavigationPopover.styles'
@@ -22,6 +26,11 @@ import styles from './styles.module.scss'
 
 export interface Props {
   name: string
+  /**
+   * Makes the name a link of its own, with only the chevron opening the
+   * popover. Without it, the whole name opens the popover.
+   */
+  onNameClick?: () => void
 }
 
 export enum InstancesTabs {
@@ -29,7 +38,8 @@ export enum InstancesTabs {
   RDI = 'Redis Data Integration',
 }
 
-const InstancesNavigationPopover = ({ name }: Props) => {
+const InstancesNavigationPopover = ({ name, onNameClick }: Props) => {
+  const { t } = useTranslation()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [searchFilter, setSearchFilter] = useState('')
   const [filteredDbInstances, setFilteredDbInstances] = useState<Instance[]>([])
@@ -118,15 +128,34 @@ const InstancesNavigationPopover = ({ name }: Props) => {
       isOpen={isPopoverOpen}
       closePopover={() => showPopover()}
       button={
-        <ButtonWrapper
-          align="center"
-          gap="s"
-          onClick={() => showPopover()}
-          data-testid="nav-instance-popover-btn"
-        >
-          <Text color="primary">{name}</Text>
-          <ChevronDownIcon size="S" />
-        </ButtonWrapper>
+        onNameClick ? (
+          <Row align="center" gap="s">
+            <Link
+              color="primary"
+              variant="inline"
+              onClick={onNameClick}
+              data-testid="nav-instance-name-link"
+            >
+              {name}
+            </Link>
+            <IconButton
+              icon={ChevronDownIcon}
+              onClick={() => showPopover()}
+              aria-label={t('instanceHeader.switchInstance')}
+              data-testid="nav-instance-popover-btn"
+            />
+          </Row>
+        ) : (
+          <ButtonWrapper
+            align="center"
+            gap="s"
+            onClick={() => showPopover()}
+            data-testid="nav-instance-popover-btn"
+          >
+            <Text color="primary">{name}</Text>
+            <ChevronDownIcon size="S" />
+          </ButtonWrapper>
+        )
       }
     >
       <div className={styles.wrapper}>

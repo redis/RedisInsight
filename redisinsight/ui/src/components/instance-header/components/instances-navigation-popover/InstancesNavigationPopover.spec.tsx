@@ -85,6 +85,36 @@ describe('InstancesNavigationPopover', () => {
     expect(screen.getByTestId('instances-tabs-testId')).toBeInTheDocument()
   })
 
+  it('should not render a separate name link without onNameClick', () => {
+    render(<InstancesNavigationPopover name="db" />)
+
+    expect(screen.queryByTestId('nav-instance-name-link')).toBeNull()
+  })
+
+  it('should call onNameClick from the name, without opening the popover', () => {
+    const onNameClick = jest.fn()
+    render(<InstancesNavigationPopover name="db" onNameClick={onNameClick} />)
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('nav-instance-name-link'))
+    })
+
+    expect(onNameClick).toHaveBeenCalledTimes(1)
+    expect(screen.queryByTestId('instances-tabs-testId')).toBeNull()
+  })
+
+  it('should open the popover from the chevron when onNameClick is set', () => {
+    const onNameClick = jest.fn()
+    render(<InstancesNavigationPopover name="db" onNameClick={onNameClick} />)
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('nav-instance-popover-btn'))
+    })
+
+    expect(screen.getByTestId('instances-tabs-testId')).toBeInTheDocument()
+    expect(onNameClick).not.toHaveBeenCalled()
+  })
+
   it('should filter instances list', () => {
     ;(instancesSelector as jest.Mock).mockReturnValue({
       data: mockRdis,

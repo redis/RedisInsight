@@ -22,3 +22,4 @@ export { EulaPage } from './eula';
 export { VectorSearchPage } from './vector-search';
 export { InsightsPanel } from './insights';
 export { RedisToolsPanel } from './redis-tools';
+export { RdiInstancesPage, RdiPipelinePage } from './rdi';

@@ -14,7 +14,7 @@ describe('useRdiPipelineNavigation', () => {
     replace: jest.Mock
     goBack: jest.Mock
     listen: jest.Mock
-    location: { pathname: string }
+    location: { pathname: string; search?: string }
   }
 
   beforeEach(() => {
@@ -38,6 +38,18 @@ describe('useRdiPipelineNavigation', () => {
 
     expect(result.current.getPath()).toBe(
       '/integrate/123/pipeline-management-v2',
+    )
+  })
+
+  it('should include the query string in the current path', () => {
+    historyMock.location = {
+      pathname: '/integrate/123/pipeline-management-v2/create',
+      search: '?addSource=true&source=mysql',
+    }
+    const { result } = renderHook(() => useRdiPipelineNavigation())
+
+    expect(result.current.getPath()).toBe(
+      '/integrate/123/pipeline-management-v2/create?addSource=true&source=mysql',
     )
   })
 

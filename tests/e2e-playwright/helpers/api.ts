@@ -342,6 +342,7 @@ export class ApiHelper {
    * Get current app settings
    */
   async getSettings(): Promise<{
+    theme: string | null;
     agreements: {
       eula: boolean;
       analytics: boolean;
@@ -359,6 +360,20 @@ export class ApiHelper {
     }
 
     return response.json();
+  }
+
+  /**
+   * Set the app's color theme (a global setting), e.g. to restore it after a test.
+   * @param theme - 'LIGHT', 'DARK' or 'SYSTEM'
+   */
+  async setTheme(theme: string): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.patch('/api/settings', { data: { theme } });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to set theme: ${response.status()} - ${body}`);
+    }
   }
 
   /**

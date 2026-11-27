@@ -15,8 +15,10 @@ import {
   ProfilerPanel,
   TypeToConfirmModal,
   VectorSearchPage,
+  RdiInstancesPage,
+  RdiPipelinePage,
 } from 'e2eSrc/pages';
-import { ApiHelper, retry } from 'e2eSrc/helpers';
+import { ApiHelper, RdiMock, retry } from 'e2eSrc/helpers';
 
 /**
  * Extended ElectronApplication with windowId for API authentication
@@ -55,6 +57,13 @@ type Fixtures = {
   profilerPanel: ProfilerPanel;
   typeToConfirmModal: TypeToConfirmModal;
   vectorSearchPage: VectorSearchPage;
+  rdiInstancesPage: RdiInstancesPage;
+  rdiPipelinePage: RdiPipelinePage;
+  /**
+   * Fakes an RDI instance in the browser (see helpers/rdiMock.ts).
+   * Call rdiMock.install(instance, pipelines) before navigating to the RDI pages.
+   */
+  rdiMock: RdiMock;
 };
 
 /**
@@ -296,6 +305,18 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   vectorSearchPage: async ({ page }, use) => {
     await use(new VectorSearchPage(page));
+  },
+
+  rdiInstancesPage: async ({ page }, use) => {
+    await use(new RdiInstancesPage(page));
+  },
+
+  rdiPipelinePage: async ({ page }, use) => {
+    await use(new RdiPipelinePage(page));
+  },
+
+  rdiMock: async ({ page }, use) => {
+    await use(new RdiMock(page));
   },
 });
 

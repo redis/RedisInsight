@@ -936,6 +936,14 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 > ⚠️ RDI require external dependencies (requires RDI backend services).
 > These tests should be run in environments with RDI infrastructure available.
+>
+> **v2 pipeline page (`@rdi-ui/pipeline`) runs without an RDI backend.** `helpers/rdiMock.ts` (the
+> `rdiMock` fixture) fakes the RDI instance in the browser with `page.route`: RedisInsight's
+> `/api/rdi`, `/api/rdi/:id` and `/api/rdi/:id/connect`, and the RDI API calls rdi-ui sends through the
+> proxy (`/api/rdi/:id/proxy/api/v2/...`). The instance can't be added through `POST /api/rdi`, which
+> logs in to RDI first. Specs enable the page with `test.use({ featureFlags: RDI_V2_FEATURE_FLAGS })`
+> (`dev-rdiUi` + `redisDataIntegration`). Tests: `tests/parallel/rdi/pipeline-management/`, theme in
+> `tests/serial/rdi/pipeline-management/` (the color theme is a global setting).
 
 ### 11.1 RDI Instance Management
 | Status | Group | Test Case |
@@ -951,16 +959,39 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 11.2 RDI Pipeline
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View pipeline status |
-| 🔲 | main | Start pipeline |
-| 🔲 | main | Stop pipeline |
-| 🔲 | main | Reset pipeline |
+| ✅ | main | View pipeline status (v2 list: Running / Stopped) |
+| ✅ | main | Start pipeline (v2 row menu) |
+| ✅ | main | Stop pipeline (v2 row menu) |
+| ✅ | main | Reset pipeline (v2 row menu) |
 | 🔲 | main | View pipeline statistics |
 | 🔲 | main | Popover displayed for Reset button |
-| 🔲 | main | Popover displayed for Stop button |
+| ✅ | main | Popover displayed for Stop button (v2: "Stop pipeline?" confirmation; Cancel keeps it running) |
 | 🔲 | main | Deploy successfully deploys configuration with success notification |
 | 🔲 | main | Pipeline state: Not running / Streaming |
 | 🔲 | main | Show loading indicators when waiting for action |
+
+#### 11.2.1 RDI Pipeline - v2 page (`@rdi-ui/pipeline`)
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | Pipeline list shows every pipeline of the instance with status, source and target |
+| ✅ | main | Only RedisInsight's breadcrumb is shown (rdi-ui's is hidden), on the list and in an open pipeline |
+| ✅ | main | Opening a pipeline adds `/ <pipeline>` to the breadcrumb |
+| ✅ | main | Instance name in the breadcrumb returns to the pipeline list |
+| ✅ | main | Breadcrumb chevron opens the instance switcher on the RDI tab |
+| ✅ | main | "Data integration" leaves to the RDI instances list |
+| ✅ | main | Unsaved change + instance name: prompt, "Stay on this page" keeps the change |
+| ✅ | main | Unsaved change + instance name: prompt, "Leave this page" returns to the list |
+| ✅ | main | Unsaved change + "Data integration": prompt, leaving opens the RDI instances list |
+| ✅ | main | "Add source" opens the wizard in add-source mode (`?addSource=true`) |
+| ✅ | main | Add-source mode survives a page reload (query string kept) |
+| ✅ | main | Add-source mode adds a new source next to the locked existing one |
+| ✅ | main | Breadcrumb keeps the pipeline name in the wizard |
+| ✅ | serial | Dark theme in Settings renders rdi-ui dark |
+| ✅ | serial | Light theme in Settings renders rdi-ui light |
+| 🔲 | main | Add pipeline (name prompt, opens create mode) |
+| 🔲 | main | Delete pipeline (with secrets selection on RDI 2.2.0+) |
+| 🔲 | main | Switching instance from the switcher opens the other instance's pipelines |
+| 🔲 | main | Unsupported RDI version (below 1.16.0) falls back to the v1 pipeline page |
 
 ### 11.3 RDI Jobs
 | Status | Group | Test Case |
